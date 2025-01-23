@@ -3,7 +3,7 @@ local syntax = require "core.syntax"
 
 syntax.add {
   name = "TeX",
-  files = { "%.tex$", "%.dtx$", "%.sty$", "%.ins$", "%.cls$" },
+  files = { "%.tex$", "%.latex$", "%.dtx$", "%.sty$", "%.ins$", "%.cls$" },
   comment = "%%",
   patterns = {
     { pattern = "%%.-\n",                  type = "comment"  },
