@@ -203,16 +203,16 @@ main() {
     rm -rf "${build_dir}"
   fi
 
-  if [[ -n "$plugins" ]] && [[ -z `command -v lpm` ]]; then
-    mkdir -p "${build_dir}"
-    lpm_path="$(pwd)/${build_dir}/lpm$(get_executable_extension)"
-    if [[ ! -e "$lpm_path" ]]; then
-      curl --insecure -L -o "$lpm_path" \
-        "https://github.com/lite-xl/lite-xl-plugin-manager/releases/download/${LPM_VERSION:-latest}/lpm.$(get_platform_tuple)$(get_executable_extension)"
-      chmod u+x "$lpm_path"
-    fi
-    export PATH="$(dirname "$lpm_path"):$PATH"
-  fi
+  # if [[ -n "$plugins" ]] && [[ -z `command -v lpm` ]]; then
+  #   mkdir -p "${build_dir}"
+  #   lpm_path="$(pwd)/${build_dir}/lpm$(get_executable_extension)"
+  #   if [[ ! -e "$lpm_path" ]]; then
+  #     curl --insecure -L -o "$lpm_path" \
+  #       "https://github.com/lite-xl/lite-xl-plugin-manager/releases/download/${LPM_VERSION:-latest}/lpm.$(get_platform_tuple)$(get_executable_extension)"
+  #     chmod u+x "$lpm_path"
+  #   fi
+  #   export PATH="$(dirname "$lpm_path"):$PATH"
+  # fi
 
   CFLAGS=$CFLAGS LDFLAGS=$LDFLAGS meson setup \
     "${build_dir}" \
