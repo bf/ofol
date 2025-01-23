@@ -159,7 +159,7 @@ StatusView.Item = StatusViewItem
 ---Predicated used on the default docview widgets.
 ---@return boolean
 local function predicate_docview()
-  return  core.active_view:is(DocView)
+  return core.active_view:is(DocView)
     and not core.active_view:is(CommandView)
 end
 
@@ -230,31 +230,43 @@ function StatusView:register_docview_items()
     alignment = StatusView.Item.RIGHT,
     get_item = function()
       local dv = core.active_view
-      local line, col = dv.doc:get_selection()
-      local _, indent_size = dv.doc:get_indent_info()
-      -- Calculating tabs when the doc is using the "hard" indent type.
-      local ntabs = 0
-      local last_idx = 0
-      while last_idx < col do
-        local s, e = string.find(dv.doc.lines[line], "\t", last_idx, true)
-        if s and s < col then
-          ntabs = ntabs + 1
-          last_idx = e + 1
-        else
-          break
+      local line, col, line2, col2 = dv.doc:get_selection()
+
+      -- check if there is text selection
+      if line ~= line2 or col ~= col2 then
+        -- show info about text selection 
+        local selection_length = #dv.doc:get_text(line, col, line2, col2)
+        return {
+          style.text, selection_length
+        }
+      else
+        -- show info about single cursor position
+        local _, indent_size = dv.doc:get_indent_info()
+        -- Calculating tabs when the doc is using the "hard" indent type.
+        local ntabs = 0
+        local last_idx = 0
+        while last_idx < col do
+          local s, e = string.find(dv.doc.lines[line], "\t", last_idx, true)
+          if s and s < col then
+            ntabs = ntabs + 1
+            last_idx = e + 1
+          else
+            break
+          end
         end
+        col = col + ntabs * (indent_size - 1)
+        return {
+          style.text, line, ":",
+          col > config.line_limit and style.accent or style.text, col,
+          style.text
+        }
       end
-      col = col + ntabs * (indent_size - 1)
-      return {
-        style.text, line, ":",
-        col > config.line_limit and style.accent or style.text, col,
-        style.text
-      }
     end,
     command = "doc:go-to-line",
     tooltip = "line : column"
   })
 
+  -- show number of cursors when CTRL+MOUSELEFT is used to add more cursors/carets to the file
   self:add_item({
     predicate = predicate_docview,
     name = "doc:selections",
@@ -262,8 +274,8 @@ function StatusView:register_docview_items()
     get_item = function()
       local dv = core.active_view
       local nsel = math.floor(#dv.doc.selections / 4)
-      if nsel > 0 then
-        return { style.text, nsel, " selections" }
+      if nsel > 1 then
+        return { style.text, nsel, " cursors" }
       end
 
       return {}
@@ -278,9 +290,9 @@ function StatusView:register_docview_items()
     get_item = function()
       local dv = core.active_view
       local indent_type, indent_size, indent_confirmed = dv.doc:get_indent_info()
-      local indent_label = (indent_type == "hard") and "tabs: " or "spaces: "
+      local indent_label = (indent_type == "hard") and "t " or "s"
       return {
-        style.text, indent_label, indent_size,
+        style.text, indent_size, indent_label,
         indent_confirmed and "" or "*"
       }
     end,
@@ -292,7 +304,7 @@ function StatusView:register_docview_items()
       end
     end,
     separator = self.separator2,
-    tooltip = "Indentation: Spaces or Tabs"
+    tooltip = "indentation: (s)paces or (t)abs"
   })
 
   -- self:add_item({

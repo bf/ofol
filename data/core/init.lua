@@ -938,9 +938,11 @@ function core.restart()
   end)
 end
 
-
+-- regex to parse plugin's "mod-version" from file
 local mod_version_regex =
   regex.compile([[--.*mod-version:(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:$|\s)]])
+
+-- fetch details for certain plugin
 local function get_plugin_details(filename)
   local info = system.get_file_info(filename)
   if info ~= nil and info.type == "dir" then

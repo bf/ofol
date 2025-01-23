@@ -755,12 +755,26 @@ function os.rename(oldname, newname)
   return scm.move_path(oldname, newname, os_rename)
 end
 
+
+local DocView = require "core.docview"
+
 --------------------------------------------------------------------------------
 -- StatusBar Item to show current branch and stats
 --------------------------------------------------------------------------------
 local scm_status_item = core.status_view:add_item({
   name = "status:scm",
   alignment = StatusView.Item.LEFT,
+  predicate = DocView,
+  --  function () 
+  --   -- show only when document is opened
+  --   if get_active_docview() then
+  --     return true
+  --   else 
+  --     return false
+  --   end
+
+  --   -- return core.active_view:is(DocView) and not core.active_view:is(CommandView)
+  -- end,
   get_item = function()
     local project = util.get_current_project()
 
@@ -773,9 +787,9 @@ local scm_status_item = core.status_view:add_item({
     end
 
     local bcolor = (STATS[project].inserts ~= 0 or STATS[project].deletes ~= 0)
-      and style.accent or style.text
-    local icolor = STATS[project].inserts ~= 0 and style.accent or style.text
-    local dcolor = STATS[project].deletes ~= 0 and style.accent or style.text
+      and style.accent or style.dim
+    local icolor = STATS[project].inserts ~= 0 and style.accent or style.dim
+    local dcolor = STATS[project].deletes ~= 0 and style.accent or style.dim
 
     return {
       bcolor, BRANCHES[project],
