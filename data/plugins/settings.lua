@@ -43,6 +43,11 @@ settings.plugin_sections = {}
 settings.config = {}
 settings.default_keybindings = {}
 
+
+DEFAULT_FONT_SIZE = 22
+DEFAULT_FONT_NAME = "Fira Sans Regular"
+DEFAULT_FONT_PATH = DATADIR .. "/fonts/FiraSans-Regular.ttf"
+
 ---Enumeration for the different types of settings.
 ---@type table<string, integer>
 settings.type = {
@@ -343,8 +348,8 @@ settings.add("User Interface",
       default = {
         fonts = {
           {
-            name = "Fira Sans Regular",
-            path = DATADIR .. "/fonts/FiraSans-Regular.ttf"
+            name = DEFAULT_FONT_NAME,
+            path = DEFAULT_FONT_PATH
           }
         },
         options = {
@@ -483,12 +488,14 @@ settings.add("Editor",
       default = {
         fonts = {
           {
-            name = "JetBrains Mono Regular",
-            path = DATADIR .. "/fonts/JetBrainsMono-Regular.ttf"
+            -- name = "JetBrains Mono Regular",
+            -- path = DATADIR .. "/fonts/JetBrainsMono-Regular.ttf"
+            name = DEFAULT_FONT_NAME,
+            path = DEFAULT_FONT_PATH
           }
         },
         options = {
-          size = 15,
+          size = 22,
           antialiasing = "subpixel",
           hinting = "slight"
         }
@@ -935,11 +942,11 @@ end
 ---@param saved_value any
 local function merge_font_settings(option, path, saved_value)
   local font_options = saved_value.options or {
-    size = 15,
+    size = DEFAULT_FONT_SIZE,
     antialiasing = "supixel",
     hinting = "slight"
   }
-  font_options.size = font_options.size or 15
+  font_options.size = font_options.size or DEFAULT_FONT_SIZE
   font_options.antialiasing = font_options.antialiasing or "subpixel"
   font_options.hinting = font_options.hinting or "slight"
 
@@ -1226,11 +1233,11 @@ local function add_control(pane, option, plugin_name)
       end
 
       local font_options = option_value.options or {
-        size = 15,
+        size = DEFAULT_FONT_SIZE,
         antialiasing = "supixel",
         hinting = "slight"
       }
-      font_options.size = font_options.size or 15
+      font_options.size = font_options.size or DEFAULT_FONT_SIZE
       font_options.antialiasing = font_options.antialiasing or "subpixel"
       font_options.hinting = font_options.hinting or "slight"
       fonts:set_options(font_options)

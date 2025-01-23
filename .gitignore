@@ -19,6 +19,7 @@ compile_commands.json
 error.txt
 lite-xl*
 LiteXL*
+tmp/
 
 !resources/windows/*.diff
 !resources/windows/*.exe.manifest.in
