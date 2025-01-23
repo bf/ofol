@@ -9,10 +9,10 @@ local common = require "core.common"
 local config = require "core.config"
 
 -- load syntax dependencies to add additional rules
-require "plugins.language_css"
-require "plugins.language_js"
+require "..language_css"
+require "..language_js"
 
-local psql_found = pcall(require, "plugins.language_psql")
+local psql_found = pcall(require, "plugins.language.language_psql")
 local sql_strings = {}
 
 config.plugins.language_php = common.merge({

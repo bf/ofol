@@ -269,7 +269,7 @@ settings.add("Graphics",
       description = "If disabled turns off all transitions but improves rendering performance.",
       path = "transitions",
       type = settings.type.TOGGLE,
-      default = true
+      default = false
     },
     {
       label = "Animation Rate",
@@ -744,25 +744,21 @@ end
 local function get_installed_plugins()
   local files, ordered = {}, {}
 
+  -- load plugins
   for _, root_dir in ipairs {DATADIR, USERDIR} do
     local plugin_dir = root_dir .. "/plugins"
     for _, filename in ipairs(system.list_dir(plugin_dir) or {}) do
       local valid = false
       local file_info = system.get_file_info(plugin_dir .. "/" .. filename)
       if file_info then
-        if
-          file_info.type == "file"
-          and
-          filename:match("%.lua$")
-          and
-          not filename:match("^language_")
-        then
+        -- simple case for files: must have .lua extension
+        if file_info.type == "file" and filename:match("%.lua$") then
           valid = true
           filename = filename:gsub("%.lua$", "")
-        elseif file_info.type == "dir" then
-          if system.get_file_info(plugin_dir .. "/" .. filename .. "/init.lua") then
-            valid = true
-          end
+        
+        -- special case for directory: directory must have init.lua file
+        elseif file_info.type == "dir" and system.get_file_info(plugin_dir .. "/" .. filename .. "/init.lua") then
+          valid = true
         end
       end
       if valid then

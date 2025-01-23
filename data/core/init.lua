@@ -3,6 +3,7 @@ require "core.regex"
 local common = require "core.common"
 local config = require "core.config"
 local style = require "colors.default"
+local json = require "libraries.json"
 local command
 local keymap
 local dirwatch
@@ -822,6 +823,9 @@ function core.init()
   core.configure_borderless_window()
 
   if #plugins_refuse_list.userdir.plugins > 0 or #plugins_refuse_list.datadir.plugins > 0 then
+    print("Error: plugins_refuse_list.userdir.plugins", json.encode(plugins_refuse_list.userdir.plugins))
+    print("Error: plugins_refuse_list.datadir.plugins", json.encode(plugins_refuse_list.datadir.plugins))
+
     local opt = {
       { text = "Exit", default_no = true },
       { text = "Continue", default_yes = true }
@@ -836,12 +840,14 @@ function core.init()
         msg[#msg + 1] = string.format("Plugins from directory \"%s\":\n%s", common.home_encode(entry.dir), table.concat(msg_list, "\n"))
       end
     end
-    core.nag_view:show(
-      "Refused Plugins",
-      string.format(
+    local errorMessage = string.format(
         "Some plugins are not loaded due to version mismatch. Expected version %s.\n\n%s.\n\n" ..
         "Please download a recent version from https://github.com/lite-xl/lite-xl-plugins.",
-        MOD_VERSION_STRING, table.concat(msg, ".\n\n")),
+        MOD_VERSION_STRING, table.concat(msg, ".\n\n"))
+
+    print("Error:", errorMessage)
+    core.nag_view:show(
+      "Refused Plugins", errorMessage,
       opt, function(item)
         if item.text == "Exit" then os.exit(1) end
       end)
