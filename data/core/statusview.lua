@@ -259,7 +259,7 @@ function StatusView:register_docview_items()
   self:add_item({
     predicate = predicate_docview,
     name = "doc:selections",
-    alignment = StatusView.Item.LEFT,
+    alignment = StatusView.Item.RIGHT,
     get_item = function()
       local dv = core.active_view
       local nsel = math.floor(#dv.doc.selections / 4)
@@ -292,28 +292,6 @@ function StatusView:register_docview_items()
       end
     end,
     separator = self.separator2
-  })
-
-  self:add_item({
-    predicate = predicate_docview,
-    name = "doc:stats",
-    alignment = StatusView.Item.RIGHT,
-    get_item = function()
-      return config.stonks == nil and {} or {
-        style.text,
-        type(config.stonks) == "table" and config.stonks.font or style.icon_font,
-        type(config.stonks) == "table" and config.stonks.icon or ( config.stonks and "g" or "h" ),
-      }
-    end,
-    separator = self.separator2,
-    command = function(button, x, y)
-      if button == "left" then
-        clicks = clicks + 1
-      elseif button == "right" then
-        clicks = -1
-      end
-      gx, gy = x, y
-    end
   })
 
   self:add_item({
@@ -1236,24 +1214,6 @@ function StatusView:draw()
     end
   end
 
-  if clicks > 5 then
-    if config.stonks == nil then clicks = -1 end
-    core.root_view:defer_draw(function()
-      local font = type(config.stonks) == "table" and config.stonks.font or style.icon_font
-      local icon = type(config.stonks) == "table" and config.stonks.icon or ( config.stonks and "g" or "h" )
-      local xadv = renderer.draw_text(font, icon, gx, gy, gc)
-      local x2, y2 = core.root_view.size.x - (xadv - gx), core.root_view.size.y - font:get_height()
-      gx, gy = common.clamp(gx + dx, 0, x2), common.clamp(gy + dy, 0, y2)
-      local odx, ody = dx, dy
-      if gx <= 0 then dx = math.abs(dx) elseif gx >= x2 then dx = -math.abs(dx) end
-      if gy <= 0 then dy = math.abs(dy) elseif gy >= y2 then dy = -math.abs(dy) end
-      if odx ~= dx or ody ~= dy then
-        local major = math.random(1, 3)
-        for i = 1, 3 do gc[i] = major == i and math.random(200, 255) or math.random(0, 100) end
-      end
-      core.redraw = true
-    end)
-  end
 end
 
 return StatusView
