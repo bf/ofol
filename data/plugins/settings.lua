@@ -631,13 +631,6 @@ settings.add("Development",
       min = 150,
       max = 2000
     },
-    {
-      label = "Skip Plugins Version",
-      description = "Do not verify the plugins required versions at startup.",
-      path = "skip_plugins_version",
-      type = settings.type.TOGGLE,
-      default = false
-    }
   }
 )
 
@@ -833,13 +826,13 @@ local function capitalize_first(words)
   return words:sub(1, 1):upper() .. words:sub(2)
 end
 
----Similar to command prettify_name but also takes care of underscores.
----@param name string
----@return string
-local function prettify_name(name)
-  name = name:gsub("[%-_]", " "):gsub("%S+", capitalize_first)
-  return name
-end
+-- ---Similar to command prettify_name but also takes care of underscores.
+-- ---@param name string
+-- ---@return string
+-- local function prettify_name(name)
+--   name = name:gsub("[%-_]", " "):gsub("%S+", capitalize_first)
+--   return name
+-- end
 
 ---Load config options from the USERDIR user_settings.lua and store them on
 ---settings.config for later usage.
@@ -1043,7 +1036,8 @@ local function scan_plugins_spec()
   for plugin, conf in pairs(config.plugins) do
     if type(conf) == "table" and conf.config_spec then
       settings.add(
-        conf.config_spec.name,
+        -- conf.config_spec.name,
+        plugin,
         conf.config_spec,
         plugin
       )
@@ -1507,9 +1501,9 @@ end
 ---Generate all the widgets for plugin settings.
 function Settings:load_plugin_settings()
   ---@type widget|widget.foldingbook.pane|nil
-  local pane = self.plugin_sections:get_pane("enable_disable")
+  local pane = self.plugin_sections:get_pane("settings_plugins_enable_disable")
   if not pane then
-    pane = self.plugin_sections:add_pane("enable_disable", "Installed")
+    pane = self.plugin_sections:add_pane("settings_plugins_enable_disable", "Installed")
   else
     pane = pane.container
   end
@@ -1545,8 +1539,9 @@ function Settings:load_plugin_settings()
 
       local this = self
 
+      -- prettify_name(plugin)
       ---@type widget.toggle
-      local toggle = Toggle(pane, prettify_name(plugin), enabled)
+      local toggle = Toggle(pane, plugin, enabled)
       function toggle:on_change(value)
         if value then
           this:enable_plugin(plugin)
@@ -1915,13 +1910,6 @@ if settings.config.disabled_plugins then
       config.plugins[name] = false
     end
   end
-end
-
--- properly apply skip_plugins_version before other plugins are loaded
-if settings.config.skip_plugins_version then
-  config.skip_plugins_version = true
-else
-  config.skip_plugins_version = false
 end
 
 --------------------------------------------------------------------------------

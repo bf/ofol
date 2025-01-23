@@ -1,10 +1,6 @@
 -- this file is used by lite-xl to setup the Lua environment when starting
 VERSION = "@PROJECT_VERSION@"
 PROJECT_NAME="ofol"
-MOD_VERSION_MAJOR = 3
-MOD_VERSION_MINOR = 0
-MOD_VERSION_PATCH = 0
-MOD_VERSION_STRING = string.format("%d.%d.%d", MOD_VERSION_MAJOR, MOD_VERSION_MINOR, MOD_VERSION_PATCH)
 
 SCALE = tonumber(os.getenv("LITE_SCALE") or os.getenv("GDK_SCALE") or os.getenv("QT_SCALE_FACTOR")) or 1
 PATHSEP = package.config:sub(1, 1)

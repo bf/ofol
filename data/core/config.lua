@@ -253,13 +253,6 @@ config.tab_close_button = true
 ---@type number
 config.max_clicks = 3
 
----Disables plugin version checking.
----Do not change this unless you know what you are doing.
----
----Defaults to false.
----@type boolean
-config.skip_plugins_version = false
-
 -- holds the plugins real config table
 local plugins_config = {}
 
