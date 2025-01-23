@@ -12,7 +12,7 @@ local config = require "core.config"
 require "..language_css"
 require "..language_js"
 
-local psql_found = pcall(require, "plugins.language.language_psql")
+local psql_found = pcall(require, "plugins.languages.language_psql")
 local sql_strings = {}
 
 config.plugins.language_php = common.merge({
