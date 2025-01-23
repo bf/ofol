@@ -107,6 +107,14 @@ int main(int argc, char **argv) {
   signal(SIGPIPE, SIG_IGN);
 #endif
 
+#if  __linux__
+  // force wayland
+  putenv("SDL_VIDEODRIVER=wayland");
+
+  // // see https://github.com/libsdl-org/SDL/blob/main/docs/README-wayland.md
+  putenv("SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=1");
+#endif
+
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
     fprintf(stderr, "Error initializing sdl: %s", SDL_GetError());
     exit(1);
