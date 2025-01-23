@@ -9,7 +9,9 @@
 -- LSP Documentation:
 -- https://microsoft.github.io/language-server-protocol/specifications/specification-3-17
 
-local json = require "plugins.lsp.json"
+
+local json = require "libraries.json"
+
 local util = require "plugins.lsp.util"
 local diagnostics = require "plugins.lsp.diagnostics"
 local Object = require "core.object"

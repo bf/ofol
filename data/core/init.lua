@@ -1338,7 +1338,7 @@ end
 
 
 function core.compose_window_title(title)
-  return (title == "" or title == nil) and "Lite XL" or title .. " - Lite XL"
+  return (title == "" or title == nil) and "OFOL" or title
 end
 
 

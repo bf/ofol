@@ -7,7 +7,8 @@
 local core = require "core"
 local common = require "core.common"
 local config = require "core.config"
-local json = require "plugins.lsp.json"
+
+local json = require "libraries.json"
 
 local util = {}
 

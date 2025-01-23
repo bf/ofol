@@ -1,5 +1,6 @@
 -- this file is used by lite-xl to setup the Lua environment when starting
 VERSION = "@PROJECT_VERSION@"
+PROJECT_NAME="ofol"
 MOD_VERSION_MAJOR = 3
 MOD_VERSION_MINOR = 0
 MOD_VERSION_PATCH = 0
@@ -13,12 +14,12 @@ if MACOS_RESOURCES then
   DATADIR = MACOS_RESOURCES
 else
   local prefix = os.getenv('LITE_PREFIX') or EXEDIR:match("^(.+)[/\\]bin$")
-  DATADIR = prefix and (prefix .. PATHSEP .. 'share' .. PATHSEP .. 'lite-xl') or (EXEDIR .. PATHSEP .. 'data')
+  DATADIR = prefix and (prefix .. PATHSEP .. 'share' .. PATHSEP .. PROJECT_NAME) or (EXEDIR .. PATHSEP .. 'data')
 end
 USERDIR = (system.get_file_info(EXEDIR .. PATHSEP .. 'user') and (EXEDIR .. PATHSEP .. 'user'))
        or os.getenv("LITE_USERDIR")
-       or ((os.getenv("XDG_CONFIG_HOME") and os.getenv("XDG_CONFIG_HOME") .. PATHSEP .. "lite-xl"))
-       or (HOME and (HOME .. PATHSEP .. '.config' .. PATHSEP .. 'lite-xl'))
+       or ((os.getenv("XDG_CONFIG_HOME") and os.getenv("XDG_CONFIG_HOME") .. PATHSEP .. PROJECT_NAME))
+       or (HOME and (HOME .. PATHSEP .. '.config' .. PATHSEP .. PROJECT_NAME))
 
 package.path = DATADIR .. '/?.lua;'
 package.path = DATADIR .. '/?/init.lua;' .. package.path

@@ -10,18 +10,7 @@ local Doc      = require 'core.doc'
 local system   = require 'system'
 local regex    = require 'regex'
 local snippets = require 'plugins.snippets'
-
-local json do
-	local ok, j 
-	for _, p in ipairs {
-		'plugins.json', 'plugins.lsp.json', 'plugins.lintplus.json',
-		'libraries.json'
-	} do
-		ok, j = pcall(require, p)
-		if ok then json = j; break end
-	end
-end
-
+local json 		 = require 'core.json'
 
 local B = snippets.builder
 

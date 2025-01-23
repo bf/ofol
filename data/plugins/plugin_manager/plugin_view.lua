@@ -4,11 +4,12 @@ local style = require "core.style"
 local common = require "core.common"
 local config = require "core.config"
 local command = require "core.command"
-local json = require "libraries.json"
 local View = require "core.view"
 local keymap = require "core.keymap"
 local RootView = require "core.rootview"
 local ContextMenu = require "core.contextmenu"
+
+local json = require "libraries.json"
 
 local PluginView = View:extend()
 

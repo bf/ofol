@@ -8,7 +8,7 @@ local style = require "core.style"
 local View = require "core.view"
 local CommandView = require "core.commandview"
 local DocView = require "core.docview"
--- local json = require "libraries.json"
+local json = require "libraries.json"
 
 local TodoTreeView = View:extend()
 

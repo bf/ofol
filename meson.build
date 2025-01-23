@@ -1,4 +1,4 @@
-project('lite-xl',
+project('ofol',
     ['c'],
     version : '2.1.7',
     license : 'MIT',
@@ -211,9 +211,9 @@ elif get_option('bundle') and host_machine.system() == 'darwin'
     )
 else
     lite_bindir = 'bin'
-    lite_docdir = get_option('datadir') / 'doc' / 'lite-xl'
-    lite_datadir = get_option('datadir') / 'lite-xl'
-    lpm_userdir = 'lite-xl'
+    lite_docdir = get_option('datadir') / 'doc' / 'ofol'
+    lite_datadir = get_option('datadir') / 'ofol'
+    lpm_userdir = 'ofol'
     lpm_install_dir = get_option('datadir')
     if host_machine.system() == 'linux'
         git_command = find_program('git', required : false)
@@ -276,7 +276,7 @@ install_data('licenses' / 'licenses.md', install_dir : lite_docdir)
 
 install_subdir('docs' / 'api' , install_dir : lite_datadir, strip_directory: true)
 install_subdir('data' / 'core' , install_dir : lite_datadir, exclude_files : 'start.lua')
-foreach data_module : ['fonts', 'plugins', 'colors']
+foreach data_module : ['fonts', 'plugins', 'colors', 'libraries']
     install_subdir(join_paths('data', data_module), install_dir : lite_datadir)
 endforeach
 

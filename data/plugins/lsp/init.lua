@@ -35,7 +35,8 @@ core.add_thread(function()
   end
 end)
 
-local json = require "plugins.lsp.json"
+local json = require "libraries.json"
+
 local util = require "plugins.lsp.util"
 local listbox = require "plugins.lsp.listbox"
 local diagnostics = require "plugins.lsp.diagnostics"

@@ -4,7 +4,7 @@ local core = require "core"
 local common = require "core.common"
 local config = require "core.config"
 local command = require "core.command"
-local json = require "libraries.json"
+local json = require "core.json"
 local keymap = require "core.keymap"
 
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./scripts/build.sh && ./build-x86_64-linux/ofol/bin/ofol
+./scripts/build.sh --bundle --debug-build -b tmp && ./tmp/ofol/bin/ofol
 
 # meson setup --buildtype=release --prefix <prefix> build
 # meson compile -C build
