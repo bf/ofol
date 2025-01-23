@@ -210,7 +210,7 @@ function common.fuzzy_match_with_recents(haystack, recents, needle)
     end
     return recents_ext
   else
-    return fuzzy_match_items(haystack, needle, true)
+    return fuzzy_match_items(haystack, needle, true)  
   end
 end
 

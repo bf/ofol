@@ -4,6 +4,8 @@ local command = require "core.command"
 local keymap = require "core.keymap"
 local LogView = require "core.logview"
 
+local json = require "libraries.json"
+
 
 local fullscreen = false
 local restore_title_view = false
@@ -123,7 +125,9 @@ command.add(nil, {
   ["core:open-file"] = function()
     local view = core.active_view
     local text
+    local current_file
     if view.doc and view.doc.abs_filename then
+      current_file = view.doc.abs_filename
       local dirname, filename = view.doc.abs_filename:match("(.*)[/\\](.+)$")
       if dirname then
         dirname = core.normalize_to_project_dir(dirname)
@@ -133,12 +137,47 @@ command.add(nil, {
     core.command_view:enter("Open File", {
       text = text,
       submit = function(text)
-        local filename = system.absolute_path(common.home_expand(text))
-        core.root_view:open_doc(core.open_doc(filename))
+        -- print("submit",#text, text)
+        -- check for goto line command
+        local filename, go_to_line_number = text:match("^([^:]*):([1-9][0-9]*)")
+        
+        -- check if line number was provided
+        if go_to_line_number then
+          -- take current file if no filename given
+          if not filename or #filename == 0 then
+            filename = current_file
+          end
+
+          -- convert to int
+          go_to_line_number = tonumber(go_to_line_number)
+        else
+          -- take whole text as filename, get absolute path
+          filename = system.absolute_path(common.home_expand(text))
+        end
+
+        core.root_view:open_doc(core.open_doc(filename), go_to_line_number)
       end,
       suggest = function (text)
-          return common.home_encode_list(common.path_suggest(common.home_expand(text)))
-        end,
+        -- suggest file
+        -- print("Open File: suggest", #text,  text)
+        -- check if user wants to go specific line
+        if current_file ~= nil and text:match("^:([1-9][0-9]*)") then
+          local path_relative = core.normalize_to_project_dir(current_file)
+
+          -- print("matches")
+          local go_to_line_number = tonumber(string.sub(text, 2))
+          -- print("go_to_line_number:",  go_to_line_number)
+
+          local message = string.format(":%d (goto line %d in %s)", go_to_line_number, go_to_line_number, path_relative)
+          -- print("return value:", message)
+          return { message }
+        else
+          local result = common.home_encode_list(common.path_suggest(common.home_expand(text)))
+          -- print("suggest result:", json.encode(result))
+          return result
+        end
+      end,
+
       validate = function(text)
           local filename = common.home_expand(text)
           local path_stat, err = system.get_file_info(filename)

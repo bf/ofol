@@ -98,18 +98,42 @@ end
 
 ---@param doc core.doc
 ---@return core.docview
-function RootView:open_doc(doc)
+function RootView:open_doc(doc, go_to_line_number)
+  print("open_doc go_to_line_number", go_to_line_number)
   local node = self:get_active_node_default()
   for i, view in ipairs(node.views) do
     if view.doc == doc then
       node:set_active_view(node.views[i])
+
+      -- move cursor to line number if needed
+      if go_to_line_number then
+        -- print("open_doc found active view for", go_to_line_number)
+        -- scroll to line
+        view:scroll_to_line(go_to_line_number, true, true)
+
+        -- set cursor to beginning of line
+        view.doc:set_selection(go_to_line_number, 1, go_to_line_number, 1)
+      end
+
       return view
     end
   end
   local view = DocView(doc)
   node:add_view(view)
   self.root_node:update_layout()
-  view:scroll_to_line(view.doc:get_selection(), true, true)
+
+  if go_to_line_number then
+    -- print("open_doc added view for", go_to_line_number)
+    -- scroll to line
+    view:scroll_to_line(go_to_line_number, true, true)
+
+    -- set cursor to beginning of line
+    view.doc:set_selection(go_to_line_number, 1, go_to_line_number, 1)
+  else
+    -- base case, not important where selection is
+    view:scroll_to_line(view.doc:get_selection(), true, true)
+  end
+
   return view
 end
 
