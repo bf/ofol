@@ -197,6 +197,11 @@ local gx, gy, dx, dy, gc = 0, 0, 2, -2, { table.unpack(style.text) }
 function StatusView:register_docview_items()
   if self:get_item("doc:file") then return end
 
+  --
+  --  LEFT SIDE of Status Bar
+  --
+
+  -- file icon with different color depending on saving style
   self:add_item({
     predicate = predicate_docview,
     name = "doc:file",
@@ -204,17 +209,23 @@ function StatusView:register_docview_items()
     get_item = function()
       local dv = core.active_view
       return {
+        -- file icon
         dv.doc:is_dirty() and style.accent or style.text, style.icon_font, "f",
-        style.dim, style.font, self.separator2, style.text,
-        dv.doc.filename and style.text or style.dim, common.home_encode(dv.doc:get_name())
+        -- -- separator
+        -- style.dim, style.font, self.separator2, 
+        -- -- file name
+        -- style.text, dv.doc.filename and style.text or style.dim, common.home_encode(dv.doc:get_name())
       }
     end
   })
 
+  --
+  -- RIGHT SIDE of Status Bar
+  --
   self:add_item({
     predicate = predicate_docview,
     name = "doc:position",
-    alignment = StatusView.Item.LEFT,
+    alignment = StatusView.Item.RIGHT,
     get_item = function()
       local dv = core.active_view
       local line, col = dv.doc:get_selection()
@@ -241,20 +252,6 @@ function StatusView:register_docview_items()
     command = "doc:go-to-line",
     tooltip = "line : column"
   })
-
-  -- self:add_item({
-  --   predicate = predicate_docview,
-  --   name = "doc:position-percent",
-  --   alignment = StatusView.Item.LEFT,
-  --   get_item = function()
-  --     local dv = core.active_view
-  --     local line = dv.doc:get_selection()
-  --     return {
-  --       string.format("%.f%%", line / #dv.doc.lines * 100)
-  --     }
-  --   end,
-  --   tooltip = "caret position"
-  -- })
 
   self:add_item({
     predicate = predicate_docview,
@@ -294,19 +291,20 @@ function StatusView:register_docview_items()
     separator = self.separator2
   })
 
-  self:add_item({
-    predicate = predicate_docview,
-    name = "doc:lines",
-    alignment = StatusView.Item.RIGHT,
-    get_item = function()
-      local dv = core.active_view
-      return {
-        style.text, #dv.doc.lines, " lines",
-      }
-    end,
-    separator = self.separator2
-  })
+  -- self:add_item({
+  --   predicate = predicate_docview,
+  --   name = "doc:lines",
+  --   alignment = StatusView.Item.RIGHT,
+  --   get_item = function()
+  --     local dv = core.active_view
+  --     return {
+  --       style.text, #dv.doc.lines, " lines",
+  --     }
+  --   end,
+  --   separator = self.separator2
+  -- })
 
+  -- show line ending
   self:add_item({
     predicate = predicate_docview,
     name = "doc:line-ending",
@@ -320,14 +318,22 @@ function StatusView:register_docview_items()
     command = "doc:toggle-line-ending"
   })
 
+  -- show if "overwrite" button on keyboard has been pressed
   self:add_item {
     predicate = predicate_docview,
     name = "doc:overwrite-mode",
     alignment = StatusView.Item.RIGHT,
     get_item = function()
-      return {
-        style.text, core.active_view.doc.overwrite and "OVR" or "INS"
-      }
+      if core.active_view.doc.overwrite then 
+        return {
+          style.text, 
+          -- core.active_view.doc.overwrite and "OVR" or "INS"
+          "OVR"
+        }
+      end
+
+      -- don't show anything if normal "insert" / "INS" mode is used
+      return {}
     end,
     command = "doc:toggle-overwrite",
     separator = StatusView.separator2
