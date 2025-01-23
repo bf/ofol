@@ -1,0 +1,15 @@
+{
+  "addons": [
+    {
+      "dependencies": {
+        "lsp": ">=0.1"
+      },
+      "id": "lspkind",
+      "mod_version": "3",
+      "name": "lspkind",
+      "path": ".",
+      "type": "plugin",
+      "version": "0.1"
+    }
+  ]
+}

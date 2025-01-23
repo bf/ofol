@@ -1,0 +1,11 @@
+{
+  "addons": [
+    {
+      "id": "previewer",
+      "description": "Preview files and doc before before opening them",
+      "mod_version": "3",
+      "type": "plugin",
+      "version": "0.1.1"
+    }
+  ]
+}

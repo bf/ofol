@@ -1,0 +1,12 @@
+{
+  "addons": [
+    {
+      "id": "language_containerfile",
+      "mod_version": "3",
+      "name": "language_containerfile",
+      "path": ".",
+      "type": "plugin",
+      "version": "0.1"
+    }
+  ]
+}
