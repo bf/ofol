@@ -303,16 +303,9 @@ function Scrollbar:update()
   if not self.force_status then
     local dest = (self.hovering.track or self.dragging) and 1 or 0
     local diff = math.abs(self.expand_percent - dest)
-    if not config.transitions or diff < 0.05 or config.disabled_transitions["scroll"] then
-      self.expand_percent = dest
-    else
-      local rate = 0.3
-      if config.fps ~= 60 or config.animation_rate ~= 1 then
-        local dt = 60 / config.fps
-        rate = 1 - common.clamp(1 - rate, 1e-8, 1 - 1e-8)^(config.animation_rate * dt)
-      end
-      self.expand_percent = common.lerp(self.expand_percent, dest, rate)
-    end
+
+    self.expand_percent = dest
+    
     if diff > 1e-8 then
       core.redraw = true
     end

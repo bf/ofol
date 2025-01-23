@@ -29,14 +29,6 @@ config.message_timeout = 5
 ---@type number
 config.mouse_wheel_scroll = 50 * SCALE
 
----Enables/disables transitions when scrolling with the scrollbar.
----When enabled, the scrollbar will have inertia and slowly move towards the cursor.
----Otherwise, the scrollbar will immediately follow the cursor.
----
----Defaults to false.
----@type boolean
-config.animate_drag_scroll = false
-
 ---Enables/disables scrolling past the end of a document.
 ---
 ---Defaults to true.
@@ -180,38 +172,6 @@ config.line_limit = 80
 ---@type number
 config.max_project_files = 2000
 
----Enables/disables all transitions.
----
----Defaults to true.
----@type boolean
-config.transitions = true
-
----Enable/disable individual transitions.
----These values are overriden by `config.transitions`.
-config.disabled_transitions = {
-  ---Disables scrolling transitions.
-  scroll = false,
-  ---Disables transitions for CommandView's suggestions list.
-  commandview = false,
-  ---Disables transitions for showing/hiding the context menu.
-  contextmenu = false,
-  ---Disables transitions when clicking on log items in LogView.
-  logview = false,
-  ---Disables transitions for showing/hiding the Nagbar.
-  nagbar = false,
-  ---Disables transitions when scrolling the tab bar.
-  tabs = false,
-  ---Disables transitions when a tab is being dragged.
-  tab_drag = false,
-  ---Disables transitions when a notification is shown.
-  statusbar = false,
-}
-
----The rate of all transitions.
----
----Defaults to 1.
----@type number
-config.animation_rate = 1.0
 
 ---The caret's blinking period, in seconds.
 ---

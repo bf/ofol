@@ -17,7 +17,6 @@ config.plugins.treeview = common.merge({
   highlight_focused_file = true,
   expand_dirs_to_focused_file = false,
   scroll_to_focused_file = false,
-  animate_scroll_to_focused_file = true
 }, config.plugins.treeview)
 
 local tooltip_offset = style.font:get_height()
@@ -330,7 +329,7 @@ function TreeView:update()
         self:set_selection_to_path(abs_filename,
                                    config.expand_dirs_to_focused_file,
                                    config.scroll_to_focused_file,
-                                   not config.animate_scroll_to_focused_file)
+                                   true)
       end
     end
   end

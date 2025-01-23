@@ -70,16 +70,7 @@ function View:move_towards(t, k, dest, rate, name)
   end
   local val = t[k]
   local diff = math.abs(val - dest)
-  if not config.transitions or diff < 0.5 or config.disabled_transitions[name] then
-    t[k] = dest
-  else
-    rate = rate or 0.5
-    if config.fps ~= 60 or config.animation_rate ~= 1 then
-      local dt = 60 / config.fps
-      rate = 1 - common.clamp(1 - rate, 1e-8, 1 - 1e-8)^(config.animation_rate * dt)
-    end
-    t[k] = common.lerp(val, dest, rate)
-  end
+  t[k] = dest
   if diff > 1e-8 then
     core.redraw = true
   end
@@ -178,10 +169,9 @@ function View:on_mouse_moved(x, y, dx, dy)
   if result then
     if result ~= true then
       self.scroll.to.y = result * (self:get_scrollable_size() - self.size.y)
-      if not config.animate_drag_scroll then
-        self:clamp_scroll_position()
-        self.scroll.y = self.scroll.to.y
-      end
+      
+      self:clamp_scroll_position()
+      self.scroll.y = self.scroll.to.y
     end
     -- hide horizontal scrollbar
     self.h_scrollbar:on_mouse_left()
@@ -192,10 +182,8 @@ function View:on_mouse_moved(x, y, dx, dy)
   if result then
     if result ~= true then
       self.scroll.to.x = result * (self:get_h_scrollable_size() - self.size.x)
-      if not config.animate_drag_scroll then
-        self:clamp_scroll_position()
-        self.scroll.x = self.scroll.to.x
-      end
+      self:clamp_scroll_position()
+      self.scroll.x = self.scroll.to.x
     end
     return true
   end

@@ -27,7 +27,6 @@ config.plugins.bf_minimap = common.merge({
   enabled = true,
   always_visible = true,
   width = 100,
-  instant_scroll = false,
   syntax_highlight = true,
   scale = 1,
   -- number of spaces needed to split a token
@@ -70,13 +69,6 @@ config.plugins.bf_minimap = common.merge({
       default = 100,
       min = 50,
       max = 1000
-    },
-    {
-      label = "Instant Scroll",
-      description = "When enabled disables the scrolling animation.",
-      path = "instant_scroll",
-      type = "toggle",
-      default = false
     },
     {
       label = "Syntax Highlighting",

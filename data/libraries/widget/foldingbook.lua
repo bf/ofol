@@ -178,14 +178,14 @@ function FoldingBook:update()
       pane.container:set_size(cw)
       if not pane.container.visible then
         pane.container:set_size(cw, ch)
-        pane.container:show_animated(true)
+        pane.container:show(true)
         pane.tab:set_icon("-")
         pane.container.hiding = false
       end
     elseif pane.container.visible and not pane.container.hiding then
       pane.tab:set_icon("+")
       pane.container.hiding = true
-      pane.container:hide_animated(true, false, {
+      pane.container:hide(true, false, {
         on_complete = function()
           pane.container.hiding = false
         end
