@@ -760,7 +760,7 @@ end
 --------------------------------------------------------------------------------
 local scm_status_item = core.status_view:add_item({
   name = "status:scm",
-  alignment = StatusView.Item.RIGHT,
+  alignment = StatusView.Item.LEFT,
   get_item = function()
     local project = util.get_current_project()
 

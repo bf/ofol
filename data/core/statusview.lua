@@ -222,6 +222,8 @@ function StatusView:register_docview_items()
   --
   -- RIGHT SIDE of Status Bar
   --
+
+  -- show cursor position line:column
   self:add_item({
     predicate = predicate_docview,
     name = "doc:position",
@@ -260,7 +262,7 @@ function StatusView:register_docview_items()
     get_item = function()
       local dv = core.active_view
       local nsel = math.floor(#dv.doc.selections / 4)
-      if nsel > 1 then
+      if nsel > 0 then
         return { style.text, nsel, " selections" }
       end
 
@@ -268,6 +270,7 @@ function StatusView:register_docview_items()
     end
   })
 
+  -- show indentation settings: spaces or tabs
   self:add_item({
     predicate = predicate_docview,
     name = "doc:indentation",
@@ -288,7 +291,8 @@ function StatusView:register_docview_items()
         command.perform "indent:set-file-indent-type"
       end
     end,
-    separator = self.separator2
+    separator = self.separator2,
+    tooltip = "Indentation: Spaces or Tabs"
   })
 
   -- self:add_item({
@@ -315,7 +319,8 @@ function StatusView:register_docview_items()
         style.text, dv.doc.crlf and "CRLF" or "LF"
       }
     end,
-    command = "doc:toggle-line-ending"
+    command = "doc:toggle-line-ending",
+    tooltip = "line ending"
   })
 
   -- show if "overwrite" button on keyboard has been pressed
