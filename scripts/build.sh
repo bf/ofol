@@ -60,7 +60,7 @@ main() {
   local reconfigure
   local lpm_path
   local should_reconfigure
-  local destdir="lite-xl"
+  local destdir="ofol"
 
   for i in "$@"; do
     case $i in

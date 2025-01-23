@@ -1,7 +1,34 @@
+# OFOL: opinionated fork of Lite XL
+
+Goals:
+
+- [ ] ready for rust development, like an improved version of Lapce
+- [ ] focus on linux/wayland/gnome, should out of the box w/o needing wayland parameters
+- [ ] UX should feel familiar for someone coming from sublime text editor:
+- - [ ] same keybindings as sublime text
+- - [ ] same speed when viewing large files as sublime text
+- - [ ] does not crash when opening 30mb pdf file
+- - [ ] hex view for binary files
+- [ ] improved handling of plugins:
+- - [ ] no plugin manager
+- - [ ] better UX in settings::plugins ui
+- - [ ] better structure / refactoring for default plugins
+
+
+When in doubt, kill MacOS/Windows compatiblity.
+
+I'm a LUA noob so let's see where this goes.
+
+
+old readme below:
+
+
+
+----------
+
 # Lite XL
 
 [![CI]](https://github.com/lite-xl/lite-xl/actions/workflows/build.yml)
-[![Discord Badge Image]](https://discord.gg/UQKnzBhY5H)
 
 ![screenshot-dark]
 

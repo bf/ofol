@@ -1,315 +1,315 @@
-name: CI
+# name: CI
 
-on:
-  push:
-  pull_request:
-    branches:
-      - '*'
-  workflow_dispatch:
-    inputs:
-      version:
-        description: Release Version
-        required: false
+# on:
+#   push:
+#   pull_request:
+#     branches:
+#       - '*'
+#   workflow_dispatch:
+#     inputs:
+#       version:
+#         description: Release Version
+#         required: false
 
-# Builds & Uploads:
-# * Linux x86_64 Portable
-# * Linux App Image
-# * Mac Universal Portable
-# * Mac Universal DMG
-# * Windows x86_64 Portable
-# * Windows x86_64 Installer
-jobs:
-  # Checks to see if we have an input, and stamps that onto the repo.
-  # Determines if this is a release, and determines the official ref.
-  version:
-    name: Compute Version & Check for Release
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    outputs:
-      release: ${{ steps.check_release.outputs.release }}
-      ref: ${{ steps.check_release.outputs.ref }}
-    permissions:
-      contents: write
-    steps:
-      - name: Update Tag
-        uses: richardsimko/update-tag@v1
-        if: ${{ github.event.inputs.version }}
-        with:
-          tag_name: ${{ github.event.inputs.version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# # Builds & Uploads:
+# # * Linux x86_64 Portable
+# # * Linux App Image
+# # * Mac Universal Portable
+# # * Mac Universal DMG
+# # * Windows x86_64 Portable
+# # * Windows x86_64 Installer
+# jobs:
+#   # Checks to see if we have an input, and stamps that onto the repo.
+#   # Determines if this is a release, and determines the official ref.
+#   version:
+#     name: Compute Version & Check for Release
+#     runs-on: ubuntu-latest
+#     env:
+#       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#     outputs:
+#       release: ${{ steps.check_release.outputs.release }}
+#       ref: ${{ steps.check_release.outputs.ref }}
+#     permissions:
+#       contents: write
+#     steps:
+#       - name: Update Tag
+#         uses: richardsimko/update-tag@v1
+#         if: ${{ github.event.inputs.version }}
+#         with:
+#           tag_name: ${{ github.event.inputs.version }}
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
+#       - uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
+#           fetch-tags: true
 
-      - name: Check Release
-        id: check_release
-        run: |
-          REF=$(git describe --exact-match --match v[0-9]* HEAD --tags 2>/dev/null) || REF=continuous
-          echo "ref=$REF" >> $GITHUB_OUTPUT
-          echo "Build Version: $REF"
-          if [[ "$REF" != "continuous" ]]; then
-            echo "release=$REF" >> $GITHUB_OUTPUT
-            echo "Release Version: $REF"
-          fi
+#       - name: Check Release
+#         id: check_release
+#         run: |
+#           REF=$(git describe --exact-match --match v[0-9]* HEAD --tags 2>/dev/null) || REF=continuous
+#           echo "ref=$REF" >> $GITHUB_OUTPUT
+#           echo "Build Version: $REF"
+#           if [[ "$REF" != "continuous" ]]; then
+#             echo "release=$REF" >> $GITHUB_OUTPUT
+#             echo "Release Version: $REF"
+#           fi
 
 
-  build_darwin:
-    name: Darwin
-    needs: [version]
-    strategy:
-      matrix:
-        config:
-          - { runner: macos-13, arch: x86_64-darwin }
-          - { runner: macos-14, arch: aarch64-darwin }
-    runs-on: ${{ matrix.config.runner }}
-    steps:
-      - name: System Information
-        run: |
-          system_profiler SPSoftwareDataType
-          bash --version
-          gcc -v
-          xcodebuild -version
+#   build_darwin:
+#     name: Darwin
+#     needs: [version]
+#     strategy:
+#       matrix:
+#         config:
+#           - { runner: macos-13, arch: x86_64-darwin }
+#           - { runner: macos-14, arch: aarch64-darwin }
+#     runs-on: ${{ matrix.config.runner }}
+#     steps:
+#       - name: System Information
+#         run: |
+#           system_profiler SPSoftwareDataType
+#           bash --version
+#           gcc -v
+#           xcodebuild -version
           
-      - uses: actions/checkout@v4
+#       - uses: actions/checkout@v4
         
-      - name: Python Setup
-        uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
+#       - name: Python Setup
+#         uses: actions/setup-python@v5
+#         with: { python-version: "3.11" }
         
-      - name: Install Dependencies
-        run: |
-          brew install bash
-          pip3 install meson ninja
+#       - name: Install Dependencies
+#         run: |
+#           brew install bash
+#           pip3 install meson ninja
         
-      - name: Build & Package Mac (Bundle)
-        run: |
-          scripts/build.sh --addons --debug --forcefallback --reconfigure --bundle -b build
-          tar -C build -czvf lite-xl-${{ needs.version.outputs.ref }}-${{ matrix.config.arch }}-bundle.tar.gz "Lite XL.app"
+#       - name: Build & Package Mac (Bundle)
+#         run: |
+#           scripts/build.sh --addons --debug --forcefallback --reconfigure --bundle -b build
+#           tar -C build -czvf lite-xl-${{ needs.version.outputs.ref }}-${{ matrix.config.arch }}-bundle.tar.gz "Lite XL.app"
 
-      - name: Build & Package Mac (Portable)
-        run: |
-          scripts/build.sh --addons --debug --forcefallback --reconfigure --portable -b build
-          tar -C build -czvf lite-xl-${{ needs.version.outputs.ref }}-${{ matrix.config.arch }}-portable.tar.gz lite-xl
+#       - name: Build & Package Mac (Portable)
+#         run: |
+#           scripts/build.sh --addons --debug --forcefallback --reconfigure --portable -b build
+#           tar -C build -czvf lite-xl-${{ needs.version.outputs.ref }}-${{ matrix.config.arch }}-portable.tar.gz lite-xl
         
-      - name: Upload (Intermediate)
-        uses: actions/upload-artifact@v4
-        with:
-          name: lite-xl-${{ needs.version.outputs.ref }}-${{ matrix.config.arch }}
-          path: |
-            *.tar.gz
+#       - name: Upload (Intermediate)
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: lite-xl-${{ needs.version.outputs.ref }}-${{ matrix.config.arch }}
+#           path: |
+#             *.tar.gz
 
 
-  build_darwin_universal:
-    name: Darwin (Universal)
-    needs: [version, build_darwin]
-    runs-on: macos-14
-    steps:          
-      - uses: actions/checkout@v4
+#   build_darwin_universal:
+#     name: Darwin (Universal)
+#     needs: [version, build_darwin]
+#     runs-on: macos-14
+#     steps:          
+#       - uses: actions/checkout@v4
 
-      - name: Python Setup
-        uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
+#       - name: Python Setup
+#         uses: actions/setup-python@v5
+#         with: { python-version: "3.11" }
 
-      - name: Install Dependencies
-        run: |
-          brew install bash
-          pip3 install dmgbuild
+#       - name: Install Dependencies
+#         run: |
+#           brew install bash
+#           pip3 install dmgbuild
       
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: '*darwin*'
-          merge-multiple: true
+#       - name: Download Artifacts
+#         uses: actions/download-artifact@v4
+#         with:
+#           pattern: '*darwin*'
+#           merge-multiple: true
 
-      - name: Create Universal Binaries
-        run: |
-          REF="lite-xl-${{ needs.version.outputs.ref }}"
-          for TYPE in bundle portable; do
-            mkdir -p $REF-universal-darwin-$TYPE package-$TYPE/{x86_64,aarch64}
-            tar -C package-$TYPE/x86_64 -zxvf $REF-x86_64-darwin-$TYPE.tar.gz
-            tar -C package-$TYPE/aarch64 -zxvf $REF-aarch64-darwin-$TYPE.tar.gz
-            cp -a package-$TYPE/*/* $REF-universal-darwin-$TYPE
-            find package-$TYPE -type f -name lite-xl -perm +111 -print0 | \
-              xargs -0 lipo -create -output "$(find $REF-universal-darwin-$TYPE -type f -name lite-xl -perm +111)"
-          done
+#       - name: Create Universal Binaries
+#         run: |
+#           REF="lite-xl-${{ needs.version.outputs.ref }}"
+#           for TYPE in bundle portable; do
+#             mkdir -p $REF-universal-darwin-$TYPE package-$TYPE/{x86_64,aarch64}
+#             tar -C package-$TYPE/x86_64 -zxvf $REF-x86_64-darwin-$TYPE.tar.gz
+#             tar -C package-$TYPE/aarch64 -zxvf $REF-aarch64-darwin-$TYPE.tar.gz
+#             cp -a package-$TYPE/*/* $REF-universal-darwin-$TYPE
+#             find package-$TYPE -type f -name lite-xl -perm +111 -print0 | \
+#               xargs -0 lipo -create -output "$(find $REF-universal-darwin-$TYPE -type f -name lite-xl -perm +111)"
+#           done
 
-      - name: Package Darwin (Universal DMG Image)
-        run: |
-          dmgbuild -s resources/macos/lite-xl-dmg.py \
-            -D "app_path=lite-xl-${{ needs.version.outputs.ref }}-universal-darwin-bundle/Lite XL.app" \
-            "Lite XL" "lite-xl-${{ needs.version.outputs.ref }}-universal-darwin.dmg"
+#       - name: Package Darwin (Universal DMG Image)
+#         run: |
+#           dmgbuild -s resources/macos/lite-xl-dmg.py \
+#             -D "app_path=lite-xl-${{ needs.version.outputs.ref }}-universal-darwin-bundle/Lite XL.app" \
+#             "Lite XL" "lite-xl-${{ needs.version.outputs.ref }}-universal-darwin.dmg"
         
-      - name: Package Darwin (Universal Portable)
-        run: tar -C lite-xl-${{ needs.version.outputs.ref }}-universal-darwin-portable -zcvf lite-xl-${{ needs.version.outputs.ref }}-universal-darwin-portable.tar.gz .
+#       - name: Package Darwin (Universal Portable)
+#         run: tar -C lite-xl-${{ needs.version.outputs.ref }}-universal-darwin-portable -zcvf lite-xl-${{ needs.version.outputs.ref }}-universal-darwin-portable.tar.gz .
 
-      - name: Upload (Release)
-        uses: actions/upload-artifact@v4
-        with:
-          name: lite-xl-${{ needs.version.outputs.ref }}-universal-darwin-release
-          path: |
-            lite-xl-${{ needs.version.outputs.ref }}-universal-darwin.dmg
-            lite-xl-${{ needs.version.outputs.ref }}-universal-darwin-portable.tar.gz
+#       - name: Upload (Release)
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: lite-xl-${{ needs.version.outputs.ref }}-universal-darwin-release
+#           path: |
+#             lite-xl-${{ needs.version.outputs.ref }}-universal-darwin.dmg
+#             lite-xl-${{ needs.version.outputs.ref }}-universal-darwin-portable.tar.gz
 
 
-  build_linux:
-    name: Linux (x86_64)
-    needs: [version]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+#   build_linux:
+#     name: Linux (x86_64)
+#     needs: [version]
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
         
-      - name: Build
-        uses: docker://ghcr.io/lite-xl/lite-xl-build-box-manylinux:v3
-        with:
-          entrypoint: /entrypoint.sh
-          args: bash scripts/build.sh --addons --debug --forcefallback --portable -b build
+#       - name: Build
+#         uses: docker://ghcr.io/lite-xl/lite-xl-build-box-manylinux:v3
+#         with:
+#           entrypoint: /entrypoint.sh
+#           args: bash scripts/build.sh --addons --debug --forcefallback --portable -b build
         
-      - name: Package Linux (Portable)
-        run: tar -C build -czvf lite-xl-${{ needs.version.outputs.ref }}-x86_64-linux-portable.tar.gz lite-xl
+#       - name: Package Linux (Portable)
+#         run: tar -C build -czvf lite-xl-${{ needs.version.outputs.ref }}-x86_64-linux-portable.tar.gz lite-xl
 
-      - name: Package Linux (AppImage)
-        uses: docker://ghcr.io/lite-xl/lite-xl-build-box-manylinux:v3
-        with:
-          entrypoint: /entrypoint.sh
-          run: bash scripts/package-appimage.sh --debug --version ${{ needs.version.outputs.ref }} -b build
+#       - name: Package Linux (AppImage)
+#         uses: docker://ghcr.io/lite-xl/lite-xl-build-box-manylinux:v3
+#         with:
+#           entrypoint: /entrypoint.sh
+#           run: bash scripts/package-appimage.sh --debug --version ${{ needs.version.outputs.ref }} -b build
         
-      - name: Upload (Release)
-        uses: actions/upload-artifact@v4
-        with:
-          name: lite-xl-${{ needs.version.outputs.ref }}-x86_64-linux-portable-release
-          path: |
-            *.tar.gz
-            *.AppImage
+#       - name: Upload (Release)
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: lite-xl-${{ needs.version.outputs.ref }}-x86_64-linux-portable-release
+#           path: |
+#             *.tar.gz
+#             *.AppImage
                
 
-  build_windows:
-    name: Windows (x86_64) (MSYS)
-    runs-on: windows-2019
-    defaults: 
-      run:
-        shell: msys2 {0}
-    needs: [version]
-    steps:
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          install: >-
-            git
-            zip
-            patch
-          pacboy: >-
-            gcc:p
-            meson:p
-            ca-certificates:p
-            ninja:p
-            pkg-config:p
+#   build_windows:
+#     name: Windows (x86_64) (MSYS)
+#     runs-on: windows-2019
+#     defaults: 
+#       run:
+#         shell: msys2 {0}
+#     needs: [version]
+#     steps:
+#       - uses: msys2/setup-msys2@v2
+#         with:
+#           msystem: MINGW64
+#           install: >-
+#             git
+#             zip
+#             patch
+#           pacboy: >-
+#             gcc:p
+#             meson:p
+#             ca-certificates:p
+#             ninja:p
+#             pkg-config:p
 
-      - uses: actions/checkout@v4
+#       - uses: actions/checkout@v4
         
-      - name: Build
-        run: bash scripts/build.sh --addons --debug --forcefallback --portable -b build
+#       - name: Build
+#         run: bash scripts/build.sh --addons --debug --forcefallback --portable -b build
 
-      - name: Package Windows (Portable)
-        run: cd build && zip -r ../lite-xl-${{ needs.version.outputs.ref }}-x86_64-windows-portable.zip lite-xl && cd ..
+#       - name: Package Windows (Portable)
+#         run: cd build && zip -r ../lite-xl-${{ needs.version.outputs.ref }}-x86_64-windows-portable.zip lite-xl && cd ..
         
-      - name: Package Windows (InnoSetup)
-        run: bash scripts/package-innosetup.sh --debug --version ${{ needs.version.outputs.ref }} -b build
+#       - name: Package Windows (InnoSetup)
+#         run: bash scripts/package-innosetup.sh --debug --version ${{ needs.version.outputs.ref }} -b build
         
-      - name: Upload (Release)
-        uses: actions/upload-artifact@v4
-        with:
-          name: lite-xl-${{ needs.version.outputs.ref }}-x86_64-windows-portable-release
-          path: |
-            *.zip
-            *.exe
+#       - name: Upload (Release)
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: lite-xl-${{ needs.version.outputs.ref }}-x86_64-windows-portable-release
+#           path: |
+#             *.zip
+#             *.exe
 
 
-  build_windows_msvc:
-    name: Windows (x86_64) (MSVC)
-    needs: [version]
-    runs-on: windows-2019
-    steps:
-      - uses: actions/checkout@v4
+#   build_windows_msvc:
+#     name: Windows (x86_64) (MSVC)
+#     needs: [version]
+#     runs-on: windows-2019
+#     steps:
+#       - uses: actions/checkout@v4
 
-      - name: Setup MSVC
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x86_64
+#       - name: Setup MSVC
+#         uses: ilammy/msvc-dev-cmd@v1
+#         with:
+#           arch: x86_64
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
+#       - name: Setup Python
+#         uses: actions/setup-python@v5
+#         with: { python-version: "3.11" }
 
-      - name: Install meson and ninja
-        run: pip install meson ninja
+#       - name: Install meson and ninja
+#         run: pip install meson ninja
 
-      - name: Configure
-        run: meson setup --wrap-mode=forcefallback build
+#       - name: Configure
+#         run: meson setup --wrap-mode=forcefallback build
 
-      - name: Build
-        run: meson install -C build --skip-subprojects --destdir="../lite-xl"
+#       - name: Build
+#         run: meson install -C build --skip-subprojects --destdir="../lite-xl"
 
-      - name: Package
-        shell: powershell {0}
-        run: Compress-Archive -Path lite-xl -DestinationPath "lite-xl-${{ needs.version.outputs.ref }}-x86_64-windows.zip"
+#       - name: Package
+#         shell: powershell {0}
+#         run: Compress-Archive -Path lite-xl -DestinationPath "lite-xl-${{ needs.version.outputs.ref }}-x86_64-windows.zip"
 
-      - name: Upload Artifacts (Intermediate)
-        uses: actions/upload-artifact@v4
-        with:
-          name: lite-xl-${{ needs.version.outputs.ref }}-x86_64-windows (MSVC)
-          compression-level: 0
-          path: |
-            *.zip
+#       - name: Upload Artifacts (Intermediate)
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: lite-xl-${{ needs.version.outputs.ref }}-x86_64-windows (MSVC)
+#           compression-level: 0
+#           path: |
+#             *.zip
 
 
-  release:
-    name: Create Release
-    needs: [version, build_linux, build_windows, build_darwin_universal]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: lite-xl-*-release
-          merge-multiple: true
-          path: releases
-      - name: Generate Release Notes
-        if: needs.version.outputs.release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: bash scripts/generate-release-notes.sh --version ${{ needs.version.outputs.release }}
-      - name: Versioned Release
-        uses: ncipollo/release-action@v1
-        if: ${{ needs.version.outputs.release }}
-        with:
-          tag: ${{ needs.version.outputs.release }}
-          name: Lite XL ${{ needs.version.outputs.release }}
-          draft: true
-          allowUpdates: true
-          bodyFile: release-notes.md
-          artifacts: "releases/*.*"
-      - name: Update Tag
-        uses: richardsimko/update-tag@v1
-        if: github.ref == 'refs/heads/master'
-        with:
-          tag_name: continuous
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Continuous Release
-        uses: ncipollo/release-action@v1
-        if: github.ref == 'refs/heads/master'
-        with:
-          name: Lite XL Continuous Release
-          tag: continuous
-          prerelease: true
-          allowUpdates: true
-          removeArtifacts: true
-          generateReleaseNotes: true
-          artifacts: "releases/*.*"
+#   release:
+#     name: Create Release
+#     needs: [version, build_linux, build_windows, build_darwin_universal]
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Download Artifacts
+#         uses: actions/download-artifact@v4
+#         with:
+#           pattern: lite-xl-*-release
+#           merge-multiple: true
+#           path: releases
+#       - name: Generate Release Notes
+#         if: needs.version.outputs.release
+#         env:
+#           GH_TOKEN: ${{ github.token }}
+#         run: bash scripts/generate-release-notes.sh --version ${{ needs.version.outputs.release }}
+#       - name: Versioned Release
+#         uses: ncipollo/release-action@v1
+#         if: ${{ needs.version.outputs.release }}
+#         with:
+#           tag: ${{ needs.version.outputs.release }}
+#           name: Lite XL ${{ needs.version.outputs.release }}
+#           draft: true
+#           allowUpdates: true
+#           bodyFile: release-notes.md
+#           artifacts: "releases/*.*"
+#       - name: Update Tag
+#         uses: richardsimko/update-tag@v1
+#         if: github.ref == 'refs/heads/master'
+#         with:
+#           tag_name: continuous
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Continuous Release
+#         uses: ncipollo/release-action@v1
+#         if: github.ref == 'refs/heads/master'
+#         with:
+#           name: Lite XL Continuous Release
+#           tag: continuous
+#           prerelease: true
+#           allowUpdates: true
+#           removeArtifacts: true
+#           generateReleaseNotes: true
+#           artifacts: "releases/*.*"
