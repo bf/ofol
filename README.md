@@ -9,6 +9,7 @@ Goals:
 - - [ ] same speed when viewing large files as sublime text
 - - [ ] does not crash when opening 30mb pdf file
 - - [ ] hex view for binary files
+- - [x] CTRL+P :123 to go to line 123 of current file
 - [ ] improved handling of plugins:
 - - [ ] no plugin manager
 - - [ ] better UX in settings::plugins ui
