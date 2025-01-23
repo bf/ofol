@@ -2387,7 +2387,7 @@ core.status_view:add_item({
         icon_color = style.warn
       end
 
-      core.log_quiet("lowest_severity_number: %d %s icon_color: %s", lowest_severity_number, lowest_severity_number, icon_color)
+      -- core.log_quiet("lowest_severity_number: %d %s icon_color: %s", lowest_severity_number, lowest_severity_number, icon_color)
 
       return {
         icon_color,

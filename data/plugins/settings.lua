@@ -44,9 +44,11 @@ settings.config = {}
 settings.default_keybindings = {}
 
 
-DEFAULT_FONT_SIZE = 22
-DEFAULT_FONT_NAME = "Fira Sans Regular"
-DEFAULT_FONT_PATH = DATADIR .. "/fonts/FiraSans-Regular.ttf"
+local DEFAULT_FONT_SIZE = 28
+-- DEFAULT_FONT_NAME = "Fira Sans Regular"
+-- DEFAULT_FONT_PATH = DATADIR .. "/fonts/FiraSans-Regular.ttf"
+local DEFAULT_FONT_NAME = "JetBrains Mono Regular"
+local DEFAULT_FONT_PATH = DATADIR .. "/fonts/JetBrainsMono-Regular.ttf"
 
 ---Enumeration for the different types of settings.
 ---@type table<string, integer>
