@@ -9,6 +9,7 @@ local Widget = require "libraries.widget"
 local Label = require "libraries.widget.label"
 local Line = require "libraries.widget.line"
 local ListBox = require "libraries.widget.listbox"
+
 local Server = require "plugins.lsp.server"
 
 local Lsp = {}

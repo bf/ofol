@@ -1029,6 +1029,8 @@ function core.load_plugins()
 
   local load_start = system.get_time()
   for _, plugin in ipairs(ordered) do
+    print()
+    print(string.format("[core] [plugin] [%s] loading from %s", plugin.name, plugin.dir))
     if plugin.valid then
       if not config.skip_plugins_version and not plugin.version_match then
         core.log_quiet(
@@ -1049,6 +1051,7 @@ function core.load_plugins()
           if plugin.version_string ~= MOD_VERSION_STRING then
             plugin_version = "["..plugin.version_string.."]"
           end
+          print(string.format("[core] [plugin] [%s] loaded", plugin.name))
           core.log_quiet(
             "Loaded plugin %q%s from %s in %.1fms",
             plugin.name,
@@ -1062,7 +1065,11 @@ function core.load_plugins()
         elseif config.plugins[plugin.name].onload then
           core.try(config.plugins[plugin.name].onload, loaded_plugin)
         end
+      else
+        print(string.format("[core] [plugin] [%s] ERROR: skipped, either due to config.skip_plugins_version %s or due to plugin.version_match %s", plugin.name, config.skip_plugins_version, plugin.version_match))
       end
+    else
+      print(string.format("[core] [plugin] [%s] ERROR: is invalid", plugin.name))
     end
   end
   core.log_quiet(

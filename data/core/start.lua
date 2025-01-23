@@ -77,15 +77,19 @@ function require(modname, ...)
   if modname then
     local level, rel_path = string.match(modname, "^(%.*)(.*)")
     level = #(level or "")
+
+    print(string.format("[core] [require] %s (rel_path %s level %d)", modname, rel_path, level))
     if level > 0 then
       if #require_stack == 0 then
         return error("Require stack underflowed.")
       else
         local base_path = require_stack[#require_stack]
+        print(string.format("[core] [require] %s (base_path: %s)", modname, base_path))
         while level > 1 do
           base_path = string.match(base_path, "^(.*)%.") or ""
           level = level - 1
         end
+        print(string.format("[core] [require] %s (base_path: %s)", modname, base_path))
         modname = base_path
         if #base_path > 0 then
           modname = modname .. "."
@@ -100,6 +104,9 @@ function require(modname, ...)
   table.remove(require_stack)
 
   if not ok then
+    print("Error including mod", modname)
+    print("Error loaderdata", loaderdata)
+    print("Error result", result)
     return error(result)
   end
   return result, loaderdata

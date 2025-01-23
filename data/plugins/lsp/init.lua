@@ -2318,8 +2318,8 @@ end
 --
 core.status_view:add_item({
   predicate = function()
-    -- local dv = get_active_docview()
-    -- if dv then
+    local dv = get_active_docview()
+    if dv then
       -- local filename = core.project_absolute_path(dv.doc.filename)
       -- local diagnostic_messages = diagnostics.get(filename)
       -- if diagnostic_messages and #diagnostic_messages > 0 then
@@ -2328,8 +2328,9 @@ core.status_view:add_item({
       if #diagnostics.list > 0 then
         return true
       end
-    -- end
-    -- return false
+    end
+
+    return false
   end,
   name = "lsp:diagnostics",
   alignment = StatusView.Item.RIGHT,
@@ -2438,7 +2439,7 @@ if autocomplete.add_icon then
 
   -- We add the font here to let it automatically scale by the scale plugin
   style.syntax_fonts["lsp_symbols"] = renderer.font.load(
-    USERDIR .. "/plugins/lsp/fonts/symbols.ttf",
+    DATADIR .. "/fonts/symbols.ttf",
     15 * SCALE
   )
 

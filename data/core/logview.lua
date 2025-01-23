@@ -193,7 +193,7 @@ function LogView:draw()
 
       -- timestamps are always 15% of the width
       local time = os.date(nil, item.time)
-      common.draw_text(style.font, style.dim, time, "left", x, y, tw, lh)
+      common.draw_text(style.font, style.text, time, "left", x, y, tw, lh)
       x = x + tw + style.padding.x
 
       w = w - (x - self:get_content_offset())
@@ -203,10 +203,10 @@ function LogView:draw()
         _, y = draw_text_multiline(style.font, item.text, x, y, style.text)
 
         local at = "at " .. common.home_encode(item.at)
-        _, y = common.draw_text(style.font, style.dim, at, "left", x, y, w, lh)
+        _, y = common.draw_text(style.font, style.text, at, "left", x, y, w, lh)
 
         if item.info then
-          _, y = draw_text_multiline(style.font, item.info, x, y, style.dim)
+          _, y = draw_text_multiline(style.font, item.info, x, y, style.text)
         end
       else
         local line, has_newline = string.match(item.text, "([^\n]+)(\n?)")

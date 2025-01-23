@@ -4,9 +4,9 @@ local core = require "core"
 local common = require "core.common"
 local config = require "core.config"
 local command = require "core.command"
-local json = require "core.json"
 local keymap = require "core.keymap"
 
+local json     = require 'libraries.json'
 
 local PluginManager = {
   last_refresh = nil,
@@ -383,10 +383,11 @@ if config.plugins.plugin_manager.addons then
 
     local load_start = system.get_time()
     for _, plugin in ipairs(ordered) do
+      print("[plugin-manager] Loading plugin", plugin)
       if plugin.valid then
         if not config.skip_plugins_version and not plugin.version_match then
           core.log_quiet(
-            "Version mismatch for plugin %q[%s] from %s",
+            "[plugin-manager] Version mismatch for plugin %q[%s] from %s",
             plugin.name,
             plugin.version_string,
             plugin.dir
@@ -404,7 +405,7 @@ if config.plugins.plugin_manager.addons then
               plugin_version = "["..plugin.version_string.."]"
             end
             core.log_quiet(
-              "Loaded plugin %q%s from %s in %.1fms",
+              "[plugin-manager] Loaded plugin %q%s from %s in %.1fms",
               plugin.name,
               plugin_version,
               plugin.dir,
@@ -416,11 +417,15 @@ if config.plugins.plugin_manager.addons then
           elseif config.plugins[plugin.name].onload then
             core.try(config.plugins[plugin.name].onload, loaded_plugin)
           end
+        else
+          print("[plugin-manager] Error: plugin", plugin, "skipped due to version via config.skip_plugins_version", config.skip_plugins_version, "or plugin.version.match", plugin.version.match)
         end
+      else
+        print("[plugin-manager] Error: plugin", plugin, "is not valid")
       end
     end
     core.log_quiet(
-      "Loaded all managed plugins in %.1fms",
+      "[plugin-manager] Loaded all managed plugins in %.1fms",
       (system.get_time() - load_start) * 1000
     )
     return no_errors, refused_list

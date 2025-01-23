@@ -10,7 +10,8 @@ local Doc      = require 'core.doc'
 local system   = require 'system'
 local regex    = require 'regex'
 local snippets = require 'plugins.snippets'
-local json 		 = require 'core.json'
+
+local json 		 = require 'libraries.json'
 
 local B = snippets.builder
 

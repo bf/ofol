@@ -348,7 +348,7 @@ settings.add("User Interface",
           }
         },
         options = {
-          size = 15,
+          size = 18,
           antialiasing = "subpixel",
           hinting = "slight"
         }
