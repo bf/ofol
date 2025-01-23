@@ -2333,7 +2333,7 @@ core.status_view:add_item({
     return false
   end,
   name = "lsp:diagnostics",
-  alignment = StatusView.Item.RIGHT,
+  alignment = StatusView.Item.LEFT,
   get_item = function()
     -- local dv = get_active_docview()
     -- if dv then
