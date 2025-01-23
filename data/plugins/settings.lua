@@ -253,10 +253,10 @@ settings.add("General",
   }
 )
 
-settings.add("Graphics",
-  {
-  }
-)
+-- settings.add("Graphics",
+--   {
+--   }
+-- )
 
 settings.add("User Interface",
   {

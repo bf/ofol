@@ -173,23 +173,17 @@ function FoldingBook:update()
 
     pane.container.border.color = style.divider
 
-    if pane.expanded and not pane.container.hiding then
+    if pane.expanded then
       pane.container:set_position(cx, cy)
       pane.container:set_size(cw)
       if not pane.container.visible then
         pane.container:set_size(cw, ch)
-        pane.container:show(true)
+        pane.container:show()
         pane.tab:set_icon("-")
-        pane.container.hiding = false
       end
-    elseif pane.container.visible and not pane.container.hiding then
+    elseif pane.container.visible  then
       pane.tab:set_icon("+")
-      pane.container.hiding = true
-      pane.container:hide(true, false, {
-        on_complete = function()
-          pane.container.hiding = false
-        end
-      })
+      pane.container:hide()
     end
 
     prev_pane = pane
