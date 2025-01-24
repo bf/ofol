@@ -594,6 +594,17 @@ function common.normalize_path(filename)
 end
 
 
+function common.strip_trailing_slash(filename)
+  if filename:match("[^:]["..PATHSEP.."]$") then
+    return filename:sub(1, -2)
+  end
+  return filename
+end
+
+function common.strip_leading_path(filename)
+    return filename:sub(2)
+end
+
 ---Checks whether a path is absolute or relative.
 ---@param path string
 ---@return boolean

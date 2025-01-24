@@ -80,17 +80,6 @@ function core.open_folder_project(dir_path_abs)
 end
 
 
-local function strip_leading_path(filename)
-    return filename:sub(2)
-end
-
-local function strip_trailing_slash(filename)
-  if filename:match("[^:]["..PATHSEP.."]$") then
-    return filename:sub(1, -2)
-  end
-  return filename
-end
-
 
 function core.project_subdir_is_shown(dir, filename)
   return not dir.files_limit or dir.shown_subdir[filename]
@@ -373,7 +362,7 @@ local function find_files_rec(root, path)
     local file = path .. PATHSEP .. file
     local info = system.get_file_info(root .. file)
     if info then
-      info.filename = strip_leading_path(file)
+      info.filename = common.strip_leading_path(file)
       if info.type == "file" then
         coroutine.yield(root, info)
       elseif not common.match_pattern(common.basename(info.filename), config.ignore_files) then
@@ -555,7 +544,7 @@ function core.init()
   local project_dir_explicit = false
   local files = {}
   for i = 2, #ARGS do
-    local arg_filename = strip_trailing_slash(ARGS[i])
+    local arg_filename = common.strip_trailing_slash(ARGS[i])
     local info = system.get_file_info(arg_filename) or {}
     if info.type == "dir" then
       project_dir = arg_filename
