@@ -1,6 +1,9 @@
 local common = require "core.common"
 local style = {}
 
+style.DEFAULT_FONT_SIZE = common.round(22 * SCALE)
+style.DEFAULT_ICON_SIZE = common.round(23 * SCALE)
+
 style.divider_size = common.round(1 * SCALE)
 style.scrollbar_size = common.round(4 * SCALE)
 style.expanded_scrollbar_size = common.round(12 * SCALE)
@@ -35,11 +38,11 @@ style.margin = {
 --
 -- On High DPI monitor or non RGB monitor you may consider using antialiasing grayscale instead.
 -- The antialiasing grayscale with full hinting is interesting for crisp font rendering.
-style.font = renderer.font.load(DATADIR .. "/fonts/FiraSans-Regular.ttf", 15 * SCALE)
+style.font = renderer.font.load(DATADIR .. "/fonts/FiraSans-Regular.ttf", style.DEFAULT_FONT_SIZE)
 style.big_font = style.font:copy(46 * SCALE)
-style.icon_font = renderer.font.load(DATADIR .. "/fonts/icons.ttf", 16 * SCALE, {antialiasing="grayscale", hinting="full"})
+style.icon_font = renderer.font.load(DATADIR .. "/fonts/icons.ttf", style.DEFAULT_ICON_SIZE, {antialiasing="grayscale", hinting="full"})
 style.icon_big_font = style.icon_font:copy(23 * SCALE)
-style.code_font = renderer.font.load(DATADIR .. "/fonts/JetBrainsMono-Regular.ttf", 15 * SCALE)
+style.code_font = renderer.font.load(DATADIR .. "/fonts/JetBrainsMono-Regular.ttf", style.DEFAULT_FONT_SIZE)
 
 style.syntax = {}
 

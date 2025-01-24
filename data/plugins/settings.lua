@@ -47,9 +47,6 @@ settings.config = {}
 settings.default_keybindings = {}
 
 
-local DEFAULT_FONT_SIZE = 28
--- DEFAULT_FONT_NAME = "Fira Sans Regular"
--- DEFAULT_FONT_PATH = DATADIR .. "/fonts/FiraSans-Regular.ttf"
 local DEFAULT_FONT_NAME = "JetBrains Mono Regular"
 local DEFAULT_FONT_PATH = DATADIR .. "/fonts/JetBrainsMono-Regular.ttf"
 
@@ -879,11 +876,11 @@ end
 ---@param saved_value any
 local function merge_font_settings(option, path, saved_value)
   local font_options = saved_value.options or {
-    size = DEFAULT_FONT_SIZE,
+    size = style.DEFAULT_FONT_SIZE,
     antialiasing = "supixel",
     hinting = "slight"
   }
-  font_options.size = font_options.size or DEFAULT_FONT_SIZE
+  font_options.size = font_options.size or style.DEFAULT_FONT_SIZE
   font_options.antialiasing = font_options.antialiasing or "subpixel"
   font_options.hinting = font_options.hinting or "slight"
 
@@ -1172,11 +1169,11 @@ local function add_control(pane, option, plugin_name)
       end
 
       local font_options = option_value.options or {
-        size = DEFAULT_FONT_SIZE,
+        size = style.DEFAULT_FONT_SIZE,
         antialiasing = "supixel",
         hinting = "slight"
       }
-      font_options.size = font_options.size or DEFAULT_FONT_SIZE
+      font_options.size = font_options.size or style.DEFAULT_FONT_SIZE
       font_options.antialiasing = font_options.antialiasing or "subpixel"
       font_options.hinting = font_options.hinting or "slight"
       fonts:set_options(font_options)

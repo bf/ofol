@@ -64,7 +64,7 @@ function FontDialog:new(font, options)
     self.border.color = style.text
   end
 
-  self.font_size = NumberBox(self.panel, 15, 5)
+  self.font_size = NumberBox(self.panel, style.DEFAULT_FONT_SIZE, 5)
   function self.font_size:on_change()
     this:update_preview()
   end
@@ -199,7 +199,7 @@ end
 ---@param options widget.fontdialog.fontoptions
 function FontDialog:set_options(options)
   if options.size then
-    self.font_size:set_value(tonumber(options.size) or 15)
+    self.font_size:set_value(tonumber(options.size) or style.DEFAULT_FONT_SIZE)
   end
 
   if options.antialiasing then

@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
   // force wayland
   putenv("SDL_VIDEODRIVER=wayland");
 
-  // // see https://github.com/libsdl-org/SDL/blob/main/docs/README-wayland.md
+  // see https://github.com/libsdl-org/SDL/blob/main/docs/README-wayland.md
   putenv("SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=1");
 #endif
 
