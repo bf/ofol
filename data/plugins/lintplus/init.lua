@@ -1,5 +1,3 @@
--- mod-version:3
-
 -- lint+ - an improved linter for lite
 -- copyright (C) lqdev, 2020
 -- licensed under the MIT license

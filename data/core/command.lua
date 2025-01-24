@@ -166,6 +166,7 @@ end
 ---@param ... any
 ---@return boolean # true if the command is performed successfully.
 function command.perform(name, ...)
+  core.debug("command: %s", name)
   local ok, res = core.try(perform, name, ...)
   return not ok or res
 end

@@ -49,6 +49,13 @@ command.add(nil, {
     core.title_view:configure_hit_test(not fullscreen and restore_title_view)
   end,
 
+  -- ["core:open-user-module"] = function()
+  --   local user_module_doc = core.open_doc(USERDIR .. "/init.lua")
+  --   if not user_module_doc then return end
+  --   core.root_view:open_doc(user_module_doc)
+  -- end,
+
+
   ["core:reload-module"] = function()
     core.command_view:enter("Reload Module", {
       submit = function(text, item)
@@ -201,21 +208,6 @@ command.add(nil, {
   ["core:open-log"] = function()
     local node = core.root_view:get_active_node_default()
     node:add_view(LogView())
-  end,
-
-  ["core:open-user-module"] = function()
-    local user_module_doc = core.open_doc(USERDIR .. "/init.lua")
-    if not user_module_doc then return end
-    core.root_view:open_doc(user_module_doc)
-  end,
-
-  ["core:open-project-module"] = function()
-    if not system.get_file_info(".lite_project.lua") then
-      core.try(core.write_init_project_module, ".lite_project.lua")
-    end
-    local doc = core.open_doc(".lite_project.lua")
-    core.root_view:open_doc(doc)
-    doc:save()
   end,
 
   ["core:change-project-folder"] = function()

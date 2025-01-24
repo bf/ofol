@@ -700,19 +700,19 @@ function lsp.get_workspace_settings(server, workspace)
       if path then
         local settings_new = nil
         path = path:gsub("\\+$", ""):gsub("/+$", "")
-        if util.file_exists(path .. "/.lite_lsp.lua") then
-          local settings_lua = dofile(path .. "/.lite_lsp.lua")
-          if type(settings_lua) == "table" then
-            settings_new = settings_lua
-          end
-        elseif util.file_exists(path .. "/.lite_lsp.json") then
-          local file = io.open(path .. "/.lite_lsp.json", "r")
-          if file then
-            local settings_json = file:read("*a")
-            settings_new = json.decode(settings_json)
-            file:close()
-          end
-        end
+        -- if util.file_exists(path .. "/.lite_lsp.lua") then
+        --   local settings_lua = dofile(path .. "/.lite_lsp.lua")
+        --   if type(settings_lua) == "table" then
+        --     settings_new = settings_lua
+        --   end
+        -- elseif util.file_exists(path .. "/.lite_lsp.json") then
+        --   local file = io.open(path .. "/.lite_lsp.json", "r")
+        --   if file then
+        --     local settings_json = file:read("*a")
+        --     settings_new = json.decode(settings_json)
+        --     file:close()
+        --   end
+        -- end
 
         -- overwrite global settings by those specified in the server if any
         if position == 1 and server.settings then

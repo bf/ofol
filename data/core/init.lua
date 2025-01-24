@@ -68,31 +68,11 @@ function core.set_project_dir(new_dir, change_project_fn)
 end
 
 
-local function reload_customizations()
-  local user_error = not core.load_user_directory()
-  local project_error = not core.load_project_module()
-  if user_error or project_error then
-    -- Use core.add_thread to delay opening the LogView, as opening
-    -- it directly here disturbs the normal save operations.
-    core.add_thread(function()
-      local LogView = require "core.logview"
-      local rn = core.root_view.root_node
-      for _,v in pairs(core.root_view.root_node:get_children()) do
-        if v:is(LogView) then
-          rn:get_node_for_view(v):set_active_view(v)
-          return
-        end
-      end
-      command.perform("core:open-log")
-    end)
-  end
-end
-
 
 function core.open_folder_project(dir_path_abs)
   if core.set_project_dir(dir_path_abs, core.on_quit_project) then
     core.root_view:close_all_docviews()
-    reload_customizations()
+    -- reload_customizations()
     update_recents_project("add", dir_path_abs)
     core.add_project_directory(dir_path_abs)
     core.on_enter_project(dir_path_abs)
@@ -462,155 +442,33 @@ end
 local function create_user_directory()
   local success, err = common.mkdirp(USERDIR)
   if not success then
-    error("cannot create directory \"" .. USERDIR .. "\": " .. err)
+    error("cannot create user directory \"" .. USERDIR .. "\": " .. err)
   end
-  for _, modname in ipairs {'plugins', 'colors', 'fonts'} do
-    local subdirname = USERDIR .. PATHSEP .. modname
-    if not system.mkdir(subdirname) then
-      error("cannot create directory: \"" .. subdirname .. "\"")
-    end
-  end
+  -- for _, modname in ipairs {
+  --   'plugins', 'colors', 'fonts'} do
+  --   local subdirname = USERDIR .. PATHSEP .. modname
+  --   if not system.mkdir(subdirname) then
+  --     error("cannot create directory: \"" .. subdirname .. "\"")
+  --   end
+  -- end
 end
 
 
-local function write_user_init_file(init_filename)
-  local init_file = io.open(init_filename, "w")
-  if not init_file then error("cannot create file: \"" .. init_filename .. "\"") end
-  init_file:write([[
--- put user settings here
--- this module will be loaded after everything else when the application starts
--- it will be automatically reloaded when saved
 
-local core = require "core"
-local keymap = require "core.keymap"
-local config = require "core.config"
-local style = require "core.style"
-
------------------------------- Themes ----------------------------------------
-
--- light theme:
--- core.reload_module("colors.summer")
-
---------------------------- Key bindings -------------------------------------
-
--- key binding:
--- keymap.add { ["ctrl+escape"] = "core:quit" }
-
--- pass 'true' for second parameter to overwrite an existing binding
--- keymap.add({ ["ctrl+pageup"] = "root:switch-to-previous-tab" }, true)
--- keymap.add({ ["ctrl+pagedown"] = "root:switch-to-next-tab" }, true)
-
-------------------------------- Fonts ----------------------------------------
-
--- customize fonts:
--- style.font = renderer.font.load(DATADIR .. "/fonts/FiraSans-Regular.ttf", 14 * SCALE)
--- style.code_font = renderer.font.load(DATADIR .. "/fonts/JetBrainsMono-Regular.ttf", 14 * SCALE)
---
--- DATADIR is the location of the installed Lite XL Lua code, default color
--- schemes and fonts.
--- USERDIR is the location of the Lite XL configuration directory.
---
--- font names used by lite:
--- style.font          : user interface
--- style.big_font      : big text in welcome screen
--- style.icon_font     : icons
--- style.icon_big_font : toolbar icons
--- style.code_font     : code
---
--- the function to load the font accept a 3rd optional argument like:
---
--- {antialiasing="grayscale", hinting="full", bold=true, italic=true, underline=true, smoothing=true, strikethrough=true}
---
--- possible values are:
--- antialiasing: grayscale, subpixel
--- hinting: none, slight, full
--- bold: true, false
--- italic: true, false
--- underline: true, false
--- smoothing: true, false
--- strikethrough: true, false
-
------------------------------- Plugins ----------------------------------------
-
--- disable plugin loading setting config entries:
-
--- disable plugin detectindent, otherwise it is enabled by default:
--- config.plugins.detectindent = false
-
----------------------------- Miscellaneous -------------------------------------
-
--- modify list of files to ignore when indexing the project:
--- config.ignore_files = {
---   -- folders
---   "^%.svn/",        "^%.git/",   "^%.hg/",        "^CVS/", "^%.Trash/", "^%.Trash%-.*/",
---   "^node_modules/", "^%.cache/", "^__pycache__/",
---   -- files
---   "%.pyc$",         "%.pyo$",       "%.exe$",        "%.dll$",   "%.obj$", "%.o$",
---   "%.a$",           "%.lib$",       "%.so$",         "%.dylib$", "%.ncb$", "%.sdf$",
---   "%.suo$",         "%.pdb$",       "%.idb$",        "%.class$", "%.psd$", "%.db$",
---   "^desktop%.ini$", "^%.DS_Store$", "^%.directory$",
--- }
-
-]])
-  init_file:close()
-end
-
-
-function core.write_init_project_module(init_filename)
-  local init_file = io.open(init_filename, "w")
-  if not init_file then error("cannot create file: \"" .. init_filename .. "\"") end
-  init_file:write([[
--- Put project's module settings here.
--- This module will be loaded when opening a project, after the user module
--- configuration.
--- It will be automatically reloaded when saved.
-
-local config = require "core.config"
-
--- you can add some patterns to ignore files within the project
--- config.ignore_files = {"^%.", <some-patterns>}
-
--- Patterns are normally applied to the file's or directory's name, without
--- its path. See below about how to apply filters on a path.
---
--- Here some examples:
---
--- "^%." matches any file of directory whose basename begins with a dot.
---
--- When there is an '/' or a '/$' at the end, the pattern will only match
--- directories. When using such a pattern a final '/' will be added to the name
--- of any directory entry before checking if it matches.
---
--- "^%.git/" matches any directory named ".git" anywhere in the project.
---
--- If a "/" appears anywhere in the pattern (except when it appears at the end or
--- is immediately followed by a '$'), then the pattern will be applied to the full
--- path of the file or directory. An initial "/" will be prepended to the file's
--- or directory's path to indicate the project's root.
---
--- "^/node_modules/" will match a directory named "node_modules" at the project's root.
--- "^/build.*/" will match any top level directory whose name begins with "build".
--- "^/subprojects/.+/" will match any directory inside a top-level folder named "subprojects".
-
--- You may activate some plugins on a per-project basis to override the user's settings.
--- config.plugins.trimwitespace = true
-]])
-  init_file:close()
-end
-
-
-function core.load_user_directory()
+-- user directory
+function core.load_user_directory()  
+  core.debug("loading user diretory")
   return core.try(function()
     local stat_dir = system.get_file_info(USERDIR)
     if not stat_dir then
       create_user_directory()
     end
-    local init_filename = USERDIR .. PATHSEP .. "init.lua"
-    local stat_file = system.get_file_info(init_filename)
-    if not stat_file then
-      write_user_init_file(init_filename)
-    end
-    dofile(init_filename)
+    -- local init_filename = USERDIR .. PATHSEP .. "init.lua"
+    -- local stat_file = system.get_file_info(init_filename)
+    -- if not stat_file then
+    --   write_user_init_file(init_filename)
+    -- end
+    -- dofile(init_filename)
   end)
 end
 
@@ -634,21 +492,6 @@ function core.configure_borderless_window()
   core.title_view.visible = config.borderless
 end
 
-
-local function add_config_files_hooks()
-  -- auto-realod style when user's module is saved by overriding Doc:Save()
-  local doc_save = Doc.save
-  local user_filename = system.absolute_path(USERDIR .. PATHSEP .. "init.lua")
-  function Doc:save(filename, abs_filename)
-    local module_filename = system.absolute_path(".lite_project.lua")
-    doc_save(self, filename, abs_filename)
-    if self.abs_filename == user_filename or self.abs_filename == module_filename then
-      reload_customizations()
-      core.rescan_project_directories()
-      core.configure_borderless_window()
-    end
-  end
-end
 
 
 -- The function below works like system.absolute_path except it
@@ -776,7 +619,7 @@ function core.init()
   -- project module and its ignore files is not yet loaded.
   local set_project_ok = project_dir_abs and core.set_project_dir(project_dir_abs)
   if set_project_ok then
-    got_project_error = not core.load_project_module()
+    -- got_project_error = not core.load_project_module()
     if project_dir_explicit then
       update_recents_project("add", project_dir_abs)
     end
@@ -786,7 +629,7 @@ function core.init()
     end
     project_dir_abs = system.absolute_path(".")
     if not core.set_project_dir(project_dir_abs, function()
-      got_project_error = not core.load_project_module()
+      -- got_project_error = not core.load_project_module()
     end) then
       system.show_fatal_error("Lite XL internal error", "cannot set project directory to cwd")
       os.exit(1)
@@ -802,6 +645,7 @@ function core.init()
   end
 
   -- We add the project directory now because the project's module is loaded.
+  core.debug("project directory: %s", project_dir_abs)
   core.add_project_directory(project_dir_abs)
 
   -- We assume we have just a single project directory here. Now that StatusView
@@ -810,6 +654,7 @@ function core.init()
     show_max_files_warning(core.project_directories[1])
   end
 
+  core.debug("opening documents from last session")
   for _, filename in ipairs(files) do
     core.root_view:open_doc(core.open_doc(filename))
   end
@@ -858,8 +703,6 @@ function core.init()
         if item.text == "Exit" then os.exit(1) end
       end)
   end
-
-  add_config_files_hooks()
 end
 
 
@@ -1001,20 +844,6 @@ function core.load_plugins()
     (system.get_time() - load_start) * 1000
   )
   return no_errors, refused_list
-end
-
-
-function core.load_project_module()
-  local filename = ".lite_project.lua"
-  if system.get_file_info(filename) then
-    return core.try(function()
-      local fn, err = loadfile(filename)
-      if not fn then error("Error when loading project module:\n\t" .. err) end
-      fn()
-      core.log_quiet("Loaded project module")
-    end)
-  end
-  return true
 end
 
 

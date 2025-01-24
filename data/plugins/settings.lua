@@ -8,6 +8,8 @@ local style = require "core.style"
 local View = require "core.view"
 local DocView = require "core.docview"
 
+local json = require "libraries.json"
+
 -- check if widget is installed before proceeding
 local widget_found, Widget = pcall(require, "libraries.widget")
 if not widget_found then
@@ -737,27 +739,73 @@ local function get_installed_colors()
   return ordered
 end
 
+-- path for user settings
+local PATH_USER_SETTINGS_JSON = USERDIR .. PATHSEP .. "user_settings.json"
 
 ---Load config options from the USERDIR user_settings.lua and store them on
 ---settings.config for later usage.
 local function load_settings()
-  local ok, t = pcall(dofile, USERDIR .. "/user_settings.lua")
-  settings.config = ok and t.config or {}
+  core.debug("loading user settings from %s", PATH_USER_SETTINGS_JSON)
+  -- local ok, t = pcall(json.decode, USERDIR .. PATHSEP .. FILENAME_USER_SETTINGS)
+  -- settings.config = ok and t.config or {}
+
+  -- read local file 
+  local open = io.open
+  local file = open(PATH_USER_SETTINGS_JSON, "rb")
+  if not file then 
+    core.error("could not read file %s", PATH_USER_SETTINGS_JSON)
+    return {} 
+  end
+  local jsonString = file:read "*a"
+  file:close()
+
+  core.debug("read string user settings: %s", jsonString)
+
+  local ok, result = pcall(json.decode, jsonString)
+
+  if ok then
+    core.debug("json.decode result: %s", result)
+    if not result then
+      core.warn("json.decode returned empty value (this might be a bug) when reading file %s", PATH_USER_SETTINGS_JSON)
+      return {}
+    else
+      -- proper result, return successfully
+      return result.config
+    end
+  else
+    core.error("json.decode failed: %s for user settings file %s", result, PATH_USER_SETTINGS_JSON)
+    return {}
+  end
 end
+
 
 ---Save current config options into the USERDIR user_settings.lua
 local function save_settings()
-  local fp = io.open(USERDIR .. "/user_settings.lua", "w")
-  if fp then
-    local output = "{\n  [\"config\"] = "
-      .. common.serialize(
-        settings.config,
-        { pretty = true, escape = true, sort = true, initial_indent = 1 }
-      ):gsub("^%s+", "")
-      .. "\n}\n"
-    fp:write("return ", output)
-    fp:close()
+  core.debug("saving user settings to %s", PATH_USER_SETTINGS_JSON)
+
+  local fp = io.open(PATH_USER_SETTINGS_JSON, "w")
+  if not fp then
+    core.error("could not open user settings file for writing: %s", PATH_USER_SETTINGS_JSON)
+    return
   end
+
+  -- local output = "{\n  [\"config\"] = "
+  --   .. common.serialize(
+  --     settings.config,
+  --     { pretty = true, escape = true, sort = true, initial_indent = 1 }
+  --   ):gsub("^%s+", "")
+  --   .. "\n}\n"
+
+  -- convert to json
+  local obj = { ["config"] = settings.config }
+  local json_string = json.encode(obj)
+  core.debug("user settings json for saving: %s", json_string)
+
+  -- write to file
+  fp:write(json_string)
+  fp:close()
+
+  core.debug("successfully saved user settings in %s", PATH_USER_SETTINGS_JSON)
 end
 
 ---Apply a keybinding and optionally save it.
@@ -896,6 +944,7 @@ end
 
 ---Merge previously saved settings without destroying the config table.
 local function merge_settings()
+  core.debug("merging previously saved settings with new ones")
   if type(settings.config) ~= "table" then return end
 
   -- merge core settings
@@ -1791,10 +1840,6 @@ function core.run()
       core.reload_module("colors." .. settings.config.theme)
     end)
   end
-
-  -- re-apply user settings
-  core.load_user_directory()
-  core.load_project_module()
 
   core_run()
 end
