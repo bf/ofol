@@ -4,11 +4,11 @@ local stderr = {}
 -- core.log() functions are not loaded at this point
 -- so we need to make another function for this
 function stderr.print(text) 
-  io.stderr:write(text .. "\n")
+  io.stderr:write(text .. " \n")
 end
 
 function stderr.print_with_tag(tag, text)
-  stderr.print("[" .. tag .. "] " ..text)
+  stderr.print("[" .. tag .. "] " .. text)
 end
 
 function stderr.info(text)

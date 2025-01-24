@@ -1164,7 +1164,14 @@ function core.custom_log(level, show, backtrace, fmt, ...)
   -- print to stderr
   if config.log_to_stderr then
     -- from https://stackoverflow.com/a/64271511
-    local relative_path = common.relative_path(DATADIR, item.at)
+
+    local relative_path 
+    if #DATADIR > 0 then
+      relative_path = common.relative_path(DATADIR, item.at)
+    else
+      relative_path = item.at
+    end
+
     stderr.print_with_tag(item.level, string.format("%s @ %s", item.text, relative_path))
   end
 
