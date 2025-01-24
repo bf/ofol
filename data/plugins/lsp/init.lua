@@ -75,8 +75,6 @@ local HelpDoc = require "plugins.lsp.helpdoc"
 ---@field stop_unneeded_servers boolean
 ---Send a server stderr output to lite log
 ---@field log_server_stderr boolean
----Force verbosity off even if a server is configured with verbosity on
----@field force_verbosity_off boolean
 ---Yield when reading from LSP which may give you better UI responsiveness
 ---when receiving large responses, but will affect LSP performance.
 ---@field more_yielding boolean
@@ -90,7 +88,6 @@ config.plugins.lsp = common.merge({
   log_file = "",
   prettify_json = false,
   log_server_stderr = false,
-  force_verbosity_off = false,
   more_yielding = false,
   autostart_server = true,
   -- The config specification used by the settings gui
@@ -167,13 +164,6 @@ config.plugins.lsp = common.merge({
       label = "Log Standard Error",
       description = "Send a server stderr output to lite log.",
       path = "log_server_stderr",
-      type = "TOGGLE",
-      default = false
-    },
-    {
-      label = "Force Verbosity Off",
-      description = "Turn verbosity off even if a server is configured with verbosity on.",
-      path = "force_verbosity_off",
       type = "TOGGLE",
       default = false
     },
@@ -634,10 +624,6 @@ function lsp.add_server(options)
     table.insert(options.command, 1, "cmd.exe")
   end
 
-  if config.plugins.lsp.force_verbosity_off then
-    options.verbose = false
-  end
-
   lsp.servers[options.name] = options
 
   return true
@@ -777,7 +763,7 @@ function lsp.start_server(filename, project_directory)
       end
 
       if not lsp.servers_running[name] and command_exists then
-        core.log("[LSP] starting " .. name)
+        core.info("[LSP/%s] starting ", name)
         ---@type lsp.server
         local client = Server(server)
         client.yield_on_reads = config.plugins.lsp.more_yielding
@@ -785,18 +771,40 @@ function lsp.start_server(filename, project_directory)
         lsp.servers_running[name] = client
 
         -- We overwrite the default log function to log messages on lite
-        function client:log(message, ...)
-          core.log_quiet(
-            "[LSP/%s]: " .. message .. "\n",
-            self.name,
-            ...
-          )
+        function client:log(fmt, ...)
+          local text
+          if select('#', ...) > 0 then
+            -- parse format string if flexible arguments are given
+            local success, result = pcall(string.format, fmt, ...)
+
+            -- error when format string is bad
+            if not success then
+              core.error("string.format failed with fmt %s and args %s", fmt, json.encode({...}))
+            end
+            text = result
+          else
+            -- no args for fmt given, text is fmt
+            text = fmt
+          end
+
+          -- find out where the log comes from
+          local info = debug.getinfo(2, "Sln")
+
+          -- get relative filename
+          local at
+          if #DATADIR > 0 and #info.source > 2 then
+            at = string.format("%s:%d", common.relative_path(DATADIR, string.sub(info.source, 2)), info.currentline)
+          else 
+            at = info.source
+          end
+
+          core.info("[LSP/%s] [%s] %s(): %s", self.name, at, info.name, text)
         end
 
         function client:on_shutdown()
           local sname = self.name
-          core.log(
-            "[LSP]: %s was shutdown, revise your configuration",
+          core.info(
+            "[LSP/%s] was shutdown, revise your configuration",
             sname
           )
           local last_shutdown = lsp.servers_running[sname].last_shutdown or 0
@@ -808,8 +816,8 @@ function lsp.start_server(filename, project_directory)
             lsp.start_servers()
             if lsp.servers_running[sname] then
               lsp.servers_running[sname].last_shutdown = system.get_time()
-              core.log(
-                "[LSP]: %s automatically restarted",
+              core.info(
+                "[LSP/%s] automatically restarted",
                 sname
               )
             end
@@ -942,19 +950,15 @@ function lsp.start_server(filename, project_directory)
             elseif params.type == Server.message_type.Info then
               log_func = "log"
             elseif params.type == Server.message_type.Debug then
-              log_func = "log_quiet"
+              log_func = "debug"
             end
-            core[log_func]("["..server.name.."] message: %s", params.message)
+            core[log_func]("[LSP/%s] message: %s", server.name, params.message)
           end
         )
 
         -- Send settings table after initialization if available.
         client:add_event_listener("initialized", function(server)
-          if config.plugins.lsp.force_verbosity_off then
-            core.log_quiet("["..server.name.."] " .. "Initialized")
-          else
-            log(server, "Initialized")
-          end
+          core.info("[LSP/%s] Initialized", server.name)
           local settings = lsp.get_workspace_settings(server)
           if not util.table_empty(settings) then
             server:push_notification("workspace/didChangeConfiguration", {

@@ -1124,7 +1124,13 @@ function core.open_doc(filename)
   -- no existing doc for filename; create new
   local doc = Doc(filename, abs_filename, new_file)
   table.insert(core.docs, doc)
-  core.log_quiet(filename and "Opened doc \"%s\"" or "Opened new doc", filename)
+
+  if filename then
+    core.log_quiet("Opened doc \"%s\"", filename)
+  else
+    core.log_quiet("Opened new doc")
+  end
+
   return doc
 end
 
@@ -1139,7 +1145,21 @@ function core.get_views_referencing_doc(doc)
 end
 
 function core.custom_log(level, show, backtrace, fmt, ...)
-  local text = string.format(fmt, ...)
+  local text
+  if select('#', ...) > 0 then
+    -- parse format string if flexible arguments are given
+    local success, result = pcall(string.format, fmt, ...)
+
+    -- error when format string is bad
+    if not success then
+      core.error("string.format failed with fmt %s and args %s", fmt, json.encode({...}))
+    end
+    text = result
+  else
+    -- no args for fmt given, text is fmt
+    text = fmt
+  end
+
   if show then
     local s = style.log[level]
     if core.status_view then
@@ -1147,8 +1167,14 @@ function core.custom_log(level, show, backtrace, fmt, ...)
     end
   end
 
-  local info = debug.getinfo(2, "Sl")
-  local at = string.format("%s:%d", info.short_src, info.currentline)
+  local info = debug.getinfo(2, "Sln")
+  local at
+  if #DATADIR > 0 and #info.source > 2 then
+    local relative_path = common.relative_path(DATADIR, string.sub(info.source, 2))
+    at = string.format("%s:%d", relative_path, info.currentline)
+  else 
+    at = info.source
+  end
   local item = {
     level = level,
     text = text,
@@ -1164,15 +1190,8 @@ function core.custom_log(level, show, backtrace, fmt, ...)
   -- print to stderr
   if config.log_to_stderr then
     -- from https://stackoverflow.com/a/64271511
-
-    local relative_path 
-    if #DATADIR > 0 then
-      relative_path = common.relative_path(DATADIR, item.at)
-    else
-      relative_path = item.at
-    end
-
-    stderr.print_with_tag(item.level, string.format("%s @ %s", item.text, relative_path))
+    -- local relative_path = string.format("%s:%d", common.relative_path(DATADIR, info.source), info.currentline)
+    stderr.print_with_tag(item.level, string.format("[%s] %s(): %s", item.at, info.name, item.text))
   end
 
   return item
@@ -1184,6 +1203,10 @@ end
 
 function core.log_quiet(...)
   return core.custom_log("INFO", false, false, ...)
+end
+
+function core.info(...)
+  return core.custom_log("INFO", true, false, ...)
 end
 
 function core.debug(...)

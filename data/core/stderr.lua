@@ -8,7 +8,7 @@ function stderr.print(text)
 end
 
 function stderr.print_with_tag(tag, text)
-  stderr.print("[" .. tag .. "] " .. text)
+  stderr.print(string.format("%-5s %s", tag, text))
 end
 
 function stderr.info(text)
