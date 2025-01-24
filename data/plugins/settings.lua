@@ -737,21 +737,6 @@ local function get_installed_colors()
   return ordered
 end
 
----Capitalize first letter of every word.
----Taken from core.command.
----@param words string
----@return string
-local function capitalize_first(words)
-  return words:sub(1, 1):upper() .. words:sub(2)
-end
-
--- ---Similar to command prettify_name but also takes care of underscores.
--- ---@param name string
--- ---@return string
--- local function prettify_name(name)
---   name = name:gsub("[%-_]", " "):gsub("%S+", capitalize_first)
---   return name
--- end
 
 ---Load config options from the USERDIR user_settings.lua and store them on
 ---settings.config for later usage.
@@ -1458,7 +1443,6 @@ function Settings:load_plugin_settings()
 
       local this = self
 
-      -- prettify_name(plugin)
       ---@type widget.toggle
       local toggle = Toggle(pane, plugin, enabled)
       function toggle:on_change(value)
