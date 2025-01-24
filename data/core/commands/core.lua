@@ -2,7 +2,8 @@ local core = require "core"
 local common = require "core.common"
 local command = require "core.command"
 local keymap = require "core.keymap"
-local LogView = require "core.logview"
+
+local LogView = require "core.views.logview"
 
 local json = require "libraries.json"
 

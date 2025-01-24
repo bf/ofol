@@ -18,12 +18,14 @@ local style = require "core.style"
 local util = require "plugins.scm.util"
 local changes = require "plugins.scm.changes"
 local Doc = require "core.doc"
-local DocView = require "core.docview"
-local StatusView = require "core.statusview"
 local ReadDoc = require "plugins.scm.readdoc"
 local Git = require "plugins.scm.backend.git"
 local Fossil = require "plugins.scm.backend.fossil"
 local MessageBox = require "libraries.widget.messagebox"
+
+
+local StatusView = require "core.views.statusview"
+local DocView = require "core.views.docview"
 
 ---@class config.plugins.smc
 ---@field highlighter boolean
@@ -756,7 +758,6 @@ function os.rename(oldname, newname)
 end
 
 
-local DocView = require "core.docview"
 
 --------------------------------------------------------------------------------
 -- StatusBar Item to show current branch and stats

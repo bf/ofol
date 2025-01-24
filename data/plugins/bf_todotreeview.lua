@@ -6,8 +6,10 @@ local config = require "core.config"
 local keymap = require "core.keymap"
 local style = require "core.style"
 local View = require "core.view"
-local CommandView = require "core.commandview"
-local DocView = require "core.docview"
+
+local CommandView = require "core.views.commandview"
+local DocView = require "core.views.docview"
+
 local json = require "libraries.json"
 
 local TodoTreeView = View:extend()

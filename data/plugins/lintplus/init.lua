@@ -33,8 +33,9 @@ local keymap = require "core.keymap"
 local syntax = require "core.syntax"
 
 local Doc = require "core.doc"
-local DocView = require "core.docview"
-local StatusView = require "core.statusview"
+
+local DocView = require "core.views.docview"
+local StatusView = require "core.views.statusview"
 
 local liteipc = require "plugins.lintplus.liteipc"
 

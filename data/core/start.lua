@@ -22,26 +22,38 @@ USERDIR = (system.get_file_info(EXEDIR .. PATHSEP .. 'user') and (EXEDIR .. PATH
 package.path = DATADIR .. '/?.lua;'
 package.path = DATADIR .. '/?/init.lua;' .. package.path
 -- TODO: check if this is needed
-package.path = USERDIR .. '/?.lua;' .. package.path
-package.path = USERDIR .. '/?/init.lua;' .. package.path
+-- package.path = USERDIR .. '/?.lua;' .. package.path
+-- package.path = USERDIR .. '/?/init.lua;' .. package.path
 
-local suffix = PLATFORM == "Windows" and 'dll' or 'so'
-package.cpath =
-  USERDIR .. '/?.' .. ARCH .. "." .. suffix .. ";" ..
-  USERDIR .. '/?/init.' .. ARCH .. "." .. suffix .. ";" ..
-  USERDIR .. '/?.' .. suffix .. ";" ..
-  USERDIR .. '/?/init.' .. suffix .. ";" ..
-  DATADIR .. '/?.' .. ARCH .. "." .. suffix .. ";" ..
-  DATADIR .. '/?/init.' .. ARCH .. "." .. suffix .. ";" ..
-  DATADIR .. '/?.' .. suffix .. ";" ..
-  DATADIR .. '/?/init.' .. suffix .. ";"
+-- do not load random .so files from many places
+-- local suffix = PLATFORM == "Windows" and 'dll' or 'so'
+-- package.cpath =
+-- USERDIR .. '/?.' .. ARCH .. "." .. suffix .. ";" ..
+-- USERDIR .. '/?/init.' .. ARCH .. "." .. suffix .. ";" ..
+-- USERDIR .. '/?.' .. suffix .. ";" ..
+-- USERDIR .. '/?/init.' .. suffix .. ";" ..
+--   DATADIR .. '/?.' .. ARCH .. "." .. suffix .. ";" ..
+--   DATADIR .. '/?/init.' .. ARCH .. "." .. suffix .. ";" ..
+--   DATADIR .. '/?.' .. suffix .. ";" ..
+--   DATADIR .. '/?/init.' .. suffix .. ";"
 
 package.native_plugins = {}
-package.searchers = { package.searchers[1], package.searchers[2], function(modname)
-  local path, err = package.searchpath(modname, package.cpath)
-  if not path then return err end
-  return system.load_native_plugin, path
-end }
+
+-- do not load .so files from lua lib dir
+-- local function search_for_module_in_these_directories(modname)
+--   local path, err = package.searchpath(modname, package.cpath)
+--   if not path then return err end
+--   return system.load_native_plugin, path
+-- end
+
+-- limit package searcher to local diretories
+package.searchers = { 
+  package.searchers[1], 
+  package.searchers[2], 
+
+  -- do not load .so files from lua lib dir
+  -- search_for_module_in_these_directories
+}
 
 table.pack = table.pack or pack or function(...) return {...} end
 table.unpack = table.unpack or unpack
@@ -109,7 +121,8 @@ function require(modname, ...)
   table.remove(require_stack)
 
   if not ok then
-    stderr.error(string.format("[start.lua] require(): including mod %s loaderdata %s result %s", modname, loaderdata, result))
+    stderr.error(string.format("[start.lua] require(): including module %s loaderdata %s result %s", modname, loaderdata, result))
+    print(debug.traceback("", 2))
     return error(result)
   end
 

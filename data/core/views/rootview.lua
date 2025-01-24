@@ -3,7 +3,8 @@ local common = require "core.common"
 local style = require "core.style"
 local Node = require "core.node"
 local View = require "core.view"
-local DocView = require "core.docview"
+
+local DocView = require "..docview"
 
 ---@class core.rootview : core.view
 ---@field super core.view

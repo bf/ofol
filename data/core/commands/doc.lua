@@ -4,8 +4,9 @@ local common = require "core.common"
 local config = require "core.config"
 local translate = require "core.doc.translate"
 local style = require "core.style"
-local DocView = require "core.docview"
 local tokenizer = require "core.tokenizer"
+
+local DocView = require "core.views.docview"
 
 
 local function doc()
@@ -750,4 +751,4 @@ commands["doc:move-to-next-char"] = function(dv)
   dv.doc:merge_cursors()
 end
 
-command.add("core.docview", commands)
+command.add("core.views.docview", commands)

@@ -6,7 +6,8 @@ local command = require "core.command"
 local keymap = require "core.keymap"
 local style = require "core.style"
 local View = require "core.view"
-local DocView = require "core.docview"
+
+local DocView = require "core.views.docview"
 
 local json = require "libraries.json"
 

@@ -1199,7 +1199,9 @@ function Widget.override_rootview()
   if root_overrided then return end
   root_overrided = true
 
-  if not RootView then RootView = require "core.rootview" end
+  if not RootView then 
+    RootView = require "core.views.rootview" 
+  end
 
   local root_view_on_mouse_pressed = RootView.on_mouse_pressed
   local root_view_on_mouse_released = RootView.on_mouse_released

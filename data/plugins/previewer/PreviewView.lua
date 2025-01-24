@@ -1,4 +1,4 @@
-local DocView = require "core.docview"
+local DocView = require "core.views.docview"
 local core = require "core"
 
 local PreviewView = DocView:extend()

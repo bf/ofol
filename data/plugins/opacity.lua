@@ -3,7 +3,8 @@ local core = require "core"
 local common = require "core.common"
 local command = require "core.command"
 local keymap = require "core.keymap"
-local RootView = require "core.rootview"
+
+local RootView = require "core.views.rootview"
 
 local opacity_on = true
 local use_mousewheel = true

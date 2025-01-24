@@ -64,7 +64,7 @@ local function indent_size(doc, line)
   return e - s
 end
 
-command.add("core.docview!", {
+command.add("core.views.docview!", {
   ["autoinsert:newline"] = function(dv)
     local not_applied =  { }
     local fallback = true

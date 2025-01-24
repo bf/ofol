@@ -40,7 +40,7 @@ local function tabularize_lines(lines, delim)
 end
 
 
-command.add("core.docview", {
+command.add("core.views.docview", {
   ["tabularize:tabularize"] = function(dv)
     core.command_view:enter("Tabularize On Delimiter", {
       submit = function(delim)

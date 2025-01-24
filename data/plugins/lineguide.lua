@@ -3,8 +3,9 @@ local common = require "core.common"
 local command = require "core.command"
 local config = require "core.config"
 local style = require "core.style"
-local DocView = require "core.docview"
-local CommandView = require "core.commandview"
+
+local DocView = require "core.views.docview"
+local CommandView = require "core.views.commandview"
 
 config.plugins.lineguide = common.merge({
   enabled = false,

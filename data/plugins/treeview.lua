@@ -7,9 +7,10 @@ local keymap = require "core.keymap"
 local style = require "core.style"
 local View = require "core.view"
 local ContextMenu = require "core.contextmenu"
-local RootView = require "core.rootview"
-local CommandView = require "core.commandview"
-local DocView = require "core.docview"
+
+local RootView = require "core.views.rootview"
+local CommandView = require "core.views.commandview"
+local DocView = require "core.views.docview"
 
 config.plugins.treeview = common.merge({
   -- Default treeview width

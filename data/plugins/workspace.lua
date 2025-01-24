@@ -1,8 +1,9 @@
 -- mod-version:3
 local core = require "core"
 local common = require "core.common"
-local DocView = require "core.docview"
-local LogView = require "core.logview"
+
+local DocView = require "core.views.docview"
+local LogView = require "core.views.logview"
 
 
 local function workspace_files_for(project_dir)

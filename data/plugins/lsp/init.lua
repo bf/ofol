@@ -22,9 +22,11 @@ local keymap = require "core.keymap"
 local translate = require "core.doc.translate"
 local autocomplete = require "plugins.autocomplete"
 local Doc = require "core.doc"
-local DocView = require "core.docview"
-local StatusView = require "core.statusview"
-local RootView = require "core.rootview"
+
+local DocView = require "core.views.docview"
+local StatusView = require "core.views.statusview"
+local RootView = require "core.views.rootview"
+
 local LineWrapping
 -- If the lsp plugin is loaded from users init.lua it will load linewrapping
 -- even if it was disabled from the settings ui, so we queue this check since

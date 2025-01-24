@@ -2,7 +2,7 @@ local core = require "core"
 local command = require "core.command"
 local common = require "core.common"
 
-command.add("core.nagview", {
+command.add("core.views.nagview", {
   ["dialog:previous-entry"] = function(v)
     local hover = v.hovered_item or 1
     v:change_hovered(hover == 1 and #v.options or hover - 1)

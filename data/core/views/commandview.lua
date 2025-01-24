@@ -3,8 +3,9 @@ local common = require "core.common"
 local config = require "core.config"
 local style = require "core.style"
 local Doc = require "core.doc"
-local DocView = require "core.docview"
 local View = require "core.view"
+
+local DocView = require "core.views.docview"
 
 
 ---@class core.commandview.input : core.doc

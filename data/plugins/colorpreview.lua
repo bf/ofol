@@ -1,7 +1,8 @@
 -- mod-version:3
 local config = require "core.config"
 local common = require "core.common"
-local DocView = require "core.docview"
+
+local DocView = require "core.views.docview"
 
 
 config.plugins.colorpreview = common.merge({

@@ -1,6 +1,6 @@
--- mod-version:3
 local style = require "core.style"
-local DocView = require "core.docview"
+
+local DocView = require "core.views.docview"
 
 -- originally written by luveti
 

@@ -2,7 +2,8 @@ local core = require "core"
 local command = require "core.command"
 local common = require "core.common"
 local style = require "core.style"
-local StatusView = require "core.statusview"
+
+local StatusView = require "core.views.statusview"
 
 local function status_view_item_names()
   local items = core.status_view:get_items_list()

@@ -118,7 +118,7 @@ local function register_mouse_pressed(self)
   if self.on_mouse_pressed_root then return end
   -- RootView is loaded locally to avoid NagView and RootView being
   -- mutually recursive
-  local RootView = require "core.rootview"
+  local RootView = require "core.views.rootview"
   self.on_mouse_pressed_root = RootView.on_mouse_pressed
   local this = self
   function RootView:on_mouse_pressed(button, x, y, clicks)

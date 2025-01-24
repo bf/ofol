@@ -5,7 +5,8 @@ local command = require "core.command"
 local config = require "core.config"
 local keymap = require "core.keymap"
 local style = require "core.style"
-local CommandView = require "core.commandview"
+
+local CommandView = require "core.views.commandview"
 
 config.plugins.scale = common.merge({
   -- The method used to apply the scaling: "code", "ui"

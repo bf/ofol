@@ -510,12 +510,14 @@ function core.init()
   keymap = require "core.keymap"
   dirwatch = require "core.dirwatch"
   ime = require "core.ime"
-  RootView = require "core.rootview"
-  StatusView = require "core.statusview"
-  TitleView = require "core.titleview"
-  CommandView = require "core.commandview"
-  NagView = require "core.nagview"
-  DocView = require "core.docview"
+
+  RootView = require "core.views.rootview"
+  StatusView = require "core.views.statusview"
+  TitleView = require "core.views.titleview"
+  CommandView = require "core.views.commandview"
+  NagView = require "core.views.nagview"
+  DocView = require "core.views.docview"
+  
   Doc = require "core.doc"
 
   if PATHSEP == '\\' then

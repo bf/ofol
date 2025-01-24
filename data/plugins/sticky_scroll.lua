@@ -1,10 +1,11 @@
 -- mod-version:3
 local core = require "core"
-local DocView = require "core.docview"
 local style = require "core.style"
 local config = require "core.config"
 local common = require "core.common"
 local command = require "core.command"
+
+local DocView = require "core.views.docview"
 
 local SS = {}
 

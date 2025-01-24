@@ -9,7 +9,7 @@ local core = require "core"
 local common = require "core.common"
 local config = require "core.config"
 local scale = require "plugins.scale"
-local StatusView = require "core.statusview"
+local StatusView = require "core.views.statusview"
 
 config.plugins.scalestatus = common.merge({
   enabled = true,

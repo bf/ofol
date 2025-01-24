@@ -11,8 +11,9 @@ local command = require "core.command"
 local style = require "core.style"
 local keymap = require "core.keymap"
 local util = require "plugins.lsp.util"
-local RootView = require "core.rootview"
-local DocView = require "core.docview"
+
+local RootView = require "core.views.rootview"
+local DocView = require "core.views.docview"
 
 ---@class lsp.listbox.item
 ---@field text string

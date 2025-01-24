@@ -1,5 +1,5 @@
 -- mod-version:3
-local DocView = require "core.docview"
+local DocView = require "core.views.docview"
 local style = require "core.style"
 
 local draw_line_body = DocView.draw_line_body

@@ -6,23 +6,18 @@ local core = require "core"
 local style = require "core.style"
 local translate = require "core.doc.translate"
 local Doc = require "core.doc"
-local DocView = require "core.docview"
 local View = require "core.view"
+
+local DocView = require "core.views.docview"
+
 local Widget = require "libraries.widget"
 
-
----@class widget.textbox.SingleLineDoc : core.doc
----@overload fun():widget.textbox.SingleLineDoc
----@field super core.doc
 local SingleLineDoc = Doc:extend()
 
 function SingleLineDoc:insert(line, col, text)
   SingleLineDoc.super.insert(self, line, col, text:gsub("\n", ""))
 end
 
----@class widget.textbox.TextView : core.docview
----@overload fun():widget.textbox.TextView
----@field super core.docview
 local TextView = DocView:extend()
 
 function TextView:new()

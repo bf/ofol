@@ -3,7 +3,8 @@ local common = require "core.common"
 local config = require "core.config"
 local style = require "core.style"
 local Object = require "core.object"
-local EmptyView = require "core.emptyview"
+
+local EmptyView = require "core.views.emptyview"
 local View = require "core.view"
 
 ---@class core.node : core.object

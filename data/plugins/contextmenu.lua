@@ -3,8 +3,10 @@ local core = require "core"
 local command = require "core.command"
 local keymap = require "core.keymap"
 local ContextMenu = require "core.contextmenu"
-local RootView = require "core.rootview"
 local config = require "core.config"
+
+local RootView = require "core.views.rootview"
+
 
 local menu = ContextMenu()
 local on_view_mouse_pressed = RootView.on_view_mouse_pressed
@@ -33,7 +35,7 @@ function RootView:draw(...)
   menu:draw()
 end
 
-command.add("core.docview!", {
+command.add("core.views.docview!", {
   ["context:show"] = function(dv)
     menu:show(dv.position.x, dv.position.y)
   end
@@ -79,7 +81,7 @@ if config.plugins.scale ~= false and require("plugins.scale") then
   cmds[6] = { text = "Font Reset", command = "scale:reset"    }
 end
 
-menu:register("core.docview", cmds)
+menu:register("core.views.docview", cmds)
 
 
 return menu

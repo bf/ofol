@@ -3,12 +3,12 @@ local common = require "core.common"
 local command = require "core.command"
 local config = require "core.config"
 local style = require "core.style"
-local DocView = require "core.docview"
-local CommandView = require "core.commandview"
-local LogView = require "core.logview"
 local View = require "core.view"
 local Object = require "core.object"
 
+local DocView = require "..docview"
+local CommandView = require "..commandview"
+local LogView = require "..logview"
 
 ---@alias core.statusview.styledtext table<integer, renderer.font|renderer.color|string>
 ---@alias core.statusview.position '"left"' | '"right"'
@@ -363,7 +363,7 @@ function StatusView:register_command_items()
   if self:get_item("command:files") then return end
 
   self:add_item({
-    predicate = "core.commandview",
+    predicate = "core.views.commandview",
     name = "command:files",
     alignment = StatusView.Item.RIGHT,
     get_item = function()

@@ -1,10 +1,11 @@
 local core = require "core"
 local style = require "core.style"
-local DocView = require "core.docview"
 local command = require "core.command"
 local common = require "core.common"
 local config = require "core.config"
 local Node = require "core.node"
+
+local DocView = require "core.views.docview"
 
 
 local t = {
@@ -186,7 +187,7 @@ end, {
     command.perform("core:new-doc")
   end
 })
-command.add("core.emptyview", {
+command.add("core.views.emptyview", {
   ["emptyview:new-doc"] = function()
     command.perform("core:new-doc")
   end

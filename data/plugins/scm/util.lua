@@ -1,6 +1,6 @@
 local core = require "core"
 local common = require "core.common"
-local DocView = require "core.docview"
+local DocView = require "core.views.docview"
 
 local util = {}
 

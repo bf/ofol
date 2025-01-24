@@ -1,7 +1,6 @@
 -- mod-version:3 --priority:10
 local core = require "core"
 local common = require "core.common"
-local DocView = require "core.docview"
 local Doc = require "core.doc"
 local style = require "core.style"
 local config = require "core.config"
@@ -9,6 +8,7 @@ local command = require "core.command"
 local keymap = require "core.keymap"
 local translate = require "core.doc.translate"
 
+local DocView = require "core.views.docview"
 
 config.plugins.linewrapping = common.merge({
 	-- The type of wrapping to perform. Can be "letter" or "word".

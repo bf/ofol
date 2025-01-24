@@ -3,9 +3,10 @@ local core = require "core"
 local style = require "core.style"
 local command = require "core.command"
 local keymap = require "core.keymap"
-local DocView = require "core.docview"
 local config = require "core.config"
 local common = require "core.common"
+
+local DocView = require "core.views.docview"
 
 -- Colors can be configured as follows:
 --   underline color  = `style.bracketmatch_color`
@@ -257,7 +258,7 @@ function DocView:draw_line_text(line, x, y)
 end
 
 
-command.add("core.docview", {
+command.add("core.views.docview", {
   ["bracket-match:move-to-matching"] = function(dv)
     update_state()
     if state.line2 then

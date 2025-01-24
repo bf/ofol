@@ -3,9 +3,10 @@ local command = require "core.command"
 local config = require "core.config"
 local search = require "core.doc.search"
 local keymap = require "core.keymap"
-local DocView = require "core.docview"
-local CommandView = require "core.commandview"
-local StatusView = require "core.statusview"
+
+local DocView = require "core.views.docview"
+local CommandView = require "core.views.commandview"
+local StatusView = require "core.views.statusview"
 
 local last_view, last_fn, last_text, last_sel
 
@@ -220,7 +221,7 @@ command.add(has_unique_selection, {
   ["find-replace:select-add-all"] = function() select_add_next(true) end
 })
 
-command.add("core.docview!", {
+command.add("core.views.docview!", {
   ["find-replace:find"] = function()
     find("Find Text", function(doc, line, col, text, case_sensitive, find_regex, find_reverse)
       local opt = { wrap = true, no_case = not case_sensitive, regex = find_regex, reverse = find_reverse }
@@ -295,7 +296,7 @@ command.add(valid_for_finding, {
   end,
 })
 
-command.add("core.commandview", {
+command.add("core.views.commandview", {
   ["find-replace:toggle-sensitivity"] = function()
     case_sensitive = not case_sensitive
     core.status_view:show_tooltip(get_find_tooltip())

@@ -88,7 +88,7 @@ function trimwhitespace.trim_empty_end_lines(doc, raw_remove)
 end
 
 
-command.add("core.docview", {
+command.add("core.views.docview", {
   ["trim-whitespace:trim-trailing-whitespace"] = function(dv)
     trimwhitespace.trim(dv.doc)
   end,

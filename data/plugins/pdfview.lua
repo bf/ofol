@@ -3,7 +3,7 @@ local core = require "core"
 local command = require "core.command"
 local keymap = require "core.keymap"
 
-command.add("core.docview!", {
+command.add("core.views.docview!", {
   ["pdfview:show-preview"] = function(av)
 -- User's home directory
     local homedir = ""

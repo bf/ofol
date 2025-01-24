@@ -2,7 +2,8 @@
 local style = require "core.style"
 local config = require "core.config"
 local common = require "core.common"
-local DocView = require "core.docview"
+
+local DocView = require "core.views.docview"
 
 config.plugins.indentguide = common.merge({
   enabled = true,

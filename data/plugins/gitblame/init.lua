@@ -3,8 +3,9 @@ local style = require "core.style"
 local common = require "core.common"
 local config = require "core.config"
 local command = require "core.command"
-local DocView = require "core.docview"
 local gitblame = require "plugins.gitblame.gitblame"
+
+local DocView = require "core.views.docview"
 
 config.plugins.gitblame = common.merge({
 

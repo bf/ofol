@@ -1,12 +1,11 @@
--- mod-version:3
-
 local core = require "core"
 local style = require "core.style"
-local DocView = require "core.docview"
 local common = require "core.common"
 local command = require "core.command"
 local config = require "core.config"
 local Highlighter = require "core.doc.highlighter"
+
+local DocView = require "core.views.docview"
 
 config.plugins.drawwhitespace = common.merge({
   enabled = false,

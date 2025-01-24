@@ -4,10 +4,11 @@ local command = require "core.command"
 local common = require "core.common"
 local config = require "core.config"
 local style = require "core.style"
-local DocView = require "core.docview"
 local Highlighter = require "core.doc.highlighter"
 local Object = require "core.object"
 local Scrollbar = require "core.scrollbar"
+
+local DocView = require "core.views.docview"
 
 -- Sample configurations:
 -- full width:
@@ -620,7 +621,7 @@ command.add(nil, {
   end
 })
 
-command.add("core.docview!", {
+command.add("core.views.docview!", {
   ["minimap:toggle-visibility-for-current-view"] = function(dv)
     local sb = dv.v_scrollbar
     if sb.enabled ~= nil then

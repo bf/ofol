@@ -4,8 +4,9 @@ local command = require "core.command"
 local common = require "core.common"
 local config = require "core.config"
 local core_syntax = require "core.syntax"
-local DocView = require "core.docview"
 local Doc = require "core.doc"
+
+local DocView = require "core.views.docview"
 
 local cache = setmetatable({}, { __mode = "k" })
 local comments_cache = {}
@@ -367,7 +368,7 @@ local function set_indent_size_command(dv)
 end
 
 
-command.add("core.docview", {
+command.add("core.views.docview", {
   ["indent:set-file-indent-type"] = set_indent_type_command,
   ["indent:set-file-indent-size"] = set_indent_size_command
 })
