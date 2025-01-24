@@ -1,5 +1,9 @@
 local stderr = {}
 
+local EXIT_ON_ERROR = true
+
+local HIDE_DEBUG_MESSAGES = false
+
 -- print message to stderr
 -- core.log() functions are not loaded at this point
 -- so we need to make another function for this
@@ -25,6 +29,10 @@ function stderr.print_with_tag(tag, text)
     tag = ansi_color(tag, '91', true)
   elseif tag == 'INFO' then
     tag = ansi_color(tag, '0', true)
+  elseif tag == 'DEBUG' then
+    if HIDE_DEBUG_MESSAGES then
+      return
+    end
   end
 
   stderr.print(string.format("%-5s %s", tag, text))
@@ -35,7 +43,9 @@ function stderr.info(text)
 end
 
 function stderr.debug(text)
-  stderr.print_with_tag("DEBUG", text)
+  if not HIDE_DEBUG_MESSAGES then
+    stderr.print_with_tag("DEBUG", text)
+  end
 end
 
 function stderr.warn(text)
@@ -44,7 +54,11 @@ end
 
 function stderr.error(text)
   stderr.print_with_tag("WARN", text)
-  os.exit(3)
+
+  if EXIT_ON_ERROR then
+    stderr.print("will exit now because EXIT_ON_ERROR is set to true")
+    os.exit(3)
+  end
 end
 
 return stderr
