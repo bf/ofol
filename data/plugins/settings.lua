@@ -793,7 +793,7 @@ local function apply_keybinding(cmd, bindings, skip_save)
   end
 
   if changed then
-    user_settings.save_user_settings()
+    user_settings.save_user_settings(settings.config)
   end
 
   if not row_value then
@@ -1187,7 +1187,7 @@ local function add_control(pane, option, plugin_name)
       end
 
       set_config_value(settings.config, path, value)
-      user_settings.save_user_settings()
+      user_settings.save_user_settings(settings.config)
       if option.on_apply then
         option.on_apply(value)
       end
@@ -1285,7 +1285,7 @@ function Settings:load_color_settings()
   function listbox:on_row_click(idx, data)
     core.reload_module("colors." .. data.name)
     settings.config.theme = data.name
-    user_settings.save_user_settings()
+    user_settings.save_user_settings(settings.config)
   end
 end
 
@@ -1314,7 +1314,7 @@ function Settings:disable_plugin(plugin)
   end
 
   settings.config.disabled_plugins[plugin] = true
-  user_settings.save_user_settings()
+  user_settings.save_user_settings(settings.config)
 end
 
 ---Load plugin and append its settings to the plugins section.
@@ -1370,7 +1370,7 @@ function Settings:enable_plugin(plugin)
   end
 
   settings.config.enabled_plugins[plugin] = true
-  user_settings.save_user_settings()
+  user_settings.save_user_settings(settings.config)
 
   if loaded then
     core.log("Loaded '%s' plugin", plugin)
@@ -1500,7 +1500,7 @@ function keymap_dialog:on_reset()
     settings.config.custom_keybindings[self.command]
   then
     settings.config.custom_keybindings[self.command] = nil
-    user_settings.save_user_settings()
+    user_settings.save_user_settings(settings.config)
   end
 end
 
@@ -1775,7 +1775,7 @@ end
 -- required on user module, or priority tag is obeyed by lite-xl.
 --------------------------------------------------------------------------------
 -- load custom user settings that include list of disabled plugins
-user_settings.load_user_settings()
+settings.config = user_settings.load_user_settings()
 
 -- only disable non already loaded plugins
 if settings.config.disabled_plugins then

@@ -3,11 +3,11 @@ require "core.regex"
 local stderr = require "core.stderr"
 local common = require "core.common"
 local config = require "core.config"
-local user_session = require "core.user_session"
 
 local style = require "colors.default"
 local json = require "libraries.json"
 
+local user_session
 local command
 local keymap
 local dirwatch
@@ -495,7 +495,8 @@ function core.init()
   command = require "core.command"
   keymap = require "core.keymap"
   dirwatch = require "core.dirwatch"
-  ime = require "core.ime"
+  ime = require "core.ime" 
+  user_session = require "core.user_session"
 
   RootView = require "core.views.rootview"
   StatusView = require "core.views.statusview"
