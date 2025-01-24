@@ -277,16 +277,16 @@ settings.add("User Interface",
         }
       }
     },
-    {
-      label = "Borderless",
-      description = "Use built-in window decorations.",
-      path = "borderless",
-      type = settings.type.TOGGLE,
-      default = false,
-      on_apply = function()
-        core.configure_borderless_window()
-      end
-    },
+    -- {
+    --   label = "Borderless",
+    --   description = "Use built-in window decorations.",
+    --   path = "borderless",
+    --   type = settings.type.TOGGLE,
+    --   default = false,
+    --   on_apply = function()
+    --     core.configure_borderless_window()
+    --   end
+    -- },
     {
       label = "Always Show Tabs",
       description = "Shows tabs even if a single document is opened.",
