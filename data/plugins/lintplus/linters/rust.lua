@@ -8,7 +8,7 @@ local common = require "core.common"
 local core = require "core"
 
 local lintplus = require "plugins.lintplus"
-local json = require "plugins.lintplus.json"
+local json = require "libraries.json"
 
 
 -- common functions
