@@ -100,7 +100,7 @@ end
 ---@param doc core.doc
 ---@return core.docview
 function RootView:open_doc(doc, go_to_line_number)
-  core.debug("open_doc go_to_line_number", go_to_line_number)
+  core.debug("open_doc %s go_to_line_number %s", doc.filename, go_to_line_number)
   local node = self:get_active_node_default()
   for i, view in ipairs(node.views) do
     if view.doc == doc then

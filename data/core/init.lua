@@ -235,7 +235,10 @@ function core.add_project_directory(path)
 
   local fstype = PLATFORM == "Linux" and system.get_fs_type(topdir.name) or "unknown"
   topdir.force_scans = (fstype == "nfs" or fstype == "fuse")
+
+  -- load all files recursively
   local t, complete, entries_count = dirwatch.get_directory_files(topdir, topdir.name, "", 0, timed_max_files_pred)
+  
   topdir.files = t
   if not complete then
     topdir.slow_filesystem = not complete and (entries_count <= config.max_project_files)

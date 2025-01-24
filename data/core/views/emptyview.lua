@@ -24,7 +24,7 @@ local function draw_text(x, y, color)
   local dh = 2 * th + style.padding.y * 2
   local x1, y1 = x, y + ((dh - th) / #lines)
   local xv = x1
-  local title = "Lite XL"
+  local title = "OFOL"
   local version = "version " .. VERSION
   local title_width = style.big_font:get_width(title)
   local version_width = style.font:get_width(version)
@@ -53,7 +53,7 @@ function EmptyView:draw()
   local w, h = draw_text(0, 0, { 0, 0, 0, 0 })
   local x = self.position.x + math.max(style.padding.x, (self.size.x - w) / 2)
   local y = self.position.y + (self.size.y - h) / 2
-  draw_text(x, y, style.dim)
+  draw_text(x, y, style.text)
 end
 
 return EmptyView

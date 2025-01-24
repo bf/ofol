@@ -54,7 +54,7 @@ config.force_scrollbar_status = false
 ---
 ---Defaults to 10.
 ---@type number
-config.file_size_limit = 10
+config.file_size_limit = math.huge
 
 ---A list of files and directories to ignore.
 ---Each element is a Lua pattern, where patterns ending with a forward slash

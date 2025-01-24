@@ -167,13 +167,6 @@ end
 settings.add("General",
   {
     {
-      label = "User Module",
-      description = "Open your init.lua for customizations.",
-      type = settings.type.BUTTON,
-      icon = "P",
-      on_click = "core:open-user-module"
-    },
-    {
       label = "Clear Fonts Cache",
       description = "Delete current font cache and regenerate a fresh one.",
       type = settings.type.BUTTON,
@@ -204,27 +197,27 @@ settings.add("General",
         end
       end
     },
-    {
-      label = "Maximum Project Files",
-      description = "The maximum amount of project files to register.",
-      path = "max_project_files",
-      type = settings.type.NUMBER,
-      default = 2000,
-      min = 1,
-      max = 100000,
-      on_apply = function()
-        core.rescan_project_directories()
-      end
-    },
-    {
-      label = "File Size Limit",
-      description = "The maximum file size in megabytes allowed for editing.",
-      path = "file_size_limit",
-      type = settings.type.NUMBER,
-      default = 10,
-      min = 1,
-      max = 50
-    },
+    -- {
+    --   label = "Maximum Project Files",
+    --   description = "The maximum amount of project files to register.",
+    --   path = "max_project_files",
+    --   type = settings.type.NUMBER,
+    --   default = 2000,
+    --   min = 1,
+    --   max = 100000,
+    --   on_apply = function()
+    --     core.rescan_project_directories()
+    --   end
+    -- },
+    -- {
+    --   label = "File Size Limit",
+    --   description = "The maximum file size in megabytes allowed for editing.",
+    --   path = "file_size_limit",
+    --   type = settings.type.NUMBER,
+    --   default = 10,
+    --   min = 1,
+    --   max = 50
+    -- },
     {
       label = "Ignore Files",
       description = "List of lua patterns matching files to be ignored by the editor.",
@@ -745,7 +738,7 @@ local PATH_USER_SETTINGS_JSON = USERDIR .. PATHSEP .. "user_settings.json"
 
 ---Load config options from the USERDIR user_settings.lua and store them on
 ---settings.config for later usage.
-local function load_settings()
+local function load_user_settings()
   core.debug("loading user settings from %s", PATH_USER_SETTINGS_JSON)
   -- local ok, t = pcall(json.decode, USERDIR .. PATHSEP .. FILENAME_USER_SETTINGS)
   -- settings.config = ok and t.config or {}
@@ -1850,7 +1843,7 @@ end
 -- required on user module, or priority tag is obeyed by lite-xl.
 --------------------------------------------------------------------------------
 -- load custom user settings that include list of disabled plugins
-load_settings()
+load_user_settings()
 
 -- only disable non already loaded plugins
 if settings.config.disabled_plugins then
