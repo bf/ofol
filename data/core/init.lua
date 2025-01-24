@@ -3,8 +3,11 @@ require "core.regex"
 local stderr = require "core.stderr"
 local common = require "core.common"
 local config = require "core.config"
+local user_session = require "core.user_session"
+
 local style = require "colors.default"
 local json = require "libraries.json"
+
 local command
 local keymap
 local dirwatch
@@ -18,26 +21,6 @@ local DocView
 local Doc
 
 local core = {}
-
-local function load_session()
-  local ok, t = pcall(dofile, USERDIR .. PATHSEP .. "session.lua")
-  return ok and t or {}
-end
-
-
-local function save_session()
-  local fp = io.open(USERDIR .. PATHSEP .. "session.lua", "w")
-  if fp then
-    fp:write("return {recents=", common.serialize(core.recent_projects),
-      ", window=", common.serialize(table.pack(system.get_window_size(core.window))),
-      ", window_mode=", common.serialize(system.get_window_mode(core.window)),
-      ", previous_find=", common.serialize(core.previous_find),
-      ", previous_replace=", common.serialize(core.previous_replace),
-      "}\n")
-    fp:close()
-  end
-end
-
 
 local function update_recents_project(action, dir_path_abs)
   local dirname = common.normalize_volume(dir_path_abs)
@@ -534,7 +517,7 @@ function core.init()
     core.window = renwindow.create("")
   end
   do
-    local session = load_session()
+    local session = user_session.load_user_session()
     if session.window_mode == "normal" then
       system.set_window_size(core.window, table.unpack(session.window))
     elseif session.window_mode == "maximized" then
@@ -762,7 +745,7 @@ local function quit_with_function(quit_fn, force)
   if force then
     core.delete_temp_files()
     core.on_quit_project()
-    save_session()
+    user_session.save_user_session()
     quit_fn()
   else
     core.confirm_close_docs(core.docs, quit_with_function, quit_fn, true)

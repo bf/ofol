@@ -1,0 +1,23 @@
+local json_config_file = require "libraries.json_config_file"
+
+local PATH_TO_SESSION_JSON_FILE = USERDIR .. PATHSEP .. "session.json"
+
+local user_settings = {}
+
+-- path for user settings
+local PATH_USER_SETTINGS_JSON = USERDIR .. PATHSEP .. "user_settings.json"
+
+---Load config options from the USERDIR user_settings.lua and store them on
+---settings.config for later usage.
+local function load_user_settings()
+  core.debug("loading user settings from %s", PATH_USER_SETTINGS_JSON)
+  settings.config = json_config_file.load_object_from_json_file(PATH_USER_SETTINGS_JSON)
+end
+
+---Save current config options into the USERDIR user_settings.lua
+local function save_user_settings()
+  core.debug("saving user settings to %s", PATH_USER_SETTINGS_JSON)
+  json_config_file.save_object_to_json_file(settings.config, PATH_USER_SETTINGS_JSON)
+end
+
+return user_settings

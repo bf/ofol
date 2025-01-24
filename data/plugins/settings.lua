@@ -5,8 +5,9 @@ local common = require "core.common"
 local command = require "core.command"
 local keymap = require "core.keymap"
 local style = require "core.style"
-local View = require "core.view"
+local user_settings = require "core.user_settings"
 
+local View = require "core.view"
 local DocView = require "core.views.docview"
 
 local json_config_file = require "libraries.json_config_file"
@@ -35,6 +36,9 @@ local Fonts = require "libraries.widget.fonts"
 local FilePicker = require "libraries.widget.filepicker"
 local ColorPicker = require "libraries.widget.colorpicker"
 local MessageBox = require "libraries.widget.messagebox"
+
+
+
 
 ---@class plugins.settings
 local settings = {}
@@ -730,22 +734,6 @@ local function get_installed_colors()
   return ordered
 end
 
--- path for user settings
-local PATH_USER_SETTINGS_JSON = USERDIR .. PATHSEP .. "user_settings.json"
-
----Load config options from the USERDIR user_settings.lua and store them on
----settings.config for later usage.
-local function load_user_settings()
-  core.debug("loading user settings from %s", PATH_USER_SETTINGS_JSON)
-  settings.config = json_config_file.load_object_from_json_file(PATH_USER_SETTINGS_JSON)
-end
-
----Save current config options into the USERDIR user_settings.lua
-local function save_user_settings()
-  core.debug("saving user settings to %s", PATH_USER_SETTINGS_JSON)
-  json_config_file.save_object_to_json_file(settings.config, PATH_USER_SETTINGS_JSON)
-end
-
 ---Apply a keybinding and optionally save it.
 ---@param cmd string
 ---@param bindings table<integer, string>
@@ -805,7 +793,7 @@ local function apply_keybinding(cmd, bindings, skip_save)
   end
 
   if changed then
-    save_user_settings()
+    user_settings.save_user_settings()
   end
 
   if not row_value then
@@ -1199,7 +1187,7 @@ local function add_control(pane, option, plugin_name)
       end
 
       set_config_value(settings.config, path, value)
-      save_user_settings()
+      user_settings.save_user_settings()
       if option.on_apply then
         option.on_apply(value)
       end
@@ -1297,7 +1285,7 @@ function Settings:load_color_settings()
   function listbox:on_row_click(idx, data)
     core.reload_module("colors." .. data.name)
     settings.config.theme = data.name
-    save_user_settings()
+    user_settings.save_user_settings()
   end
 end
 
@@ -1326,7 +1314,7 @@ function Settings:disable_plugin(plugin)
   end
 
   settings.config.disabled_plugins[plugin] = true
-  save_user_settings()
+  user_settings.save_user_settings()
 end
 
 ---Load plugin and append its settings to the plugins section.
@@ -1382,7 +1370,7 @@ function Settings:enable_plugin(plugin)
   end
 
   settings.config.enabled_plugins[plugin] = true
-  save_user_settings()
+  user_settings.save_user_settings()
 
   if loaded then
     core.log("Loaded '%s' plugin", plugin)
@@ -1512,7 +1500,7 @@ function keymap_dialog:on_reset()
     settings.config.custom_keybindings[self.command]
   then
     settings.config.custom_keybindings[self.command] = nil
-    save_user_settings()
+    user_settings.save_user_settings()
   end
 end
 
@@ -1787,7 +1775,7 @@ end
 -- required on user module, or priority tag is obeyed by lite-xl.
 --------------------------------------------------------------------------------
 -- load custom user settings that include list of disabled plugins
-load_user_settings()
+user_settings.load_user_settings()
 
 -- only disable non already loaded plugins
 if settings.config.disabled_plugins then
