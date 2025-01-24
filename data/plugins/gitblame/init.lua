@@ -1,11 +1,3 @@
--- mod-version:3
-
-----------------------------------------------------------------
--- NAME        : gitblame
--- DESCRIPTION : Show git author and commit message on a certain line
--- AUTHOR      : Juliardi (github.com/juliardi)
-----------------------------------------------------------------
-
 local core = require "core"
 local style = require "core.style"
 local common = require "core.common"

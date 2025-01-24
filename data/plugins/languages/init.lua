@@ -1,10 +1,5 @@
--- mod-version:3
+local core = require "core"
 
-----------------------------------------------------------------
--- NAME        : languages
--- DESCRIPTION : all languages
--- AUTHOR      : bf
-----------------------------------------------------------------
 local languages = {}
 
 -- load all languages
