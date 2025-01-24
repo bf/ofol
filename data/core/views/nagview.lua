@@ -134,7 +134,7 @@ local function register_mouse_pressed(self)
 end
 
 local function unregister_mouse_pressed(self)
-  local RootView = require "core.rootview"
+  local RootView = require "core.views.rootview"
   if
     self.on_mouse_pressed_root
     and
