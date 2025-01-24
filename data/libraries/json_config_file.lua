@@ -1,0 +1,59 @@
+local json = require("..json")
+local core = require("core")
+
+local json_config_file = {}
+
+function json_config_file.load_object_from_json_file(json_file_path)
+  core.debug("loading data from json file %s", json_file_path)
+
+  -- read local file 
+  local open = io.open
+  local file = open(json_file_path, "rb")
+  if not file then 
+    core.error("could not read file %s", json_file_path)
+    return {} 
+  end
+
+  -- read file as string
+  local jsonString = file:read "*a"
+  file:close()
+
+  core.debug("reading file: %s", json_file_path)
+
+  -- convert json to object
+  local ok, result = pcall(json.decode, jsonString)
+
+  if ok then
+    core.debug("json.decode result: %s", result)
+    if not result then
+      core.warn("json.decode returned empty value (this might be a bug) when reading file %s", json_file_path)
+      return {}
+    else
+      -- proper result, return successfully
+      return result
+    end
+  else
+    core.error("json.decode failed: %s for file %s", result, json_file_path)
+    return {}
+  end
+end
+
+function json_config_file.save_object_to_json_file(obj, json_file_path)
+  local fp = io.open(json_file_path, "w")
+  if not fp then
+    core.error("could not open json file for writing: %s", json_file_path)
+    return
+  end
+
+  -- convert to json
+  local json_string = json.encode(obj)
+  core.debug("json for saving: %s", json_string)
+
+  -- write to file
+  fp:write(json_string)
+  fp:close()
+
+  core.debug("successfully saved json to %s", json_file_path)
+end
+
+return json_config_file

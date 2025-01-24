@@ -9,7 +9,7 @@ local View = require "core.view"
 
 local DocView = require "core.views.docview"
 
-local json = require "libraries.json"
+local json_config_file = require "libraries.json_config_file"
 
 -- check if widget is installed before proceeding
 local widget_found, Widget = pcall(require, "libraries.widget")
@@ -737,66 +737,13 @@ local PATH_USER_SETTINGS_JSON = USERDIR .. PATHSEP .. "user_settings.json"
 ---settings.config for later usage.
 local function load_user_settings()
   core.debug("loading user settings from %s", PATH_USER_SETTINGS_JSON)
-  -- local ok, t = pcall(json.decode, USERDIR .. PATHSEP .. FILENAME_USER_SETTINGS)
-  -- settings.config = ok and t.config or {}
-
-  -- read local file 
-  local open = io.open
-  local file = open(PATH_USER_SETTINGS_JSON, "rb")
-  if not file then 
-    core.error("could not read file %s", PATH_USER_SETTINGS_JSON)
-    return {} 
-  end
-  local jsonString = file:read "*a"
-  file:close()
-
-  core.debug("read string user settings: %s", jsonString)
-
-  local ok, result = pcall(json.decode, jsonString)
-
-  if ok then
-    core.debug("json.decode result: %s", result)
-    if not result then
-      core.warn("json.decode returned empty value (this might be a bug) when reading file %s", PATH_USER_SETTINGS_JSON)
-      return {}
-    else
-      -- proper result, return successfully
-      return result.config
-    end
-  else
-    core.error("json.decode failed: %s for user settings file %s", result, PATH_USER_SETTINGS_JSON)
-    return {}
-  end
+  settings.config = json_config_file.load_object_from_json_file(PATH_USER_SETTINGS_JSON)
 end
 
-
 ---Save current config options into the USERDIR user_settings.lua
-local function save_settings()
+local function save_user_settings()
   core.debug("saving user settings to %s", PATH_USER_SETTINGS_JSON)
-
-  local fp = io.open(PATH_USER_SETTINGS_JSON, "w")
-  if not fp then
-    core.error("could not open user settings file for writing: %s", PATH_USER_SETTINGS_JSON)
-    return
-  end
-
-  -- local output = "{\n  [\"config\"] = "
-  --   .. common.serialize(
-  --     settings.config,
-  --     { pretty = true, escape = true, sort = true, initial_indent = 1 }
-  --   ):gsub("^%s+", "")
-  --   .. "\n}\n"
-
-  -- convert to json
-  local obj = { ["config"] = settings.config }
-  local json_string = json.encode(obj)
-  core.debug("user settings json for saving: %s", json_string)
-
-  -- write to file
-  fp:write(json_string)
-  fp:close()
-
-  core.debug("successfully saved user settings in %s", PATH_USER_SETTINGS_JSON)
+  json_config_file.save_object_to_json_file(settings.config, PATH_USER_SETTINGS_JSON)
 end
 
 ---Apply a keybinding and optionally save it.
@@ -858,7 +805,7 @@ local function apply_keybinding(cmd, bindings, skip_save)
   end
 
   if changed then
-    save_settings()
+    save_user_settings()
   end
 
   if not row_value then
@@ -1252,7 +1199,7 @@ local function add_control(pane, option, plugin_name)
       end
 
       set_config_value(settings.config, path, value)
-      save_settings()
+      save_user_settings()
       if option.on_apply then
         option.on_apply(value)
       end
@@ -1350,7 +1297,7 @@ function Settings:load_color_settings()
   function listbox:on_row_click(idx, data)
     core.reload_module("colors." .. data.name)
     settings.config.theme = data.name
-    save_settings()
+    save_user_settings()
   end
 end
 
@@ -1379,7 +1326,7 @@ function Settings:disable_plugin(plugin)
   end
 
   settings.config.disabled_plugins[plugin] = true
-  save_settings()
+  save_user_settings()
 end
 
 ---Load plugin and append its settings to the plugins section.
@@ -1435,7 +1382,7 @@ function Settings:enable_plugin(plugin)
   end
 
   settings.config.enabled_plugins[plugin] = true
-  save_settings()
+  save_user_settings()
 
   if loaded then
     core.log("Loaded '%s' plugin", plugin)
@@ -1565,7 +1512,7 @@ function keymap_dialog:on_reset()
     settings.config.custom_keybindings[self.command]
   then
     settings.config.custom_keybindings[self.command] = nil
-    save_settings()
+    save_user_settings()
   end
 end
 
