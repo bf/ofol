@@ -3,27 +3,27 @@ local core = require "core"
 local common = require "core.common"
 local style = require "core.style"
 local view = require "plugins.treeview"
-local fsutils = require "plugins.treeview-extender.fsutils"
+local fsutils = require "libraries.fsutils"
 
 local actions = {}
 
-function actions.duplicate_file()
-  local old_filename = view.hovered_item.abs_filename
-  core.command_view:set_text(view.hovered_item.filename)
-  core.command_view:enter("Filename", function(filename)
-    local new_filename = core.project_dir .. PATHSEP .. filename
+-- function actions.duplicate_file()
+--   local old_filename = view.hovered_item.abs_filename
+--   core.command_view:set_text(view.hovered_item.filename)
+--   core.command_view:enter("Filename", function(filename)
+--     local new_filename = core.project_dir .. PATHSEP .. filename
 
-    if (fsutils.is_object_exist(new_filename)) then
-      core.error("[treeview-extender] Unable to copy file : %s to %s. Duplicate name exists.", old_filename, new_filename)
-      return
-    end
+--     if (fsutils.is_object_exist(new_filename)) then
+--       core.error("[treeview-extender] Unable to copy file : %s to %s. Duplicate name exists.", old_filename, new_filename)
+--       return
+--     end
 
-    fsutils.copy_file(old_filename, new_filename)
+--     fsutils.copy_file(old_filename, new_filename)
 
-    core.root_view:open_doc(core.open_doc(new_filename))
-    core.log("[treeview-extender] %s duplicated to %s", old_filename, new_filename)
-  end, common.path_suggest)
-end
+--     core.root_view:open_doc(core.open_doc(new_filename))
+--     core.log("[treeview-extender] %s duplicated to %s", old_filename, new_filename)
+--   end, common.path_suggest)
+-- end
 
 function actions.copy_to()
   local source_filename = view.hovered_item.abs_filename
