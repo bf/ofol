@@ -44,6 +44,7 @@ end
 
 function stderr.error(text)
   stderr.print_with_tag("WARN", text)
+  os.exit(3)
 end
 
 return stderr
