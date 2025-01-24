@@ -46,12 +46,7 @@ end }
 table.pack = table.pack or pack or function(...) return {...} end
 table.unpack = table.unpack or unpack
 
--- print message to stderr
--- core.log() functions are not loaded at this point
--- so we need to make another function for this
-local function print_to_stderr(text) 
-  io.stderr:write(text .. "\n")
-end
+local stderr = require("core.stderr")
 
 local lua_require = require
 local require_stack = { "" }
@@ -89,12 +84,12 @@ function require(modname, ...)
         return error("Require stack underflowed.")
       else
         local base_path = require_stack[#require_stack]
-        print_to_stderr(string.format("[INFO] [start.lua] require(%d): %s\tbase_path before: %s", level, modname, base_path))
+        stderr.info(string.format("[start.lua] require(%d): %s\tbase_path before: %s", level, modname, base_path))
         while level > 1 do
           base_path = string.match(base_path, "^(.*)%.") or ""
           level = level - 1
         end
-        print_to_stderr(string.format("[INFO] [start.lua] require(%d): %s\tbase_path after: %s", level, modname, base_path))
+        stderr.info(string.format("[start.lua] require(%d): %s\tbase_path after: %s", level, modname, base_path))
         modname = base_path
         if #base_path > 0 then
           modname = modname .. "."
@@ -102,7 +97,7 @@ function require(modname, ...)
         modname = modname .. rel_path
       end
     else
-      print_to_stderr(string.format("[INFO] [start.lua] require(%d): %s\trel_path: %s", level, modname, rel_path))
+      stderr.info(string.format("[start.lua] require(%d): %s\trel_path: %s", level, modname, rel_path))
     end
   else
     error("[start.lua] require called without modname?")
@@ -114,7 +109,7 @@ function require(modname, ...)
   table.remove(require_stack)
 
   if not ok then
-    print_to_stderr(string.format("[ERROR] [start.lua] require(): including mod %s loaderdata %s result %s", modname, loaderdata, result))
+    stderr.error(string.format("[start.lua] require(): including mod %s loaderdata %s result %s", modname, loaderdata, result))
     return error(result)
   end
 

@@ -1,5 +1,6 @@
 require "core.strict"
 require "core.regex"
+local stderr = require "core.stderr"
 local common = require "core.common"
 local config = require "core.config"
 local style = require "colors.default"
@@ -1164,7 +1165,7 @@ function core.custom_log(level, show, backtrace, fmt, ...)
   if config.log_to_stderr then
     -- from https://stackoverflow.com/a/64271511
     local relative_path = common.relative_path(DATADIR, item.at)
-    io.stderr:write(string.format("[%s] %s @ %s\n",  item.level, item.text, relative_path))
+    stderr.print_with_tag(item.level, string.format("%s @ %s", item.text, relative_path))
   end
 
   return item
