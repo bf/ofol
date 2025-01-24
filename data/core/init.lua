@@ -238,7 +238,7 @@ function core.add_project_directory(path)
 
   -- load all files recursively
   local t, complete, entries_count = dirwatch.get_directory_files(topdir, topdir.name, "", 0, timed_max_files_pred)
-  
+
   topdir.files = t
   if not complete then
     topdir.slow_filesystem = not complete and (entries_count <= config.max_project_files)
@@ -932,6 +932,13 @@ end
 
 function core.open_doc(filename)
   local new_file = not filename or not system.get_file_info(filename)
+
+  if new_file then
+    core.log_quiet("open new file")
+  else
+    core.log_quiet("open \"%s\"", filename)
+  end
+
   local abs_filename
   if filename then
     -- normalize filename and set absolute filename then
@@ -944,15 +951,12 @@ function core.open_doc(filename)
       end
     end
   end
+
   -- no existing doc for filename; create new
   local doc = Doc(filename, abs_filename, new_file)
   table.insert(core.docs, doc)
 
-  if filename then
-    core.log_quiet("Opened doc \"%s\"", filename)
-  else
-    core.log_quiet("Opened new doc")
-  end
+  core.log_quiet("created new abs_filename %s", abs_filename)
 
   return doc
 end

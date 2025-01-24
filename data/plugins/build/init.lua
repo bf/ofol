@@ -739,7 +739,7 @@ end, {
 })
 
 keymap.add {
-  ["lclick"]             = { "build:toggle-minimize", "build:jump-to-hovered" },
+  -- ["lclick"]             = { "build:toggle-minimize", "build:jump-to-hovered" },
   ["ctrl+b"]             = { "build:build", "build:terminate" },
   ["ctrl+alt+b"]         = "build:rebuild",
   ["ctrl+e"]             = "build:run-or-term-or-kill",
