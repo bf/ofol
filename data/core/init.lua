@@ -1167,14 +1167,21 @@ function core.custom_log(level, show, backtrace, fmt, ...)
     end
   end
 
+  -- fetch debug info
   local info = debug.getinfo(2, "Sln")
+
+  -- get path of calling function
   local at
   if #DATADIR > 0 and #info.source > 2 then
+    -- figure out relative path if possible
     local relative_path = common.relative_path(DATADIR, string.sub(info.source, 2))
     at = string.format("%s:%d", relative_path, info.currentline)
   else 
+    -- use absolute path as fallback
     at = info.source
   end
+
+  -- create object for logview storage
   local item = {
     level = level,
     text = text,
@@ -1191,6 +1198,7 @@ function core.custom_log(level, show, backtrace, fmt, ...)
   if config.log_to_stderr then
     -- from https://stackoverflow.com/a/64271511
     -- local relative_path = string.format("%s:%d", common.relative_path(DATADIR, info.source), info.currentline)
+    -- stderr.print_with_tag(item.level, string.format("%s [%s] %s(): %s", os.date("%Y-%m-%d %M:%H"), item.at, info.name, item.text))
     stderr.print_with_tag(item.level, string.format("[%s] %s(): %s", item.at, info.name, item.text))
   end
 
