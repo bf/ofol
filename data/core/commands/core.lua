@@ -137,7 +137,7 @@ command.add(nil, {
     core.command_view:enter("Open File", {
       text = text,
       submit = function(text)
-        -- print("submit",#text, text)
+        core.debug("[open file] [submit]", #text, text)
         -- check for goto line command
         local filename, go_to_line_number = text:match("^([^:]*):([1-9][0-9]*)")
         
@@ -159,21 +159,19 @@ command.add(nil, {
       end,
       suggest = function (text)
         -- suggest file
-        -- print("Open File: suggest", #text,  text)
+        core.debug("[open file] [suggest]", #text, text)
         -- check if user wants to go specific line
         if current_file ~= nil and text:match("^:([1-9][0-9]*)") then
           local path_relative = core.normalize_to_project_dir(current_file)
-
-          -- print("matches")
           local go_to_line_number = tonumber(string.sub(text, 2))
-          -- print("go_to_line_number:",  go_to_line_number)
+          core.debug("[open file] [suggest] go_to_line_number:",  go_to_line_number)
 
           local message = string.format(":%d (goto line %d in %s)", go_to_line_number, go_to_line_number, path_relative)
-          -- print("return value:", message)
+          core.debug("[open file] [suggest] return value:", message)
           return { message }
         else
           local result = common.home_encode_list(common.path_suggest(common.home_expand(text)))
-          -- print("suggest result:", json.encode(result))
+          core.debug("[open file] [suggest] result:", json.encode(result))
           return result
         end
       end,

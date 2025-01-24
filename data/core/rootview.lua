@@ -99,7 +99,7 @@ end
 ---@param doc core.doc
 ---@return core.docview
 function RootView:open_doc(doc, go_to_line_number)
-  -- print("open_doc go_to_line_number", go_to_line_number)
+  core.debug("open_doc go_to_line_number", go_to_line_number)
   local node = self:get_active_node_default()
   for i, view in ipairs(node.views) do
     if view.doc == doc then
@@ -107,7 +107,7 @@ function RootView:open_doc(doc, go_to_line_number)
 
       -- move cursor to line number if needed
       if go_to_line_number then
-        -- print("open_doc found active view for", go_to_line_number)
+        core.debug("open_doc found active view for go_to_line_number", go_to_line_number)
         -- scroll to line
         view:scroll_to_line(go_to_line_number, true, true)
 
@@ -123,7 +123,8 @@ function RootView:open_doc(doc, go_to_line_number)
   self.root_node:update_layout()
 
   if go_to_line_number then
-    -- print("open_doc added view for", go_to_line_number)
+    core.debug("open_doc added new view for go_to_line_number", go_to_line_number)
+
     -- scroll to line
     view:scroll_to_line(go_to_line_number, true, true)
 

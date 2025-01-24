@@ -17,8 +17,11 @@ USERDIR = (system.get_file_info(EXEDIR .. PATHSEP .. 'user') and (EXEDIR .. PATH
        or ((os.getenv("XDG_CONFIG_HOME") and os.getenv("XDG_CONFIG_HOME") .. PATHSEP .. PROJECT_NAME))
        or (HOME and (HOME .. PATHSEP .. '.config' .. PATHSEP .. PROJECT_NAME))
 
+
+
 package.path = DATADIR .. '/?.lua;'
 package.path = DATADIR .. '/?/init.lua;' .. package.path
+-- TODO: check if this is needed
 package.path = USERDIR .. '/?.lua;' .. package.path
 package.path = USERDIR .. '/?/init.lua;' .. package.path
 
@@ -42,6 +45,13 @@ end }
 
 table.pack = table.pack or pack or function(...) return {...} end
 table.unpack = table.unpack or unpack
+
+-- print message to stderr
+-- core.log() functions are not loaded at this point
+-- so we need to make another function for this
+local function print_to_stderr(text) 
+  io.stderr:write(text .. "\n")
+end
 
 local lua_require = require
 local require_stack = { "" }
@@ -73,40 +83,45 @@ function require(modname, ...)
   if modname then
     local level, rel_path = string.match(modname, "^(%.*)(.*)")
     level = #(level or "")
-
-    print(string.format("[core] [require] %s (rel_path %s level %d)", modname, rel_path, level))
+    
     if level > 0 then
       if #require_stack == 0 then
         return error("Require stack underflowed.")
       else
         local base_path = require_stack[#require_stack]
-        print(string.format("[core] [require] %s (base_path: %s)", modname, base_path))
+        print_to_stderr(string.format("[INFO] [start.lua] require(%d): %s\tbase_path before: %s", level, modname, base_path))
         while level > 1 do
           base_path = string.match(base_path, "^(.*)%.") or ""
           level = level - 1
         end
-        print(string.format("[core] [require] %s (base_path: %s)", modname, base_path))
+        print_to_stderr(string.format("[INFO] [start.lua] require(%d): %s\tbase_path after: %s", level, modname, base_path))
         modname = base_path
         if #base_path > 0 then
           modname = modname .. "."
         end
         modname = modname .. rel_path
       end
+    else
+      print_to_stderr(string.format("[INFO] [start.lua] require(%d): %s\trel_path: %s", level, modname, rel_path))
     end
+  else
+    error("[start.lua] require called without modname?")
   end
+
 
   table.insert(require_stack, modname)
   local ok, result, loaderdata = pcall(lua_require, modname, ...)
   table.remove(require_stack)
 
   if not ok then
-    print("Error including mod", modname)
-    print("Error loaderdata", loaderdata)
-    print("Error result", result)
+    print_to_stderr(string.format("[ERROR] [start.lua] require(): including mod %s loaderdata %s result %s", modname, loaderdata, result))
     return error(result)
   end
+
   return result, loaderdata
 end
+
+
 
 ---Returns the current `require` path.
 ---@see require for details and caveats

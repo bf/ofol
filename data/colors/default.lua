@@ -39,6 +39,7 @@ style.syntax["string"] = { common.color "#f7c95c" }
 style.syntax["operator"] = { common.color "#93DDFA" } -- = + - / < >
 style.syntax["function"] = { common.color "#93DDFA" }
 
+style.log["DEBUG"]  = { icon = "i", color = style.dim }
 style.log["INFO"]  = { icon = "i", color = style.text }
 style.log["WARN"]  = { icon = "!", color = style.warn }
 style.log["ERROR"] = { icon = "!", color = style.error }

@@ -55,6 +55,7 @@ local function update_recents_project(action, dir_path_abs)
 end
 
 
+
 function core.set_project_dir(new_dir, change_project_fn)
   local chdir_ok = pcall(system.chdir, new_dir)
   if chdir_ok then
@@ -823,8 +824,12 @@ function core.init()
   core.configure_borderless_window()
 
   if #plugins_refuse_list.userdir.plugins > 0 or #plugins_refuse_list.datadir.plugins > 0 then
-    print("Error: plugins_refuse_list.userdir.plugins", json.encode(plugins_refuse_list.userdir.plugins))
-    print("Error: plugins_refuse_list.datadir.plugins", json.encode(plugins_refuse_list.datadir.plugins))
+    if #plugins_refuse_list.userdir.plugins > 0 then
+      core.debug("plugins_refuse_list.userdir.plugins", json.encode(plugins_refuse_list.userdir.plugins))
+    end
+    if #plugins_refuse_list.datadir.plugins > 0 then
+      core.debug("plugins_refuse_list.datadir.plugins", json.encode(plugins_refuse_list.datadir.plugins))
+    end
 
     local opt = {
       { text = "Exit", default_no = true },
@@ -845,7 +850,7 @@ function core.init()
         "Please download a recent version from https://github.com/lite-xl/lite-xl-plugins."
         , table.concat(msg, ".\n\n"))
 
-    print("Error:", errorMessage)
+    core.error("Error:", errorMessage)
     core.nag_view:show(
       "Refused Plugins", errorMessage,
       opt, function(item)
@@ -968,13 +973,12 @@ function core.load_plugins()
 
   local load_start = system.get_time()
   for _, plugin in ipairs(ordered) do
-    print()
-    print(string.format("[core] [plugin] [%s] loading from %s", plugin.name, plugin.dir))
+    core.debug(string.format("[core] [plugin] [%s] loading from %s", plugin.name, plugin.dir))
     if config.plugins[plugin.name] ~= false then
       local start = system.get_time()
       local ok, loaded_plugin = core.try(require, "plugins." .. plugin.name)
       if ok then
-        print(string.format("[core] [plugin] [%s] loaded", plugin.name))
+        core.debug(string.format("[core] [plugin] [%s] loaded", plugin.name))
         core.log_quiet(
           "Loaded plugin %q from %s in %.1fms",
           plugin.name,
@@ -988,7 +992,7 @@ function core.load_plugins()
         core.try(config.plugins[plugin.name].onload, loaded_plugin)
       end
     else
-      print(string.format("[core] [plugin] [%s] ERROR: skipped, NOT(config.plugins[plugin.name] ~= false) for %s", plugin.name, config.plugins[plugin.name]))
+      core.warn(string.format("[core] [plugin] [%s] skipped, NOT(config.plugins[plugin.name] ~= false) for %s", plugin.name, config.plugins[plugin.name]))
     end
   end
   core.log_quiet(
@@ -1133,7 +1137,6 @@ function core.get_views_referencing_doc(doc)
   return res
 end
 
-
 function core.custom_log(level, show, backtrace, fmt, ...)
   local text = string.format(fmt, ...)
   if show then
@@ -1156,17 +1159,27 @@ function core.custom_log(level, show, backtrace, fmt, ...)
   if #core.log_items > config.max_log_items then
     table.remove(core.log_items, 1)
   end
+
+  -- print to stderr
+  if config.log_to_stderr then
+    -- from https://stackoverflow.com/a/64271511
+    local relative_path = common.relative_path(DATADIR, item.at)
+    io.stderr:write(string.format("[%s] %s @ %s\n",  item.level, item.text, relative_path))
+  end
+
   return item
 end
-
 
 function core.log(...)
   return core.custom_log("INFO", true, false, ...)
 end
 
-
 function core.log_quiet(...)
   return core.custom_log("INFO", false, false, ...)
+end
+
+function core.debug(...)
+  return core.custom_log("DEBUG", false, false, ...)
 end
 
 function core.warn(...)
@@ -1176,7 +1189,6 @@ end
 function core.error(...)
   return core.custom_log("ERROR", true, true, ...)
 end
-
 
 function core.get_log(i)
   if i == nil then
@@ -1193,7 +1205,6 @@ function core.get_log(i)
   end
   return text
 end
-
 
 function core.try(fn, ...)
   local err

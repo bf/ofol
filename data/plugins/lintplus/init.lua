@@ -174,7 +174,7 @@ local function process_line(doc, linter, line, context)
   if iterator == "bail" then return iterator end
 
   if os.getenv("LINTPLUS_DEBUG_LINES") then
-    print("lint+ | "..line)
+    core.debug("lint+ | "..line)
   end
 
   for rawfile, lineno, columnno, kind, message, rail in iterator do

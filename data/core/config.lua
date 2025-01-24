@@ -10,6 +10,8 @@ local config = {}
 ---@type number
 config.fps = 60
 
+config.log_to_stderr = true
+
 ---Maximum number of log items that will be stored.
 ---When the number of log items exceed this value, old items will be discarded.
 ---
