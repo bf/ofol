@@ -8,7 +8,7 @@ local HIDE_DEBUG_MESSAGES = false
 -- core.log() functions are not loaded at this point
 -- so we need to make another function for this
 function stderr.print(text) 
-  io.stderr:write(text .. " \n")
+  io.stderr:write(system.get_time() .. " " .. text .. " \n")
 end
 
 local c27 = string.char(27)

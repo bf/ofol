@@ -200,7 +200,7 @@ config.draw_whitespace = false
 ---
 ---Defaults to false.
 ---@type boolean
-config.borderless = false
+config.borderless = true
 
 ---Shows/hides the close buttons on tabs.
 ---When hidden, users can close tabs via keyboard shortcuts or commands.
