@@ -6,7 +6,7 @@
 local core = require "core"
 local command = require "core.command"
 local view = require "plugins.treeview"
-local fsutils = require "plugins.treeview-extender.fsutils"
+local fsutils = require "libraries.fsutils"
 local actions = require "plugins.treeview-extender.actions"
 
 local menu = view.contextmenu

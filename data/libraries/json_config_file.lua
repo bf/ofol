@@ -38,7 +38,9 @@ function json_config_file.load_object_from_json_file(json_file_path)
   end
 end
 
-function json_config_file.save_object_to_json_file(obj, json_file_path)
+function json_config_file.save_object_to_json_file(data, json_file_path)
+  core.debug("saving %s to file %s", data, json_file_path)
+
   local fp = io.open(json_file_path, "w")
   if not fp then
     core.error("could not open json file for writing: %s", json_file_path)
@@ -46,8 +48,13 @@ function json_config_file.save_object_to_json_file(obj, json_file_path)
   end
 
   -- convert to json
-  local json_string = json.encode(obj)
-  core.debug("json for saving: %s", json_string)
+  local ok, json_string = pcall(json.encode, data)
+  if not ok then
+    core.error("could not convert %s to json: %s", data, json_string)
+    error(json_string)
+  end
+
+  core.debug("json string for saving: %s", json_string)
 
   -- write to file
   fp:write(json_string)

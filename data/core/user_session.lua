@@ -1,4 +1,5 @@
 local json_config_file = require "libraries.json_config_file"
+local core = require "core"
 
 local PATH_TO_SESSION_JSON_FILE = USERDIR .. PATHSEP .. "session.json"
 
@@ -10,7 +11,7 @@ function user_session.load_user_session()
   -- return ok and t or {}
 end
 
-function user_session.save_user_session()
+function user_session.save_user_session(data)
   -- local fp = io.open(USERDIR .. PATHSEP .. "session.lua", "w")
   -- if fp then
   --   fp:write("return {recents=", common.serialize(core.recent_projects),
@@ -21,15 +22,6 @@ function user_session.save_user_session()
   --     "}\n")
   --   fp:close()
   -- end
-
-  local data = {
-    ["recents"] = core.recent_projects,
-    ["window"] = table.pack(system.get_window_size(core.window)),
-    ["window_mode"] = system.get_window_mode(core.window),
-    ["previous_find"] = core.previous_find,
-    ["previous_replace"] = core.previous_replace
-  }
-
   json_config_file.save_object_to_json_file(data, PATH_TO_SESSION_JSON_FILE)
 end
 

@@ -518,15 +518,30 @@ function core.init()
     core.window = renwindow.create("")
   end
   do
-    local session = user_session.load_user_session()
-    if session.window_mode == "normal" then
-      system.set_window_size(core.window, table.unpack(session.window))
-    elseif session.window_mode == "maximized" then
+    -- load last session
+    local stored_session_data = user_session.load_user_session()
+    core.debug("loaded stored_session_data %s", stored_session_data)
+
+    -- apply stored settings to window
+    if stored_session_data.window_mode == "normal" then
+      -- attempt to set window size, but ignore if an error appears
+      local ok, result = pcall(system.set_window_size, core.window, table.unpack(stored_session_data.window))
+      
+      -- handle error
+      if not ok then
+        for k,v in pairs(stored_session_data) do
+          core.debug("stored_session_data k %s v %s", k, v)
+        end
+        core.error("set_window_size failed for stored_session_data.window %s with %s", stored_session_data, result)
+      end
+    elseif stored_session_data.window_mode == "maximized" then
       system.set_window_mode(core.window, "maximized")
     end
-    core.recent_projects = session.recents or {}
-    core.previous_find = session.previous_find or {}
-    core.previous_replace = session.previous_replace or {}
+
+    -- apply other values from last session
+    core.recent_projects = stored_session_data.recent_projects or {}
+    core.previous_find = stored_session_data.previous_find or {}
+    core.previous_replace = stored_session_data.previous_replace or {}
   end
 
   local project_dir = core.recent_projects[1] or "."
@@ -746,7 +761,21 @@ local function quit_with_function(quit_fn, force)
   if force then
     core.delete_temp_files()
     core.on_quit_project()
-    user_session.save_user_session()
+
+    -- prepare user session object
+    local session_data = {}
+    session_data.recent_projects = core.recent_projects
+    session_data.window_mode = system.get_window_mode(core.window)
+    session_data.previous_find = core.previous_find
+    session_data.previous_replace = core.previous_replace
+
+    -- special handlign for window height/width/x/y
+    local w, h, x, y = system.get_window_size(core.window)
+    session_data.window = { w, h, x, y }
+
+    -- store session
+    user_session.save_user_session(session_data)
+
     quit_fn()
   else
     core.confirm_close_docs(core.docs, quit_with_function, quit_fn, true)
