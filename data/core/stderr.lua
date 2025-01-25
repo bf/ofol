@@ -1,14 +1,18 @@
 local stderr = {}
 
 local EXIT_ON_ERROR = true
-
 local HIDE_DEBUG_MESSAGES = false
+local BENCHMARK = false
 
 -- print message to stderr
 -- core.log() functions are not loaded at this point
 -- so we need to make another function for this
 function stderr.print(text) 
-  io.stderr:write(system.get_time() .. " " .. text .. " \n")
+  if BENCHMARK then
+    io.stderr:write(system.get_time() .. " " .. text .. " \n")
+  else
+    io.stderr:write(text .. " \n")
+  end
 end
 
 local c27 = string.char(27)

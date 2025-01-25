@@ -20,7 +20,7 @@ config.plugins.linewrapping = common.merge({
   -- Whether or not we should indent ourselves like the first line of a wrapped block.
   indent = true,
   -- Whether or not to enable wrapping by default when opening files.
-  enable_by_default = false,
+  enable_by_default = true,
   -- Requires tokenization
   require_tokenization = false,
   -- The config specification used by gui generators
