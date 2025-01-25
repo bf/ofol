@@ -223,6 +223,35 @@ function StatusView:register_docview_items()
   -- RIGHT SIDE of Status Bar
   --
 
+  -- scaling status
+  local scale = require("plugins.scale")
+
+  self:add_item({
+    predicate = function ()
+      return predicate_docview() and (scale.get() ~= 1)
+    end,
+    -- predicate = function()
+    --   -- only show if scale changed
+    --   return (scale.get() <> 1)
+    -- end,
+    name = "status:scale",
+    alignment = StatusView.Item.RIGHT,
+    get_item = function()
+      local current_scale = scale.get()
+      if current_scale == 1 then 
+        return {}
+      else
+        return { 
+          string.format('%.0f%%', current_scale * 100 )
+        }
+      end
+    end,
+    position = 1,
+    tooltip = "scale",
+    separator = self.separator2,
+  })
+
+
   -- show cursor position line:column
   self:add_item({
     predicate = predicate_docview,

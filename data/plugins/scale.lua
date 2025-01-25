@@ -182,6 +182,8 @@ if config.plugins.scale.use_mousewheel then
   }
 end
 
+
+
 return {
   ["set"] = set_scale,
   ["get"] = get_scale,
@@ -189,3 +191,4 @@ return {
   ["decrease"] = dec_scale,
   ["reset"] = res_scale
 }
+
