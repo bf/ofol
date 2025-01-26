@@ -1,3 +1,5 @@
+local stderr = require "core.stderr"
+
 local strict = {}
 strict.defined = {}
 
@@ -12,13 +14,13 @@ end
 
 
 function strict.__newindex(t, k, v)
-  error("cannot set undefined variable: " .. k, 2)
+  stderr.error("cannot set undefined variable: " .. k, 2)
 end
 
 
 function strict.__index(t, k)
   if not strict.defined[k] then
-    error("cannot get undefined variable: " .. k, 2)
+    stderr.error("cannot get undefined variable: " .. k, 2)
   end
 end
 
