@@ -98,12 +98,12 @@ function TreeView:new(root_view)
   local root_view_update = root_view.update
   local root_view_draw = root_view.draw
 
-  function root_view.on_mouse_moved(...)
+  function RootView:on_mouse_moved(...)
     if treeview_context_menu:on_mouse_moved(...) then return end
     on_mouse_moved(self, ...)
   end
 
-  function root_view.on_view_mouse_pressed(button, x, y, clicks)
+  function RootView:on_view_mouse_pressed(button, x, y, clicks)
     -- We give the priority to the menu to process mouse pressed events.
     if button == "right" then
       view.tooltip.alpha = 0
@@ -113,7 +113,7 @@ function TreeView:new(root_view)
     return handled or on_view_mouse_pressed(button, x, y, clicks)
   end
 
-  function root_view.update(...)
+  function RootView:update(...)
     root_view_update(self, ...)
     treeview_context_menu:update()
   end
@@ -185,9 +185,6 @@ function TreeView:new(root_view)
     }
   )
 
-
-
-  
 
   self.menu = treeview_context_menu
 
@@ -567,14 +564,26 @@ function TreeView:get_item_text(item, active, hovered)
   if source_control_status_for_item then
     core.debug("source_control_status_for_item %s: %s", item.filename, source_control_status_for_item)
     if source_control_status_for_item then
+        if source_control_status_for_item == "added" then
+          color = style.good
+        elseif source_control_status_for_item == "edited" then
+          color = style.warn
+        elseif source_control_status_for_item == "renamed" then
+          color = style.warn
+        elseif source_control_status_for_item == "deleted" then
+          color = style.error
+        elseif source_control_status_for_item == "untracked" then
+          color = style.dim
+        end
     end
   end
-  local status = scm.get_path_changes(path)
+  
+  -- local status = scm.get_path_changes(path)
 
-  if status then
-    if status.text then text = status.text end
-    color = status.color
-  end
+  -- if status then
+  --   if status.text then text = status.text end
+  --   color = status.color
+  -- end
 
   -- -- change icon in treeview if file has errors
   -- if item.type == "file" then

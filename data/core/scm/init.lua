@@ -19,6 +19,7 @@ local Doc = require "core.doc"
 
 local StatusView = require "core.views.statusview"
 local DocView = require "core.views.docview"
+local TreeView = require "core.views.treeview"
 
 local util = require ".util"
 local changes = require ".changes"
@@ -985,7 +986,17 @@ keymap.add {
 --------------------------------------------------------------------------------
 -- Load TreeView support if the plugin is enabled
 --------------------------------------------------------------------------------
-require "plugins.scm.treeview"
+function TreeView:get_item_special_state_from_source_code_management (item) 
+  -- use absolute filename to get scm status
+  local status = scm.get_path_changes(item.abs_filename)
+
+  if status then
+    -- return status text
+    return status.text
+  end
+
+  return nil
+end
 
 
 return scm
