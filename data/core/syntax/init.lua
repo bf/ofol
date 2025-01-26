@@ -49,7 +49,7 @@ function syntax.get(filename, header)
       or syntax.plain_text_syntax
 end
 
-function syntax.initialize() 
+function syntax.load_languages() 
   local languages = {}
 
   -- load all languages
@@ -60,7 +60,7 @@ function syntax.initialize()
       
       filename = filename:gsub("%.lua$", "") 
       -- core.debug("[require]", filename)
-      local lang = require("." .. filename)
+      local lang = require("core.syntax.languages." .. filename)
 
       languages[filename] = lang
     end

@@ -667,12 +667,14 @@ function core.init()
 
   -- load scm plugin
   local scm = require "core.scm"
-  -- scm.hook_tree_view(core.tree_view)
 
   -- load language server
   local lsp = require "core.lsp"
   local diagnostics = require "core.lsp.diagnostics"
-  -- diagnostics.hook_tree_view(core.tree_view)
+
+  -- load syntax
+  local syntax = require "core.syntax"
+  syntax.load_languages()
 
   -- Load core and user plugins giving preference to user ones with same name.
   local plugins_success, plugins_refuse_list = core.load_plugins()
