@@ -995,11 +995,11 @@ local TreeView = require "core.views.treeview"
 
 function TreeView:get_item_special_state_from_source_code_management (item) 
   -- use absolute filename to get scm status
-  local status = scm.get_path_changes(item.abs_filename)
+  local changes = scm.get_path_changes(item.abs_filename)
 
-  if status then
-    -- return status text
-    return status.text
+  if changes then
+    core.debug("get_item_special_state_from_source_code_management %s => %s", item.abs_filename, changes.status)
+    return changes.status
   end
 
   return nil
