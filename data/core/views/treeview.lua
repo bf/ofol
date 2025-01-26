@@ -185,8 +185,324 @@ function TreeView:new(root_view)
     }
   )
 
+    
 
-  self.menu = treeview_context_menu
+  local previous_view = nil
+
+  -- Register the TreeView commands and keymap
+  command.add(nil, {
+    ["treeview:toggle"] = function()
+      view.visible = not view.visible
+    end,
+
+    ["treeview:toggle-focus"] = function()
+      if not core.active_view:is(TreeView) then
+        if core.active_view:is(CommandView) then
+          previous_view = core.last_active_view
+        else
+          previous_view = core.active_view
+        end
+        if not previous_view then
+          previous_view = core.root_view:get_primary_node().active_view
+        end
+        core.set_active_view(view)
+        if not view.selected_item then
+          for it, _, y in view:each_item() do
+            view:set_selection(it, y)
+            break
+          end
+        end
+
+      else
+        core.set_active_view(
+          previous_view or core.root_view:get_primary_node().active_view
+        )
+      end
+    end
+  })
+
+  command.add(
+    function()
+      return not treeview_context_menu.show_context_menu and core.active_view:extends(TreeView), TreeView
+    end, {
+    ["treeview:next"] = function()
+      local item, _, item_y = view:get_next(view.selected_item)
+      view:set_selection(item, item_y)
+    end,
+
+    ["treeview:previous"] = function()
+      local item, _, item_y = view:get_previous(view.selected_item)
+      view:set_selection(item, item_y)
+    end,
+
+    ["treeview:open"] = function()
+      local item = view.selected_item
+      if not item then return end
+      if item.type == "dir" then
+        view:toggle_expand()
+      else
+        core.try(function()
+          if core.last_active_view and core.active_view == view then
+            core.set_active_view(core.last_active_view)
+          end
+          view:open_doc(core.normalize_to_project_dir(item.abs_filename))
+        end)
+      end
+    end,
+
+    ["treeview:deselect"] = function()
+      view.selected_item = nil
+    end,
+
+    ["treeview:select"] = function()
+      view:set_selection(view.hovered_item)
+    end,
+
+    ["treeview:select-and-open"] = function()
+      if view.hovered_item then
+        view:set_selection(view.hovered_item)
+        command.perform "treeview:open"
+      end
+    end,
+
+    ["treeview:collapse"] = function()
+      if view.selected_item then
+        if view.selected_item.type == "dir" and view.selected_item.expanded then
+          view:toggle_expand(false)
+        else
+          local parent_item, y = view:get_parent(view.selected_item)
+          if parent_item then
+            view:set_selection(parent_item, y)
+          end
+        end
+      end
+    end,
+
+    ["treeview:expand"] = function()
+      local item = view.selected_item
+      if not item or item.type ~= "dir" then return end
+
+      if item.expanded then
+        local next_item, _, next_y = view:get_next(item)
+        if next_item.depth > item.depth then
+          view:set_selection(next_item, next_y)
+        end
+      else
+        view:toggle_expand(true)
+      end
+    end,
+
+    ["treeview-context:show"] = function()
+      if view.hovered_item then
+        treeview_context_menu:show(core.root_view.mouse.x, core.root_view.mouse.y)
+        return
+      end
+
+      local item = view.selected_item
+      if not item then return end
+
+      local x, y
+      for _i, _x, _y, _w, _h in view:each_item() do
+        if _i == item then
+          x = _x + _w / 2
+          y = _y + _h / 2
+          break
+        end
+      end
+      treeview_context_menu:show(x, y)
+    end
+  })
+
+
+  command.add(
+    function()
+      local item = treeitem()
+      return item ~= nil and (core.active_view == view or treeview_context_menu.show_context_menu), item
+    end, {
+    ["treeview:delete"] = function(item)
+      local filename = item.abs_filename
+      local relfilename = item.filename
+      if item.dir_name ~= core.project_dir then
+        -- add secondary project dirs names to the file path to show
+        relfilename = common.basename(item.dir_name) .. PATHSEP .. relfilename
+      end
+      local file_info = system.get_file_info(filename)
+      local file_type = file_info.type == "dir" and "Directory" or "File"
+      -- Ask before deleting
+      local opt = {
+        { text = "Yes", default_yes = true },
+        { text = "No", default_no = true }
+      }
+      core.nag_view:show(
+        string.format("Delete %s", file_type),
+        string.format(
+          "Are you sure you want to delete the %s?\n%s: %s",
+          file_type:lower(), file_type, relfilename
+        ),
+        opt,
+        function(item)
+          if item.text == "Yes" then
+            if file_info.type == "dir" then
+              local deleted, error, path = common.rm(filename, true)
+              if not deleted then
+                core.error("Error: %s - \"%s\" ", error, path)
+                return
+              end
+            else
+              local removed, error = os.remove(filename)
+              if not removed then
+                core.error("Error: %s - \"%s\"", error, filename)
+                return
+              end
+            end
+            core.log("Deleted \"%s\"", filename)
+          end
+        end
+      )
+    end,
+
+    ["treeview:rename"] = function(item)
+      local old_filename = item.filename
+      local old_abs_filename = item.abs_filename
+      core.command_view:enter("Rename", {
+        text = old_filename,
+        submit = function(filename)
+          local abs_filename = filename
+          if not common.is_absolute_path(filename) then
+            abs_filename = item.dir_name .. PATHSEP .. filename
+          end
+          local res, err = os.rename(old_abs_filename, abs_filename)
+          if res then -- successfully renamed
+            for _, doc in ipairs(core.docs) do
+              if doc.abs_filename and old_abs_filename == doc.abs_filename then
+                doc:set_filename(filename, abs_filename) -- make doc point to the new filename
+                doc:reset_syntax()
+                break -- only first needed
+              end
+            end
+            core.log("Renamed \"%s\" to \"%s\"", old_filename, filename)
+          else
+            core.error("Error while renaming \"%s\" to \"%s\": %s", old_abs_filename, abs_filename, err)
+          end
+        end,
+        suggest = function(text)
+          return common.path_suggest(text, item.dir_name)
+        end
+      })
+    end,
+
+    ["treeview:new-file"] = function(item)
+      local text
+      if not is_project_folder(item.abs_filename) then
+        if item.type == "dir" then
+          text = item.filename .. PATHSEP
+        elseif item.type == "file" then
+          local parent_dir = common.dirname(item.filename)
+          text = parent_dir and parent_dir .. PATHSEP
+        end
+      end
+      core.command_view:enter("Filename", {
+        text = text,
+        submit = function(filename)
+          local doc_filename = item.dir_name .. PATHSEP .. filename
+          core.log(doc_filename)
+          local file = io.open(doc_filename, "a+")
+          file:write("")
+          file:close()
+          view:open_doc(doc_filename)
+          core.log("Created %s", doc_filename)
+        end,
+        suggest = function(text)
+          return common.path_suggest(text, item.dir_name)
+        end
+      })
+    end,
+
+    ["treeview:new-folder"] = function(item)
+      local text
+      if not is_project_folder(item.abs_filename) then
+        if item.type == "dir" then
+          text = item.filename .. PATHSEP
+        elseif item.type == "file" then
+          local parent_dir = common.dirname(item.filename)
+          text = parent_dir and parent_dir .. PATHSEP
+        end
+      end
+      core.command_view:enter("Folder Name", {
+        text = text,
+        submit = function(filename)
+          local dir_path = item.dir_name .. PATHSEP .. filename
+          common.mkdirp(dir_path)
+          core.log("Created %s", dir_path)
+        end,
+        suggest = function(text)
+          return common.path_suggest(text, item.dir_name)
+        end
+      })
+    end,
+
+    ["treeview:open-in-system"] = function(item)
+      if PLATFORM == "Windows" then
+        system.exec(string.format("start \"\" %q", item.abs_filename))
+      elseif string.find(PLATFORM, "Mac") then
+        system.exec(string.format("open %q", item.abs_filename))
+      elseif PLATFORM == "Linux" or string.find(PLATFORM, "BSD") then
+        system.exec(string.format("xdg-open %q", item.abs_filename))
+      end
+    end
+  })
+
+  -- local projectsearch = pcall(require, "plugins.projectsearch")
+  -- if projectsearch then
+  --   treeview_context_menu:register(function()
+  --     local item = treeitem()
+  --     return item and item.type == "dir"
+  --   end, {
+  --     { text = "Find in directory", command = "treeview:search-in-directory" }
+  --   })
+  --   command.add(function()
+  --     return view.hovered_item and view.hovered_item.type == "dir"
+  --   end, {
+  --     ["treeview:search-in-directory"] = function(item)
+  --       command.perform("project-search:find", view.hovered_item.abs_filename)
+  --     end
+  --   })
+  -- end
+
+  command.add(function()
+      local item = treeitem()
+      return item
+             and not is_primary_project_folder(item.abs_filename)
+             and is_project_folder(item.abs_filename), item
+    end, {
+    ["treeview:remove-project-directory"] = function(item)
+      core.remove_project_directory(item.dir_name)
+    end,
+  })
+
+
+  command.add(
+    function()
+      return treeview_context_menu.show_context_menu == true and core.active_view:is(TreeView)
+    end, {
+    ["treeview-context:focus-previous"] = function()
+      treeview_context_menu:focus_previous()
+    end,
+    ["treeview-context:focus-next"] = function()
+      treeview_context_menu:focus_next()
+    end,
+    ["treeview-context:hide"] = function()
+      treeview_context_menu:hide()
+    end,
+    ["treeview-context:on-selected"] = function()
+      treeview_context_menu:call_selected_item()
+    end,
+  })
+
+
+
+
+  self.treeview_context_menu = treeview_context_menu
 
 end
 
@@ -577,7 +893,7 @@ function TreeView:get_item_text(item, active, hovered)
         end
     end
   end
-  
+
   -- local status = scm.get_path_changes(path)
 
   -- if status then
@@ -756,320 +1072,6 @@ end
 function TreeView:open_doc(filename)
   core.root_view:open_doc(core.open_doc(filename))
 end
-
-
-
-local previous_view = nil
-
--- Register the TreeView commands and keymap
-command.add(nil, {
-  ["treeview:toggle"] = function()
-    view.visible = not view.visible
-  end,
-
-  ["treeview:toggle-focus"] = function()
-    if not core.active_view:is(TreeView) then
-      if core.active_view:is(CommandView) then
-        previous_view = core.last_active_view
-      else
-        previous_view = core.active_view
-      end
-      if not previous_view then
-        previous_view = core.root_view:get_primary_node().active_view
-      end
-      core.set_active_view(view)
-      if not view.selected_item then
-        for it, _, y in view:each_item() do
-          view:set_selection(it, y)
-          break
-        end
-      end
-
-    else
-      core.set_active_view(
-        previous_view or core.root_view:get_primary_node().active_view
-      )
-    end
-  end
-})
-
-command.add(
-  function()
-    return not treeview_context_menu.show_context_menu and core.active_view:extends(TreeView), TreeView
-  end, {
-  ["treeview:next"] = function()
-    local item, _, item_y = view:get_next(view.selected_item)
-    view:set_selection(item, item_y)
-  end,
-
-  ["treeview:previous"] = function()
-    local item, _, item_y = view:get_previous(view.selected_item)
-    view:set_selection(item, item_y)
-  end,
-
-  ["treeview:open"] = function()
-    local item = view.selected_item
-    if not item then return end
-    if item.type == "dir" then
-      view:toggle_expand()
-    else
-      core.try(function()
-        if core.last_active_view and core.active_view == view then
-          core.set_active_view(core.last_active_view)
-        end
-        view:open_doc(core.normalize_to_project_dir(item.abs_filename))
-      end)
-    end
-  end,
-
-  ["treeview:deselect"] = function()
-    view.selected_item = nil
-  end,
-
-  ["treeview:select"] = function()
-    view:set_selection(view.hovered_item)
-  end,
-
-  ["treeview:select-and-open"] = function()
-    if view.hovered_item then
-      view:set_selection(view.hovered_item)
-      command.perform "treeview:open"
-    end
-  end,
-
-  ["treeview:collapse"] = function()
-    if view.selected_item then
-      if view.selected_item.type == "dir" and view.selected_item.expanded then
-        view:toggle_expand(false)
-      else
-        local parent_item, y = view:get_parent(view.selected_item)
-        if parent_item then
-          view:set_selection(parent_item, y)
-        end
-      end
-    end
-  end,
-
-  ["treeview:expand"] = function()
-    local item = view.selected_item
-    if not item or item.type ~= "dir" then return end
-
-    if item.expanded then
-      local next_item, _, next_y = view:get_next(item)
-      if next_item.depth > item.depth then
-        view:set_selection(next_item, next_y)
-      end
-    else
-      view:toggle_expand(true)
-    end
-  end,
-
-  ["treeview-context:show"] = function()
-    if view.hovered_item then
-      treeview_context_menu:show(core.root_view.mouse.x, core.root_view.mouse.y)
-      return
-    end
-
-    local item = view.selected_item
-    if not item then return end
-
-    local x, y
-    for _i, _x, _y, _w, _h in view:each_item() do
-      if _i == item then
-        x = _x + _w / 2
-        y = _y + _h / 2
-        break
-      end
-    end
-    treeview_context_menu:show(x, y)
-  end
-})
-
-
-command.add(
-  function()
-    local item = treeitem()
-    return item ~= nil and (core.active_view == view or treeview_context_menu.show_context_menu), item
-  end, {
-  ["treeview:delete"] = function(item)
-    local filename = item.abs_filename
-    local relfilename = item.filename
-    if item.dir_name ~= core.project_dir then
-      -- add secondary project dirs names to the file path to show
-      relfilename = common.basename(item.dir_name) .. PATHSEP .. relfilename
-    end
-    local file_info = system.get_file_info(filename)
-    local file_type = file_info.type == "dir" and "Directory" or "File"
-    -- Ask before deleting
-    local opt = {
-      { text = "Yes", default_yes = true },
-      { text = "No", default_no = true }
-    }
-    core.nag_view:show(
-      string.format("Delete %s", file_type),
-      string.format(
-        "Are you sure you want to delete the %s?\n%s: %s",
-        file_type:lower(), file_type, relfilename
-      ),
-      opt,
-      function(item)
-        if item.text == "Yes" then
-          if file_info.type == "dir" then
-            local deleted, error, path = common.rm(filename, true)
-            if not deleted then
-              core.error("Error: %s - \"%s\" ", error, path)
-              return
-            end
-          else
-            local removed, error = os.remove(filename)
-            if not removed then
-              core.error("Error: %s - \"%s\"", error, filename)
-              return
-            end
-          end
-          core.log("Deleted \"%s\"", filename)
-        end
-      end
-    )
-  end,
-
-  ["treeview:rename"] = function(item)
-    local old_filename = item.filename
-    local old_abs_filename = item.abs_filename
-    core.command_view:enter("Rename", {
-      text = old_filename,
-      submit = function(filename)
-        local abs_filename = filename
-        if not common.is_absolute_path(filename) then
-          abs_filename = item.dir_name .. PATHSEP .. filename
-        end
-        local res, err = os.rename(old_abs_filename, abs_filename)
-        if res then -- successfully renamed
-          for _, doc in ipairs(core.docs) do
-            if doc.abs_filename and old_abs_filename == doc.abs_filename then
-              doc:set_filename(filename, abs_filename) -- make doc point to the new filename
-              doc:reset_syntax()
-              break -- only first needed
-            end
-          end
-          core.log("Renamed \"%s\" to \"%s\"", old_filename, filename)
-        else
-          core.error("Error while renaming \"%s\" to \"%s\": %s", old_abs_filename, abs_filename, err)
-        end
-      end,
-      suggest = function(text)
-        return common.path_suggest(text, item.dir_name)
-      end
-    })
-  end,
-
-  ["treeview:new-file"] = function(item)
-    local text
-    if not is_project_folder(item.abs_filename) then
-      if item.type == "dir" then
-        text = item.filename .. PATHSEP
-      elseif item.type == "file" then
-        local parent_dir = common.dirname(item.filename)
-        text = parent_dir and parent_dir .. PATHSEP
-      end
-    end
-    core.command_view:enter("Filename", {
-      text = text,
-      submit = function(filename)
-        local doc_filename = item.dir_name .. PATHSEP .. filename
-        core.log(doc_filename)
-        local file = io.open(doc_filename, "a+")
-        file:write("")
-        file:close()
-        view:open_doc(doc_filename)
-        core.log("Created %s", doc_filename)
-      end,
-      suggest = function(text)
-        return common.path_suggest(text, item.dir_name)
-      end
-    })
-  end,
-
-  ["treeview:new-folder"] = function(item)
-    local text
-    if not is_project_folder(item.abs_filename) then
-      if item.type == "dir" then
-        text = item.filename .. PATHSEP
-      elseif item.type == "file" then
-        local parent_dir = common.dirname(item.filename)
-        text = parent_dir and parent_dir .. PATHSEP
-      end
-    end
-    core.command_view:enter("Folder Name", {
-      text = text,
-      submit = function(filename)
-        local dir_path = item.dir_name .. PATHSEP .. filename
-        common.mkdirp(dir_path)
-        core.log("Created %s", dir_path)
-      end,
-      suggest = function(text)
-        return common.path_suggest(text, item.dir_name)
-      end
-    })
-  end,
-
-  ["treeview:open-in-system"] = function(item)
-    if PLATFORM == "Windows" then
-      system.exec(string.format("start \"\" %q", item.abs_filename))
-    elseif string.find(PLATFORM, "Mac") then
-      system.exec(string.format("open %q", item.abs_filename))
-    elseif PLATFORM == "Linux" or string.find(PLATFORM, "BSD") then
-      system.exec(string.format("xdg-open %q", item.abs_filename))
-    end
-  end
-})
-
--- local projectsearch = pcall(require, "plugins.projectsearch")
--- if projectsearch then
---   treeview_context_menu:register(function()
---     local item = treeitem()
---     return item and item.type == "dir"
---   end, {
---     { text = "Find in directory", command = "treeview:search-in-directory" }
---   })
---   command.add(function()
---     return view.hovered_item and view.hovered_item.type == "dir"
---   end, {
---     ["treeview:search-in-directory"] = function(item)
---       command.perform("project-search:find", view.hovered_item.abs_filename)
---     end
---   })
--- end
-
-command.add(function()
-    local item = treeitem()
-    return item
-           and not is_primary_project_folder(item.abs_filename)
-           and is_project_folder(item.abs_filename), item
-  end, {
-  ["treeview:remove-project-directory"] = function(item)
-    core.remove_project_directory(item.dir_name)
-  end,
-})
-
-
-command.add(
-  function()
-    return treeview_context_menu.show_context_menu == true and core.active_view:is(TreeView)
-  end, {
-  ["treeview-context:focus-previous"] = function()
-    treeview_context_menu:focus_previous()
-  end,
-  ["treeview-context:focus-next"] = function()
-    treeview_context_menu:focus_next()
-  end,
-  ["treeview-context:hide"] = function()
-    treeview_context_menu:hide()
-  end,
-  ["treeview-context:on-selected"] = function()
-    treeview_context_menu:call_selected_item()
-  end,
-})
 
 
 keymap.add {

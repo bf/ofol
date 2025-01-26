@@ -7,7 +7,7 @@ local style = require "core.style"
 
 -- Load treeview if enabled to add menu entries
 local TreeView = require "core.treeview"
-local TreeViewMenu = TreeView.contextmenu
+local TreeViewMenu = TreeView.treeview_context_menu
 
 local scm = require "plugins.scm"
 local command = require "core.command"
