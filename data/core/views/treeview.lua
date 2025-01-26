@@ -966,15 +966,15 @@ end
 
 
 
-function TreeView:draw_item_chevron(item, active, hovered, x, y, w, h)
-  if item.type == "dir" then
-    local chevron_icon = item.expanded and ICON_TREE_OPEN or ICON_TREE_CLOSED
-    local chevron_color = hovered and style.accent or style.text
-    -- common.draw_text(style.icon_font, chevron_color, chevron_icon, nil, x, y, 0, h)
-  end
-  -- return style.padding.x
-  return 0
-end
+-- function TreeView:draw_item_chevron(item, active, hovered, x, y, w, h)
+--   -- if item.type == "dir" then
+--   --   local chevron_icon = item.expanded and ICON_TREE_OPEN or ICON_TREE_CLOSED
+--   --   local chevron_color = hovered and style.accent or style.text
+--   --   -- common.draw_text(style.icon_font, chevron_color, chevron_icon, nil, x, y, 0, h)
+--   -- end
+--   -- return style.padding.x
+--   return 0
+-- end
 
 
 function TreeView:draw_item_background(item, active, hovered, x, y, w, h)
@@ -991,8 +991,13 @@ end
 function TreeView:draw_item(item, active, hovered, x, y, w, h)
   self:draw_item_background(item, active, hovered, x, y, w, h)
 
-  x = x + item.depth * style.padding.x + style.padding.x
-  x = x + self:draw_item_chevron(item, active, hovered, x, y, w, h)
+  if item.depth == 0 then
+    x = x + style.padding.x   
+  else
+    x = x + (item.depth) * style.padding.x 
+  end
+  -- x = x + (item.depth-) * style.padding.x + style.padding.x
+  -- x = x + self:draw_item_chevron(item, active, hovered, x, y, w, h)
 
   self:draw_item_body(item, active, hovered, x, y, w, h)
 end

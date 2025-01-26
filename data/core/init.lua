@@ -680,10 +680,14 @@ function core.init()
   local diagnostics = require "core.lsp.diagnostics"
 
   -- load autocomplete
+  local lspkind = require "core.lspkind"
   local autocomplete = require "core.autocomplete"
 
   -- load settings dialog
   local settings = require "core.settings"
+
+  -- load minimap
+  local minimap = require "core.minimap"
 
   -- Load core and user plugins giving preference to user ones with same name.
   local plugins_success, plugins_refuse_list = core.load_plugins()
