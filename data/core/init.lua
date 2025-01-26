@@ -14,6 +14,7 @@ local dirwatch
 local ime
 local RootView
 local TreeView
+local ToolbarView
 local StatusView
 local TitleView
 local CommandView
@@ -507,6 +508,7 @@ function core.init()
   NagView = require "core.views.nagview"
   DocView = require "core.views.docview"
   TreeView = require "core.views.treeview"
+  ToolbarView = require "core.views.toolbarview"
   
   Doc = require "core.doc"
 
@@ -594,8 +596,24 @@ function core.init()
   ---@type core.titleview
   core.title_view = TitleView()
 
+  -- Some plugins (eg: console) require the nodes to be initialized to defaults
+  local cur_node = core.root_view.root_node
+  cur_node.is_primary_node = true
+  cur_node:split("up", core.title_view, {y = true})
+  cur_node = cur_node.b
+  cur_node:split("up", core.nag_view, {y = true})
+  cur_node = cur_node.b
+  cur_node = cur_node:split("down", core.command_view, {y = true})
+  cur_node = cur_node:split("down", core.status_view, {y = true})
+
   -- init treeview
   core.tree_view = TreeView()
+  local tree_view_node = core.root_view:get_active_node():split("left", core.tree_view, {x = true}, true)
+
+  -- init toolbar view
+  core.toolbar_view = ToolbarView()
+  tree_view_node:split("up", core.toolbar_view, {y = true})
+
 
   -- -- init
   -- local view = 
@@ -620,21 +638,6 @@ function core.init()
   -- })
 
 
-  -- Some plugins (eg: console) require the nodes to be initialized to defaults
-  local cur_node = core.root_view.root_node
-  cur_node.is_primary_node = true
-  cur_node:split("up", core.title_view, {y = true})
-  cur_node = cur_node.b
-  cur_node:split("up", core.nag_view, {y = true})
-  cur_node = cur_node.b
-  -- cur_node:split("left", core.tree_view, {x = true})
-  -- cur_node = cur_node.b
-  cur_node = cur_node:split("down", core.command_view, {y = true})
-  cur_node = cur_node:split("down", core.status_view, {y = true})
-
-  -- local node = core.root_view:get_active_node()
-  -- view.node = node:split("left", core.tree_view, {x = true}, true)
-  core.root_view:get_active_node():split("left", core.tree_view, {x = true})
 
   -- Load default commands first so plugins can override them
   command.add_defaults()
