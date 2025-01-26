@@ -172,7 +172,7 @@ config.line_limit = 80
 ---
 ---Defaults to 2000.
 ---@type number
-config.max_project_files = 2000
+config.max_project_files = 20000
 
 
 ---The caret's blinking period, in seconds.

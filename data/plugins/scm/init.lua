@@ -15,17 +15,20 @@ local command = require "core.command"
 local config = require "core.config"
 local keymap = require "core.keymap"
 local style = require "core.style"
-local util = require "plugins.scm.util"
-local changes = require "plugins.scm.changes"
 local Doc = require "core.doc"
-local ReadDoc = require "plugins.scm.readdoc"
-local Git = require "plugins.scm.backend.git"
-local Fossil = require "plugins.scm.backend.fossil"
-local MessageBox = require "libraries.widget.messagebox"
-
 
 local StatusView = require "core.views.statusview"
 local DocView = require "core.views.docview"
+
+local util = require ".util"
+local changes = require ".changes"
+local ReadDoc = require ".readdoc"
+local Git = require ".backend.git"
+local Fossil = require ".backend.fossil"
+
+local MessageBox = require "libraries.widget.messagebox"
+
+
 
 ---@class config.plugins.smc
 ---@field highlighter boolean

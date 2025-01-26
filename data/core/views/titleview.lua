@@ -67,11 +67,11 @@ function TitleView:draw_window_title()
   local ox, oy = self:get_content_offset()
   local color = style.text
   local x, y = ox + style.padding.x, oy + style.padding.y
-  common.draw_text(style.icon_font, icon_colors.bg, "5", nil, x, y, 0, h)
-  common.draw_text(style.icon_font, icon_colors.color6, "6", nil, x, y, 0, h)
-  common.draw_text(style.icon_font, icon_colors.color7, "7", nil, x, y, 0, h)
-  common.draw_text(style.icon_font, icon_colors.color8, "8", nil, x, y, 0, h)
-  x = common.draw_text(style.icon_font, icon_colors.color9, "9 ", nil, x, y, 0, h)
+  -- common.draw_text(style.icon_font, icon_colors.bg, "5", nil, x, y, 0, h)
+  -- common.draw_text(style.icon_font, icon_colors.color6, "6", nil, x, y, 0, h)
+  -- common.draw_text(style.icon_font, icon_colors.color7, "7", nil, x, y, 0, h)
+  -- common.draw_text(style.icon_font, icon_colors.color8, "8", nil, x, y, 0, h)
+  -- x = common.draw_text(style.icon_font, icon_colors.color9, "9 ", nil, x, y, 0, h)
   local title = core.compose_window_title(core.window_title)
   common.draw_text(style.font, color, title, nil, x, y, 0, h)
 end

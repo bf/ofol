@@ -522,7 +522,7 @@ end
 function Node:draw_tab_title(view, font, is_active, is_hovered, x, y, w, h)
   local text = view and view:get_name() or ""
   local dots_width = font:get_width("…")
-  local align = "center"
+  local align = "left"
   if font:get_width(text) > w then
     align = "left"
     for i = 1, #text do

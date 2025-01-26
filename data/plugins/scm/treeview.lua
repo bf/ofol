@@ -20,63 +20,63 @@ end
 
 local scm = require "plugins.scm"
 local command = require "core.command"
-local diagnostics = require "plugins.lsp.diagnostics"
+-- local diagnostics = require "plugins.lsp.diagnostics"
 
---------------------------------------------------------------------------------
--- Override treeview to change color of files depending on status
---------------------------------------------------------------------------------
-local treeview_get_item_text = TreeView.get_item_text
-function TreeView:get_item_text(item, active, hovered)
-  local text, font, color = treeview_get_item_text(self, item, active, hovered)
-  local path = item.abs_filename
+-- --------------------------------------------------------------------------------
+-- -- Override treeview to change color of files depending on status
+-- --------------------------------------------------------------------------------
+-- local treeview_get_item_text = TreeView.get_item_text
+-- function TreeView:get_item_text(item, active, hovered)
+--   local text, font, color = treeview_get_item_text(self, item, active, hovered)
+--   local path = item.abs_filename
 
-  -- change color if file has been changed in scm 
-  local status = scm.get_path_changes(path)
-  if status then
-    if status.text then text = status.text end
-    color = status.color
-  end
+--   -- change color if file has been changed in scm 
+--   local status = scm.get_path_changes(path)
+--   if status then
+--     if status.text then text = status.text end
+--     color = status.color
+--   end
 
-  -- change icon in treeview if file has errors
-  if item.type == "file" then
-    local num_errors = diagnostics.get_messages_count(item.filename, 1)
-    if num_errors > 0 then
-      color = style.error
-    end
-  end
+--   -- change icon in treeview if file has errors
+--   if item.type == "file" then
+--     local num_errors = diagnostics.get_messages_count(item.filename, 1)
+--     if num_errors > 0 then
+--       color = style.error
+--     end
+--   end
 
-  return text, font, color
-end
+--   return text, font, color
+-- end
 
 
 
--- changed bf
--- overwrite get icon
--- see https://github.com/lite-xl/lite-xl/blob/c73903f5bed82cb7cd6d19a3f7a846c78bb60283/data/plugins/treeview.lua#L545
-function TreeView:get_item_icon(item, active, hovered)
-  local character = "f"
-  local color = style.text
-  local font = style.icon_font
+-- -- changed bf
+-- -- overwrite get icon
+-- -- see https://github.com/lite-xl/lite-xl/blob/c73903f5bed82cb7cd6d19a3f7a846c78bb60283/data/plugins/treeview.lua#L545
+-- function TreeView:get_item_icon(item, active, hovered)
+--   local character = "f"
+--   local color = style.text
+--   local font = style.icon_font
 
-  if item.type == "dir" then
-    character = item.expanded and "D" or "d"
-  end
+--   if item.type == "dir" then
+--     character = item.expanded and "D" or "d"
+--   end
 
-  if active or hovered then
-    color = style.accent
-  end
+--   if active or hovered then
+--     color = style.accent
+--   end
 
-  -- if file has errors, change icon in treeview
-  if item.type == "file" then
-    local num_errors = diagnostics.get_messages_count(item.filename, 1)
-    if num_errors > 0 then
-      color = style.error
-      character = "!"
-    end
-  end
+--   -- if file has errors, change icon in treeview
+--   if item.type == "file" then
+--     local num_errors = diagnostics.get_messages_count(item.filename, 1)
+--     if num_errors > 0 then
+--       color = style.error
+--       character = "!"
+--     end
+--   end
 
-  return character, font, color
-end
+--   return character, font, color
+-- end
 
 --------------------------------------------------------------------------------
 -- Add entries to treeview contextmenu

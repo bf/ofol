@@ -8,13 +8,21 @@ local style = require "core.style"
 local View = require "core.view"
 local ContextMenu = require "core.contextmenu"
 
+local diagnostics = require "plugins.lsp.diagnostics"
+
 local RootView = require "core.views.rootview"
 local CommandView = require "core.views.commandview"
 local DocView = require "core.views.docview"
 
+local ICON_FILE = "f"
+local ICON_DIR_OPEN = "D"
+local ICON_DIR_CLOSED = "d"
+local ICON_TREE_OPEN = "-"
+local ICON_TREE_CLOSED = "+"
+
 config.plugins.treeview = common.merge({
   -- Default treeview width
-  size = 200 * SCALE,
+  size = 400 * SCALE,
   highlight_focused_file = true,
   expand_dirs_to_focused_file = false,
   scroll_to_focused_file = false,
@@ -243,7 +251,7 @@ end
 
 
 function TreeView:get_text_bounding_box(item, x, y, w, h)
-  local icon_width = style.icon_font:get_width("D")
+  local icon_width = style.icon_font:get_width(ICON_DIR_OPEN)
   local xoffset = item.depth * style.padding.x + style.padding.x + icon_width
   x = x + xoffset
   w = style.font:get_width(item.name) + 2 * style.padding.x
@@ -305,8 +313,8 @@ function TreeView:update()
     self.tooltip.alpha = 0
   end
 
-  self.item_icon_width = style.icon_font:get_width("D")
-  self.item_text_spacing = style.icon_font:get_width("f") / 2
+  self.item_icon_width = style.icon_font:get_width(ICON_DIR_OPEN)
+  self.item_text_spacing = style.icon_font:get_width(ICON_FILE) / 2
 
   -- this will make sure hovered_item is updated
   local dy = math.abs(self.last_scroll_y - self.scroll.y)
@@ -361,30 +369,78 @@ function TreeView:draw_tooltip()
   renderer.draw_rect(x, y, w, h, replace_alpha(style.background2, self.tooltip.alpha))
   common.draw_text(style.font, replace_alpha(style.text, self.tooltip.alpha), text, "center", x, y, w, h)
 end
-
-
+  
+-- this is overwritten by scm:git in some cases
 function TreeView:get_item_icon(item, active, hovered)
-  local character = "f"
+  local character
   if item.type == "dir" then
-    character = item.expanded and "D" or "d"
+    if item.depth == 0 then
+      -- dont show icon for base directory
+      character = ""
+    else
+      if item.expanded then
+        character = ICON_DIR_OPEN
+      else
+        character = ICON_DIR_CLOSED
+      end
+    end
+  elseif item.type == "file" then
+    character = ICON_FILE
+  else 
+    core.error("unexpected item.type: %s", item.type)
+    os.exit(1)
   end
+
+
+  core.debug("item: %s depth: %d icon: %s", item.name, item.depth, character)
+
   local font = style.icon_font
   local color = style.text
   if active or hovered then
     color = style.accent
   end
+
+  local num_errors = diagnostics.get_messages_count(item.filename, 1)
+  if num_errors > 0 then
+    color = style.error
+    character = "!"
+  end
+
   return character, font, color
 end
 
+--------------------------------------------------------------------------------
+-- Override treeview to change color of files depending on status
+--------------------------------------------------------------------------------
 function TreeView:get_item_text(item, active, hovered)
   local text = item.name
   local font = style.font
   local color = style.text
+
+  local path = item.abs_filename
+
+  -- change color if file has been changed in scm 
+    -- local status = scm.get_path_changes(path)
+    -- if status then
+    --   if status.text then text = status.text end
+    --   color = status.color
+    -- end
+
+  -- change icon in treeview if file has errors
+  if item.type == "file" then
+    local num_errors = diagnostics.get_messages_count(item.filename, 1)
+    if num_errors > 0 then
+      color = style.error
+    end
+  end
+
   if active or hovered then
     color = style.accent
   end
+
   return text, font, color
 end
+
 
 
 function TreeView:draw_item_text(item, active, hovered, x, y, w, h)
@@ -395,8 +451,15 @@ end
 
 function TreeView:draw_item_icon(item, active, hovered, x, y, w, h)
   local icon_char, icon_font, icon_color = self:get_item_icon(item, active, hovered)
-  common.draw_text(icon_font, icon_color, icon_char, nil, x, y, 0, h)
-  return self.item_icon_width + self.item_text_spacing
+
+  if #icon_char > 0 then
+    -- draw icon
+    common.draw_text(icon_font, icon_color, icon_char, nil, x, y, 0, h)
+    return self.item_icon_width + self.item_text_spacing
+  else
+    -- empty string received, draw nothing
+    return self.item_text_spacing
+  end
 end
 
 
@@ -406,11 +469,12 @@ function TreeView:draw_item_body(item, active, hovered, x, y, w, h)
 end
 
 
+
 function TreeView:draw_item_chevron(item, active, hovered, x, y, w, h)
   if item.type == "dir" then
-    local chevron_icon = item.expanded and "-" or "+"
+    local chevron_icon = item.expanded and ICON_TREE_OPEN or ICON_TREE_CLOSED
     local chevron_color = hovered and style.accent or style.text
-    common.draw_text(style.icon_font, chevron_color, chevron_icon, nil, x, y, 0, h)
+    -- common.draw_text(style.icon_font, chevron_color, chevron_icon, nil, x, y, 0, h)
   end
   return style.padding.x
 end
@@ -541,7 +605,7 @@ local toolbar_view = nil
 local toolbar_plugin, ToolbarView = pcall(require, "plugins.toolbarview")
 if config.plugins.toolbarview ~= false and toolbar_plugin then
   toolbar_view = ToolbarView()
-  view.node:split("down", toolbar_view, {y = true})
+  view.node:split("up", toolbar_view, {y = true})
   local min_toolbar_width = toolbar_view:get_min_width()
   view:set_target_size("x", math.max(config.plugins.treeview.size, min_toolbar_width))
   command.add(nil, {
