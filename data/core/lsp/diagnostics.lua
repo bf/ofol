@@ -296,17 +296,21 @@ function diagnostics.lintplus_populate_delayed(filename)
 end
 
 -- initialize for treeview
-function diagnostics.init_for_treeview(treeview)
-  core.log("")
+local TreeView = require "core.views.treeview"
 
-  treeview.get_item_special_state_from_language_parser = function (item)
-    local num_errors = diagnostics.get_messages_count(item.filename, 1)
-    if num_errors > 0 then
-      return "error"
-    end
+-- function diagnostics.hook_tree_view(treeview)
+--   core.log("hook tree view")
 
-    return
+--   treeview.get_item_special_state_from_language_parser = function (item)
+function TreeView:get_item_special_state_from_language_parser (item) 
+  local num_errors = diagnostics.get_messages_count(item.filename, 1)
+  if num_errors > 0 then
+    return "error"
   end
+
+  return
 end
+-- end
+
 
 return diagnostics

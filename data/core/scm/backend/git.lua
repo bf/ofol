@@ -2,7 +2,7 @@
 -- More details at: https://git-scm.com/
 
 local common = require "core.common"
-local Backend = require "plugins.scm.backend"
+local Backend = require ".."
 
 ---@class plugins.scm.backend.git : plugins.scm.backend
 ---@field super plugins.scm.backend

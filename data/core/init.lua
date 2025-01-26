@@ -627,10 +627,14 @@ function core.init()
   cur_node = cur_node.b
   cur_node:split("up", core.nag_view, {y = true})
   cur_node = cur_node.b
-  cur_node:split("left", core.tree_view, {x = true})
-  cur_node = cur_node.b
+  -- cur_node:split("left", core.tree_view, {x = true})
+  -- cur_node = cur_node.b
   cur_node = cur_node:split("down", core.command_view, {y = true})
   cur_node = cur_node:split("down", core.status_view, {y = true})
+
+  -- local node = core.root_view:get_active_node()
+  -- view.node = node:split("left", core.tree_view, {x = true}, true)
+  core.root_view:get_active_node():split("left", core.tree_view, {x = true})
 
   -- Load default commands first so plugins can override them
   command.add_defaults()
@@ -660,6 +664,15 @@ function core.init()
       os.exit(1)
     end
   end
+
+  -- load scm plugin
+  local scm = require "core.scm"
+  -- scm.hook_tree_view(core.tree_view)
+
+  -- load language server
+  local lsp = require "core.lsp"
+  local diagnostics = require "core.lsp.diagnostics"
+  -- diagnostics.hook_tree_view(core.tree_view)
 
   -- Load core and user plugins giving preference to user ones with same name.
   local plugins_success, plugins_refuse_list = core.load_plugins()

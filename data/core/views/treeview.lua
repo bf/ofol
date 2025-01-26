@@ -30,11 +30,11 @@ config.plugins.treeview = common.merge({
   scroll_to_focused_file = false,
 }, config.plugins.treeview)
 
-local tooltip_offset = style.font:get_height()
-local tooltip_border = 1
-local tooltip_delay = 0.5
-local tooltip_alpha = 255
-local tooltip_alpha_rate = 1
+-- local tooltip_offset = style.font:get_height()
+-- local tooltip_border = 1
+-- local tooltip_delay = 0.5
+-- local tooltip_alpha = 255
+-- local tooltip_alpha_rate = 1
 
 
 local function get_depth(filename)
@@ -53,14 +53,15 @@ end
 
 local TreeView = View:extend()
 
-function TreeView:new(root_view)
+-- function TreeView:new(root_view)
+function TreeView:new()
   TreeView.super.new(self)
   self.scrollable = true
   self.visible = true
   self.init_size = true
   self.target_size = config.plugins.treeview.size
   self.cache = {}
-  self.tooltip = { x = 0, y = 0, begin = 0, alpha = 0 }
+  -- self.tooltip = { x = 0, y = 0, begin = 0, alpha = 0 }
   self.last_scroll_y = 0
 
   self.item_icon_width = 0
@@ -93,10 +94,10 @@ function TreeView:new(root_view)
   -- Add a context menu to the treeview
   local treeview_context_menu = ContextMenu()
 
-  local on_view_mouse_pressed = root_view.on_view_mouse_pressed
-  local on_mouse_moved = root_view.on_mouse_moved
-  local root_view_update = root_view.update
-  local root_view_draw = root_view.draw
+  local on_view_mouse_pressed = RootView.on_view_mouse_pressed
+  local on_mouse_moved = RootView.on_mouse_moved
+  local root_view_update = RootView.update
+  local root_view_draw = RootView.draw
 
   function RootView:on_mouse_moved(...)
     if treeview_context_menu:on_mouse_moved(...) then return end
@@ -105,10 +106,10 @@ function TreeView:new(root_view)
 
   function RootView:on_view_mouse_pressed(button, x, y, clicks)
     -- We give the priority to the menu to process mouse pressed events.
-    if button == "right" then
-      view.tooltip.alpha = 0
-      view.tooltip.x, view.tooltip.y = nil, nil
-    end
+    -- if button == "right" then
+    --   view.tooltip.alpha = 0
+    --   view.tooltip.x, view.tooltip.y = nil, nil
+    -- end
     local handled = treeview_context_menu:on_mouse_pressed(button, x, y, clicks)
     return handled or on_view_mouse_pressed(button, x, y, clicks)
   end
@@ -185,7 +186,7 @@ function TreeView:new(root_view)
     }
   )
 
-    
+
 
   local previous_view = nil
 
@@ -499,11 +500,7 @@ function TreeView:new(root_view)
     end,
   })
 
-
-
-
   self.treeview_context_menu = treeview_context_menu
-
 end
 
 function TreeView:set_target_size(axis, value)
@@ -577,6 +574,8 @@ end
 
 
 function TreeView:each_item()
+  -- core.warn("check each item of treeview")
+
   return coroutine.wrap(function()
     self:check_cache()
     local count_lines = 0
@@ -714,17 +713,17 @@ function TreeView:on_mouse_moved(px, py, ...)
       item_changed = true
       self.hovered_item = item
 
-      x,y,w,h = self:get_text_bounding_box(item, x,y,w,h)
-      if px > x and py > y and px <= x + w and py <= y + h then
-        tooltip_changed = true
-        self.tooltip.x, self.tooltip.y = px, py
-        self.tooltip.begin = system.get_time()
-      end
+      -- x,y,w,h = self:get_text_bounding_box(item, x,y,w,h)
+      -- if px > x and py > y and px <= x + w and py <= y + h then
+        -- tooltip_changed = true
+        -- self.tooltip.x, self.tooltip.y = px, py
+        -- self.tooltip.begin = system.get_time()
+      -- end
       break
     end
   end
   if not item_changed then self.hovered_item = nil end
-  if not tooltip_changed then self.tooltip.x, self.tooltip.y = nil, nil end
+  -- if not tooltip_changed then self.tooltip.x, self.tooltip.y = nil, nil end
 end
 
 
@@ -746,12 +745,12 @@ function TreeView:update()
 
   if self.size.x == 0 or self.size.y == 0 or not self.visible then return end
 
-  local duration = system.get_time() - self.tooltip.begin
-  if self.hovered_item and self.tooltip.x and duration > tooltip_delay then
-    self:move_towards(self.tooltip, "alpha", tooltip_alpha, tooltip_alpha_rate, "treeview")
-  else
-    self.tooltip.alpha = 0
-  end
+  -- local duration = system.get_time() - self.tooltip.begin
+  -- if self.hovered_item and self.tooltip.x and duration > tooltip_delay then
+  --   self:move_towards(self.tooltip, "alpha", tooltip_alpha, tooltip_alpha_rate, "treeview")
+  -- else
+  --   self.tooltip.alpha = 0
+  -- end
 
   self.item_icon_width = style.icon_font:get_width(ICON_DIR_OPEN)
   self.item_text_spacing = style.icon_font:get_width(ICON_FILE) / 2
@@ -792,33 +791,35 @@ function TreeView:get_scrollable_size()
 end
 
 
-function TreeView:draw_tooltip()
-  local text = common.home_encode(self.hovered_item.abs_filename)
-  local w, h = style.font:get_width(text), style.font:get_height(text)
+-- function TreeView:draw_tooltip()
+--   local text = common.home_encode(self.hovered_item.abs_filename)
+--   local w, h = style.font:get_width(text), style.font:get_height(text)
 
-  local x, y = self.tooltip.x + tooltip_offset, self.tooltip.y + tooltip_offset
-  w, h = w + style.padding.x, h + style.padding.y
+--   local x, y = self.tooltip.x + tooltip_offset, self.tooltip.y + tooltip_offset
+--   w, h = w + style.padding.x, h + style.padding.y
 
-  if x + w > core.root_view.root_node.size.x then -- check if we can span right
-    x = x - w -- span left instead
-  end
+--   if x + w > core.root_view.root_node.size.x then -- check if we can span right
+--     x = x - w -- span left instead
+--   end
 
-  local bx, by = x - tooltip_border, y - tooltip_border
-  local bw, bh = w + 2 * tooltip_border, h + 2 * tooltip_border
-  renderer.draw_rect(bx, by, bw, bh, replace_alpha(style.text, self.tooltip.alpha))
-  renderer.draw_rect(x, y, w, h, replace_alpha(style.background2, self.tooltip.alpha))
-  common.draw_text(style.font, replace_alpha(style.text, self.tooltip.alpha), text, "center", x, y, w, h)
-end
+--   local bx, by = x - tooltip_border, y - tooltip_border
+--   local bw, bh = w + 2 * tooltip_border, h + 2 * tooltip_border
+--   renderer.draw_rect(bx, by, bw, bh, replace_alpha(style.text, self.tooltip.alpha))
+--   renderer.draw_rect(x, y, w, h, replace_alpha(style.background2, self.tooltip.alpha))
+--   common.draw_text(style.font, replace_alpha(style.text, self.tooltip.alpha), text, "center", x, y, w, h)
+-- end
 
 
 -- placeholder function, will be replaced by lsp/diagnostics
 function TreeView:get_item_special_state_from_language_parser(item)
+  core.warn("placeholdercalled")
   return nil
 end
   
 
 -- placeholder function, will be replaced by scm
 function TreeView:get_item_special_state_from_source_code_management(item)
+  core.warn("placeholdercalled")
   return nil
 end
 
@@ -842,7 +843,6 @@ function TreeView:get_item_icon(item, active, hovered)
     core.error("unexpected item.type: %s", item.type)
     os.exit(1)
   end
-
 
   core.debug("item: %s depth: %d icon: %s", item.name, item.depth, character)
 
@@ -1000,9 +1000,9 @@ function TreeView:draw()
   end
 
   self:draw_scrollbar()
-  if self.hovered_item and self.tooltip.x and self.tooltip.alpha > 0 then
-    core.root_view:defer_draw(self.draw_tooltip, self)
-  end
+  -- if self.hovered_item and self.tooltip.x and self.tooltip.alpha > 0 then
+  --   core.root_view:defer_draw(self.draw_tooltip, self)
+  -- end
 end
 
 

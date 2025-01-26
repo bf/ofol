@@ -2,7 +2,7 @@
 -- More details at: https://www.fossil-scm.org/
 
 local common = require "core.common"
-local Backend = require "plugins.scm.backend"
+local Backend = require ".."
 
 ---@class plugins.scm.backend.fossil : plugins.scm.backend
 ---@field super plugins.scm.backend
