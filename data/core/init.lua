@@ -595,7 +595,7 @@ function core.init()
   core.title_view = TitleView()
 
   -- init treeview
-  core.tree_view = TreeView(core.root_view)
+  core.tree_view = TreeView()
 
   -- -- init
   -- local view = 
@@ -676,8 +676,11 @@ function core.init()
   local lsp = require "core.lsp"
   local diagnostics = require "core.lsp.diagnostics"
 
+  -- load autocomplete
   local autocomplete = require "core.autocomplete"
 
+  -- load settings dialog
+  local settings = require "core.settings"
 
   -- Load core and user plugins giving preference to user ones with same name.
   local plugins_success, plugins_refuse_list = core.load_plugins()

@@ -50,12 +50,6 @@ command.add(nil, {
     core.title_view:configure_hit_test(not fullscreen and restore_title_view)
   end,
 
-  -- ["core:open-user-module"] = function()
-  --   local user_module_doc = core.open_doc(USERDIR .. "/init.lua")
-  --   if not user_module_doc then return end
-  --   core.root_view:open_doc(user_module_doc)
-  -- end,
-
 
   ["core:reload-module"] = function()
     core.command_view:enter("Reload Module", {

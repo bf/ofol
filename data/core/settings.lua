@@ -1806,23 +1806,6 @@ keymap.add {
   ["ctrl+alt+p"] = "ui:settings"
 }
 
---------------------------------------------------------------------------------
--- Overwrite toolbar preferences command to open the settings gui
---------------------------------------------------------------------------------
-if config.plugins.toolbarview ~= false then
-  local ToolbarView = require "plugins.toolbarview"
-  local toolbarview_on_mouse_moved = ToolbarView.on_mouse_moved
-  function ToolbarView:on_mouse_moved(px, py, ...)
-    toolbarview_on_mouse_moved(self, px, py, ...)
-    if
-      self.hovered_item
-      and
-      self.hovered_item.command == "core:open-user-module"
-    then
-      self.hovered_item.command = "ui:settings"
-    end
-  end
-end
 
 --------------------------------------------------------------------------------
 -- Overwrite View:new to allow setting force scrollbar status globally
