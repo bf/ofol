@@ -13,6 +13,7 @@ local keymap
 local dirwatch
 local ime
 local RootView
+local TreeView
 local StatusView
 local TitleView
 local CommandView
@@ -502,8 +503,10 @@ function core.init()
   StatusView = require "core.views.statusview"
   TitleView = require "core.views.titleview"
   CommandView = require "core.views.commandview"
+  
   NagView = require "core.views.nagview"
   DocView = require "core.views.docview"
+  TreeView = require "core.views.treeview"
   
   Doc = require "core.doc"
 
@@ -591,12 +594,40 @@ function core.init()
   ---@type core.titleview
   core.title_view = TitleView()
 
+  -- init treeview
+  core.tree_view = TreeView(core.root_view)
+
+  -- -- init
+  -- local view = 
+  -- local node = core.root_view:get_active_node()
+  -- view.node = node:split("left", view, {x = true}, true)
+
+  -- -- The toolbarview plugin is special because it is plugged inside
+  -- -- a treeview pane which is itelf provided in a plugin.
+  -- -- We therefore break the usual plugin's logic that would require each
+  -- -- plugin to be independent of each other. In addition it is not the
+  -- -- plugin module that plug itself in the active node but it is plugged here
+  -- -- in the treeview node.
+
+  -- local toolbar_view = ToolbarView()
+  -- view.node:split("up", toolbar_view, {y = true})
+  -- local min_toolbar_width = toolbar_view:get_min_width()
+  -- view:set_target_size("x", math.max(config.plugins.treeview.size, min_toolbar_width))
+  -- command.add(nil, {
+  --   ["toolbar:toggle"] = function()
+  --     toolbar_view:toggle_visible()
+  --   end,
+  -- })
+
+
   -- Some plugins (eg: console) require the nodes to be initialized to defaults
   local cur_node = core.root_view.root_node
   cur_node.is_primary_node = true
   cur_node:split("up", core.title_view, {y = true})
   cur_node = cur_node.b
   cur_node:split("up", core.nag_view, {y = true})
+  cur_node = cur_node.b
+  cur_node:split("left", core.tree_view, {x = true})
   cur_node = cur_node.b
   cur_node = cur_node:split("down", core.command_view, {y = true})
   cur_node = cur_node:split("down", core.status_view, {y = true})
@@ -624,6 +655,7 @@ function core.init()
     if not core.set_project_dir(project_dir_abs, function()
       -- got_project_error = not core.load_project_module()
     end) then
+      core.error("cannot set project directory to cwd")
       system.show_fatal_error("Lite XL internal error", "cannot set project directory to cwd")
       os.exit(1)
     end

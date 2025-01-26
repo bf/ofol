@@ -85,7 +85,8 @@ end
 
 function stderr.error(...)
   stderr.print_with_tag("ERROR", ...)
-  io.stderr:write(debug.traceback("", 2))
+  io.stderr:write(debug.traceback("", 1))
+  io.stderr:write("\n")
 
   if EXIT_ON_ERROR then
     stderr.print("will exit now because EXIT_ON_ERROR is set to true")
