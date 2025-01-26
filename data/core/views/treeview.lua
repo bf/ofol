@@ -239,6 +239,7 @@ function TreeView:new()
     ["treeview:open"] = function()
       local item = view.selected_item
       if not item then return end
+      if item.depth == 0 then return end
       if item.type == "dir" then
         view:toggle_expand()
       else
@@ -829,7 +830,7 @@ function TreeView:get_item_icon(item, active, hovered)
   if item.type == "dir" then
     if item.depth == 0 then
       -- dont show icon for base directory
-      character = ""
+      return nil, nil, nil
     else
       if item.expanded then
         character = ICON_DIR_OPEN
@@ -872,6 +873,11 @@ function TreeView:get_item_text(item, active, hovered)
   local text = item.name
   local font = style.font
   local color = style.text
+
+  -- make topdir bold
+  if item.depth == 0 then
+    return text, style.bold_font, color
+  end
 
   local path = item.abs_filename
 
@@ -936,6 +942,12 @@ end
 function TreeView:draw_item_icon(item, active, hovered, x, y, w, h)
   local icon_char, icon_font, icon_color = self:get_item_icon(item, active, hovered)
 
+  -- nil will be returned for topdir item
+  -- so that there is no spacing
+  if icon_char == nil then
+    return 0
+  end 
+
   if #icon_char > 0 then
     -- draw icon
     common.draw_text(icon_font, icon_color, icon_char, nil, x, y, 0, h)
@@ -960,7 +972,8 @@ function TreeView:draw_item_chevron(item, active, hovered, x, y, w, h)
     local chevron_color = hovered and style.accent or style.text
     -- common.draw_text(style.icon_font, chevron_color, chevron_icon, nil, x, y, 0, h)
   end
-  return style.padding.x
+  -- return style.padding.x
+  return 0
 end
 
 
