@@ -27,11 +27,13 @@ end
 
 function RootView:update(...)
   root_view_update(self, ...)
+
   menu:update()
 end
 
 function RootView:draw(...)
   root_view_draw(self, ...)
+
   menu:draw()
 end
 

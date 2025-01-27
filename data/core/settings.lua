@@ -284,29 +284,29 @@ settings.add("User Interface",
     --     core.configure_borderless_window()
     --   end
     -- },
-    {
-      label = "Always Show Tabs",
-      description = "Shows tabs even if a single document is opened.",
-      path = "always_show_tabs",
-      type = settings.type.TOGGLE,
-      default = true
-    },
-    {
-      label = "Maximum Tabs",
-      description = "The maximum amount of visible document tabs.",
-      path = "max_tabs",
-      type = settings.type.NUMBER,
-      default = 8,
-      min = 1,
-      max = 100
-    },
-    {
-      label = "Close Button on Tabs",
-      description = "Display the close button on tabs.",
-      path = "tab_close_button",
-      type = settings.type.TOGGLE,
-      default = true
-    },
+    -- {
+    --   label = "Always Show Tabs",
+    --   description = "Shows tabs even if a single document is opened.",
+    --   path = "always_show_tabs",
+    --   type = settings.type.TOGGLE,
+    --   default = true
+    -- },
+    -- {
+    --   label = "Maximum Tabs",
+    --   description = "The maximum amount of visible document tabs.",
+    --   path = "max_tabs",
+    --   type = settings.type.NUMBER,
+    --   default = 8,
+    --   min = 1,
+    --   max = 100
+    -- },
+    -- {
+    --   label = "Close Button on Tabs",
+    --   description = "Display the close button on tabs.",
+    --   path = "tab_close_button",
+    --   type = settings.type.TOGGLE,
+    --   default = true
+    -- },
     {
       label = "Mouse wheel scroll rate",
       description = "The amount to scroll when using the mouse wheel.",

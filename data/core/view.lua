@@ -4,6 +4,8 @@ local common = require "core.common"
 local Object = require "core.object"
 local Scrollbar = require "core.scrollbar"
 
+local stderr = require "libraries.stderr"
+
 ---@class core.view.position
 ---@field x number
 ---@field y number
@@ -129,6 +131,7 @@ end
 ---@param clicks integer
 ---return boolean
 function View:on_mouse_pressed(button, x, y, clicks)
+  stderr.debug("on_mouse_pressed %d %d %d", x, y, clicks)
   if not self.scrollable then return end
   local result = self.v_scrollbar:on_mouse_pressed(button, x, y, clicks)
   if result then
@@ -191,9 +194,16 @@ end
 
 
 function View:on_mouse_left()
-  if not self.scrollable then return end
-  self.v_scrollbar:on_mouse_left()
-  self.h_scrollbar:on_mouse_left()
+  if not self.scrollable then 
+    stderr.debug_backtrace("on_mouse_left -> not scrollable -> return")
+    return 
+  end
+  stderr.debug("on_mouse_left -> scrollbar")
+  stderr.warn("self.v_scrollbar %s", self.v_scrollbar)
+  stderr.warn("self.h_scrollbar %s", self.h_scrollbar)
+  -- self.v_scrollbar:on_mouse_left()
+  -- self.h_scrollbar:on_mouse_left()
+  return true
 end
 
 

@@ -174,9 +174,19 @@ top:
 
     case SDL_WINDOWEVENT:
       if (e.window.event == SDL_WINDOWEVENT_RESIZED) {
+        // window has been resized to data1 x data2; this event is always preceded by SDL_WINDOWEVENT_SIZE_CHANGED
         RenWindow* window_renderer = ren_find_window_from_id(e.window.windowID);
         ren_resize_window(window_renderer);
         lua_pushstring(L, "resized");
+        /* The size below will be in points. */
+        lua_pushinteger(L, e.window.data1);
+        lua_pushinteger(L, e.window.data2);
+        return 3;
+      } else if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+        // The window size has changed, either as a result of an API call or through the system or user changing the window size
+        RenWindow* window_renderer = ren_find_window_from_id(e.window.windowID);
+        ren_resize_window(window_renderer);
+        lua_pushstring(L, "resize_in_progress");
         /* The size below will be in points. */
         lua_pushinteger(L, e.window.data1);
         lua_pushinteger(L, e.window.data2);
@@ -195,12 +205,15 @@ top:
         lua_pushstring(L, "restored");
         return 1;
       } else if (e.window.event == SDL_WINDOWEVENT_LEAVE) {
-        lua_pushstring(L, "mouseleft");
-        return 1;
+        // lua_pushstring(L, "mouse_has_left_the_window");
+        // return 1;
+      } else if (e.window.event == SDL_WINDOWEVENT_ENTER) {
+        // lua_pushstring(L, "mouse_is_back_inside_window");
+        // return 1;
       }
       if (e.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
-        lua_pushstring(L, "focuslost");
-        return 1;
+        // lua_pushstring(L, "focuslost");
+        // return 1;
       }
       /* on some systems, when alt-tabbing to the window SDL will queue up
       ** several KEYDOWN events for the `tab` key; we flush all keydown
@@ -255,12 +268,6 @@ top:
       lua_pushstring(L, e.text.text);
       return 2;
 
-    case SDL_TEXTEDITING:
-      lua_pushstring(L, "textediting");
-      lua_pushstring(L, e.edit.text);
-      lua_pushinteger(L, e.edit.start);
-      lua_pushinteger(L, e.edit.length);
-      return 4;
 
 #if SDL_VERSION_ATLEAST(2, 0, 22)
     case SDL_TEXTEDITING_EXT:
@@ -269,6 +276,13 @@ top:
       lua_pushinteger(L, e.editExt.start);
       lua_pushinteger(L, e.editExt.length);
       SDL_free(e.editExt.text);
+      return 4;
+#else
+    case SDL_TEXTEDITING:
+      lua_pushstring(L, "textediting");
+      lua_pushstring(L, e.edit.text);
+      lua_pushinteger(L, e.edit.start);
+      lua_pushinteger(L, e.edit.length);
       return 4;
 #endif
 

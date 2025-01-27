@@ -1,4 +1,3 @@
--- mod-version:3
 local style = require "core.style"
 local config = require "core.config"
 local common = require "core.common"
@@ -131,7 +130,8 @@ end
 
 local draw_line_text = DocView.draw_line_text
 function DocView:draw_line_text(line, x, y)
-  if config.plugins.indentguide.enabled and self:is(DocView) then
+  if config.plugins.indentguide.enabled 
+    and self:is(DocView) then
     local spaces = self.indentguide_indents[line] or -1
     local _, indent_size = self.doc:get_indent_info()
     local w = indentguide.get_width()

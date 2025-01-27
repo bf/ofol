@@ -33,6 +33,7 @@ function ItemsList:new(parent)
   local this = self
 
   function self.list:on_mouse_pressed(button, x, y, clicks)
+    core.debug("on_mouse_pressed", x, y, clicks)
     if not ListBox.on_mouse_pressed(self, button, x, y, clicks) then
       return false
     end

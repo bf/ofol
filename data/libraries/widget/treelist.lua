@@ -235,6 +235,7 @@ function TreeList:on_scale_change()
 end
 
 function TreeList:on_mouse_moved(px, py, ...)
+  core.debug("on_mouse_pressed", x, y, clicks)
   if TreeList.super.on_mouse_moved(self, px, py, ...) then
     self.hovered_item = nil
   else

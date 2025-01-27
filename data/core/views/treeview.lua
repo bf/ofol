@@ -124,11 +124,13 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
 
   function RootView:update(...)
     root_view_update(self, ...)
+
     treeview_context_menu:update()
   end
 
   function RootView:draw(...)
     root_view_draw(self, ...)
+
     treeview_context_menu:draw()
   end
 
@@ -873,6 +875,7 @@ end
 
 
 function TreeView:on_mouse_left()
+  stderr.error("on_mouse_left")
   TreeView.super.on_mouse_left(self)
   self.hovered_item = nil
 end

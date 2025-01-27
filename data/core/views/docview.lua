@@ -7,6 +7,8 @@ local translate = require "core.doc.translate"
 local ime = require "core.ime"
 local View = require "core.view"
 
+local stderr = require "libraries.stderr"
+
 local DocView = View:extend()
 
 DocView.context = "session"
@@ -331,6 +333,7 @@ end
 
 
 function DocView:on_mouse_pressed(button, x, y, clicks)
+  stderr.debug("on_mouse_pressed %d %d %d", x, y, clicks)
   if button ~= "left" or not self.hovering_gutter then
     return DocView.super.on_mouse_pressed(self, button, x, y, clicks)
   end
@@ -418,7 +421,7 @@ function DocView:update()
   end
 
   -- update blink timer
-  if self == core.active_view and not self.mouse_selecting then
+  if self == core.active_view and not self.mouse_selecting and not core.window_is_being_resized then
     local T, t0 = config.blink_period, core.blink_start
     local ta, tb = core.blink_timer, system.get_time()
     if ((tb - t0) % T < T / 2) ~= ((ta - t0) % T < T / 2) then
@@ -564,8 +567,7 @@ function DocView:draw_overlay()
         if ime.editing then
           self:draw_ime_decoration(line1, col1, line2, col2)
         else
-          if config.disable_blink
-          or (core.blink_timer - core.blink_start) % T < T / 2 then
+          if config.disable_blink or (core.blink_timer - core.blink_start) % T < T / 2 then
             local x, y = self:get_line_screen_position(line1, col1)
             if self.doc.overwrite then
               self:draw_overwrite_caret(x, y, self:get_font():get_width(self.doc:get_char(line1, col1)))

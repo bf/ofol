@@ -2,6 +2,9 @@ local core = require "core"
 local command = require "core.command"
 local config = require "core.config"
 local ime = require "core.ime"
+
+local stderr = require "libraries.stderr"
+
 local keymap = {}
 
 ---@alias keymap.shortcut string
@@ -203,6 +206,7 @@ end
 -- Events listening
 --------------------------------------------------------------------------------
 function keymap.on_key_pressed(k, ...)
+  stderr.debug("keymap.on_key_pressed", k )
   local mk = modkey_map[k]
   if mk then
     keymap.modkeys[mk] = true
@@ -262,6 +266,7 @@ function keymap.on_mouse_wheel(delta_y, delta_x, ...)
 end
 
 function keymap.on_mouse_pressed(button, x, y, clicks)
+  stderr.debug("on_mouse_pressed %s %d %d %d", button, x, y, clicks)
   local click_number = (((clicks - 1) % config.max_clicks) + 1)
   return not (keymap.on_key_pressed(click_number  .. button:sub(1,1) .. "click", x, y, clicks) or
     keymap.on_key_pressed(button:sub(1,1) .. "click", x, y, clicks) or

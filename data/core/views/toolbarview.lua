@@ -27,6 +27,8 @@ end
 
 
 function ToolbarView:update()
+  if core.window_is_being_resized then return end
+  
   local dest_size = self.visible and (self.toolbar_font:get_height() + style.padding.y * 2) or 0
   if self.init_size then
     self.size.y = dest_size
@@ -81,6 +83,7 @@ end
 function ToolbarView:draw()
   if not self.visible then return end
   self:draw_background(style.background2)
+
 
   for item, x, y, w, h in self:each_item() do
     local color = item == self.hovered_item and command.is_valid(item.command) and style.text or style.dim

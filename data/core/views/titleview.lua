@@ -3,6 +3,8 @@ local common = require "core.common"
 local style = require "core.style"
 local View = require "core.view"
 
+local stderr = require "libraries.stderr"
+
 local icon_colors = {
   bg = { common.color "#2e2e32ff" },
   color6 = { common.color "#e1e1e6ff" },
@@ -39,16 +41,17 @@ function TitleView:new()
 end
 
 function TitleView:configure_hit_test(borderless)
-  if borderless then
-    local title_height = title_view_height()
-    local icon_w = style.icon_font:get_width("_")
-    local icon_spacing = icon_w
-    local controls_width = (icon_w + icon_spacing) * #title_commands + icon_spacing
-    system.set_window_hit_test(title_height, controls_width, icon_spacing)
-    -- core.hit_test_title_height = title_height
-  else
+  -- if borderless then
+  --   local title_height = style.font:get_height()
+  --   title_height = style.font:get_height()
+  --   local icon_w = style.icon_font:get_width("_") 
+  --   local icon_spacing = icon_w
+  --   local controls_width = (icon_w + icon_spacing) * #title_commands + icon_spacing
+  --   system.set_window_hit_test(title_height, controls_width * SCALE, 10)
+  --   -- core.hit_test_title_height = title_height
+  -- else
     system.set_window_hit_test()
-  end
+  -- end
 end
 
 function TitleView:on_scale_change()
@@ -103,6 +106,7 @@ end
 
 
 function TitleView:on_mouse_pressed(button, x, y, clicks)
+  stderr.debug("on_mouse_pressed", x, y, clicks)
   local caught = TitleView.super.on_mouse_pressed(self, button, x, y, clicks)
   if caught then return end
   core.set_active_view(core.last_active_view)
@@ -113,6 +117,7 @@ end
 
 
 function TitleView:on_mouse_left()
+  stderr.debug_backtrace("on_mouse_left")
   TitleView.super.on_mouse_left(self)
   self.hovered_item = nil
 end

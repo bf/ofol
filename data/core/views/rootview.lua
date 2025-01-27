@@ -179,6 +179,7 @@ end
 ---@param y number
 ---@param clicks integer
 function RootView.on_view_mouse_pressed(button, x, y, clicks)
+  stderr.warn("on_view_mouse_pressed %d %d %d", x, y, clicks)
 end
 
 
@@ -233,6 +234,7 @@ end
 
 
 function RootView:set_show_overlay(overlay, status)
+  stderr.debug("overlay: %s", status)
   overlay.visible = status
   if status then -- reset colors
     -- reload base_color
@@ -250,6 +252,7 @@ end
 ---@param x number
 ---@param y number
 function RootView:on_mouse_released(button, x, y, ...)
+  stderr.debug("root on_mouse_released %d %d", x, y)
   if self.grab then
     if self.grab.button == button then
       local grabbed_view = self.grab.view
@@ -369,7 +372,7 @@ function RootView:on_mouse_moved(x, y, dx, dy)
   self.overlapping_view = overlapping_node and overlapping_node.active_view
 
   if last_overlapping_view and last_overlapping_view ~= self.overlapping_view then
-    last_overlapping_view:on_mouse_left()
+    -- last_overlapping_view:on_mouse_left()
   end
 
   if not self.overlapping_view then return end
@@ -389,7 +392,9 @@ end
 
 
 function RootView:on_mouse_left()
+  stderr.debug("on_mouse_left")
   if self.overlapping_view then
+    stderr.debug("on_mouse_left with overlapping view", self.overlapping_view)
     self.overlapping_view:on_mouse_left()
   end
 end
@@ -439,7 +444,9 @@ function RootView:on_text_input(...)
 end
 
 function RootView:on_touch_pressed(x, y, ...)
+  core.debug("on_touch_pressed")
   local touched_node = self.root_node:get_child_overlapping_point(x, y)
+  core.debug("on_touch_pressed touched_node", touched_node)
   self.touched_view = touched_node and touched_node.active_view
 end
 
@@ -585,6 +592,7 @@ end
 
 
 function RootView:draw_grabbed_tab()
+  stderr.debug("grabbed tab")
   local dn = self.dragged_node
   local _,_, w, h = dn.node:get_tab_rect(dn.idx)
   local x = self.mouse.x - w / 2
@@ -603,6 +611,7 @@ end
 
 function RootView:draw()
   self.root_node:draw()
+
   while #self.deferred_draws > 0 do
     local t = table.remove(self.deferred_draws)
     t.fn(table.unpack(t))

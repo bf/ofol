@@ -289,6 +289,7 @@ end
 
 
 function CommandView:update()
+  if core.window_is_being_resized then return end
   CommandView.super.update(self)
 
   if core.active_view ~= self and self.state ~= default_state then

@@ -137,8 +137,7 @@ end
 
 local function unregister_mouse_pressed(self)
   local RootView = require "core.views.rootview"
-  if
-    self.on_mouse_pressed_root
+  if self.on_mouse_pressed_root
     and
     -- just in case prevent overwriting what something else may
     -- have overwrote after us, but after testing with various
@@ -173,6 +172,7 @@ function NagView:on_text_input(text)
 end
 
 function NagView:update()
+  if core.window_is_being_resized then return end
   if not self.visible and self.show_height <= 0 then return end
   NagView.super.update(self)
 

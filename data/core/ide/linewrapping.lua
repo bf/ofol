@@ -343,6 +343,7 @@ end
 local old_doc_update = DocView.update
 function DocView:update()
   old_doc_update(self)
+
   if self.wrapped_settings and self.size.x > 0 then
     LineWrapping.update_docview_breaks(self)
   end
@@ -527,6 +528,7 @@ end
 local old_draw = DocView.draw
 function DocView:draw()
   old_draw(self)
+
   if self.wrapped_settings then
     LineWrapping.draw_guide(self)
   end

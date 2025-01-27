@@ -9,7 +9,10 @@ local config = require "core.config"
 local style = require "core.style"
 local keymap = require "core.keymap"
 local View = require "core.view"
+
 local ScrollBar = require "libraries.widget.scrollbar"
+local stderr = require "libraries.stderr"
+
 local RootView
 
 ---Represents the border of a widget.
@@ -1012,6 +1015,7 @@ function Widget:on_mouse_leave(x, y, dx, dy)
 end
 
 function Widget:on_mouse_left()
+  stderr.debug("on_mouse_left")
   if not self.captured_widget then
     Widget.super.on_mouse_left(self)
     self:on_mouse_moved(-1, -1, -1, -1)
@@ -1342,6 +1346,7 @@ function Widget.override_rootview()
 
   function RootView:update()
     root_view_update(self)
+
     local count = #floating_widgets
     for i=1, count, 1 do
       local widget = floating_widgets[i]

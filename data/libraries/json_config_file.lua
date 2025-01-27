@@ -10,6 +10,7 @@ function json_config_file.load_object_from_json_file(json_file_path)
   local open = io.open
   local file = open(json_file_path, "rb")
   if not file then 
+    file:close()
     stderr.error("could not read file %s", json_file_path)
     return {} 
   end

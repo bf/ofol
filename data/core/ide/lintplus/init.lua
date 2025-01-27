@@ -543,7 +543,7 @@ end
 local DocView_draw = DocView.draw
 function DocView:draw()
   DocView_draw(self)
-
+  
   local filename = self.doc.filename
   if filename == nil then return end
   filename = core.project_absolute_path(filename)

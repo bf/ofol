@@ -578,6 +578,11 @@ function core.init()
   core.cursor_clipboard_whole_line = {}
   core.window_mode = "normal"
   core.threads = setmetatable({}, { __mode = "k" })
+
+  -- flag when user is actively resizing window
+  core.window_is_being_resized = false
+
+  -- blinking cursor timer active
   core.blink_start = system.get_time()
   core.blink_timer = core.blink_start
   core.redraw = true
@@ -671,6 +676,9 @@ function core.init()
 
   -- load ide features
   local ide = require "core.ide"
+
+  -- redraw
+  core.redraw = true
 
 
   -- -- Load core and user plugins giving preference to user ones with same name.
@@ -1046,6 +1054,10 @@ function core.try(fn, ...)
 end
 
 function core.on_event(type, ...)
+  if type ~= "mousemoved" then
+    stderr.debug("on_event", type)
+  end
+
   local did_keymap = false
   if type == "textinput" then
     core.root_view:on_text_input(...)
@@ -1061,13 +1073,14 @@ function core.on_event(type, ...)
   elseif type == "mousemoved" then
     core.root_view:on_mouse_moved(...)
   elseif type == "mousepressed" then
+    stderr.debug("core on_mouse_pressed")
     if not core.root_view:on_mouse_pressed(...) then
       did_keymap = keymap.on_mouse_pressed(...)
     end
   elseif type == "mousereleased" then
     core.root_view:on_mouse_released(...)
   elseif type == "mouseleft" then
-    core.root_view:on_mouse_left()
+    -- core.root_view:on_mouse_left()
   elseif type == "mousewheel" then
     if not core.root_view:on_mouse_wheel(...) then
       did_keymap = keymap.on_mouse_wheel(...)
@@ -1079,7 +1092,9 @@ function core.on_event(type, ...)
   elseif type == "touchmoved" then
     core.root_view:on_touch_moved(...)
   elseif type == "resized" then
-    core.window_mode = system.get_window_mode(core.window)
+    -- core.window_mode = system.get_window_mode(core.window)
+  elseif type == "resize_in_progress" then
+    -- core.window_mode = system.get_window_mode(core.window)
   elseif type == "minimized" or type == "maximized" or type == "restored" then
     core.window_mode = type == "restored" and "normal" or type
   elseif type == "filedropped" then
@@ -1110,20 +1125,35 @@ function core.step()
   local did_keymap = false
 
   for type, a,b,c,d in system.poll_event do
-    if type == "textinput" and did_keymap then
+    if  type == "resize_in_progress" or type == "resized" then
+      -- dont redraw while resizing
+      core.window_is_being_resized = true
+      core.redraw = true
+    elseif type == "exposed" then
+      -- redraw only when exposed
+      core.redraw = true
+    elseif type == "textinput" and did_keymap then
       did_keymap = false
+      core.redraw = true
+      core.window_is_being_resized = false
     elseif type == "mousemoved" then
       core.try(core.on_event, type, a, b, c, d)
+      core.redraw = true
+      core.window_is_being_resized = false
     elseif type == "enteringforeground" then
       -- to break our frame refresh in two if we get entering/entered at the same time.
       -- required to avoid flashing and refresh issues on mobile
       core.redraw = true
+      core.window_is_being_resized = false
       break
     else
+      -- handle all other cases
       local _, res = core.try(core.on_event, type, a, b, c, d)
       did_keymap = res or did_keymap
+      
+      core.redraw = true
+      core.window_is_being_resized = false
     end
-    core.redraw = true
   end
 
   local width, height = core.window:get_size()
@@ -1222,7 +1252,7 @@ function core.run()
     end
     if core.restart_request or core.quit_request then break end
 
-    if not did_redraw then
+    if not did_redraw and not core.window_is_being_resized then
       if system.window_has_focus(core.window) or not did_step or run_threads_full < 2 then
         local now = system.get_time()
         if not next_step then -- compute the time until the next blink
@@ -1281,9 +1311,9 @@ local alerted_deprecations = {}
 ---
 ---@param kind string
 function core.deprecation_log(kind)
-  if alerted_deprecations[kind] then return end
-  alerted_deprecations[kind] = true
-  stderr.warn("Used deprecated functionality [%s]. Check if your plugins are up to date.", kind)
+  stderr.error("Used deprecated functionality [%s]. Check if your plugins are up to date.", kind)
+  -- if alerted_deprecations[kind] then return end
+  -- alerted_deprecations[kind] = true
 end
 
 

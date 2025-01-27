@@ -7,6 +7,8 @@ local style = require "core.style"
 local Object = require "core.object"
 local View = require "core.view"
 
+local stderr = require "libraries.stderr"
+
 local border_width = 1
 local divider_width = 1
 local divider_padding = 5
@@ -214,6 +216,7 @@ end
 ---@param clicks number
 ---@return boolean # true if the event is caught.
 function ContextMenu:on_mouse_pressed(button, px, py, clicks)
+  stderr.debug("on_mouse_pressed", clicks)
   local caught = false
 
   if self.show_context_menu then
@@ -238,6 +241,8 @@ ContextMenu.move_towards = View.move_towards
 
 ---Event handler for content update.
 function ContextMenu:update()
+  if core.window_is_being_resized then return end
+
   if self.show_context_menu then
     self:move_towards("height", self.items.height, nil, "contextmenu")
   end

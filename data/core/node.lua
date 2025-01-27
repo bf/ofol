@@ -59,7 +59,7 @@ end
 
 ---@deprecated
 function Node:on_mouse_left()
-  core.deprecation_log("Node:on_mouse_left")
+  stderr.error("Node:on_mouse_left")
   if self.type == "leaf" then
     self.active_view:on_mouse_left()
   else
@@ -526,9 +526,9 @@ function Node:draw_tab_title(view, font, is_active, is_hovered, x, y, w, h)
       end
     end
   end
-  local color = style.dim
-  if is_active then color = style.text end
-  if is_hovered then color = style.text end
+  local color = style.text
+  if is_active then color = style.accent end
+  if is_hovered then color = style.accent end
   common.draw_text(font, color, text, align, x, y, w, h)
 end
 
