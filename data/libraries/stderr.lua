@@ -1,13 +1,16 @@
-local stderr = {}
+local common = require("core.common")
 
 local EXIT_ON_ERROR = true
 local HIDE_DEBUG_MESSAGES = false
 local BENCHMARK = false
 
+-- base path to show relative path of script file errors
+local BASE_PATH = DATADIR
+
+local stderr = {}
 
 local function try_string_format_into_text(fmt, ...) 
-  local ARGS = {...}
-  if #ARGS == 0 then
+  if select('#', ...) == 0 then
     -- when no further args given, then fmt is the actual text
     return fmt
   end
@@ -23,7 +26,7 @@ local function try_string_format_into_text(fmt, ...)
   stderr.print("ERROR", string.format("Second error while trying to format error message: %s", formatted_text))
 
   -- combine strings
-  return fmt .. " " .. table.concat(ARGS, " ")
+  return fmt .. " " .. table.concat({ ... }, " ")
 end
 
 -- print message to stderr
@@ -66,7 +69,26 @@ function stderr.print_with_tag(tag, fmt, ...)
 
   local text = try_string_format_into_text(fmt, ...)
 
-  stderr.print(string.format("%-5s %s", tag, text))
+  -- get info about calling function
+  local info = debug.getinfo(2, "Sln")
+ 
+  -- get path of calling function
+  local at
+  if #BASE_PATH > 0 and #info.source > 2 then
+     -- figure out relative path if possible
+    local relative_path = common.relative_path(BASE_PATH, string.sub(info.source, 2))
+    at = string.format("%s:%d", relative_path, info.currentline)
+  else 
+     -- use absolute path as fallback
+    at = info.source
+  end
+
+  -- from https://stackoverflow.com/a/64271511
+  -- local relative_path = string.format("%s:%d", common.relative_path(DATADIR, info.source), info.currentline)
+  -- stderr.print_with_tag(item.level, string.format("%s [%s] %s(): %s", os.date("%Y-%m-%d %M:%H"), item.at, info.name, item.text))
+  local text_with_func_details = string.format("[%s] %s(): %s", at, info.name, text)
+
+  stderr.print(string.format("%-5s %s", tag, text_with_func_details))
 end
 
 function stderr.info(...)

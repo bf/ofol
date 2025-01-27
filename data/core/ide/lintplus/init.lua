@@ -104,7 +104,7 @@ end
 -- Returns an appropriate linter for the given doc, or nil if no linter is
 -- found.
 function lint.get_linter_for_doc(doc)
-  stderr.debug("get_linter_for_doc %s", doc.filename)
+  -- stderr.debug("get_linter_for_doc %s", doc.filename)
 
   if not doc.filename then
     return nil
@@ -113,7 +113,7 @@ function lint.get_linter_for_doc(doc)
   local file = core.project_absolute_path(doc.filename)
   for name, linter in pairs(lint.index) do
     if common.match_pattern(file, linter.filename) then
-      stderr.debug("get_linter_for_doc FOUND (1): %s for %s", linter, name)
+      -- stderr.debug("get_linter_for_doc FOUND (1): %s for %s", linter, name)
       return linter, name
     end
     if linter.syntax ~= nil then
@@ -122,14 +122,14 @@ function lint.get_linter_for_doc(doc)
       for i = #linter.syntax, 1, -1 do
         local s = linter.syntax[i]
         if syn.name == s then
-          stderr.debug("get_linter_for_doc FOUND (2): %s for %s", linter, name)
+          -- stderr.debug("get_linter_for_doc FOUND (2): %s for %s", linter, name)
           return linter, name
         end
       end
     end
   end
 
-  stderr.warn("no linter found for %s", doc.filename)
+  -- stderr.warn("no linter found for %s", doc.filename)
 end
 
 
@@ -150,6 +150,7 @@ function lint.add_message(filename, line, column, kind, message, rail)
   stderr.warn("add_message for %s:%d %s", filename, line, message)
   filename = core.project_absolute_path(filename)
   if not lint.messages[filename] then
+    stderr.err("context not set up!", filename)
     -- This allows us to at least store messages until context is properly
     -- set from the calling plugin.
     lint.init_doc(filename)
@@ -759,12 +760,11 @@ if StatusView["add_item"] then
       local doc = core.active_view.doc
       if
         doc and doc.filename  -- skip new files
-        and
-        getmetatable(core.active_view) == DocView
+        and getmetatable(core.active_view) == DocView
         and
         (
-          lint.get_linter_for_doc(doc)
-          or
+          -- lint.get_linter_for_doc(doc)
+          -- or
           lint.messages[core.project_absolute_path(doc.filename)]
         )
       then
@@ -798,8 +798,8 @@ else
       getmetatable(core.active_view) == DocView
       and
       (
-        lint.get_linter_for_doc(doc)
-        or
+        -- lint.get_linter_for_doc(doc)
+        -- or
         lint.messages[core.project_absolute_path(doc.filename)]
       )
     then

@@ -492,7 +492,7 @@ end
 
 
 function core.init()
-  stderr.info_items = {}
+  core.info_items = {}
   stderr.debug("OFOL version %s", VERSION)
 
   command = require "core.command"
