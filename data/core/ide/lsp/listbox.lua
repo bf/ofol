@@ -10,10 +10,11 @@ local common = require "core.common"
 local command = require "core.command"
 local style = require "core.style"
 local keymap = require "core.keymap"
-local util = require "..util"
 
 local RootView = require "core.views.rootview"
 local DocView = require "core.views.docview"
+
+local util = require "core.ide.lsp.util"
 
 ---@class lsp.listbox.item
 ---@field text string

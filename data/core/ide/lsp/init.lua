@@ -22,9 +22,6 @@ local keymap = require "core.keymap"
 local translate = require "core.doc.translate"
 local Doc = require "core.doc"
 
-local autocomplete = require "core.autocomplete"
-local snippets = "core.snippets"
-local LineWrapping = require "core.linewrapping"
 
 local DocView = require "core.views.docview"
 local StatusView = require "core.views.statusview"
@@ -34,8 +31,6 @@ local RootView = require "core.views.rootview"
 local json = require "libraries.json"
 local MessageBox = require "libraries.widget.messagebox"
 
-
-
 local util = require ".util"
 local listbox = require ".listbox"
 local diagnostics = require ".diagnostics"
@@ -43,6 +38,10 @@ local Server = require ".server"
 local Timer = require ".timer"
 local SymbolResults = require ".symbolresults"
 local HelpDoc = require ".helpdoc"
+
+local autocomplete = require "core.ide.autocomplete"
+local snippets = require "core.ide.snippets"
+local LineWrapping = require "core.linewrapping"
 
 --
 -- Plugin settings

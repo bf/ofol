@@ -10,6 +10,8 @@ local DocView = require "..docview"
 local CommandView = require "..commandview"
 local LogView = require "..logview"
 
+local scale = require "core.scale"
+
 ---@alias core.statusview.styledtext table<integer, renderer.font|renderer.color|string>
 ---@alias core.statusview.position '"left"' | '"right"'
 
@@ -224,7 +226,6 @@ function StatusView:register_docview_items()
   --
 
   -- scaling status
-  local scale = require("plugins.scale")
 
   self:add_item({
     predicate = function ()
@@ -442,6 +443,7 @@ end
 ---@param options core.statusview.item.options
 ---@return core.statusview.item
 function StatusView:add_item(options)
+  core.warn("add item %s", options.name)
   assert(self:get_item(options.name) == nil, "status item already exists: " .. options.name)
   ---@type core.statusview.item
   local item = StatusView.Item(options)

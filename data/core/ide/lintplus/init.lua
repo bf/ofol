@@ -37,7 +37,7 @@ local Doc = require "core.doc"
 local DocView = require "core.views.docview"
 local StatusView = require "core.views.statusview"
 
-local liteipc = require ".liteipc"
+local liteipc = require "core.ide.lintplus.liteipc"
 
 
 local lint = {}

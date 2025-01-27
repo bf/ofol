@@ -9,7 +9,7 @@ local Doc       = require 'core.doc'
 local translate = require 'core.doc.translate'
 local keymap    = require 'core.keymap'
 
-local autocomplete = require 'core.autocomplete'
+local autocomplete = require "core.ide.autocomplete"
 
 
 local M       = { }

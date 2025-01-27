@@ -11,7 +11,7 @@ local Label = require "libraries.widget.label"
 local Line = require "libraries.widget.line"
 local ListBox = require "libraries.widget.listbox"
 
-local Server = require "..server"
+local Server = require "core.ide.lsp.server"
 
 local Lsp = {}
 

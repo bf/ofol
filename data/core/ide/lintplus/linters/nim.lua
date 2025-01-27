@@ -12,7 +12,7 @@
 
 --- IMPLEMENTATION ---
 
-local lintplus = require "core.lintplus"
+local lintplus = require "core.ide.lintplus"
 
 local nullfile
 if PLATFORM == "Windows" then

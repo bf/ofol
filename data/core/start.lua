@@ -96,12 +96,12 @@ function require(modname, ...)
         return stderr.error("Require stack underflowed.")
       else
         local base_path = require_stack[#require_stack]
-        stderr.info(string.format("[start.lua] require(%d): %s\tbase_path before: %s", level, modname, base_path))
+        -- stderr.info(string.format("[start.lua] require(%d): %s\tbase_path before: %s", level, modname, base_path))
         while level > 1 do
           base_path = string.match(base_path, "^(.*)%.") or ""
           level = level - 1
         end
-        stderr.info(string.format("[start.lua] require(%d): %s\tbase_path after: %s", level, modname, base_path))
+        -- stderr.info(string.format("[start.lua] require(%d): %s\tbase_path after: %s", level, modname, base_path))
         modname = base_path
         if #base_path > 0 then
           modname = modname .. "."
@@ -109,7 +109,7 @@ function require(modname, ...)
         modname = modname .. rel_path
       end
     else
-      stderr.info(string.format("[start.lua] require(%d): %s\trel_path: %s", level, modname, rel_path))
+      -- stderr.info(string.format("[start.lua] require(%d): %s\trel_path: %s", level, modname, rel_path))
     end
   else
     stderr.error("[start.lua] require called without modname?")

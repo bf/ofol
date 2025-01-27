@@ -5,10 +5,10 @@
 local core = require "core"
 local config = require "core.config"
 
-local lintplus = require "core.lintplus"
+local lintplus = require "core.ide.lintplus"
 
-local util = require "..util"
-local Timer = require "..timer"
+local util = require "core.ide.lsp.util"
+local Timer = require "core.ide.lsp.timer"
 
 
 ---@class lsp.diagnostics

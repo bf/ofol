@@ -66,7 +66,6 @@ end
 ---Stop IME composition.
 ---Might not completely work on every platform.
 function ime.stop()
-  core.debug("")
   if ime.editing then
     -- SDL_ClearComposition for now doesn't work everywhere
     system.clear_ime()

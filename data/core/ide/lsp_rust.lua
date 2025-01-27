@@ -1,6 +1,6 @@
 -- mod-version:3
 
-local lspconfig = require "core.lsp.config"
+local lspconfig = require "..lsp.config"
 local common = require "core.common"
 local config = require "core.config"
 

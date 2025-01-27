@@ -10,10 +10,10 @@
 --
 
 local config = require "core.config"
-local snippets = require "core.snippets"
+local snippets = require "core.ide.snippets"
 
-local lsp = require "core.lsp"
-local util = require "..util"
+local lsp = require "core.ide.lsp"
+local util = require "core.ide.lsp.util"
 
 ---Options that can be passed to a LSP server to overwrite the defaults.
 ---@class lsp.config.options

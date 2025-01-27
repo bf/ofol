@@ -1,4 +1,4 @@
- local lintplus = require "core.lintplus"
+ local lintplus = require "core.ide.lintplus"
 
  lintplus.add("flake8") {
    filename = "%.py$",

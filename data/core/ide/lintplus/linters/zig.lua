@@ -12,7 +12,7 @@
 --- IMPLEMENTATION ---
 
 local core = require "core"
-local lintplus = require "core.lintplus"
+local lintplus = require "core.ide.lintplus"
 
 local mode = lintplus.config.zig_mode or "ast-check"
 if mode ~= "ast-check" and mode ~= "build" then

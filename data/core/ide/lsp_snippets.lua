@@ -10,9 +10,11 @@ local regex    = require 'regex'
 local core     = require 'core'
 local common   = require 'core.common'
 local Doc      = require 'core.doc'
-local snippets = require 'core.snippets'
+
 
 local json 		 = require 'libraries.json'
+
+local snippets = require '..snippets'
 
 local B = snippets.builder
 

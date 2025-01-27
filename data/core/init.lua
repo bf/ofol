@@ -609,11 +609,11 @@ function core.init()
 
   -- init treeview
   core.tree_view = TreeView()
-  local tree_view_node = core.root_view:get_active_node():split("left", core.tree_view, {x = true}, true)
+  core.tree_view.node = core.root_view:get_active_node():split("left", core.tree_view, {x = true}, true)
 
   -- init toolbar view
   core.toolbar_view = ToolbarView()
-  tree_view_node:split("up", core.toolbar_view, {y = true})
+  core.toolbar_view.node = core.tree_view.node:split("up", core.toolbar_view, {y = true})
 
   -- Load default commands first so plugins can override them
   command.add_defaults()
@@ -644,28 +644,23 @@ function core.init()
     end
   end
 
-
-  -- load scm plugin
-  local scm = require "core.scm"
-
-  -- load languages
-  local syntax = require "core.syntax"
-  syntax.load_languages()
-
-  -- load language server
-  local lsp = require "core.lsp"
-  local diagnostics = require "core.lsp.diagnostics"
-  local lsp_rust = require "plugins.lsp_rust"
-
-  -- load autocomplete
-  local lspkind = require "core.lspkind"
-  local autocomplete = require "core.autocomplete"
-
   -- load settings dialog
   local settings = require "core.settings"
 
+  -- load syntax highlighting
+  local syntax = require "core.syntax"
+  syntax.load_languages()
+
+  -- load scale
+  local scale = require "core.scale"
+
   -- load minimap
   local minimap = require "core.minimap"
+
+  -- load ide features
+  local ide = require "core.ide"
+
+
 
   -- -- Load core and user plugins giving preference to user ones with same name.
   local plugins_success, plugins_refuse_list = core.load_plugins()

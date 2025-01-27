@@ -1,8 +1,8 @@
 -- mod-version:3
 local style = require 'core.style'
 local common = require 'core.common'
-local util = require 'core.lsp.util'
-local Server = require 'core.lsp.server'
+local util = require 'core.ide.lsp.util'
+local Server = require 'core.ide.lsp.server'
 
 local kindPresets = {
 	default = {

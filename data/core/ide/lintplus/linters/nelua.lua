@@ -9,7 +9,7 @@
 --- IMPLEMENTATION ---
 
 local core = require 'core'
-local lintplus = require 'core.lintplus'
+local lintplus = require 'core.ide.lintplus'
 
 local mode = lintplus.config.nelua_mode or "analyze"
 
