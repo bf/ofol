@@ -150,7 +150,7 @@ function lint.add_message(filename, line, column, kind, message, rail)
   stderr.warn("add_message for %s:%d %s", filename, line, message)
   filename = core.project_absolute_path(filename)
   if not lint.messages[filename] then
-    stderr.err("context not set up!", filename)
+    stderr.warn("context not set up!", filename)
     -- This allows us to at least store messages until context is properly
     -- set from the calling plugin.
     lint.init_doc(filename)
@@ -161,6 +161,7 @@ function lint.add_message(filename, line, column, kind, message, rail)
   if rail ~= nil then
     rails[rail] = rails[rail] or { lines_taken = {} }
     if not rails[rail].lines_taken[line] then
+      stderr.warn("rails not set up for %s line %d with message %s", filename, line, message)
       rails[rail].lines_taken[line] = true
       table.insert(rails[rail], {
         line = line,
@@ -169,6 +170,7 @@ function lint.add_message(filename, line, column, kind, message, rail)
       })
     end
   end
+  stderr.warn("inserting %s line %d with message %s", filename, line, message)
   table.insert(lines[line], {
     column = column,
     kind = kind,
@@ -592,6 +594,7 @@ end
 
 local DocView_draw_line_text = DocView.draw_line_text
 function DocView:draw_line_text(idx, x, y)
+  stderr.debug("draw_line_text within lintplus")
   DocView_draw_line_text(self, idx, x, y)
 
   local lp = self.doc.__lintplus
@@ -836,7 +839,6 @@ keymap.add {
   ["alt+up"]    = "lint+:goto-previous-message",
   ["alt+down"]  = "lint+:goto-next-message"
 }
-
 
 --- LINTER PLUGINS ---
 

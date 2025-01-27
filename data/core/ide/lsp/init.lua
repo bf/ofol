@@ -42,7 +42,7 @@ local HelpDoc = require ".helpdoc"
 
 local autocomplete = require "core.ide.autocomplete"
 local snippets = require "core.ide.snippets"
-local LineWrapping = require "core.linewrapping"
+local LineWrapping = require "core.ide.linewrapping"
 
 --
 -- Plugin settings
@@ -2625,33 +2625,32 @@ local function lsp_predicate_symbols()
   return lsp_predicate(nil, nil, true)
 end
 
-local menu_found, menu = pcall(require, "plugins.contextmenu")
-if menu_found then
-  menu:register(lsp_predicate_symbols, {
-    menu.DIVIDER,
-    { text = "Show Symbol Info",        command = "lsp:show-symbol-info" },
-    { text = "Show Symbol Info in Tab", command = "lsp:show-symbol-info-in-tab" },
-    { text = "Goto Definition",         command = "lsp:goto-definition" },
-    { text = "Goto Implementation",     command = "lsp:goto-implementation" },
-    { text = "Find References",         command = "lsp:find-references" }
-  })
+-- context menu
+local menu = require "core.ide.contextmenu"
+menu:register(lsp_predicate_symbols, {
+  menu.DIVIDER,
+  { text = "Show Symbol Info",        command = "lsp:show-symbol-info" },
+  { text = "Show Symbol Info in Tab", command = "lsp:show-symbol-info-in-tab" },
+  { text = "Goto Definition",         command = "lsp:goto-definition" },
+  { text = "Goto Implementation",     command = "lsp:goto-implementation" },
+  { text = "Find References",         command = "lsp:find-references" }
+})
 
-  menu:register(lsp_predicate, {
-    menu.DIVIDER,
-    { text = "Document Symbols",       command = "lsp:view-document-symbols" },
-    { text = "Document Diagnostics",   command = "lsp:view-document-diagnostics" },
-    { text = "Toggle Diagnostics",     command = "lsp:toggle-diagnostics" },
-    { text = "Format Document",        command = "lsp:format-document" },
-  })
+menu:register(lsp_predicate, {
+  menu.DIVIDER,
+  { text = "Document Symbols",       command = "lsp:view-document-symbols" },
+  { text = "Document Diagnostics",   command = "lsp:view-document-diagnostics" },
+  { text = "Toggle Diagnostics",     command = "lsp:toggle-diagnostics" },
+  { text = "Format Document",        command = "lsp:format-document" },
+})
 
-  local menu_show = menu.show
-  function menu:show(...)
-    lsp.hover_timer:stop()
-    lsp.hover_timer:reset()
-    listbox.hide()
-    lsp.hover_position.triggered = false
-    menu_show(self, ...)
-  end
+local menu_show = menu.show
+function menu:show(...)
+  lsp.hover_timer:stop()
+  lsp.hover_timer:reset()
+  listbox.hide()
+  lsp.hover_position.triggered = false
+  menu_show(self, ...)
 end
 
 

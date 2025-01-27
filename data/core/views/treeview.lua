@@ -145,7 +145,9 @@ function TreeView:new()
   end
 
 
-  local function treeitem() return view.hovered_item or view.selected_item end
+  local function treeitem() 
+    return view.hovered_item or view.selected_item 
+  end
 
 
   treeview_context_menu:register(function() return core.active_view:is(TreeView) and treeitem() end, {

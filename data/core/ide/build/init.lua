@@ -10,7 +10,7 @@ local stderr = require "libraries.stderr"
 local DocView = require "core.views.docview"
 local StatusView = require "core.views.statusview"
 
-local TreeView = require "core.views.treeview"
+-- local TreeView = require "core.views.treeview"
 local ToolbarView = require "core.views.toolbarview"
 
 local build = common.merge({

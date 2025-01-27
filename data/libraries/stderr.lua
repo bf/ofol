@@ -70,7 +70,13 @@ function stderr.print_with_tag(tag, fmt, ...)
   local text = try_string_format_into_text(fmt, ...)
 
   -- get info about calling function
-  local info = debug.getinfo(2, "Sln")
+  local info = debug.getinfo(3, "Sln")
+
+  -- when error is forwarded via strict.lua (e.g. undefined variable)
+  -- then we need to look 4 function calls deep to get proper failing function
+  if info.source:match("strict.lua$") then
+    info = debug.getinfo(4, "Sln")
+  end
  
   -- get path of calling function
   local at
@@ -105,11 +111,32 @@ function stderr.warn(...)
   stderr.print_with_tag("WARN", ...)
 end
 
-function stderr.error(...)
-  stderr.print_with_tag("ERROR", ...)
+function stderr.backtrace() 
   io.stderr:write(debug.traceback("", 1))
   io.stderr:write("\n")
+end
 
+function stderr.debug_backtrace(...)
+  if not HIDE_DEBUG_MESSAGES then
+    stderr.debug(...)
+    stderr.backtrace()
+  end
+end
+
+function stderr.warn_backtrace(...)
+  stderr.debug(...)
+  stderr.backtrace()
+end
+
+function stderr.info_backtrace(...)
+  stderr.debug(...)
+  stderr.backtrace()
+end
+
+function stderr.error(...)
+  stderr.print_with_tag("ERROR", ...)
+  stderr.backtrace()
+  
   if EXIT_ON_ERROR then
     stderr.print("will exit now because EXIT_ON_ERROR is set to true")
     os.exit(3)
