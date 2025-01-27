@@ -2626,7 +2626,7 @@ local function lsp_predicate_symbols()
 end
 
 -- context menu
-local menu = require "core.ide.contextmenu"
+local menu = require "core.ide.contextmenu_in_docview"
 menu:register(lsp_predicate_symbols, {
   menu.DIVIDER,
   { text = "Show Symbol Info",        command = "lsp:show-symbol-info" },

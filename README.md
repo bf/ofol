@@ -3,7 +3,7 @@
 Goals:
 
 - [ ] ready for rust development, like an improved version of Lapce
-- - [ ] fix line warp for error messages
+- - [ ] fix line wrap for error messages
 - - [x] refactor IDE components
 - [ ] focus on linux/wayland/gnome, should out of the box w/o needing wayland parameters
 - [ ] UX should feel familiar for someone coming from sublime text editor:
@@ -13,18 +13,20 @@ Goals:
 - - [ ] does not crash when opening 30mb pdf file
 - - [ ] hex view for binary files
 - - [ ] dynamic width for tabs
+- - [ ] click on tab label does not switch to tab
+- - [ ] double click title bar maximize
 - - [x] CTRL+P :123 to go to line 123 of current file
 - [ ] improved handling of plugins:
 - - [ ] no plugin manager
 - - [ ] better UX in settings::plugins ui
 - - [x] better structure / refactoring for default plugins
 - - [x] refactor error logging
-- [ ] show error warning todo ontop of treeview
-- [ ] sort treeview by scm status
+- [ ] treeview: show error warning todo ontop of treeview
+- [ ] treeview: sort files by scm status
 - [ ] different handling open project vs. open individual files
 - [ ] refactor toolbar combine build + normal toolbar
 - [ ] move to sdl3?
-
+- [x] treeview: fix context menu
 
 
 When in doubt, kill MacOS/Windows compatiblity.

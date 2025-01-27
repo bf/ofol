@@ -8,6 +8,7 @@ local style = require "core.style"
 local View = require "core.view"
 local ContextMenu = require "core.contextmenu"
 
+
 local RootView = require "core.views.rootview"
 local CommandView = require "core.views.commandview"
 local DocView = require "core.views.docview"
@@ -100,6 +101,7 @@ function TreeView:new()
   -- Add a context menu to the treeview
   local treeview_context_menu = ContextMenu()
 
+
   local on_view_mouse_pressed = RootView.on_view_mouse_pressed
   local on_mouse_moved = RootView.on_mouse_moved
   local root_view_update = RootView.update
@@ -110,7 +112,7 @@ function TreeView:new()
     on_mouse_moved(self, ...)
   end
 
-  function RootView:on_view_mouse_pressed(button, x, y, clicks)
+function RootView.on_view_mouse_pressed(button, x, y, clicks)
     -- We give the priority to the menu to process mouse pressed events.
     -- if button == "right" then
     --   view.tooltip.alpha = 0
@@ -508,6 +510,131 @@ function TreeView:new()
       treeview_context_menu:call_selected_item()
     end,
   })
+
+
+  local treeview_copy_to = function ()
+    local source_filename = view.hovered_item.abs_filename
+    core.command_view:set_text(view.hovered_item.abs_filename)
+    core.command_view:enter("Copy to", function(dest_filename)
+      if (fsutils.is_object_exist(dest_filename)) then
+        -- Ask before rewriting
+          local opt = {
+            { font = style.font, text = "Yes", default_yes = true },
+            { font = style.font, text = "No" , default_no = true }
+          }
+          core.nag_view:show(
+            string.format("Rewrite existing file?"),
+            string.format(
+              "File %s already exist. Rewrite file?",
+              dest_filename
+            ),
+            opt,
+            function(item)
+              if item.text == "Yes" then
+                os.remove(dest_filename)
+                fsutils.copy_file(source_filename, dest_filename)
+              else
+                return
+              end
+            end
+          )
+      else
+        fsutils.copy_file(source_filename, dest_filename)
+      end
+
+      core.root_view:open_doc(core.open_doc(dest_filename))
+      stderr.info("[treeview-extender] %s copied to %s", source_filename, dest_filename)
+    end, common.path_suggest)
+  end
+
+
+  command.add(
+    function()
+      return view.hovered_item ~= nil
+        and fsutils.is_dir(view.hovered_item.abs_filename) ~= true
+    end, {
+      -- ["treeview:duplicate-file"] = actions.duplicate_file,
+      ["treeview:copy-to"] = treeview_copy_to
+    })
+
+  local treeview_move_to = function ()
+      local old_abs_filename = view.hovered_item.abs_filename
+      core.command_view:set_text(view.hovered_item.abs_filename)
+      core.command_view:enter("Move to",
+        function(new_abs_filename)
+          if (fsutils.is_object_exist(new_abs_filename)) then
+            -- Ask before rewriting
+            local opt = {
+              { font = style.font, text = "Yes", default_yes = true },
+              { font = style.font, text = "No" , default_no = true }
+            }
+            core.nag_view:show(
+              string.format("Rewrite existing file?"),
+              string.format(
+                "File %s already exist. Rewrite file?",
+                new_abs_filename
+              ),
+              opt,
+              function(item)
+                if item.text == "Yes" then
+                  os.remove(new_abs_filename)
+                  fsutils.move_object(old_abs_filename, new_abs_filename)
+
+                  stderr.info("[treeview-extender] %s moved to %s", old_abs_filename, new_abs_filename)
+                end
+              end
+            )
+          else
+            fsutils.move_object(old_abs_filename, new_abs_filename)
+            stderr.info("[treeview-extender] %s moved to %s", old_abs_filename, new_abs_filename)
+          end
+        end
+      )
+    end
+
+  command.add(
+    function()
+      return view.hovered_item ~= nil
+        and view.hovered_item.abs_filename ~= core.project_dir
+    end, {
+      ["treeview:move-to"] = treeview_move_to
+    })
+
+  treeview_context_menu:register(
+    function()
+      return view.hovered_item
+        and (fsutils.is_dir(view.hovered_item.abs_filename) ~= true
+        or view.hovered_item.abs_filename ~= core.project_dir)
+    end,
+    {
+      treeview_context_menu.DIVIDER,
+    }
+  )
+
+  -- Menu 'Duplicate File..' only shown when an object is selected
+  -- and the object is a file
+  treeview_context_menu:register(
+    function()
+      return view.hovered_item
+        and fsutils.is_dir(view.hovered_item.abs_filename) ~= true
+    end,
+    {
+      -- { text = "Duplicate File..", command = "treeview:duplicate-file" },
+      { text = "Copy To..", command = "treeview:copy-to" },
+    }
+  )
+
+  -- Menu 'Move To..' only shown when an object is selected
+  -- and the object is not the project directory
+  treeview_context_menu:register(
+    function()
+      return view.hovered_item
+        and view.hovered_item.abs_filename ~= core.project_dir
+    end,
+    {
+      { text = "Move To..", command = "treeview:move-to" },
+    }
+  )
 
   self.treeview_context_menu = treeview_context_menu
 end
@@ -1121,183 +1248,6 @@ keymap.add {
   ["down"]   = "treeview-context:focus-next",
   ["escape"] = "treeview-context:hide"
 }
-
-
--- -- The config specification used by gui generators
--- config.plugins.treeview.config_spec = {
---   name = "Treeview",
---   -- {
---   --   label = "Size",
---   --   description = "Default treeview width.",
---   --   path = "size",
---   --   type = "number",
---   --   default = toolbar_view and math.ceil(toolbar_view:get_min_width() / SCALE)
---   --     or 200 * SCALE,
---   --   min = toolbar_view and toolbar_view:get_min_width() / SCALE
---   --     or 200 * SCALE,
---   --   get_value = function(value)
---   --     return value / SCALE
---   --   end,
---   --   set_value = function(value)
---   --     return value * SCALE
---   --   end,
---   --   on_apply = function(value)
---   --     view:set_target_size("x", math.max(
---   --       value, toolbar_view and toolbar_view:get_min_width() or 200 * SCALE
---   --     ))
---   --   end
---   -- },
---   {
---     label = "Hide on Startup",
---     description = "Show or hide the treeview on startup.",
---     path = "visible",
---     type = "toggle",
---     default = false,
---     on_apply = function(value)
---       view.visible = not value
---     end
---   }
--- }
-
--- -- Return the treeview with toolbar and contextmenu to allow
--- -- -- user or plugin modifications
--- -- view.toolbar = toolbar_view
--- view.contextmenu = menu
-
--- return view
-
-
-
-
-
-
-
-
-
--- local treeview_copy_to = function ()
---   local source_filename = view.hovered_item.abs_filename
---   core.command_view:set_text(view.hovered_item.abs_filename)
---   core.command_view:enter("Copy to", function(dest_filename)
---     if (fsutils.is_object_exist(dest_filename)) then
---       -- Ask before rewriting
---         local opt = {
---           { font = style.font, text = "Yes", default_yes = true },
---           { font = style.font, text = "No" , default_no = true }
---         }
---         core.nag_view:show(
---           string.format("Rewrite existing file?"),
---           string.format(
---             "File %s already exist. Rewrite file?",
---             dest_filename
---           ),
---           opt,
---           function(item)
---             if item.text == "Yes" then
---               os.remove(dest_filename)
---               fsutils.copy_file(source_filename, dest_filename)
---             else
---               return
---             end
---           end
---         )
---     else
---       fsutils.copy_file(source_filename, dest_filename)
---     end
-
---     core.root_view:open_doc(core.open_doc(dest_filename))
---     stderr.info("[treeview-extender] %s copied to %s", source_filename, dest_filename)
---   end, common.path_suggest)
--- end
-
-
--- command.add(
---   function()
---     return view.hovered_item ~= nil
---       and fsutils.is_dir(view.hovered_item.abs_filename) ~= true
---   end, {
---     -- ["treeview:duplicate-file"] = actions.duplicate_file,
---     ["treeview:copy-to"] = treeview_copy_to
---   })
-
--- local treeview_move_to = function ()
---     local old_abs_filename = view.hovered_item.abs_filename
---     core.command_view:set_text(view.hovered_item.abs_filename)
---     core.command_view:enter("Move to",
---       function(new_abs_filename)
---         if (fsutils.is_object_exist(new_abs_filename)) then
---           -- Ask before rewriting
---           local opt = {
---             { font = style.font, text = "Yes", default_yes = true },
---             { font = style.font, text = "No" , default_no = true }
---           }
---           core.nag_view:show(
---             string.format("Rewrite existing file?"),
---             string.format(
---               "File %s already exist. Rewrite file?",
---               new_abs_filename
---             ),
---             opt,
---             function(item)
---               if item.text == "Yes" then
---                 os.remove(new_abs_filename)
---                 fsutils.move_object(old_abs_filename, new_abs_filename)
-
---                 stderr.info("[treeview-extender] %s moved to %s", old_abs_filename, new_abs_filename)
---               end
---             end
---           )
---         else
---           fsutils.move_object(old_abs_filename, new_abs_filename)
---           stderr.info("[treeview-extender] %s moved to %s", old_abs_filename, new_abs_filename)
---         end
---       end
---     )
---   end
-
--- command.add(
---   function()
---     return view.hovered_item ~= nil
---       and view.hovered_item.abs_filename ~= core.project_dir
---   end, {
---     ["treeview:move-to"] = treeview_move_to
---   })
-
--- treeview_context_menu:register(
---   function()
---     return view.hovered_item
---       and (fsutils.is_dir(view.hovered_item.abs_filename) ~= true
---       or view.hovered_item.abs_filename ~= core.project_dir)
---   end,
---   {
---     menu.DIVIDER,
---   }
--- )
-
--- -- Menu 'Duplicate File..' only shown when an object is selected
--- -- and the object is a file
--- treeview_context_menu:register(
---   function()
---     return view.hovered_item
---       and fsutils.is_dir(view.hovered_item.abs_filename) ~= true
---   end,
---   {
---     -- { text = "Duplicate File..", command = "treeview:duplicate-file" },
---     { text = "Copy To..", command = "treeview:copy-to" },
---   }
--- )
-
--- -- Menu 'Move To..' only shown when an object is selected
--- -- and the object is not the project directory
--- treeview_context_menu:register(
---   function()
---     return view.hovered_item
---       and view.hovered_item.abs_filename ~= core.project_dir
---   end,
---   {
---     { text = "Move To..", command = "treeview:move-to" },
---   }
--- )
-
 
 
 

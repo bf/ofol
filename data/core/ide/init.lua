@@ -1,5 +1,5 @@
--- load context menu
-local contextmenu = require "core.ide.contextmenu"
+-- load context menu for doc
+require "core.ide.contextmenu_in_docview"
 
 -- load lintplus explicitly
 -- local lintplus = require "core.ide.lintplus"
@@ -9,6 +9,8 @@ local contextmenu = require "core.ide.contextmenu"
 
 -- load scm plugin
 local scm = require "core.ide.scm"
+-- load scm context menu for treeview
+local treeview_context_menu_from_scm = require "core.ide.scm.treeview"
 
 -- load build plugin
 local build = require "core.ide.build"
@@ -22,3 +24,4 @@ local lsp_rust = require "core.ide.lsp_rust"
 local lspkind = require "core.ide.lspkind"
 local autoinsert = require "core.ide.autoinsert"
 local autocomplete = require "core.ide.autocomplete"
+
