@@ -18,7 +18,8 @@ local ToolbarView = require "core.views.toolbarview"
 local stderr = require "libraries.stderr"
 local fsutils = require "libraries.fsutils"
 
-local ICON_FILE = "f"
+local ICON_FOR_TEXT_SPACING = "f"
+local ICON_FILE = ""
 local ICON_DIR_OPEN = "D"
 local ICON_DIR_CLOSED = "d"
 local ICON_TREE_OPEN = "-"
@@ -901,7 +902,7 @@ function TreeView:update()
   -- end
 
   self.item_icon_width = style.icon_font:get_width(ICON_DIR_OPEN)
-  self.item_text_spacing = style.icon_font:get_width(ICON_FILE) / 2
+  self.item_text_spacing = style.icon_font:get_width(ICON_FOR_TEXT_SPACING) / 2
 
   -- this will make sure hovered_item is updated
   local dy = math.abs(self.last_scroll_y - self.scroll.y)

@@ -9,12 +9,11 @@ Goals:
 - [ ] UX should feel familiar for someone coming from sublime text editor:
 - - [ ] remove nagview, use system dialogs for file open / prompts
 - - [ ] same keybindings as sublime text
-- - [ ] same speed when viewing large files as sublime text
-- - [ ] does not crash when opening 30mb pdf file
+- - [ ] file loading in thread with progress bar: no crash when opening large files
 - - [ ] hex view for binary files
 - - [ ] reopen closed tab with ctrl shift t
-- - [ ] click on tab label does not switch to tab
-- - [ ] double click title bar maximize
+- - [x] click on tab label does not switch to tab
+- - [x] double click title bar maximize
 - - [x] CTRL+P :123 to go to line 123 of current file
 - [ ] improved handling of plugins:
 - - [ ] no plugin manager
@@ -28,10 +27,6 @@ Goals:
 - [ ] move to sdl3?
 - [x] treeview: fix context menu
 
-
-When in doubt, kill MacOS/Windows compatiblity.
-
-I'm a LUA noob so let's see where this goes.
 
 
 old readme below:

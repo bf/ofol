@@ -195,14 +195,14 @@ end
 
 function View:on_mouse_left()
   if not self.scrollable then 
-    stderr.debug_backtrace("on_mouse_left -> not scrollable -> return")
+    -- stderr.debug_backtrace("on_mouse_left -> not scrollable -> return")
     return 
   end
-  stderr.debug("on_mouse_left -> scrollbar")
-  stderr.warn("self.v_scrollbar %s", self.v_scrollbar)
-  stderr.warn("self.h_scrollbar %s", self.h_scrollbar)
-  -- self.v_scrollbar:on_mouse_left()
-  -- self.h_scrollbar:on_mouse_left()
+  -- stderr.debug("on_mouse_left -> scrollbar")
+  -- stderr.warn("self.v_scrollbar %s", self.v_scrollbar)
+  -- stderr.warn("self.h_scrollbar %s", self.h_scrollbar)
+  self.v_scrollbar:on_mouse_left()
+  self.h_scrollbar:on_mouse_left()
   return true
 end
 
