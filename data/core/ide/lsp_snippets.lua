@@ -486,13 +486,13 @@ local function parse_file(file)
 
 	local _f = io.open(file)
 	if not _f then
-		core.error('[LSP snippets] Could not open \'%s\'', file)
+		stderr.error('[LSP snippets] Could not open \'%s\'', file)
 		return
 	end
 	local ok, r = pcall(json.decode, _f:read('a'))
 	_f:close()
 	if not ok then
-		core.error('[LSP snippets] %s: %s', file, r:match('%d+:%s+(.*)'))
+		stderr.error('[LSP snippets] %s: %s', file, r:match('%d+:%s+(.*)'))
 		return false
 	end
 
@@ -503,7 +503,7 @@ local function parse_file(file)
 			and table.concat(s.body, '\n')
 			or s.body
 		if not template or template == '' then
-			core.warn('[LSP snippets] missing \'body\' for %s (%s)', i, file)
+			stderr.warn('[LSP snippets] missing \'body\' for %s (%s)', i, file)
 			goto continue
 		end
 
@@ -525,7 +525,7 @@ local function parse_file(file)
 		-- prefix may be an array
 		local triggers = type(s.prefix) ~= 'table' and { s.prefix } or s.prefix
 		if #triggers == 0 then
-			core.warn('[LSP snippets] missing \'prefix\' for %s (%s)', i, file)
+			stderr.warn('[LSP snippets] missing \'prefix\' for %s (%s)', i, file)
 			goto continue
 		end
 
@@ -635,7 +635,7 @@ local warned = false
 function M.add_paths(paths)
 	if not json then
 		if not warned then
-			core.error(
+			stderr.error(
 				'[LSP snippets] Could not add snippet file(s):' ..
 				'JSON plugin not found'
 			)

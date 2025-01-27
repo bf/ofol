@@ -147,7 +147,7 @@ lintplus.add("rust") {
     interpreter = function (filename, line, context)
       -- initial checks
       if context.workspace_root == nil then
-        core.error(
+        stderr.error(
           "lint+/rust: "..filename.." is not situated in a cargo crate"
         )
         return no_op

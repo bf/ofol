@@ -1,4 +1,4 @@
-local stderr = require "core.stderr"
+local stderr = require "libraries.stderr"
 
 local strict = {}
 strict.defined = {}

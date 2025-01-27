@@ -71,7 +71,7 @@ local insensitive = CheckBox(widget, "Insensitive")
 insensitive:set_position(10, line_options:get_bottom() + 10)
 insensitive:set_tooltip("Case insensitive search")
 insensitive.on_checked = function(_, checked)
-  core.log_quiet(tostring(checked))
+  stderr.debug(tostring(checked))
 end
 
 ---@type widget.checkbox
@@ -79,7 +79,7 @@ local regex = CheckBox(widget, "Regex")
 regex:set_position(10, insensitive:get_bottom() + 10)
 regex:set_tooltip("Treat search text as a regular expression")
 regex.on_checked = function(_, checked)
-  core.log_quiet(tostring(checked))
+  stderr.debug(tostring(checked))
 end
 
 ---@type widget.selectbox

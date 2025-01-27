@@ -22,7 +22,7 @@ command.add("core.views.docview!", {
 -- PDF viewer - is there any provided by the environment
     local pdfcmd = os.getenv("LITE_PDF_VIEWER")
 
-    core.log("Opening pdf preview for \"%s\"", texfile)
+    stderr.info("Opening pdf preview for \"%s\"", texfile)
 
     if pdfcmd ~= nil then
         system.exec(pdfcmd .. " " .. pdffile)

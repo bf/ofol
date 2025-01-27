@@ -1,11 +1,12 @@
 require "core.strict"
 require "core.regex"
-local stderr = require "core.stderr"
 local common = require "core.common"
 local config = require "core.config"
 
 local style = require "colors.default"
+
 local json = require "libraries.json"
+local stderr = require "libraries.stderr"
 
 local user_session
 local command
@@ -77,7 +78,7 @@ local function show_max_files_warning(dir)
     "Too many files in project directory: stopped reading at "..
     config.max_project_files.." files. For more information see "..
     "usage.md at https://github.com/lite-xl/lite-xl."
-  core.warn(message)
+  stderr.warn(message)
 end
 
 
@@ -434,7 +435,7 @@ end
 
 -- user directory
 function core.load_user_directory()  
-  core.debug("loading user diretory")
+  stderr.debug("loading user diretory")
   return core.try(function()
     local stat_dir = system.get_file_info(USERDIR)
     if not stat_dir then
@@ -491,8 +492,8 @@ end
 
 
 function core.init()
-  core.log_items = {}
-  core.log_quiet("OFOL version %s", VERSION)
+  stderr.info_items = {}
+  stderr.debug("OFOL version %s", VERSION)
 
   command = require "core.command"
   keymap = require "core.keymap"
@@ -525,7 +526,7 @@ function core.init()
   do
     -- load last session
     local stored_session_data = user_session.load_user_session()
-    core.debug("loaded stored_session_data %s", stored_session_data)
+    stderr.debug("loaded stored_session_data %s", stored_session_data)
 
     -- apply stored settings to window
     if stored_session_data.window_mode == "normal" then
@@ -535,9 +536,9 @@ function core.init()
       -- handle error
       if not ok then
         for k,v in pairs(stored_session_data) do
-          core.debug("stored_session_data k %s v %s", k, v)
+          stderr.debug("stored_session_data k %s v %s", k, v)
         end
-        core.error("set_window_size failed for stored_session_data.window %s with %s", stored_session_data, result)
+        stderr.error("set_window_size failed for stored_session_data.window %s with %s", stored_session_data, result)
       end
     elseif stored_session_data.window_mode == "maximized" then
       system.set_window_mode(core.window, "maximized")
@@ -638,7 +639,7 @@ function core.init()
     if not core.set_project_dir(project_dir_abs, function()
       -- got_project_error = not core.load_project_module()
     end) then
-      core.error("cannot set project directory to cwd")
+      stderr.error("cannot set project directory to cwd")
       system.show_fatal_error("Lite XL internal error", "cannot set project directory to cwd")
       os.exit(1)
     end
@@ -667,11 +668,11 @@ function core.init()
 
   do
     local pdir, pname = project_dir_abs:match("(.*)[/\\\\](.*)")
-    core.log("Opening project %q from directory %s", pname, pdir)
+    stderr.info("Opening project %q from directory %s", pname, pdir)
   end
 
   -- We add the project directory now because the project's module is loaded.
-  core.debug("project directory: %s", project_dir_abs)
+  stderr.debug("project directory: %s", project_dir_abs)
   core.add_project_directory(project_dir_abs)
 
   -- We assume we have just a single project directory here. Now that StatusView
@@ -680,7 +681,7 @@ function core.init()
     show_max_files_warning(core.project_directories[1])
   end
 
-  core.debug("opening documents from last session")
+  stderr.debug("opening documents from last session")
   for _, filename in ipairs(files) do
     core.root_view:open_doc(core.open_doc(filename))
   end
@@ -697,10 +698,10 @@ function core.init()
 
   if #plugins_refuse_list.userdir.plugins > 0 or #plugins_refuse_list.datadir.plugins > 0 then
     if #plugins_refuse_list.userdir.plugins > 0 then
-      core.debug("plugins_refuse_list.userdir.plugins", json.encode(plugins_refuse_list.userdir.plugins))
+      stderr.debug("plugins_refuse_list.userdir.plugins", json.encode(plugins_refuse_list.userdir.plugins))
     end
     if #plugins_refuse_list.datadir.plugins > 0 then
-      core.debug("plugins_refuse_list.datadir.plugins", json.encode(plugins_refuse_list.datadir.plugins))
+      stderr.debug("plugins_refuse_list.datadir.plugins", json.encode(plugins_refuse_list.datadir.plugins))
     end
 
     local opt = {
@@ -722,7 +723,7 @@ function core.init()
         "Please download a recent version from https://github.com/lite-xl/lite-xl-plugins."
         , table.concat(msg, ".\n\n"))
 
-    core.error("Error:", errorMessage)
+    stderr.error("Error:", errorMessage)
     core.nag_view:show(
       "Refused Plugins", errorMessage,
       opt, function(item)
@@ -859,13 +860,13 @@ function core.load_plugins()
 
   local load_start = system.get_time()
   for _, plugin in ipairs(ordered) do
-    core.debug(string.format("[core] [plugin] [%s] loading from %s", plugin.name, plugin.dir))
+    stderr.debug(string.format("[core] [plugin] [%s] loading from %s", plugin.name, plugin.dir))
     if config.plugins[plugin.name] ~= false then
       local start = system.get_time()
       local ok, loaded_plugin = core.try(require, "plugins." .. plugin.name)
       if ok then
-        core.debug(string.format("[core] [plugin] [%s] loaded", plugin.name))
-        core.log_quiet(
+        stderr.debug(string.format("[core] [plugin] [%s] loaded", plugin.name))
+        stderr.debug(
           "Loaded plugin %q from %s in %.1fms",
           plugin.name,
           plugin.dir,
@@ -878,10 +879,10 @@ function core.load_plugins()
         core.try(config.plugins[plugin.name].onload, loaded_plugin)
       end
     else
-      core.warn(string.format("[core] [plugin] [%s] skipped, NOT(config.plugins[plugin.name] ~= false) for %s", plugin.name, config.plugins[plugin.name]))
+      stderr.warn(string.format("[core] [plugin] [%s] skipped, NOT(config.plugins[plugin.name] ~= false) for %s", plugin.name, config.plugins[plugin.name]))
     end
   end
-  core.log_quiet(
+  stderr.debug(
     "Loaded all plugins in %.1fms",
     (system.get_time() - load_start) * 1000
   )
@@ -982,9 +983,9 @@ function core.open_doc(filename)
   local new_file = not filename or not system.get_file_info(filename)
 
   if new_file then
-    core.log_quiet("open new file")
+    stderr.debug("open new file")
   else
-    core.log_quiet("open \"%s\"", filename)
+    stderr.debug("open \"%s\"", filename)
   end
 
   local abs_filename
@@ -1004,7 +1005,7 @@ function core.open_doc(filename)
   local doc = Doc(filename, abs_filename, new_file)
   table.insert(core.docs, doc)
 
-  core.log_quiet("created new abs_filename %s", abs_filename)
+  stderr.debug("created new abs_filename %s", abs_filename)
 
   return doc
 end
@@ -1019,111 +1020,11 @@ function core.get_views_referencing_doc(doc)
   return res
 end
 
-function core.custom_log(level, show, backtrace, fmt, ...)
-  local text
-  if select('#', ...) > 0 then
-    -- parse format string if flexible arguments are given
-    local success, result = pcall(string.format, fmt, ...)
-
-    -- error when format string is bad
-    if not success then
-      core.error("string.format failed with fmt %s and args %s", fmt, json.encode({...}))
-    end
-    text = result
-  else
-    -- no args for fmt given, text is fmt
-    text = fmt
-  end
-
-  if show then
-    local s = style.log[level]
-    if core.status_view then
-      core.status_view:show_message(s.icon, s.color, text)
-    end
-  end
-
-  -- fetch debug info
-  local info = debug.getinfo(2, "Sln")
-
-  -- get path of calling function
-  local at
-  if #DATADIR > 0 and #info.source > 2 then
-    -- figure out relative path if possible
-    local relative_path = common.relative_path(DATADIR, string.sub(info.source, 2))
-    at = string.format("%s:%d", relative_path, info.currentline)
-  else 
-    -- use absolute path as fallback
-    at = info.source
-  end
-
-  -- create object for logview storage
-  local item = {
-    level = level,
-    text = text,
-    time = os.time(),
-    at = at,
-    info = backtrace and debug.traceback("", 2):gsub("\t", "")
-  }
-  table.insert(core.log_items, item)
-  if #core.log_items > config.max_log_items then
-    table.remove(core.log_items, 1)
-  end
-
-  -- print to stderr
-  if config.log_to_stderr then
-    -- from https://stackoverflow.com/a/64271511
-    -- local relative_path = string.format("%s:%d", common.relative_path(DATADIR, info.source), info.currentline)
-    -- stderr.print_with_tag(item.level, string.format("%s [%s] %s(): %s", os.date("%Y-%m-%d %M:%H"), item.at, info.name, item.text))
-    stderr.print_with_tag(item.level, string.format("[%s] %s(): %s", item.at, info.name, item.text))
-  end
-
-  return item
-end
-
-function core.log(...)
-  return core.custom_log("INFO", true, false, ...)
-end
-
-function core.log_quiet(...)
-  return core.custom_log("INFO", false, false, ...)
-end
-
-function core.info(...)
-  return core.custom_log("INFO", true, false, ...)
-end
-
-function core.debug(...)
-  return core.custom_log("DEBUG", false, false, ...)
-end
-
-function core.warn(...)
-  return core.custom_log("WARN", true, true, ...)
-end
-
-function core.error(...)
-  return core.custom_log("ERROR", true, true, ...)
-end
-
-function core.get_log(i)
-  if i == nil then
-    local r = {}
-    for _, item in ipairs(core.log_items) do
-      table.insert(r, core.get_log(item))
-    end
-    return table.concat(r, "\n")
-  end
-  local item = type(i) == "number" and core.log_items[i] or i
-  local text = string.format("%s [%s] %s at %s", os.date(nil, item.time), item.level, item.text, item.at)
-  if item.info then
-    text = string.format("%s\n%s\n", text, item.info)
-  end
-  return text
-end
 
 function core.try(fn, ...)
   local err
   local ok, res = xpcall(fn, function(msg)
-    local item = core.error("%s", msg)
+    local item = stderr.error("%s", msg)
     item.info = debug.traceback("", 2):gsub("\t", "")
     err = msg
   end, ...)
@@ -1371,7 +1272,7 @@ local alerted_deprecations = {}
 function core.deprecation_log(kind)
   if alerted_deprecations[kind] then return end
   alerted_deprecations[kind] = true
-  core.warn("Used deprecated functionality [%s]. Check if your plugins are up to date.", kind)
+  stderr.warn("Used deprecated functionality [%s]. Check if your plugins are up to date.", kind)
 end
 
 

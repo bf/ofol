@@ -6,10 +6,10 @@ local style = require "core.style"
 local View = require "core.view"
 local Object = require "core.object"
 
+local stderr = require "libraries.stderr"
+
 local DocView = require "core.views.docview"
 local CommandView = require "core.views.commandview"
-local LogView = require "core.views.logview"
-
 local scale = require "core.scale"
 
 ---@alias core.statusview.styledtext table<integer, renderer.font|renderer.color|string>
@@ -443,7 +443,7 @@ end
 ---@param options core.statusview.item.options
 ---@return core.statusview.item
 function StatusView:add_item(options)
-  core.debug("add item %s", options.name)
+  stderr.debug("add item %s", options.name)
   assert(self:get_item(options.name) == nil, "status item already exists: " .. options.name)
   ---@type core.statusview.item
   local item = StatusView.Item(options)
@@ -724,7 +724,7 @@ end
 ---@return table right
 function StatusView:get_items(nowarn)
   if not nowarn and not self.get_items_warn then
-    core.warn(
+    stderr.warn(
       "Overriding StatusView:get_items() is deprecated, "
       .. "use core.status_view:add_item() instead."
     )

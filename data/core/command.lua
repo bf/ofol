@@ -1,4 +1,5 @@
 local core = require "core"
+local stderr = require "libraries.stderr"
 local command = {}
 
 ---A predicate function accepts arguments from `command.perform()` and evaluates to a boolean. </br>
@@ -86,7 +87,7 @@ function command.add(predicate, map)
   predicate = command.generate_predicate(predicate)
   for name, fn in pairs(map) do
     if command.map[name] then
-      core.log_quiet("Replacing existing command \"%s\"", name)
+      stderr.debug("Replacing existing command \"%s\"", name)
     end
     command.map[name] = { predicate = predicate, perform = fn }
   end
@@ -166,7 +167,7 @@ end
 ---@param ... any
 ---@return boolean # true if the command is performed successfully.
 function command.perform(name, ...)
-  core.debug("command: %s", name)
+  stderr.debug("command: %s", name)
   local ok, res = core.try(perform, name, ...)
   return not ok or res
 end
@@ -176,7 +177,7 @@ end
 function command.add_defaults()
   local reg = {
     "core", "root", "command", "doc", "findreplace",
-    "files", "dialog", "log", "statusbar"
+    "files", "dialog",  "statusbar"
   }
   for _, name in ipairs(reg) do
     require("core.commands." .. name)

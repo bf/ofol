@@ -3,7 +3,6 @@ local core = require "core"
 local common = require "core.common"
 
 local DocView = require "core.views.docview"
-local LogView = require "core.views.logview"
 
 
 local function workspace_files_for(project_dir)
@@ -88,7 +87,7 @@ local function save_view(view)
       text = view.doc.new_file and view.doc:get_text(1, 1, math.huge, math.huge)
     }
   end
-  if mt == LogView then return end
+  
   for name, mod in pairs(package.loaded) do
     if mod == mt then
       return {

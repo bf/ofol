@@ -245,7 +245,7 @@ setmetatable(config.plugins, {
     end
     if v == false and package.loaded["plugins."..k] then
       local core = require "core"
-      core.warn("[%s] is already enabled, restart the editor for the change to take effect", k)
+      stderr.warn("[%s] is already enabled, restart the editor for the change to take effect", k)
       return
     elseif plugins_config[k].enabled == false and v ~= false then
       plugins_config[k].enabled = true

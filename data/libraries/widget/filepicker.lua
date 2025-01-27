@@ -300,7 +300,7 @@ local function show_file_picker(self)
     end,
     validate = function(text)
       if #self.filters > 0 and text ~= "" and not common.match_pattern(text, self.filters) then
-        core.error(
+        stderr.error(
           "File does not match the filters: %s",
           table.concat(self.filters, ", ")
         )
@@ -309,19 +309,19 @@ local function show_file_picker(self)
       local filename = common.home_expand(text)
       local path_stat, err = system.get_file_info(filename)
       if path_stat and path_stat.type == 'dir' then
-        core.error("Cannot open %s, is a folder", text)
+        stderr.error("Cannot open %s, is a folder", text)
         return false
       end
       if self.pick_mode == FilePicker.mode.FILE_EXISTS then
         if not path_stat then
-          core.error("Cannot open file %s: %s", text, err)
+          stderr.error("Cannot open file %s: %s", text, err)
           return false
         end
       else
         local dirname = common.dirname(filename)
         local dir_stat = dirname and system.get_file_info(dirname)
         if dirname and not dir_stat then
-          core.error("Directory does not exists: %s", dirname)
+          stderr.error("Directory does not exists: %s", dirname)
           return false
         end
       end
@@ -345,7 +345,7 @@ local function show_dir_picker(self)
     end,
     validate = function(text)
       if #self.filters > 0 and text ~= "" and not common.match_pattern(text, self.filters) then
-        core.error(
+        stderr.error(
           "Directory does not match the filters: %s",
           table.concat(self.filters, ", ")
         )
@@ -355,7 +355,7 @@ local function show_dir_picker(self)
         local path = common.home_expand(text)
         local abs_path = check_directory_path(path)
         if not abs_path then
-          core.error("Cannot open directory %q", path)
+          stderr.error("Cannot open directory %q", path)
           return false
         end
       end

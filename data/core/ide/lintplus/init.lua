@@ -41,6 +41,8 @@ local liteipc = require "core.ide.lintplus.liteipc"
 
 local renderutil = require "core.ide.lintplus.renderutil"
 
+local stderr = require "libraries.stderr"
+
 
 local lint = {}
 lint.fs = require "libraries.fsutils"
@@ -71,7 +73,7 @@ end
 
 -- Can be used by other plugins to properly set the context when loading a doc
 function lint.init_doc(filename, doc)
-  core.warn("initializing doc for %s", filename)
+  stderr.warn("initializing doc for %s", filename)
   filename = core.project_absolute_path(filename)
   local context = setmetatable({
     _doc = doc or nil,
@@ -102,7 +104,7 @@ end
 -- Returns an appropriate linter for the given doc, or nil if no linter is
 -- found.
 function lint.get_linter_for_doc(doc)
-  core.debug("get_linter_for_doc %s", doc.filename)
+  stderr.debug("get_linter_for_doc %s", doc.filename)
 
   if not doc.filename then
     return nil
@@ -111,7 +113,7 @@ function lint.get_linter_for_doc(doc)
   local file = core.project_absolute_path(doc.filename)
   for name, linter in pairs(lint.index) do
     if common.match_pattern(file, linter.filename) then
-      core.debug("get_linter_for_doc FOUND (1): %s for %s", linter, name)
+      stderr.debug("get_linter_for_doc FOUND (1): %s for %s", linter, name)
       return linter, name
     end
     if linter.syntax ~= nil then
@@ -120,14 +122,14 @@ function lint.get_linter_for_doc(doc)
       for i = #linter.syntax, 1, -1 do
         local s = linter.syntax[i]
         if syn.name == s then
-          core.debug("get_linter_for_doc FOUND (2): %s for %s", linter, name)
+          stderr.debug("get_linter_for_doc FOUND (2): %s for %s", linter, name)
           return linter, name
         end
       end
     end
   end
 
-  core.warn("no linter found for %s", doc.filename)
+  stderr.warn("no linter found for %s", doc.filename)
 end
 
 
@@ -137,7 +139,7 @@ function lint.clear_messages(filename)
   filename = core.project_absolute_path(filename)
 
   if lint.messages[filename] then
-    core.warn("really clearing messages for %s", filename)
+    stderr.warn("really clearing messages for %s", filename)
     lint.messages[filename].lines = {}
     lint.messages[filename].rails = {}
   end
@@ -145,7 +147,7 @@ end
 
 
 function lint.add_message(filename, line, column, kind, message, rail)
-  core.warn("add_message for %s:%d %s", filename, line, message)
+  stderr.warn("add_message for %s:%d %s", filename, line, message)
   filename = core.project_absolute_path(filename)
   if not lint.messages[filename] then
     -- This allows us to at least store messages until context is properly
@@ -184,7 +186,7 @@ local function process_line(doc, linter, line, context)
   if iterator == "bail" then return iterator end
 
   if os.getenv("LINTPLUS_DEBUG_LINES") then
-    core.debug("lint+ | "..line)
+    stderr.debug("lint+ | "..line)
   end
 
   for rawfile, lineno, columnno, kind, message, rail in iterator do
@@ -227,7 +229,7 @@ function lint.check(doc)
 
   local linter, linter_name = lint.get_linter_for_doc(doc)
   if linter == nil then
-    core.error("no linter available for the given filetype")
+    stderr.error("no linter available for the given filetype")
     return
   end
 
@@ -248,7 +250,7 @@ function lint.check(doc)
   }
 
   local function report_error(msg)
-    core.log_quiet(
+    stderr.debug(
       "lint+/" .. linter_name .. ": " ..
       doc.filename .. ": " .. msg
     )
@@ -877,7 +879,7 @@ function lint.setup.lint_on_doc_save()
 end
 
 function lint.enable_async()
-  core.error("lint+: calling enable_async() is not needed anymore")
+  stderr.error("lint+: calling enable_async() is not needed anymore")
 end
 
 
@@ -964,7 +966,7 @@ end
 
 
 function lint.load(linter)
-  core.warn("lint.load %s", linter)
+  stderr.warn("lint.load %s", linter)
   if type(linter) == "table" then
     for _, v in ipairs(linter) do
       require("core.ide.lintplus.linters." .. v)

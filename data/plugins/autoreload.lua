@@ -39,7 +39,7 @@ local function reload_doc(doc)
   doc:reload()
   update_time(doc)
   core.redraw = true
-  core.log_quiet("Auto-reloaded doc \"%s\"", doc.filename)
+  stderr.debug("Auto-reloaded doc \"%s\"", doc.filename)
 end
 
 

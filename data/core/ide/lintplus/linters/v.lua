@@ -22,7 +22,7 @@ local lintplus = require "core.ide.lintplus"
 
 local mode = lintplus.config.v_mode or "check"
 if mode ~= "check" and mode ~= "check-syntax" then
-  core.error("lint+/v: invalid v_mode '%s'. "..
+  stderr.error("lint+/v: invalid v_mode '%s'. "..
     "available modes: 'check', 'check-syntax'")
   return
 end

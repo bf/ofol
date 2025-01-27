@@ -32,10 +32,10 @@ end
 local function tog_opacity()
   opacity_on = not opacity_on
   if opacity_on then
-    core.log("Opacity: on")
+    stderr.info("Opacity: on")
     system.set_window_opacity(current_opacity)
   else
-    core.log("Opacity: off")
+    stderr.info("Opacity: off")
     system.set_window_opacity(default_opacity)
   end
 end
@@ -60,9 +60,9 @@ command.add(nil, {
   ["opacity:toggle mouse wheel use"] = function()
     use_mousewheel = not use_mousewheel
     if use_mousewheel then
-      core.log("Opacity (shift + mouse wheel): on")
+      stderr.info("Opacity (shift + mouse wheel): on")
     else
-      core.log("Opacity (shift + mouse wheel): off")
+      stderr.info("Opacity (shift + mouse wheel): off")
     end
   end,
 })

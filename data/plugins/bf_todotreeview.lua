@@ -192,7 +192,7 @@ local function exec(cmd)
     coroutine.yield(0.1)
   end
   if proc:returncode() > 0 then
-    core.error("ERROR - command: " .. table.concat(cmd, " "))
+    stderr.error("ERROR - command: " .. table.concat(cmd, " "))
   end
   return proc:read_stdout() or ""
 end
@@ -228,7 +228,7 @@ function TodoTreeView.get_all_cargo_warnings()
   -- cargo returns one json object per line
   -- so we need to iterate over each line
   for line in string.gmatch(cargo_check_stdout, "([^\n]+)") do
-    core.log_quiet("cargo_check_stdout line: %s", line)
+    stderr.debug("cargo_check_stdout line: %s", line)
 
     -- parse line as json
     parsed_json=json.load(line)
@@ -237,11 +237,11 @@ function TodoTreeView.get_all_cargo_warnings()
     if parsed_json["reason"] == "compiler-message" then
       -- get level
       local error_level = parsed_json["level"]
-      core.log_quiet("level: %s", error_level)
+      stderr.debug("level: %s", error_level)
 
       -- get message text
       local error_message = parsed_json["message"]
-      core.log_quiet("message: %s", error_message)
+      stderr.debug("message: %s", error_message)
 
       -- handle array of locations where something occured
       local arr_locations = parsed_json["spans"]

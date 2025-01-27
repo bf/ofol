@@ -11,6 +11,8 @@ local View = require "core.view"
 local DocView = require "core.views.docview"
 
 local json_config_file = require "libraries.json_config_file"
+local stderr = require "libraries.stderr"
+
 
 local Widget = require "libraries.widget"
 
@@ -172,7 +174,7 @@ settings.add("General",
           MessageBox.warning(
             "Clear Fonts Cache",
             { "The font cache is already been built,\n"
-              .. "status will be logged on the core log."
+              .. "status will be logged on the stderr.info."
             }
           )
         else
@@ -827,7 +829,7 @@ local function merge_font_settings(option, path, saved_value)
       table.insert(fonts, font_data)
     else
       option.font_error = true
-      core.error("Settings: could not load %s\n'%s - %s'", path, font.name, font.path)
+      stderr.error("Settings: could not load %s\n'%s - %s'", path, font.name, font.path)
       break
     end
   end
@@ -865,7 +867,7 @@ end
 
 ---Merge previously saved settings without destroying the config table.
 local function merge_settings()
-  core.debug("merging previously saved settings with new ones")
+  stderr.debug("merging previously saved settings with new ones")
   if type(settings.config) ~= "table" then return end
 
   -- merge core settings
@@ -1368,7 +1370,7 @@ function Settings:enable_plugin(plugin)
   user_settings.save_user_settings(settings.config)
 
   if loaded then
-    core.log("Loaded '%s' plugin", plugin)
+    stderr.info("Loaded '%s' plugin", plugin)
   end
 end
 

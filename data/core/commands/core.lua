@@ -3,9 +3,8 @@ local common = require "core.common"
 local command = require "core.command"
 local keymap = require "core.keymap"
 
-local LogView = require "core.views.logview"
-
 local json = require "libraries.json"
+local stderr = require "libraries.stderr"
 
 
 local fullscreen = false
@@ -56,7 +55,7 @@ command.add(nil, {
       submit = function(text, item)
         local text = item and item.text or text
         core.reload_module(text)
-        core.log("Reloaded module %q", text)
+        stderr.info("Reloaded module %q", text)
       end,
       suggest = function(text)
         local items = {}
@@ -139,7 +138,7 @@ command.add(nil, {
     core.command_view:enter("Open File", {
       text = text,
       submit = function(text)
-        core.debug("[open file] [submit]", #text, text)
+        stderr.debug("[open file] [submit]", #text, text)
         -- check for goto line command
         local filename, go_to_line_number = text:match("^([^:]*):([1-9][0-9]*)")
         
@@ -161,19 +160,19 @@ command.add(nil, {
       end,
       suggest = function (text)
         -- suggest file
-        core.debug("[open file] [suggest]", #text, text)
+        stderr.debug("[open file] [suggest]", #text, text)
         -- check if user wants to go specific line
         if current_file ~= nil and text:match("^:([1-9][0-9]*)") then
           local path_relative = core.normalize_to_project_dir(current_file)
           local go_to_line_number = tonumber(string.sub(text, 2))
-          core.debug("[open file] [suggest] go_to_line_number:",  go_to_line_number)
+          stderr.debug("[open file] [suggest] go_to_line_number:",  go_to_line_number)
 
           local message = string.format(":%d (goto line %d in %s)", go_to_line_number, go_to_line_number, path_relative)
-          core.debug("[open file] [suggest] return value:", message)
+          stderr.debug("[open file] [suggest] return value:", message)
           return { message }
         else
           local result = common.home_encode_list(common.path_suggest(common.home_expand(text)))
-          core.debug("[open file] [suggest] result:", json.encode(result))
+          stderr.debug("[open file] [suggest] result:", json.encode(result))
           return result
         end
       end,
@@ -190,9 +189,9 @@ command.add(nil, {
                 return true
               end
             end
-            core.error("Cannot open file %s: %s", text, err)
+            stderr.error("Cannot open file %s: %s", text, err)
           elseif path_stat.type == 'dir' then
-            core.error("Cannot open %s, is a folder", text)
+            stderr.error("Cannot open %s, is a folder", text)
           else
             return true
           end
@@ -217,7 +216,7 @@ command.add(nil, {
         local path = common.home_expand(text)
         local abs_path = check_directory_path(path)
         if not abs_path then
-          core.error("Cannot open directory %q", path)
+          stderr.error("Cannot open directory %q", path)
           return
         end
         if abs_path == core.project_dir then return end
@@ -241,11 +240,11 @@ command.add(nil, {
         local path = common.home_expand(text)
         local abs_path = check_directory_path(path)
         if not abs_path then
-          core.error("Cannot open directory %q", path)
+          stderr.error("Cannot open directory %q", path)
           return
         end
         if abs_path == core.project_dir then
-          core.error("Directory %q is currently opened", abs_path)
+          stderr.error("Directory %q is currently opened", abs_path)
           return
         end
         system.exec(string.format("%q %q", EXEFILE, abs_path))
@@ -260,10 +259,10 @@ command.add(nil, {
         text = common.home_expand(text)
         local path_stat, err = system.get_file_info(text)
         if not path_stat then
-          core.error("cannot open %q: %s", text, err)
+          stderr.error("cannot open %q: %s", text, err)
           return
         elseif path_stat.type ~= 'dir' then
-          core.error("%q is not a directory", text)
+          stderr.error("%q is not a directory", text)
           return
         end
         core.add_project_directory(system.absolute_path(text))
@@ -282,7 +281,7 @@ command.add(nil, {
       submit = function(text, item)
         text = common.home_expand(item and item.text or text)
         if not core.remove_project_directory(text) then
-          core.error("No directory %q to be removed", text)
+          stderr.error("No directory %q to be removed", text)
         end
       end,
       suggest = function(text)

@@ -244,7 +244,7 @@ end
 ---@return plugins.projectsearch.resultsview?
 local function begin_search(path, text, fn)
   if text == "" then
-    core.error("Expected non-empty string")
+    stderr.error("Expected non-empty string")
     return
   end
   local rv = ResultsView(path, text, fn)
@@ -305,7 +305,7 @@ function projectsearch.search_regex(text, path, insensitive)
   else
     re, errmsg = regex.compile(text)
   end
-  if not re then core.log("%s", errmsg) return end
+  if not re then stderr.info("%s", errmsg) return end
   return begin_search(path, text, function(line_text)
     return regex.cmatch(re, line_text)
   end)

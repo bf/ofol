@@ -27,7 +27,7 @@ local function try_string_format_into_text(fmt, ...)
 end
 
 -- print message to stderr
--- core.log() functions are not loaded at this point
+-- stderr.info() functions are not loaded at this point
 -- so we need to make another function for this
 function stderr.print(fmt, ...) 
   local text = try_string_format_into_text(fmt, ...)

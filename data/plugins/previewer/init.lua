@@ -235,9 +235,9 @@
 --                 return true
 --               end
 --             end
---             core.error("Cannot open file %s: %s", text, err)
+--             stderr.error("Cannot open file %s: %s", text, err)
 --           elseif path_stat.type == 'dir' then
---             core.error("Cannot open %s, is a folder", text)
+--             stderr.error("Cannot open %s, is a folder", text)
 --           else
 --             return true
 --           end

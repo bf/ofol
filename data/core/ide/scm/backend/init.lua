@@ -172,7 +172,7 @@ function Backend:execute(callback, directory, ...)
     if proc and proc:running() then proc:kill() end
   end
   if not proc then
-    core.error(
+    stderr.error(
       "[SCM error]: error while executing '%s' - %s:%s",
       table.concat(command, " "),
       errmsg,

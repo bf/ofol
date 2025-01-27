@@ -347,17 +347,17 @@ function TreeView:new()
             if file_info.type == "dir" then
               local deleted, error, path = common.rm(filename, true)
               if not deleted then
-                core.error("Error: %s - \"%s\" ", error, path)
+                stderr.error("Error: %s - \"%s\" ", error, path)
                 return
               end
             else
               local removed, error = os.remove(filename)
               if not removed then
-                core.error("Error: %s - \"%s\"", error, filename)
+                stderr.error("Error: %s - \"%s\"", error, filename)
                 return
               end
             end
-            core.log("Deleted \"%s\"", filename)
+            stderr.info("Deleted \"%s\"", filename)
           end
         end
       )
@@ -382,9 +382,9 @@ function TreeView:new()
                 break -- only first needed
               end
             end
-            core.log("Renamed \"%s\" to \"%s\"", old_filename, filename)
+            stderr.info("Renamed \"%s\" to \"%s\"", old_filename, filename)
           else
-            core.error("Error while renaming \"%s\" to \"%s\": %s", old_abs_filename, abs_filename, err)
+            stderr.error("Error while renaming \"%s\" to \"%s\": %s", old_abs_filename, abs_filename, err)
           end
         end,
         suggest = function(text)
@@ -407,12 +407,12 @@ function TreeView:new()
         text = text,
         submit = function(filename)
           local doc_filename = item.dir_name .. PATHSEP .. filename
-          core.log(doc_filename)
+          stderr.info(doc_filename)
           local file = io.open(doc_filename, "a+")
           file:write("")
           file:close()
           view:open_doc(doc_filename)
-          core.log("Created %s", doc_filename)
+          stderr.info("Created %s", doc_filename)
         end,
         suggest = function(text)
           return common.path_suggest(text, item.dir_name)
@@ -435,7 +435,7 @@ function TreeView:new()
         submit = function(filename)
           local dir_path = item.dir_name .. PATHSEP .. filename
           common.mkdirp(dir_path)
-          core.log("Created %s", dir_path)
+          stderr.info("Created %s", dir_path)
         end,
         suggest = function(text)
           return common.path_suggest(text, item.dir_name)
@@ -575,7 +575,7 @@ end
 
 
 function TreeView:each_item()
-  -- core.warn("check each item of treeview")
+  -- stderr.warn("check each item of treeview")
 
   return coroutine.wrap(function()
     self:check_cache()
@@ -813,14 +813,14 @@ end
 
 -- placeholder function, will be replaced by lsp/diagnostics
 function TreeView:get_item_special_state_from_language_parser(item)
-  core.warn("placeholdercalled")
+  stderr.warn("placeholdercalled")
   return nil
 end
   
 
 -- placeholder function, will be replaced by scm
 function TreeView:get_item_special_state_from_source_code_management(item)
-  core.warn("placeholdercalled")
+  stderr.warn("placeholdercalled")
   return nil
 end
 
@@ -841,11 +841,11 @@ function TreeView:get_item_icon(item, active, hovered)
   elseif item.type == "file" then
     character = ICON_FILE
   else 
-    core.error("unexpected item.type: %s", item.type)
+    stderr.error("unexpected item.type: %s", item.type)
     os.exit(1)
   end
 
-  -- core.debug("item: %s depth: %d icon: %s", item.name, item.depth, character)
+  -- stderr.debug("item: %s depth: %d icon: %s", item.name, item.depth, character)
 
   local font = style.icon_font
   local color = style.text
@@ -856,7 +856,7 @@ function TreeView:get_item_icon(item, active, hovered)
   -- check if there are parser errors for this file
   local language_parser_result_for_item = TreeView:get_item_special_state_from_language_parser(item)
   if language_parser_result_for_item == "error" then 
-    -- core.debug("language_parser_result_for_item %s: %s", item.filename, language_parser_result_for_item)
+    -- stderr.debug("language_parser_result_for_item %s: %s", item.filename, language_parser_result_for_item)
     color = style.error
     character = "!"
   end
@@ -884,7 +884,7 @@ function TreeView:get_item_text(item, active, hovered)
   -- change color if file has been changed in scm 
   local source_control_status_for_item = TreeView:get_item_special_state_from_source_code_management(item)
   if source_control_status_for_item then
-    -- core.debug("source_control_status_for_item %s: %s", item.filename, source_control_status_for_item)
+    -- stderr.debug("source_control_status_for_item %s: %s", item.filename, source_control_status_for_item)
     if source_control_status_for_item then
         if source_control_status_for_item == "added" then
           color = style.good
@@ -900,21 +900,6 @@ function TreeView:get_item_text(item, active, hovered)
     end
   end
 
-  -- local status = scm.get_path_changes(path)
-
-  -- if status then
-  --   if status.text then text = status.text end
-  --   color = status.color
-  -- end
-
-  -- -- change icon in treeview if file has errors
-  -- if item.type == "file" then
-  --   local num_errors = diagnostics.get_messages_count(item.filename, 1)
-  --   if num_errors > 0 then
-  --     color = style.error
-  --   end
-  -- end
-
   if active or hovered then
     color = style.accent
   end
@@ -923,7 +908,7 @@ function TreeView:get_item_text(item, active, hovered)
   if item.type == "file" then
     local language_parser_result_for_item = TreeView:get_item_special_state_from_language_parser(item)
     if language_parser_result_for_item == "error" then 
-      -- core.debug("language_parser_result_for_item %s: %s", item.filename, language_parser_result_for_item)
+      -- stderr.debug("language_parser_result_for_item %s: %s", item.filename, language_parser_result_for_item)
       color = style.error
     end
   end
@@ -1198,7 +1183,7 @@ keymap.add {
 --     end
 
 --     core.root_view:open_doc(core.open_doc(dest_filename))
---     core.log("[treeview-extender] %s copied to %s", source_filename, dest_filename)
+--     stderr.info("[treeview-extender] %s copied to %s", source_filename, dest_filename)
 --   end, common.path_suggest)
 -- end
 
@@ -1235,13 +1220,13 @@ keymap.add {
 --                 os.remove(new_abs_filename)
 --                 fsutils.move_object(old_abs_filename, new_abs_filename)
 
---                 core.log("[treeview-extender] %s moved to %s", old_abs_filename, new_abs_filename)
+--                 stderr.info("[treeview-extender] %s moved to %s", old_abs_filename, new_abs_filename)
 --               end
 --             end
 --           )
 --         else
 --           fsutils.move_object(old_abs_filename, new_abs_filename)
---           core.log("[treeview-extender] %s moved to %s", old_abs_filename, new_abs_filename)
+--           stderr.info("[treeview-extender] %s moved to %s", old_abs_filename, new_abs_filename)
 --         end
 --       end
 --     )

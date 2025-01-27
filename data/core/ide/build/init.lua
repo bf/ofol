@@ -88,7 +88,7 @@ if system.get_file_info(DATADIR .. PATHSEP .. "core" .. PATHSEP .. "ide" .. PATH
         config.target_binary_arguments = build.split_argument_string(build.state.previous_arguments[#build.state.previous_arguments])
       end)
     else
-      core.error("error loading state file for build: %s", err)
+      stderr.error("error loading state file for build: %s", err)
     end
   end
   save_state = function()
@@ -217,7 +217,7 @@ function build.run_tasks(tasks, on_done, on_line)
 end
 
 function build.is_running() return build.thread ~= nil end
-function build.output(line) core.log(line) end
+function build.output(line) stderr.info(line) end
 
 function build.set_target(target)
   target = common.clamp(target, 1, #build.targets)
@@ -373,7 +373,7 @@ core.status_view:add_item({
             has = true
           end
         end
-        if not has then core.error("Can't find target " .. text) end
+        if not has then stderr.error("Can't find target " .. text) end
       end,
       suggest = function()
         local names = {}

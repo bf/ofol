@@ -337,11 +337,11 @@ function scm.open_diff(project_dir)
           diffdoc:set_text(diff)
           core.root_view:open_doc(diffdoc)
       else
-        core.warn("SCM: no changes detected.")
+        stderr.warn("SCM: no changes detected.")
       end
     end)
   else
-    core.warn("SCM: current project directory is not versioned.")
+    stderr.warn("SCM: current project directory is not versioned.")
   end
 end
 
@@ -360,9 +360,9 @@ function scm.open_path_diff(path)
       else
         local info = system.get_file_info(path)
         if info and info.type == "file" then
-          core.warn("SCM: seems like the file is untracked.")
+          stderr.warn("SCM: seems like the file is untracked.")
         else
-          core.warn("SCM: seems like the path only contains untracked files.")
+          stderr.warn("SCM: seems like the path only contains untracked files.")
         end
       end
     end)
@@ -382,11 +382,11 @@ function scm.open_project_status(project_dir)
           doc:set_text(status)
           core.root_view:open_doc(doc)
       else
-        core.warn("SCM: no status to report.")
+        stderr.warn("SCM: no status to report.")
       end
     end)
   else
-    core.warn("SCM: current project directory is not versioned.")
+    stderr.warn("SCM: current project directory is not versioned.")
   end
 end
 
@@ -396,9 +396,9 @@ function scm.pull(project_dir)
   if backend then
     backend:pull(project_dir, function(success, errmsg)
       if success then
-        core.log("SCM: pulled latest changes for '%s'", project_dir)
+        stderr.info("SCM: pulled latest changes for '%s'", project_dir)
       else
-        core.error("SCM: failed to pull '%s', %s", project_dir, errmsg)
+        stderr.error("SCM: failed to pull '%s', %s", project_dir, errmsg)
       end
     end)
   end
@@ -420,11 +420,11 @@ function scm.revert_file(path)
         if button_id == 1 then
           backend:revert_file(path, project_dir, function(success, errmsg)
             if success then
-              core.log("SCM: file '%s' changes reverted", path_rel)
+              stderr.info("SCM: file '%s' changes reverted", path_rel)
               update_doc_status(path)
               util.reload_doc(path)
             else
-              core.error("SCM: failed reverting '%s', %s", path_rel, errmsg)
+              stderr.error("SCM: failed reverting '%s', %s", path_rel, errmsg)
             end
           end)
         end
@@ -442,10 +442,10 @@ function scm.add_path(path)
     local path_rel = common.relative_path(project_dir, path)
     backend:add_path(path, project_dir, function(success, errmsg)
       if success then
-        core.log("SCM: file '%s' added", path_rel)
+        stderr.info("SCM: file '%s' added", path_rel)
         update_doc_status(path)
       else
-        core.error("SCM: failed adding '%s', %s", path_rel, errmsg)
+        stderr.error("SCM: failed adding '%s', %s", path_rel, errmsg)
       end
     end)
   end
@@ -459,10 +459,10 @@ function scm.remove_path(path)
     local path_rel = common.relative_path(project_dir, path)
     backend:remove_path(path, project_dir, function(success, errmsg)
       if success then
-        core.log("SCM: file '%s' removed", path_rel)
+        stderr.info("SCM: file '%s' removed", path_rel)
         update_doc_status(path)
       else
-        core.error("SCM: failed removing '%s', %s", path_rel, errmsg)
+        stderr.error("SCM: failed removing '%s', %s", path_rel, errmsg)
       end
     end)
   end
@@ -485,10 +485,10 @@ function scm.move_path(from, to, callback)
     backend:set_blocking_mode(true)
     backend:move_path(from, to, project_dir, function(success, errmsg)
       if success then
-        core.log("SCM: file '%s' moved to '%s'", from_rel, to_rel)
+        stderr.info("SCM: file '%s' moved to '%s'", from_rel, to_rel)
         update_doc_status(to, true)
       else
-        core.error(
+        stderr.error(
           "SCM: failed moving '%s' to '%s' with: %s",
           from_rel, to_rel, errmsg
         )
@@ -510,10 +510,10 @@ function scm.stage_file(path)
     local path_rel = common.relative_path(project_dir, path)
     backend:stage_file(path, project_dir, function(success, errmsg)
       if success then
-        core.log("SCM: file '%s' staged", path_rel)
+        stderr.info("SCM: file '%s' staged", path_rel)
         update_doc_status(path)
       else
-        core.error("SCM: failed staging '%s', %s", path_rel, errmsg)
+        stderr.error("SCM: failed staging '%s', %s", path_rel, errmsg)
       end
     end)
   end
@@ -527,10 +527,10 @@ function scm.unstage_file(path)
     local path_rel = common.relative_path(project_dir, path)
     backend:unstage_file(path, project_dir, function(success, errmsg)
       if success then
-        core.log("SCM: file '%s' unstaged", path_rel)
+        stderr.info("SCM: file '%s' unstaged", path_rel)
         update_doc_status(path)
       else
-        core.error("SCM: failed unstaging '%s', %s", path_rel, errmsg)
+        stderr.error("SCM: failed unstaging '%s', %s", path_rel, errmsg)
       end
     end)
   end
@@ -994,7 +994,7 @@ function TreeView:get_item_special_state_from_source_code_management (item)
   local changes = scm.get_path_changes(item.abs_filename)
 
   if changes then
-    -- core.debug("get_item_special_state_from_source_code_management %s => %s", item.abs_filename, changes.status)
+    -- stderr.debug("get_item_special_state_from_source_code_management %s => %s", item.abs_filename, changes.status)
     return changes.status
   end
 

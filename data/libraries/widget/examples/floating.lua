@@ -50,7 +50,7 @@ local checkbox = CheckBox(widget, "Some Checkbox")
 checkbox:set_position(10, button2:get_bottom() + 10)
 checkbox:set_tooltip("Description checkbox")
 checkbox.on_checked = function(_, checked)
-  core.log_quiet(tostring(checked))
+  stderr.debug(tostring(checked))
 end
 
 ---@type widget.label

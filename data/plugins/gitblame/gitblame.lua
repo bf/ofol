@@ -41,20 +41,20 @@ local function log_data(var_name, var_value)
       if type(var_value) == 'table' then
         core.try(function (var)
             local data = table.concat(var, " ")
-            core.log("[GITBLAME] " .. var_name .. " : " .. data)
+            stderr.info("[GITBLAME] " .. var_name .. " : " .. data)
           end, var_value
         )
       else
         core.try(
           function (name, value)
-            core.log("[GITBLAME] " .. name .. " : " .. value)
+            stderr.info("[GITBLAME] " .. name .. " : " .. value)
           end, var_name, var_value
         )
       end
     else
       core.try(
         function (name)
-          core.log("[GITBLAME] " .. name .. " : nil")
+          stderr.info("[GITBLAME] " .. name .. " : nil")
         end, var_name
       )
     end

@@ -74,7 +74,7 @@ local function find(label, search_fn)
       if found_expression then
         last_fn, last_text = search_fn, text
       else
-        core.error("Couldn't find %q", text)
+        stderr.error("Couldn't find %q", text)
         last_view.doc:set_selection(table.unpack(last_sel))
         last_view:scroll_to_make_visible(table.unpack(last_sel))
       end
@@ -119,7 +119,7 @@ local function replace(kind, default, fn)
           for _,v in pairs(results) do
             n = n + v
           end
-          core.log("Replaced %d instance(s) of %s %q with %q", n, kind, old, new)
+          stderr.info("Replaced %d instance(s) of %s %q with %q", n, kind, old, new)
         end,
         suggest = function() return core.previous_replace end,
         cancel = function()
@@ -267,7 +267,7 @@ end
 command.add(valid_for_finding, {
   ["find-replace:repeat-find"] = function(dv)
     if not last_fn then
-      core.error("No find to continue from")
+      stderr.error("No find to continue from")
     else
       local sl1, sc1, sl2, sc2 = dv.doc:get_selection(true)
       local line1, col1, line2, col2 = last_fn(dv.doc, sl2, sc2, last_text, case_sensitive, find_regex, false)
@@ -275,14 +275,14 @@ command.add(valid_for_finding, {
         dv.doc:set_selection(line2, col2, line1, col1)
         dv:scroll_to_line(line2, true)
       else
-        core.error("Couldn't find %q", last_text)
+        stderr.error("Couldn't find %q", last_text)
       end
     end
   end,
 
   ["find-replace:previous-find"] = function(dv)
     if not last_fn then
-      core.error("No find to continue from")
+      stderr.error("No find to continue from")
     else
       local sl1, sc1, sl2, sc2 = dv.doc:get_selection(true)
       local line1, col1, line2, col2 = last_fn(dv.doc, sl1, sc1, last_text, case_sensitive, find_regex, true)
@@ -290,7 +290,7 @@ command.add(valid_for_finding, {
         dv.doc:set_selection(line2, col2, line1, col1)
         dv:scroll_to_line(line2, true)
       else
-        core.error("Couldn't find %q", last_text)
+        stderr.error("Couldn't find %q", last_text)
       end
     end
   end,

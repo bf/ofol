@@ -1,9 +1,10 @@
 local core = require "core"
+local stderr = require "libraries.stderr"
 
 local ime = { }
 
 function ime.reset()
-  core.debug("")
+  stderr.debug("")
   ime.editing = false
   ime.last_location = { x = 0, y = 0, w = 0, h = 0 }
 end
@@ -13,7 +14,7 @@ end
 ---@param start integer @0-based utf-8 offset of the starting position of the selection
 ---@param length integer @Size of the utf-8 length of the selection
 function ime.ingest(text, start, length)
-  core.debug("")
+  stderr.debug("")
   if #text == 0 then
     -- finished textediting
     ime.reset()
@@ -57,7 +58,7 @@ end
 ---@param start integer @0-based utf-8 offset of the starting position of the selection
 ---@param length integer @Size of the utf-8 length of the selection
 function ime.on_text_editing(text, start, length, ...)
-  core.debug("")
+  stderr.debug("")
   if ime.editing or #text > 0 then
     core.root_view:on_ime_text_editing(ime.ingest(text, start, length, ...))
   end
@@ -80,7 +81,7 @@ end
 ---@param w number
 ---@param h number
 function ime.set_location(x, y, w, h)
-  core.debug("")
+  stderr.debug("")
   if not ime.last_location or
      ime.last_location.x ~= x or
      ime.last_location.y ~= y or

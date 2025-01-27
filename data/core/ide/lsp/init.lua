@@ -29,6 +29,7 @@ local RootView = require "core.views.rootview"
 
 
 local json = require "libraries.json"
+local stderr = require "libraries.stderr"
 local MessageBox = require "libraries.widget.messagebox"
 
 local util = require ".util"
@@ -285,9 +286,9 @@ end
 
 local function log(server, message, ...)
   if server.verbose then
-    core.log("["..server.name.."] " .. message, ...)
+    stderr.info("["..server.name.."] " .. message, ...)
   else
-    core.log_quiet("["..server.name.."] " .. message, ...)
+    stderr.debug("["..server.name.."] " .. message, ...)
   end
 end
 
@@ -398,7 +399,7 @@ local function apply_edit(server, doc, text_edit, is_snippet, update_cursor_posi
     line1, col1, line2, col2 = util.toselection(range, doc)
   else
     line1, col1, line2, col2 = util.toselection(range)
-    core.error(
+    stderr.error(
       "[LSP] Unsupported position encoding: ",
       server.capabilities.positionEncoding
     )
@@ -587,7 +588,7 @@ function lsp.add_server(options)
 
   for _, field in pairs(required_fields) do
     if not options[field] then
-      core.error(
+      stderr.error(
         "[LSP] You need to provide a '%s' field for the server.",
         field
       )
@@ -599,7 +600,7 @@ function lsp.add_server(options)
   options.snippets = true
 
   if #options.command <= 0 then
-    core.error("[LSP] Provide a command table list with the lsp command.")
+    stderr.error("[LSP] Provide a command table list with the lsp command.")
     return false
   end
 
@@ -755,7 +756,7 @@ function lsp.start_server(filename, project_directory)
       end
 
       if not lsp.servers_running[name] and command_exists then
-        core.info("[LSP/%s] starting ", name)
+        stderr.info("[LSP/%s] starting ", name)
         ---@type lsp.server
         local client = Server(server)
         client.yield_on_reads = config.plugins.lsp.more_yielding
@@ -771,7 +772,7 @@ function lsp.start_server(filename, project_directory)
 
             -- error when format string is bad
             if not success then
-              core.error("string.format failed with fmt %s and args %s", fmt, json.encode({...}))
+              stderr.error("string.format failed with fmt %s and args %s", fmt, json.encode({...}))
             end
             text = result
           else
@@ -790,12 +791,12 @@ function lsp.start_server(filename, project_directory)
             at = info.source
           end
 
-          core.info("[LSP/%s] [%s] %s(): %s", self.name, at, info.name, text)
+          stderr.info("[LSP/%s] [%s] %s(): %s", self.name, at, info.name, text)
         end
 
         function client:on_shutdown()
           local sname = self.name
-          core.info(
+          stderr.info(
             "[LSP/%s] was shutdown, revise your configuration",
             sname
           )
@@ -808,7 +809,7 @@ function lsp.start_server(filename, project_directory)
             lsp.start_servers()
             if lsp.servers_running[sname] then
               lsp.servers_running[sname].last_shutdown = system.get_time()
-              core.info(
+              stderr.info(
                 "[LSP/%s] automatically restarted",
                 sname
               )
@@ -888,7 +889,7 @@ function lsp.start_server(filename, project_directory)
         client:add_message_listener(
           "window/logMessage",
           function(server, params)
-            if core.log then
+            if stderr.info then
               log(server, "%s", params.message)
             end
           end
@@ -902,7 +903,7 @@ function lsp.start_server(filename, project_directory)
             local filename = core.normalize_to_project_dir(abs_filename)
 
             if server.verbose then
-              core.log_quiet(
+              stderr.debug(
                 "["..server.name.."] %s diagnostics for:  %s",
                 filename,
                 params.diagnostics and #params.diagnostics or 0
@@ -940,13 +941,13 @@ function lsp.start_server(filename, project_directory)
             elseif params.type == Server.message_type.Debug then
               log_func = "debug"
             end
-            core[log_func]("[LSP/%s] message: %s", server.name, params.message)
+            stderr[log_func]("[LSP/%s] message: %s", server.name, params.message)
           end
         )
 
         -- Send settings table after initialization if available.
         client:add_event_listener("initialized", function(server)
-          core.info("[LSP/%s] Initialized", server.name)
+          stderr.info("[LSP/%s] Initialized", server.name)
           local settings = lsp.get_workspace_settings(server)
           if not util.table_empty(settings) then
             server:push_notification("workspace/didChangeConfiguration", {
@@ -972,7 +973,7 @@ function lsp.start_server(filename, project_directory)
 
   if server_registered and not server_started then
     for _,_ in pairs(servers_not_found) do
-      core.error(
+      stderr.error(
         "[LSP] servers registered but not installed: %s",
         table.concat(servers_not_found, ", ")
       )
@@ -986,7 +987,7 @@ function lsp.stop_servers()
   for name, _ in pairs(lsp.servers) do
     if lsp.servers_running[name] then
        lsp.servers_running[name]:exit()
-       core.log("[LSP] stopped %s", name)
+       stderr.info("[LSP] stopped %s", name)
        lsp.servers_running = util.table_remove_key(lsp.servers_running, name)
     end
   end
@@ -1033,7 +1034,7 @@ function lsp.open_document(doc)
   local doc_path = core.project_absolute_path(doc.filename)
   local file_info = system.get_file_info(doc_path)
   if not file_info then
-    core.error("[LSP] could not open: %s", tostring(doc.filename))
+    stderr.error("[LSP] could not open: %s", tostring(doc.filename))
     return
   end
 
@@ -1273,10 +1274,10 @@ function lsp.toggle_diagnostics()
 
   if not config.plugins.lsp.show_diagnostics then
     diagnostics.lintplus_clear_messages()
-    core.log("[LSP] Diagnostics disabled")
+    stderr.info("[LSP] Diagnostics disabled")
   else
     diagnostics.lintplus_populate()
-    core.log("[LSP] Diagnostics enabled")
+    stderr.info("[LSP] Diagnostics enabled")
   end
 end
 
@@ -1349,7 +1350,7 @@ function lsp.request_completion(doc, line, col, forced)
           local complete_result = true
           if result.isIncomplete then
             if server.verbose then
-              core.log_quiet(
+              stderr.debug(
                 "["..server.name.."] " .. "Completion list incomplete"
               )
             end
@@ -1675,7 +1676,7 @@ function lsp.request_references(doc, line, col)
               end
             })
           else
-            core.log("[LSP] No references found.")
+            stderr.info("[LSP] No references found.")
           end
         end
       })
@@ -1706,7 +1707,7 @@ function lsp.request_call_hierarchy(doc, line, col)
     end
   end
 
-  core.log("[LSP] Call hierarchy not supported.")
+  stderr.info("[LSP] Call hierarchy not supported.")
 end
 
 ---Sends a request to applicable LSP servers to rename a symbol.
@@ -1729,12 +1730,12 @@ function lsp.request_symbol_rename(doc, line, col, new_name)
         callback = function(server, response)
           if response.result and #response.result.changes then
             for file_uri, changes in pairs(response.result.changes) do
-              core.log(file_uri .. " " .. #changes)
+              stderr.info(file_uri .. " " .. #changes)
               -- TODO: Finish implement textDocument/rename
             end
           end
 
-          core.log("%s", json.prettify(json.encode(response)))
+          stderr.info("%s", json.prettify(json.encode(response)))
         end
       })
       return
@@ -1742,9 +1743,9 @@ function lsp.request_symbol_rename(doc, line, col, new_name)
   end
 
   if not servers_found then
-    core.log("[LSP] " .. "No server ready or running")
+    stderr.info("[LSP] " .. "No server ready or running")
   else
-    core.log("[LSP] " .. "Symbols rename not supported")
+    stderr.info("[LSP] " .. "Symbols rename not supported")
   end
 end
 
@@ -1845,9 +1846,9 @@ function lsp.request_document_symbols(doc)
   end
 
   if not servers_found then
-    core.log("[LSP] " .. "No server running")
+    stderr.info("[LSP] " .. "No server running")
   elseif not symbols_retrieved then
-    core.log("[LSP] " .. "Document symbols not supported")
+    stderr.info("[LSP] " .. "Document symbols not supported")
   end
 end
 
@@ -1913,16 +1914,16 @@ function lsp.request_document_format(doc)
   end
 
   if not servers_found then
-    core.log("[LSP] " .. "No server running")
+    stderr.info("[LSP] " .. "No server running")
   elseif not format_executed then
-    core.log("[LSP] " .. "Formatting not supported")
+    stderr.info("[LSP] " .. "Formatting not supported")
   end
 end
 
 function lsp.view_document_diagnostics(doc)
   local diagnostic_messages = diagnostics.get(core.project_absolute_path(doc.filename))
   if not diagnostic_messages or #diagnostic_messages <= 0 then
-    core.log("[LSP] %s", "No diagnostic messages found.")
+    stderr.info("[LSP] %s", "No diagnostic messages found.")
     return
   end
 
@@ -1965,7 +1966,7 @@ end
 
 function lsp.view_all_diagnostics()
   if diagnostics.count <= 0 then
-    core.log("[LSP] %s", "No diagnostic messages found.")
+    stderr.info("[LSP] %s", "No diagnostic messages found.")
     return
   end
 
@@ -2043,7 +2044,7 @@ function lsp.goto_symbol(doc, line, col, implementation)
         local location = response.result
 
         if not location or not location.uri and #location == 0 then
-          core.log("[LSP] No %s found.", method)
+          stderr.info("[LSP] No %s found.", method)
           return
         end
 
@@ -2199,7 +2200,7 @@ function Doc:on_close()
       local t = Timer(server.quit_timeout * 1000, true)
       t.on_timer = function()
         server:exit()
-        core.log("[LSP] stopped %s", name)
+        stderr.info("[LSP] stopped %s", name)
         lsp.servers_running = util.table_remove_key(lsp.servers_running, name)
       end
       t:start()
@@ -2338,7 +2339,7 @@ core.status_view:add_item({
 
     --     -- iterate over all diagnostic messages
     --     for key, obj in pairs(diagnostic_messages) do
-    --       core.log_quiet("iterate: key: %s message: %s severity: %d", key, obj.message, obj.severity)
+    --       stderr.debug("iterate: key: %s message: %s severity: %d", key, obj.message, obj.severity)
     --       if obj.severity == 1 then
     --         icon_color = style.error
     --       elseif obj.severity == 2 then
@@ -2346,7 +2347,7 @@ core.status_view:add_item({
     --       end
     --     end
 
-    --     core.log_quiet("icon_color: %s", icon_color)
+    --     stderr.debug("icon_color: %s", icon_color)
 
     --     return {
     --       icon_color,
@@ -2366,7 +2367,7 @@ core.status_view:add_item({
       local lowest_severity_number = 3
       for filename, data in pairs(diagnostics.list) do
         for key, obj in pairs(data.messages) do
-          -- core.log_quiet("filename: %s iterate: key: %s message: %s severity: %d", filename, key, obj.message, obj.severity)
+          -- stderr.debug("filename: %s iterate: key: %s message: %s severity: %d", filename, key, obj.message, obj.severity)
           if obj.severity < lowest_severity_number then
             lowest_severity_number = obj.severity
           end
@@ -2379,7 +2380,7 @@ core.status_view:add_item({
         icon_color = style.warn
       end
 
-      -- core.log_quiet("lowest_severity_number: %d %s icon_color: %s", lowest_severity_number, lowest_severity_number, icon_color)
+      -- stderr.debug("lowest_severity_number: %d %s icon_color: %s", lowest_severity_number, lowest_severity_number, icon_color)
 
       return {
         icon_color,
@@ -2523,7 +2524,7 @@ command.add(
         end
       })
     else
-      core.log("Please select a symbol on the document to rename.")
+      stderr.info("Please select a symbol on the document to rename.")
     end
   end,
 

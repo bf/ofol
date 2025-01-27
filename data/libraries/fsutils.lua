@@ -55,9 +55,9 @@ end
 function fsutils.move_object(old_abs_filename, new_abs_filename)
   local res, err = os.rename(old_abs_filename, new_abs_filename)
   if res then -- successfully renamed
-    core.log("[treeview-extender] Moved \"%s\" to \"%s\"", old_abs_filename, new_abs_filename)
+    stderr.info("[treeview-extender] Moved \"%s\" to \"%s\"", old_abs_filename, new_abs_filename)
   else
-    core.error("[treeview-extender] Error while moving \"%s\" to \"%s\": %s", old_abs_filename, new_abs_filename, err)
+    stderr.error("[treeview-extender] Error while moving \"%s\" to \"%s\": %s", old_abs_filename, new_abs_filename, err)
   end
 end
 

@@ -67,7 +67,7 @@ end
 
 ---@deprecated
 function CommandView:set_hidden_suggestions()
-  core.warn("Using deprecated function CommandView:set_hidden_suggestions")
+  stderr.warn("Using deprecated function CommandView:set_hidden_suggestions")
   self.state.show_suggestions = false
 end
 
@@ -202,7 +202,7 @@ function CommandView:enter(label, ...)
   local options = select(1, ...)
 
   if type(options) ~= "table" then
-    core.warn("Using CommandView:enter in a deprecated way")
+    stderr.warn("Using CommandView:enter in a deprecated way")
     local submit, suggest, cancel, validate = ...
     options = {
       submit = submit,
@@ -225,7 +225,7 @@ function CommandView:enter(label, ...)
   -- overwriting with options.text
   local old_text = self:get_text()
   if old_text ~= "" then
-    core.warn("Using deprecated function CommandView:set_text")
+    stderr.warn("Using deprecated function CommandView:set_text")
   end
   if options.text or options.select_text then
     local text = options.text or old_text

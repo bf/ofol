@@ -347,7 +347,7 @@ function tokenizer.tokenize(incoming_syntax, text, state, resume)
       if find_results[1] then
         -- Check for patterns successfully matching nothing
         if find_results[1] > find_results[2] then
-          report_bad_pattern(core.warn, current_syntax, n,
+          report_bad_pattern(stderr.warn, current_syntax, n,
               "Pattern successfully matched, but nothing was captured.")
           goto continue
         end
@@ -356,14 +356,14 @@ function tokenizer.tokenize(incoming_syntax, text, state, resume)
         local type_is_table = type(p.type) == "table"
         local n_types = type_is_table and #p.type or 1
         if #find_results == 2 and type_is_table then
-          report_bad_pattern(core.warn, current_syntax, n,
+          report_bad_pattern(stderr.warn, current_syntax, n,
             "Token type is a table, but a string was expected.")
           p.type = p.type[1]
         elseif #find_results - 1 > n_types then
-          report_bad_pattern(core.error, current_syntax, n,
+          report_bad_pattern(stderr.error, current_syntax, n,
             "Not enough token types: got %d needed %d.", n_types, #find_results - 1)
         elseif #find_results - 1 < n_types then
-          report_bad_pattern(core.warn, current_syntax, n,
+          report_bad_pattern(stderr.warn, current_syntax, n,
             "Too many token types: got %d needed %d.", n_types, #find_results - 1)
         end
 

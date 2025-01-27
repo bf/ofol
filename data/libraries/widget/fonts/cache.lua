@@ -64,7 +64,7 @@ end
 ---@return boolean started False if cache is already been built
 function FontCache:build()
   if self:is_building() then
-    core.log_quiet("The font cache is already been generated, please wait.")
+    stderr.debug("The font cache is already been generated, please wait.")
     return false
   end
 
@@ -73,7 +73,7 @@ function FontCache:build()
   self.monospaced = false
   self.loaded_fonts = {}
 
-  core.log_quiet("Generating font cache...")
+  stderr.debug("Generating font cache...")
   local start_time = system.get_time()
 
   local this = self
@@ -84,7 +84,7 @@ function FontCache:build()
     this:save_cache()
     this.building = false
     this.loaded_fonts = {}
-    core.log_quiet(
+    stderr.debug(
       "Font cache generated in %.1fs for %s fonts!",
       system.get_time() - start_time, tostring(this.found)
     )
@@ -98,7 +98,7 @@ end
 ---@return boolean started False if cache is already been built
 function FontCache:rebuild()
   if self:is_building() then
-    core.log_quiet("The font cache is already been generated, please wait.")
+    stderr.debug("The font cache is already been generated, please wait.")
     return false
   end
 
@@ -165,7 +165,7 @@ end
 ---Search and mark monospaced fonts on currently loaded cache and save it.
 function FontCache:verify_monospaced()
   if self:is_building() then
-    core.log_quiet("The monospaced verification is already running, please wait.")
+    stderr.debug("The monospaced verification is already running, please wait.")
     return
   end
 
@@ -173,7 +173,7 @@ function FontCache:verify_monospaced()
   self.searching_monospaced = true
   self.monospaced = false
 
-  core.log_quiet("Finding monospaced fonts...")
+  stderr.debug("Finding monospaced fonts...")
   local start_time = system.get_time()
 
   local this = self
@@ -190,7 +190,7 @@ function FontCache:verify_monospaced()
     this.monospaced = true
     this:save_cache()
     this.searching_monospaced = false
-    core.log_quiet(
+    stderr.debug(
       "Found %s monospaced fonts in %.1fs!",
       tostring(this.found_monospaced), system.get_time() - start_time
     )

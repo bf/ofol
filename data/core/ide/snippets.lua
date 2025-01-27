@@ -86,7 +86,7 @@ local function normalize_match_patterns(patterns)
 			table.insert(ret, { kind = 'lua', pattern = p })
 		elseif type(p) == 'table' then
 			if p.kind ~= nil and not MATCH_TYPES[p.kind] then
-				core.error('[snippets] invalid match kind: \'%s\'', p.kind)
+				stderr.error('[snippets] invalid match kind: \'%s\'', p.kind)
 				return
 			end
 			table.insert(ret, {
@@ -98,7 +98,7 @@ local function normalize_match_patterns(patterns)
 		elseif p then
 			table.insert(ret, DEFAULT_MATCH)
 		else -- false?
-			core.error('[snippets] invalid match: \'%s\'', p)
+			stderr.error('[snippets] invalid match: \'%s\'', p)
 			return
 		end
 	end
@@ -114,7 +114,7 @@ local function get_raw(raw)
 		if not _s then
 			local parser = parsers[fmt]
 			if not parser then
-				core.error('[snippets] no parser for format: %s', fmt)
+				stderr.error('[snippets] no parser for format: %s', fmt)
 				return
 			end
 			local _p = parser(raw.template, raw.p_args)
@@ -198,7 +198,7 @@ local function get_matches(doc, patterns, l1, c1, l2, c2)
 		end
 
 		if not match then
-			core.error(
+			stderr.error(
 				'[snippets] failed strict match #%d: \'%s\'',
 				i, p.pattern
 			)
@@ -343,7 +343,7 @@ local function init(_s)
 
 	local ok, n = pcall(resolve_nodes, _s.nodes, ctx, into)
 	if not ok then
-		core.error('[snippets] %s', n)
+		stderr.error('[snippets] %s', n)
 		return
 	end
 

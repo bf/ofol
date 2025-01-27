@@ -10,6 +10,7 @@ local Timer = require "core.ide.lsp.timer"
 
 local lintplus = require "core.ide.lintplus"
 
+local stderr = require "libraries.stderr"
 
 ---@class lsp.diagnostics
 local diagnostics = {}
@@ -109,7 +110,7 @@ end
 ---@return string | nil
 local function get_absolute_path(filename)
   if not filename then
-    core.error(
+    stderr.error(
       "[LSP Diagnostics]: nil filename given",
       tostring(filename)
     )
@@ -212,7 +213,7 @@ end
 
 ---@param doc core.doc
 function diagnostics.lintplus_init_doc(doc)
-    core.warn("init doc %s", doc.filename)
+    stderr.warn("init doc %s", doc.filename)
     lintplus.init_doc(doc.filename, doc)
 end
 
@@ -221,7 +222,7 @@ end
 ---@param filename? string
 ---@param force boolean
 function diagnostics.lintplus_clear_messages(filename, force)
-  core.warn("lintplus_clear_messages %s", filename)
+  stderr.warn("lintplus_clear_messages %s", filename)
     if
       not force and lintplus_delays[filename]
       and
@@ -244,7 +245,7 @@ end
 
 ---@param filename string
 function diagnostics.lintplus_populate(filename)
-  core.warn("lintplus_populate %s", filename)
+  stderr.warn("lintplus_populate %s", filename)
     diagnostics.lintplus_clear_messages(filename, true)
 
     if not filename then
@@ -278,7 +279,7 @@ end
 ---@param filename string
 ---@param user_typed boolean
 function diagnostics.lintplus_populate_delayed(filename)
-  core.warn("lintplus_populate_delayed %s", filename)
+  stderr.warn("lintplus_populate_delayed %s", filename)
     if not lintplus_delays[filename] then
       lintplus_delays[filename] = Timer(
         config.plugins.lsp.diagnostics_delay or 500,
@@ -299,7 +300,7 @@ end
 local TreeView = require "core.views.treeview"
 
 -- function diagnostics.hook_tree_view(treeview)
---   core.log("hook tree view")
+--   stderr.info("hook tree view")
 
 --   treeview.get_item_special_state_from_language_parser = function (item)
 function TreeView:get_item_special_state_from_language_parser (item) 

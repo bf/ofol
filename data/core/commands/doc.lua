@@ -41,9 +41,9 @@ local function save(filename)
   local ok, err = pcall(doc().save, doc(), filename, abs_filename)
   if ok then
     local saved_filename = doc().filename
-    core.log("Saved \"%s\"", saved_filename)
+    stderr.info("Saved \"%s\"", saved_filename)
   else
-    core.error(err)
+    stderr.error(err)
     -- TODO: use https://github.com/native-toolkit/libtinyfiledialogs for this
     core.nag_view:show("Saving failed", string.format("Couldn't save file \"%s\". Do you want to save to another location?", doc().filename), {
       { text = "Yes", default_yes = true },
@@ -550,7 +550,7 @@ local commands = {
       submit = function(text, item)
         local line = item and item.line or tonumber(text)
         if not line then
-          core.error("Invalid line number or unmatched string")
+          stderr.error("Invalid line number or unmatched string")
           return
         end
         dv.doc:set_selection(line, 1  )
@@ -609,14 +609,14 @@ local commands = {
   ["file:rename"] = function(dv)
     local old_filename = dv.doc.filename
     if not old_filename then
-      core.error("Cannot rename unsaved doc")
+      stderr.error("Cannot rename unsaved doc")
       return
     end
     core.command_view:enter("Rename", {
       text = old_filename,
       submit = function(filename)
         save(common.home_expand(filename))
-        core.log("Renamed \"%s\" to \"%s\"", old_filename, filename)
+        stderr.info("Renamed \"%s\" to \"%s\"", old_filename, filename)
         if filename ~= old_filename then
           os.remove(old_filename)
         end
@@ -631,7 +631,7 @@ local commands = {
   ["file:delete"] = function(dv)
     local filename = dv.doc.abs_filename
     if not filename then
-      core.error("Cannot remove unsaved doc")
+      stderr.error("Cannot remove unsaved doc")
       return
     end
     for i,docview in ipairs(core.get_views_referencing_doc(dv.doc)) do
@@ -639,7 +639,7 @@ local commands = {
       node:close_view(core.root_view.root_node, docview)
     end
     os.remove(filename)
-    core.log("Removed \"%s\"", filename)
+    stderr.info("Removed \"%s\"", filename)
   end,
 
   ["doc:select-to-cursor"] = function(dv, x, y, clicks)

@@ -55,11 +55,11 @@ function syntax.load_languages()
   -- load all languages
   local languages_dir = DATADIR .. "/core/syntax/languages/"
   for _, filename in ipairs(system.list_dir(languages_dir) or {}) do
-    -- core.debug("[loading]", filename)
+    -- stderr.debug("[loading]", filename)
     if filename:match("^language_") and filename:match("%.lua$") then
       
       filename = filename:gsub("%.lua$", "") 
-      -- core.debug("[require]", filename)
+      -- stderr.debug("[require]", filename)
       local lang = require("core.syntax.languages." .. filename)
 
       languages[filename] = lang

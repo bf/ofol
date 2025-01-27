@@ -304,7 +304,7 @@ function NagView:show(title, message, options, on_select)
   opts.on_selected = on_select or noop
   table.insert(self.queue, opts)
 
-  core.error("%s: %s", title, message)
+  stderr.error("%s: %s", title, message)
 
   self:next()
 end

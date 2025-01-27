@@ -16,7 +16,7 @@ local lintplus = require "core.ide.lintplus"
 
 local mode = lintplus.config.zig_mode or "ast-check"
 if mode ~= "ast-check" and mode ~= "build" then
-  core.error("lint+/zig: invalid zig_mode '%s'. "..
+  stderr.error("lint+/zig: invalid zig_mode '%s'. "..
              "available modes: 'ast-check', 'build'")
   return
 end

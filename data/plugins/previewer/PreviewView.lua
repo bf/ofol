@@ -9,7 +9,7 @@ function PreviewView:new(doc)
   if doc then
     PreviewView.super.new(self, doc)
   else
-    core.error("error...")
+    stderr.error("error...")
   end
 end
 
