@@ -39,6 +39,8 @@ local StatusView = require "core.views.statusview"
 
 local liteipc = require "core.ide.lintplus.liteipc"
 
+local renderutil = require "core.ide.lintplus.renderutil"
+
 
 local lint = {}
 lint.fs = require "libraries.fsutils"
@@ -69,6 +71,7 @@ end
 
 -- Can be used by other plugins to properly set the context when loading a doc
 function lint.init_doc(filename, doc)
+  core.warn("initializing doc for %s", filename)
   filename = core.project_absolute_path(filename)
   local context = setmetatable({
     _doc = doc or nil,
@@ -99,6 +102,8 @@ end
 -- Returns an appropriate linter for the given doc, or nil if no linter is
 -- found.
 function lint.get_linter_for_doc(doc)
+  core.debug("get_linter_for_doc %s", doc.filename)
+
   if not doc.filename then
     return nil
   end
@@ -106,6 +111,7 @@ function lint.get_linter_for_doc(doc)
   local file = core.project_absolute_path(doc.filename)
   for name, linter in pairs(lint.index) do
     if common.match_pattern(file, linter.filename) then
+      core.debug("get_linter_for_doc FOUND (1): %s for %s", linter, name)
       return linter, name
     end
     if linter.syntax ~= nil then
@@ -114,11 +120,14 @@ function lint.get_linter_for_doc(doc)
       for i = #linter.syntax, 1, -1 do
         local s = linter.syntax[i]
         if syn.name == s then
+          core.debug("get_linter_for_doc FOUND (2): %s for %s", linter, name)
           return linter, name
         end
       end
     end
   end
+
+  core.warn("no linter found for %s", doc.filename)
 end
 
 
@@ -128,6 +137,7 @@ function lint.clear_messages(filename)
   filename = core.project_absolute_path(filename)
 
   if lint.messages[filename] then
+    core.warn("really clearing messages for %s", filename)
     lint.messages[filename].lines = {}
     lint.messages[filename].rails = {}
   end
@@ -135,6 +145,7 @@ end
 
 
 function lint.add_message(filename, line, column, kind, message, rail)
+  core.warn("add_message for %s:%d %s", filename, line, message)
   filename = core.project_absolute_path(filename)
   if not lint.messages[filename] then
     -- This allows us to at least store messages until context is properly
@@ -434,8 +445,6 @@ end
 
 
 -- inject rendering routines
-
-local renderutil = require ".renderutil"
 
 local function rail_width(dv)
   return dv:get_line_height() / 3 -- common.round(style.padding.x / 2)
@@ -955,12 +964,13 @@ end
 
 
 function lint.load(linter)
+  core.warn("lint.load %s", linter)
   if type(linter) == "table" then
     for _, v in ipairs(linter) do
-      require("plugins.lintplus.linters." .. v)
+      require("core.ide.lintplus.linters." .. v)
     end
   elseif type(linter) == "string" then
-    require("plugins.lintplus.linters." .. linter)
+    require("core.ide.lintplus.linters." .. linter)
   end
 end
 

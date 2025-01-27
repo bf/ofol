@@ -443,7 +443,7 @@ end
 ---@param options core.statusview.item.options
 ---@return core.statusview.item
 function StatusView:add_item(options)
-  core.warn("add item %s", options.name)
+  core.debug("add item %s", options.name)
   assert(self:get_item(options.name) == nil, "status item already exists: " .. options.name)
   ---@type core.statusview.item
   local item = StatusView.Item(options)

@@ -661,7 +661,6 @@ function core.init()
   local ide = require "core.ide"
 
 
-
   -- -- Load core and user plugins giving preference to user ones with same name.
   local plugins_success, plugins_refuse_list = core.load_plugins()
   

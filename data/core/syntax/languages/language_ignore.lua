@@ -17,7 +17,7 @@ syntax.add {
   patterns = {
     { regex = "^ *#.*$",            type = "comment" },
     { regex = { "(?=^ *!.)", "$" }, type = "ignore"  },
-    { regex = { "(?=.)", "$" },     type = "exclude" },
+    -- { regex = { "(?=.)", "$" },     type = "exclude" },
   },
   symbols = {}
 }

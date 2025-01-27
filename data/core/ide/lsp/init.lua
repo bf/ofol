@@ -82,7 +82,7 @@ config.plugins.lsp = common.merge({
   log_file = "",
   prettify_json = false,
   log_server_stderr = false,
-  more_yielding = false,
+  more_yielding = true,
   autostart_server = true,
   -- The config specification used by the settings gui
   config_spec = {
@@ -108,7 +108,7 @@ config.plugins.lsp = common.merge({
       description = "Show inline diagnostic messages with lint+.",
       path = "show_diagnostics",
       type = "TOGGLE",
-      default = false
+      default = true
     },
     {
       label = "Diagnostics Delay",
@@ -912,12 +912,8 @@ function lsp.start_server(filename, project_directory)
             if params.diagnostics and #params.diagnostics > 0 then
               local added = diagnostics.add(filename, params.diagnostics)
 
-              if
-                added and diagnostics.lintplus_found
-                and
-                config.plugins.lsp.show_diagnostics
-                and
-                util.doc_is_open(abs_filename)
+              if added and config.plugins.lsp.show_diagnostics
+                and util.doc_is_open(abs_filename)
               then
                 -- we delay rendering of diagnostics for 2 seconds to prevent
                 -- the constant reporting of errors while typing.
@@ -2557,10 +2553,6 @@ command.add(nil, {
   end,
 
   ["lsp:toggle-diagnostics"] = function()
-    if not diagnostics.lintplus_found then
-      core.error("[LSP] Please install lintplus for diagnostics rendering.")
-      return
-    end
     lsp.toggle_diagnostics()
   end,
 
