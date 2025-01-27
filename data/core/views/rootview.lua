@@ -188,6 +188,7 @@ end
 ---@param clicks integer
 ---@return boolean
 function RootView:on_mouse_pressed(button, x, y, clicks)
+  stderr.debug("on_mouse_pressed %d %d %d", x, y, clicks)
   -- If there is a grab, release it first
   if self.grab then
     self:on_mouse_released(self.grab.button, x, y)

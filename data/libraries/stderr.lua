@@ -23,10 +23,13 @@ local function try_string_format_into_text(fmt, ...)
   end
 
   -- format string failed, show second error
-  stderr.print("ERROR", string.format("Second error while trying to format error message: %s", formatted_text))
+  print("ERROR", string.format("Second error while trying to format error message: %s", formatted_text))
+  print("ERROR", "fmt was:", fmt)
+  print("ERROR", "args was:", ...)
+  os.exit(1)
 
   -- combine strings
-  return fmt .. " " .. table.concat({ ... }, " ")
+  return fmt .. " " .. table.concat({...}, " ")
 end
 
 -- print message to stderr

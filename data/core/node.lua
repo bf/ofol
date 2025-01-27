@@ -4,6 +4,8 @@ local config = require "core.config"
 local style = require "core.style"
 local Object = require "core.object"
 
+local stderr = require "libraries.stderr"
+
 local EmptyView = require "core.views.emptyview"
 local View = require "core.view"
 
@@ -473,21 +475,12 @@ end
 function Node:scroll_tabs(dir)
   local view_index = self:get_view_idx(self.active_view)
   if dir == 1 then
-    if self.tab_offset > 1 then
-      self.tab_offset = self.tab_offset - 1
-      local last_index = self.tab_offset + self:get_visible_tabs_number() - 1
-      if view_index > last_index then
-        self:set_active_view(self.views[last_index])
-      end
+    if view_index > 1 then
+      self:set_active_view(self.views[view_index - 1])
     end
   elseif dir == 2 then
-    local tabs_number = self:get_visible_tabs_number()
-    if self.tab_offset + tabs_number - 1 < #self.views then
-      self.tab_offset = self.tab_offset + 1
-      local view_index = self:get_view_idx(self.active_view)
-      if view_index < self.tab_offset then
-        self:set_active_view(self.views[self.tab_offset])
-      end
+    if view_index  < #self.views then
+      self:set_active_view(self.views[view_index + 1])
     end
   end
 end
@@ -560,6 +553,7 @@ function Node:draw_tab_borders(view, is_active, is_hovered, x, y, w, h, standalo
 end
 
 function Node:draw_tab(view, is_active, is_hovered, is_close_hovered, x, y, w, h, standalone)
+  -- stderr.debug("draw tab %s width %s", view, w)
   local _, padding_y, margin_y = get_tab_y_sizes()
   x, y, w, h = self:draw_tab_borders(view, is_active, is_hovered, x, y + margin_y, w, h - margin_y, standalone)
   -- Close button

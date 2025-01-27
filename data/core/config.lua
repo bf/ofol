@@ -105,7 +105,7 @@ config.max_undos = 10000
 ---
 ---The default is 8.
 ---@type number
-config.max_tabs = 8
+config.max_tabs = math.huge
 
 ---The maximum number of entries shown at a time in the command palette.
 ---

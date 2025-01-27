@@ -213,7 +213,7 @@ end
 
 ---@param doc core.doc
 function diagnostics.lintplus_init_doc(doc)
-    stderr.warn("init doc %s", doc.filename)
+    stderr.debug("init doc %s", doc.filename)
     lintplus.init_doc(doc.filename, doc)
 end
 
@@ -222,7 +222,6 @@ end
 ---@param filename? string
 ---@param force boolean
 function diagnostics.lintplus_clear_messages(filename, force)
-  stderr.warn("lintplus_clear_messages %s", filename)
     if
       not force and lintplus_delays[filename]
       and

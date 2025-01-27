@@ -968,7 +968,7 @@ end
 
 
 function lint.load(linter)
-  stderr.warn("lint.load %s", linter)
+  -- stderr.warn("lint.load %s", linter)
   if type(linter) == "table" then
     for _, v in ipairs(linter) do
       require("core.ide.lintplus.linters." .. v)

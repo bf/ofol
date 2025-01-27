@@ -58,8 +58,8 @@ end
 ---@param start integer @0-based utf-8 offset of the starting position of the selection
 ---@param length integer @Size of the utf-8 length of the selection
 function ime.on_text_editing(text, start, length, ...)
-  stderr.debug("")
   if ime.editing or #text > 0 then
+    stderr.debug("")
     core.root_view:on_ime_text_editing(ime.ingest(text, start, length, ...))
   end
 end
