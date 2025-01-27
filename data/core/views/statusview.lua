@@ -285,8 +285,7 @@ function StatusView:register_docview_items()
         end
         col = col + ntabs * (indent_size - 1)
         return {
-          style.text, line, ":",
-          col > config.line_limit and style.accent or style.text, col,
+          style.text, line, ":", style.text, col,
           style.text
         }
       end

@@ -986,25 +986,20 @@ keymap.add {
 -- Load TreeView support if the plugin is enabled
 --------------------------------------------------------------------------------
 
-
--- hook treeview function
--- function scm.hook_tree_view(tree_view) 
---   core.warn("hooking treeview")
-
 local TreeView = require "core.views.treeview"
 
+-- hook treeview function
 function TreeView:get_item_special_state_from_source_code_management (item) 
   -- use absolute filename to get scm status
   local changes = scm.get_path_changes(item.abs_filename)
 
   if changes then
-    core.debug("get_item_special_state_from_source_code_management %s => %s", item.abs_filename, changes.status)
+    -- core.debug("get_item_special_state_from_source_code_management %s => %s", item.abs_filename, changes.status)
     return changes.status
   end
 
   return nil
 end
--- end
 
 
 return scm

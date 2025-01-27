@@ -845,7 +845,7 @@ function TreeView:get_item_icon(item, active, hovered)
     os.exit(1)
   end
 
-  core.debug("item: %s depth: %d icon: %s", item.name, item.depth, character)
+  -- core.debug("item: %s depth: %d icon: %s", item.name, item.depth, character)
 
   local font = style.icon_font
   local color = style.text
@@ -856,7 +856,7 @@ function TreeView:get_item_icon(item, active, hovered)
   -- check if there are parser errors for this file
   local language_parser_result_for_item = TreeView:get_item_special_state_from_language_parser(item)
   if language_parser_result_for_item == "error" then 
-    core.debug("language_parser_result_for_item %s: %s", item.filename, language_parser_result_for_item)
+    -- core.debug("language_parser_result_for_item %s: %s", item.filename, language_parser_result_for_item)
     color = style.error
     character = "!"
   end
@@ -884,7 +884,7 @@ function TreeView:get_item_text(item, active, hovered)
   -- change color if file has been changed in scm 
   local source_control_status_for_item = TreeView:get_item_special_state_from_source_code_management(item)
   if source_control_status_for_item then
-    core.debug("source_control_status_for_item %s: %s", item.filename, source_control_status_for_item)
+    -- core.debug("source_control_status_for_item %s: %s", item.filename, source_control_status_for_item)
     if source_control_status_for_item then
         if source_control_status_for_item == "added" then
           color = style.good
@@ -923,7 +923,7 @@ function TreeView:get_item_text(item, active, hovered)
   if item.type == "file" then
     local language_parser_result_for_item = TreeView:get_item_special_state_from_language_parser(item)
     if language_parser_result_for_item == "error" then 
-      core.debug("language_parser_result_for_item %s: %s", item.filename, language_parser_result_for_item)
+      -- core.debug("language_parser_result_for_item %s: %s", item.filename, language_parser_result_for_item)
       color = style.error
     end
   end

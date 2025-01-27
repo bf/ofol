@@ -603,7 +603,8 @@ function core.init()
   cur_node = cur_node.b
   cur_node:split("up", core.nag_view, {y = true})
   cur_node = cur_node.b
-  cur_node = cur_node:split("down", core.command_view, {y = true})
+  cur_node:split("up", core.command_view, {y = true})
+  cur_node = cur_node.b
   cur_node = cur_node:split("down", core.status_view, {y = true})
 
   -- init treeview
@@ -614,35 +615,10 @@ function core.init()
   core.toolbar_view = ToolbarView()
   tree_view_node:split("up", core.toolbar_view, {y = true})
 
-
-  -- -- init
-  -- local view = 
-  -- local node = core.root_view:get_active_node()
-  -- view.node = node:split("left", view, {x = true}, true)
-
-  -- -- The toolbarview plugin is special because it is plugged inside
-  -- -- a treeview pane which is itelf provided in a plugin.
-  -- -- We therefore break the usual plugin's logic that would require each
-  -- -- plugin to be independent of each other. In addition it is not the
-  -- -- plugin module that plug itself in the active node but it is plugged here
-  -- -- in the treeview node.
-
-  -- local toolbar_view = ToolbarView()
-  -- view.node:split("up", toolbar_view, {y = true})
-  -- local min_toolbar_width = toolbar_view:get_min_width()
-  -- view:set_target_size("x", math.max(config.plugins.treeview.size, min_toolbar_width))
-  -- command.add(nil, {
-  --   ["toolbar:toggle"] = function()
-  --     toolbar_view:toggle_visible()
-  --   end,
-  -- })
-
-
-
   -- Load default commands first so plugins can override them
   command.add_defaults()
 
-  -- Load user module, plugins and project module
+  -- Load user settings
   local got_user_error, got_project_error = not core.load_user_directory()
 
   local project_dir_abs = system.absolute_path(project_dir)
@@ -668,6 +644,7 @@ function core.init()
     end
   end
 
+
   -- load scm plugin
   local scm = require "core.scm"
 
@@ -678,6 +655,7 @@ function core.init()
   -- load language server
   local lsp = require "core.lsp"
   local diagnostics = require "core.lsp.diagnostics"
+  local lsp_rust = require "plugins.lsp_rust"
 
   -- load autocomplete
   local lspkind = require "core.lspkind"
@@ -689,8 +667,9 @@ function core.init()
   -- load minimap
   local minimap = require "core.minimap"
 
-  -- Load core and user plugins giving preference to user ones with same name.
+  -- -- Load core and user plugins giving preference to user ones with same name.
   local plugins_success, plugins_refuse_list = core.load_plugins()
+  
 
   do
     local pdir, pname = project_dir_abs:match("(.*)[/\\\\](.*)")
@@ -860,6 +839,8 @@ function core.load_plugins()
     userdir = {dir = USERDIR, plugins = {}},
     datadir = {dir = DATADIR, plugins = {}},
   }
+
+
   local files, ordered = {}, {}
   for _, root_dir in ipairs {DATADIR, USERDIR} do
     local plugin_dir = root_dir .. PATHSEP .. "plugins"
