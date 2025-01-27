@@ -8,6 +8,8 @@ local tokenizer = require "core.tokenizer"
 
 local DocView = require "core.views.docview"
 
+local stderr = require "libraries.stderr"
+
 
 local function doc()
   return core.active_view.doc

@@ -14,6 +14,7 @@ local DocView = require "core.views.docview"
 local ToolbarView = require "core.views.toolbarview"
 
 
+local stderr = require "libraries.stderr"
 local fsutils = require "libraries.fsutils"
 
 local ICON_FILE = "f"

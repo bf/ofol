@@ -12,9 +12,11 @@
 local Object = require "core.object"
 
 local json = require "libraries.json"
+local stderr = require "libraries.stderr"
 
 local util = require "core.ide.lsp.util"
 local diagnostics = require "core.ide.lsp.diagnostics"
+
 
 
 ---@alias lsp.server.callback fun(server: lsp.server, ...)

@@ -7,9 +7,8 @@
 --   while "lint" only checks for syntax errors.
 
 --- IMPLEMENTATION ---
-
-local core = require 'core'
 local lintplus = require 'core.ide.lintplus'
+local stderr = require "libraries.stderr"
 
 local mode = lintplus.config.nelua_mode or "analyze"
 

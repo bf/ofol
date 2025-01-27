@@ -10,6 +10,7 @@ local View = require "core.view"
 local CommandView = require "core.views.commandview"
 local DocView = require "core.views.docview"
 
+local stderr = require "libraries.stderr"
 local json = require "libraries.json"
 
 local TodoTreeView = View:extend()

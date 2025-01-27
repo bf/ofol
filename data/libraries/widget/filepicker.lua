@@ -1,3 +1,5 @@
+
+local stderr = require "libraries.stderr"
 local core = require "core"
 local common = require "core.common"
 local style = require "core.style"

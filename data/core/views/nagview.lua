@@ -5,6 +5,8 @@ local config = require "core.config"
 local View = require "core.view"
 local style = require "core.style"
 
+local stderr = require "libraries.stderr"
+
 local BORDER_WIDTH = common.round(1 * SCALE)
 local UNDERLINE_WIDTH = common.round(2 * SCALE)
 local UNDERLINE_MARGIN = common.round(1 * SCALE)

@@ -7,6 +7,8 @@ local View = require "core.view"
 
 local DocView = require "core.views.docview"
 
+local stderr = require "libraries.stderr"
+
 
 ---@class core.commandview.input : core.doc
 ---@field super core.doc

@@ -13,6 +13,7 @@ local Doc      = require 'core.doc'
 
 
 local json 		 = require 'libraries.json'
+local stderr = require "libraries.stderr"
 
 local snippets = require 'core.ide.snippets'
 

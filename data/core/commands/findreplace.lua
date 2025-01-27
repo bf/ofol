@@ -3,6 +3,7 @@ local command = require "core.command"
 local config = require "core.config"
 local search = require "core.doc.search"
 local keymap = require "core.keymap"
+local stderr = require "libraries.stderr"
 
 local DocView = require "core.views.docview"
 local CommandView = require "core.views.commandview"

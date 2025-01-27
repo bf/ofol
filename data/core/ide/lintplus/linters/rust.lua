@@ -5,7 +5,7 @@
 
 
 local common = require "core.common"
-local core = require "core"
+local stderr = require "libraries.stderr"
 
 local json = require "libraries.json"
 local lintplus = require "core.ide.lintplus"

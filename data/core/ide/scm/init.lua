@@ -26,6 +26,7 @@ local ReadDoc = require ".readdoc"
 local Git = require ".backend.git"
 local Fossil = require ".backend.fossil"
 
+local stderr = require "libraries.stderr"
 local MessageBox = require "libraries.widget.messagebox"
 
 

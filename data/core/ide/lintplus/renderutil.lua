@@ -1,10 +1,12 @@
 -- rendering utilities
 
 local common = require "core.common"
+local stderr = require "libraries.stderr"
 
 local renderutil = {}
 
 function renderutil.draw_dotted_line(x, y, length, axis, color)
+  stderr.debug("dotted line")
   if axis == 'x' then
     for xx = x, x + length, 2 do
       renderer.draw_rect(xx, y, 1, 1, color)
@@ -21,6 +23,7 @@ local function plot(x, y, color)
 end
 
 function renderutil.draw_quarter_circle(x, y, r, color, flipy)
+  stderr.debug("quarter circle line")
   -- inefficient for large circles, but it works.
   color = { table.unpack(color) }
   local a = color[4]

@@ -5,6 +5,7 @@ local core = require "core"
 local syntax = require "core.syntax"
 local config = require "core.config"
 local common = require "core.common"
+local stderr = require "libraries.stderr"
 
 ---@class core.doc : core.object
 local Doc = Object:extend()

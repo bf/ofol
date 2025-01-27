@@ -5,6 +5,7 @@ local keymap = require "core.keymap"
 local command = require "core.command"
 local style = require "core.style"
 local View = require "core.view"
+local stderr = require "libraries.stderr"
 
 ---@class plugins.projectsearch.resultsview : core.view
 local ResultsView = View:extend()

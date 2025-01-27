@@ -1,4 +1,5 @@
 local common = require "core.common"
+local stderr = require "libraries.stderr"
 
 local syntax = {}
 syntax.items = {}

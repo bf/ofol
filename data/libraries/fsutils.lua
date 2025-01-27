@@ -1,4 +1,4 @@
-local core = require "core"
+local stderr = require "libraries.stderr"
 
 local fsutils = {}
 -- file system utilities

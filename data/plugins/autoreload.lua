@@ -5,6 +5,7 @@ local Doc = require "core.doc"
 local Node = require "core.node"
 local common = require "core.common"
 local dirwatch = require "core.dirwatch"
+local stderr = require "libraries.stderr"
 
 config.plugins.autoreload = common.merge({
   always_show_nagview = false,

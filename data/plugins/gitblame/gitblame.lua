@@ -1,5 +1,6 @@
 local core = require "core"
 local config = require "core.config"
+local stderr = require "libraries.stderr"
 
 local gitblame = {}
 
