@@ -86,11 +86,13 @@ local M = {}
 function M.setup(opts)
 	opts = common.merge(defaultOpts, opts)
 	local symbols = common.merge(kindPresets.default, opts.symbols)
-	if opts.font_raw then
-		style.kind_font = opts.font_raw
-	else
-		style.kind_font = font(opts.fontName, opts.size)
-	end
+
+	-- set style.kind_font in style.lua
+	-- if opts.font_raw then
+	-- 	style.kind_font = opts.font_raw
+	-- else
+	-- 	style.kind_font = font(opts.fontName, opts.size)
+	-- end
 
 	local formatKind
 	if type(opts.format) == 'function' then

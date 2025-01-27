@@ -116,7 +116,7 @@ local function get_raw(raw)
 		if not _s then
 			local parser = parsers[fmt]
 			if not parser then
-				stderr.error('[snippets] no parser for format: %s', fmt)
+				stderr.warn('[snippets] no parser for format: %s', fmt)
 				return
 			end
 			local _p = parser(raw.template, raw.p_args)

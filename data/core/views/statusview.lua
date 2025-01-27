@@ -598,6 +598,7 @@ end
 ---@param icon_color renderer.color
 ---@param text string
 function StatusView:show_message(icon, icon_color, text)
+  core.error("StatusView:show_message should not be used any more %s", text)
   if not self.visible or self.hide_messages then return end
   self.message = {
     icon_color, style.icon_font, icon,

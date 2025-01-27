@@ -594,7 +594,7 @@ end
 
 local DocView_draw_line_text = DocView.draw_line_text
 function DocView:draw_line_text(idx, x, y)
-  stderr.debug("draw_line_text within lintplus")
+  -- stderr.debug("draw_line_text within lintplus")
   DocView_draw_line_text(self, idx, x, y)
 
   local lp = self.doc.__lintplus
