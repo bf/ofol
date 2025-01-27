@@ -112,7 +112,7 @@ function stderr.warn(...)
 end
 
 function stderr.backtrace() 
-  io.stderr:write(debug.traceback("", 1))
+  io.stderr:write(debug.traceback("", 2))
   io.stderr:write("\n")
 end
 

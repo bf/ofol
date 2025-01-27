@@ -16,13 +16,13 @@ config.plugins.linewrapping = common.merge({
 	-- If nil, uses the DocView's size, otherwise, uses this exact width. Can be a function.
   width_override = nil,
 	-- Whether or not to draw a guide
-  guide = false,
+  guide = true,
   -- Whether or not we should indent ourselves like the first line of a wrapped block.
-  indent = false,
+  indent = true,
   -- Whether or not to enable wrapping by default when opening files.
   enable_by_default = true,
   -- Requires tokenization
-  require_tokenization = false,
+  require_tokenization = true,
   -- The config specification used by gui generators
   config_spec = {
     name = "Line Wrapping",

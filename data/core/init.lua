@@ -597,6 +597,9 @@ function core.init()
   ---@type core.titleview
   core.title_view = TitleView()
 
+  -- Load default commands first so plugins can override them
+  command.add_defaults()
+
   -- Some plugins (eg: console) require the nodes to be initialized to defaults
   local cur_node = core.root_view.root_node
   cur_node.is_primary_node = true
@@ -616,8 +619,11 @@ function core.init()
   core.toolbar_view = ToolbarView()
   core.toolbar_view.node = core.tree_view.node:split("up", core.toolbar_view, {y = true})
 
-  -- Load default commands first so plugins can override them
-  command.add_defaults()
+  -- set minimum width for treeview
+  local min_toolbar_width = math.floor(core.toolbar_view:get_min_width())
+  core.tree_view:set_minimum_target_size_x(min_toolbar_width)
+  core.tree_view:set_target_size("x", min_toolbar_width)
+
 
   -- Load user settings
   local got_user_error, got_project_error = not core.load_user_directory()

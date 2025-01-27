@@ -60,7 +60,12 @@ function TreeView:new()
   self.scrollable = true
   self.visible = true
   self.init_size = true
-  self.target_size = config.plugins.treeview.size
+
+  -- stores width of treeview ui
+  self.target_size = 0
+  -- stores minimum width of treeview ui
+  self.minimum_target_size_x = 0
+
   self.cache = {}
   -- self.tooltip = { x = 0, y = 0, begin = 0, alpha = 0 }
   self.last_scroll_y = 0
@@ -507,9 +512,18 @@ function TreeView:new()
   self.treeview_context_menu = treeview_context_menu
 end
 
+-- store minimum width
+-- this will be filled from toolbar width or 
+-- main folder name width
+function TreeView:set_minimum_target_size_x(value)
+  self.minimum_target_size_x = value
+end
+
+-- change width of treeview
 function TreeView:set_target_size(axis, value)
   if axis == "x" then
-    self.target_size = value
+    -- ensure we never get below minimum_target_size_x
+    self.target_size = math.max(self.minimum_target_size_x, value)
     return true
   end
 end
@@ -950,6 +964,11 @@ end
 function TreeView:draw_item_body(item, active, hovered, x, y, w, h)
     x = x + self:draw_item_icon(item, active, hovered, x, y, w, h)
     self:draw_item_text(item, active, hovered, x, y, w, h)
+
+    -- ensure topdir always visible
+    if item.topdir then
+      self.set_minimum_target_size_x(w)
+    end
 end
 
 
