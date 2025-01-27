@@ -624,6 +624,11 @@ function core.init()
   core.tree_view:set_minimum_target_size_x(min_toolbar_width)
   core.tree_view:set_target_size("x", min_toolbar_width)
 
+  -- core.nag_view:show("File Changed"," has changed. Reload this file?", {
+  --     { text = "Yes", default_yes = true },
+  --     { text = "No", default_no = true }
+  --   })
+
 
   -- Load user settings
   local got_user_error, got_project_error = not core.load_user_directory()

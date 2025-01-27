@@ -68,11 +68,13 @@ command.add(nil, {
   end,
 
   ["core:find-command"] = function()
+    core.show_title_bar(false)
     local commands = command.get_all_valid()
     core.command_view:enter("Do Command", {
       submit = function(text, item)
         if item then
           command.perform(item.command)
+          core.show_title_bar(true)
         end
       end,
       suggest = function(text)
@@ -91,7 +93,7 @@ command.add(nil, {
 
   ["core:find-file"] = function()
     if not core.project_files_number() then
-       return command.perform "core:open-file"
+      return command.perform "core:open-file"
     end
     local files = {}
     for dir, item in core.get_project_files() do

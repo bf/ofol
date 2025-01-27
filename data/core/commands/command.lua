@@ -12,13 +12,14 @@ command.add("core.views.commandview", {
 
   ["command:escape"] = function(active_view)
     active_view:exit()
+    core.show_title_bar(true)
   end,
 
   ["command:select-previous"] = function(active_view)
-    active_view:move_suggestion_idx(1)
+    active_view:move_suggestion_idx(-1)
   end,
 
   ["command:select-next"] = function(active_view)
-    active_view:move_suggestion_idx(-1)
+    active_view:move_suggestion_idx(1)
   end,
 })

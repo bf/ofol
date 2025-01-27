@@ -299,6 +299,7 @@ function NagView:next()
 end
 
 function NagView:show(title, message, options, on_select)
+  stderr.debug("title %s message %s options %s", title, message, options)
   local opts = {}
   opts.title = assert(title, "No title")
   opts.message = assert(message, "No message")
@@ -306,7 +307,7 @@ function NagView:show(title, message, options, on_select)
   opts.on_selected = on_select or noop
   table.insert(self.queue, opts)
 
-  stderr.error("%s: %s", title, message)
+  -- stderr.error("%s: %s", title, message)
 
   self:next()
 end
