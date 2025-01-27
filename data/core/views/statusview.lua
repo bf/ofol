@@ -185,7 +185,7 @@ function StatusView:new()
   self.right_xoffset = 0
   self.dragged_panel = ""
   self.hovered_panel = ""
-  self.hide_messages = false
+  self.hide_messages = true
   self.visible = true
 
   self:register_docview_items()
