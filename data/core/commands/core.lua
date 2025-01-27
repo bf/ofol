@@ -8,7 +8,6 @@ local stderr = require "libraries.stderr"
 
 
 local fullscreen = false
-local restore_title_view = false
 
 local function suggest_directory(text)
   text = common.home_expand(text)
@@ -41,12 +40,7 @@ command.add(nil, {
 
   ["core:toggle-fullscreen"] = function()
     fullscreen = not fullscreen
-    if fullscreen then
-      restore_title_view = core.title_view.visible
-    end
     system.set_window_mode(core.window, fullscreen and "fullscreen" or "normal")
-    core.show_title_bar(not fullscreen and restore_title_view)
-    core.title_view:configure_hit_test(not fullscreen and restore_title_view)
   end,
 
 
@@ -68,13 +62,11 @@ command.add(nil, {
   end,
 
   ["core:find-command"] = function()
-    core.show_title_bar(false)
     local commands = command.get_all_valid()
     core.command_view:enter("Do Command", {
       submit = function(text, item)
         if item then
           command.perform(item.command)
-          core.show_title_bar(true)
         end
       end,
       suggest = function(text)

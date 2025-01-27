@@ -12,7 +12,6 @@ command.add("core.views.commandview", {
 
   ["command:escape"] = function(active_view)
     active_view:exit()
-    core.show_title_bar(true)
   end,
 
   ["command:select-previous"] = function(active_view)

@@ -17,7 +17,6 @@ local RootView
 local TreeView
 local ToolbarView
 local StatusView
-local TitleView
 local CommandView
 local NagView
 local DocView
@@ -465,9 +464,8 @@ end
 
 
 function core.configure_borderless_window()
-  system.set_window_bordered(not config.borderless)
-  core.title_view:configure_hit_test(config.borderless)
-  core.title_view.visible = config.borderless
+  system.set_window_hit_test()
+  system.set_window_bordered(true)
 end
 
 
@@ -503,7 +501,6 @@ function core.init()
 
   RootView = require "core.views.rootview"
   StatusView = require "core.views.statusview"
-  TitleView = require "core.views.titleview"
   CommandView = require "core.views.commandview"
   
   NagView = require "core.views.nagview"
@@ -599,8 +596,6 @@ function core.init()
   core.status_view = StatusView()
   ---@type core.nagview
   core.nag_view = NagView()
-  ---@type core.titleview
-  core.title_view = TitleView()
 
   -- Load default commands first so plugins can override them
   command.add_defaults()
@@ -608,8 +603,6 @@ function core.init()
   -- Some plugins (eg: console) require the nodes to be initialized to defaults
   local cur_node = core.root_view.root_node
   cur_node.is_primary_node = true
-  cur_node:split("up", core.title_view, {y = true})
-  cur_node = cur_node.b
   cur_node:split("up", core.nag_view, {y = true})
   cur_node = cur_node.b
   cur_node:split("up", core.command_view, {y = true})
@@ -950,10 +943,6 @@ function core.set_active_view(view)
   end
 end
 
-
-function core.show_title_bar(show)
-  core.title_view.visible = show
-end
 
 
 local thread_counter = 0
