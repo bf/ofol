@@ -10,26 +10,39 @@ local BASE_PATH = DATADIR
 local stderr = {}
 
 local function try_string_format_into_text(fmt, ...) 
-  if select('#', ...) == 0 then
+  local num_format_string_arguments = select('#', ...)
+  if num_format_string_arguments == 0 then
     -- when no further args given, then fmt is the actual text
     return fmt
   end
 
-  -- try format text
-  local success, formatted_text = pcall(string.format, fmt, ...)
-  if success then
-    -- if successful, use formatted text 
-    return formatted_text
+  -- check if format string has as many replacements as we have arguments
+  local _, num_format_string_placeholders = fmt:gsub("%%","")
+
+  -- if format string has as many placeholders as we have variables,
+  -- then use string.format to create string
+  if num_format_string_placeholders == num_format_string_arguments then
+    -- try format text
+    local success, formatted_text = pcall(string.format, fmt, ...)
+    if success then
+      -- if successful, use formatted text 
+      return formatted_text
+    end
+
+    -- format string failed, show second error
+    print("ERROR", string.format("Second error while trying to format error message: %s", formatted_text))
+    print("ERROR", "fmt was:", fmt)
+    print("ERROR", "args was:", ...)
+    os.exit(1)
   end
 
-  -- format string failed, show second error
-  print("ERROR", string.format("Second error while trying to format error message: %s", formatted_text))
-  print("ERROR", "fmt was:", fmt)
-  print("ERROR", "args was:", ...)
-  os.exit(1)
+  -- try to combine arguments into string
+  local text = "" .. fmt
+  for _, item in pairs({...}) do
+    text = text .. " " .. tostring(item)
+  end
 
-  -- combine strings
-  return fmt .. " " .. table.concat({...}, " ")
+  return text
 end
 
 -- print message to stderr

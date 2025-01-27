@@ -12,7 +12,7 @@ Goals:
 - - [ ] same speed when viewing large files as sublime text
 - - [ ] does not crash when opening 30mb pdf file
 - - [ ] hex view for binary files
-- - [ ] dynamic width for tabs
+- - [ ] reopen closed tab with ctrl shift t
 - - [ ] click on tab label does not switch to tab
 - - [ ] double click title bar maximize
 - - [x] CTRL+P :123 to go to line 123 of current file
