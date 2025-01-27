@@ -1,4 +1,4 @@
-local json = require("..json")
+local json = require("libraries.json")
 local core = require("core")
 
 local json_config_file = {}

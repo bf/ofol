@@ -6,9 +6,9 @@ local style = require "core.style"
 local View = require "core.view"
 local Object = require "core.object"
 
-local DocView = require "..docview"
-local CommandView = require "..commandview"
-local LogView = require "..logview"
+local DocView = require "core.views.docview"
+local CommandView = require "core.views.commandview"
+local LogView = require "core.views.logview"
 
 local scale = require "core.scale"
 

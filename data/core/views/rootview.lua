@@ -4,7 +4,7 @@ local style = require "core.style"
 local Node = require "core.node"
 local View = require "core.view"
 
-local DocView = require "..docview"
+local DocView = require "core.views.docview"
 
 ---@class core.rootview : core.view
 ---@field super core.view

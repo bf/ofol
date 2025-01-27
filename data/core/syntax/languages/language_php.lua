@@ -9,8 +9,8 @@ local common = require "core.common"
 local config = require "core.config"
 
 -- load syntax dependencies to add additional rules
-require "..language_css"
-require "..language_js"
+require "core.syntax.languages.language_css"
+require "core.syntax.languages.language_js"
 
 local psql_found = pcall(require, "core.syntax.languages.language_psql")
 local sql_strings = {}

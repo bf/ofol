@@ -14,7 +14,7 @@ local Doc      = require 'core.doc'
 
 local json 		 = require 'libraries.json'
 
-local snippets = require '..snippets'
+local snippets = require 'core.ide.snippets'
 
 local B = snippets.builder
 
