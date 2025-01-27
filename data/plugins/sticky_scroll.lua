@@ -30,7 +30,7 @@ local filetype_overrides = {
 
 config.plugins.sticky_scroll = common.merge({
   enabled = true,
-  max_sticky_lines = 5,
+  max_sticky_lines = 3,
   -- Override the function to get the level of a line.
   --
   -- The key is the syntax name, the value is a function that receives the doc
