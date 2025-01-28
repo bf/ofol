@@ -25,7 +25,6 @@ function Node:new(type)
   if self.type == "leaf" then
     self:add_view(EmptyView())
   end
-  self.hovered_close = 0
   self.tab_shift = 0
   self.tab_offset = 1
   self.tab_width = style.tab_width
@@ -283,6 +282,7 @@ end
 
 function Node:get_tab_overlapping_point(px, py)
   if not self:should_show_tabs() then return nil end
+
   local tabs_number = self:get_visible_tabs_number()
   local x1, y1, w, h = self:get_tab_rect(self.tab_offset)
   local x2, y2 = self:get_tab_rect(self.tab_offset + tabs_number)
@@ -304,12 +304,6 @@ function Node:should_show_tabs()
   return false
 end
 
-local function close_button_location(x, w)
-  local cw = style.icon_font:get_width(SYMBOL_CLOSE_BUTTON)
-  local pad = style.padding.x / 2
-  return x + w - cw - pad, cw, pad
-end
-
 
 function Node:get_scroll_button_index(px, py)
   if #self.views == 1 then return end
@@ -325,14 +319,9 @@ end
 function Node:tab_hovered_update(px, py)
   local tab_index = self:get_tab_overlapping_point(px, py)
   self.hovered_tab = tab_index
-  self.hovered_close = 0
   self.hovered_scroll_button = 0
   if tab_index then
     local x, y, w, h = self:get_tab_rect(tab_index)
-    local cx, cw = close_button_location(x, w)
-    if px >= cx and px < cx + cw and py >= y and py < y + h and config.tab_close_button then
-      self.hovered_close = tab_index
-    end
   elseif #self.views > self:get_visible_tabs_number() then
     self.hovered_scroll_button = self:get_scroll_button_index(px, py) or 0
   end
@@ -615,19 +604,14 @@ end
 
 -- get width of a tab based on the tab view's file name length
 function Node:get_tab_width_by_view(view) 
-  -- -- load view object
-  -- local view = self.views[idx]
-
   -- width of tab title text
   local text = self:get_tab_title_text(view, style.font, 0)
   local tab_title_width = style.font:get_width(text)
 
-  -- width of close button
-  -- local close_button_width = style.icon_font:get_width(SYMBOL_CLOSE_BUTTON)
-  -- return tab_title_width + close_button_width + style.padding.x * 2
-
+  -- add padding on both sides
   local padding_left_right = style.padding.x * 2
 
+  -- total width is text width plus padding
   local tab_width = tab_title_width + padding_left_right
 
   stderr.debug("get_tab_width_by_view %f", tab_width)
@@ -670,11 +654,8 @@ function Node:draw_tab_borders(view, is_active, is_hovered, x, y, w, h, standalo
   return x + ds, y, w - ds*2, h
 end
 
-function Node:draw_tab(view, is_active, is_hovered, is_close_hovered, x, y, w, h, standalone)
+function Node:draw_tab(view, is_active, is_hovered, x, y, w, h, standalone)
   stderr.debug("draw_tab", x, y, w, h)
-
-  -- always show close button
-  is_close_hovered = true
 
   -- stderr.debug("draw tab %s width %s", view, w)
   local _, padding_y, margin_y = get_tab_y_sizes()
@@ -682,20 +663,12 @@ function Node:draw_tab(view, is_active, is_hovered, is_close_hovered, x, y, w, h
   -- border
   x, y, w, h = self:draw_tab_borders(view, is_active, is_hovered, x, y + margin_y, w, h - margin_y, standalone)
   
-  -- -- Close button
-  -- local cx, cw, cpad = close_button_location(x, w)
-  -- local show_close_button = ((is_active or is_hovered) and not standalone and config.tab_close_button)
-  -- if show_close_button then
-  --   local close_style = is_close_hovered and style.text or style.dim
-  --   common.draw_text(style.icon_font, close_style, SYMBOL_CLOSE_BUTTON, nil, cx, y, cw, h)
-  -- end 
-
   -- Title
   local text_start_x = x + style.padding.x
   local text_start_y = y
   local text_width = w
   local text_height = h
-  
+
   core.push_clip_rect(text_start_x, text_start_y, text_width, text_height)
   self:draw_tab_title(view, style.font, is_active, is_hovered, text_start_x, text_start_y, text_width, text_height)
 
@@ -715,10 +688,16 @@ function Node:draw_tabs()
 
   for i = self.tab_offset, self.tab_offset + tabs_number - 1 do
     local view = self.views[i]
+
+    -- get bounding box for tab
     local x, y, w, h = self:get_tab_rect(i)
-    self:draw_tab(view, view == self.active_view,
-                  i == self.hovered_tab, i == self.hovered_close,
-                  x, y, w, h)
+
+    -- figure out if active / hovered
+    local tab_is_active = view == self.active_view
+    local tab_is_hovered = i == self.hovered_tab
+
+    -- draw tab 
+    self:draw_tab(view, tab_is_active, tab_is_hovered, x, y, w, h)
   end
 
   if #self.views > tabs_number then
