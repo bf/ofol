@@ -617,7 +617,7 @@ static int f_show_dialog_confirm(lua_State *L) {
   int result = tinyfd_messageBox(title, msg,
       "yesno", "warning", 1);
 
-  lua_pushinteger(L, result);
+  lua_pushboolean(L, result);
   return 1;
 }
 

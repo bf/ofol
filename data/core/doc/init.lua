@@ -67,16 +67,8 @@ function Doc:set_filename(filename, abs_filename)
 end
 
 function Doc:try_close() 
-  local retval = system.show_dialog_confirm("Unsaved changes", 
+  return system.show_dialog_confirm("Unsaved changes", 
     string.format("\"%s\" has unsaved changes. Quit anyway?", self.filename))
-
-  -- 1 means we can close it
-  if retval == 1 then
-    return true
-  else
-    -- prevent closing 
-    return false
-  end
 end
 
 function Doc:load(filename)
