@@ -117,7 +117,7 @@ end
 
 
 function ResultsView:update()
-  self:move_towards("brightness", 0, 0.1)
+  self.brightness = 0
   ResultsView.super.update(self)
 end
 

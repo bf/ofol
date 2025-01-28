@@ -236,15 +236,13 @@ function ContextMenu:on_mouse_pressed(button, px, py, clicks)
   return caught
 end
 
----@type fun(self: table, k: string, dest: number, rate?: number, name?: string)
-ContextMenu.move_towards = View.move_towards
 
 ---Event handler for content update.
 function ContextMenu:update()
   if core.window_is_being_resized then return end
 
   if self.show_context_menu then
-    self:move_towards("height", self.items.height, nil, "contextmenu")
+    self.height = self.items.height
   end
 end
 

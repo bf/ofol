@@ -7,6 +7,9 @@ local View = require "core.view"
 local DocView = require "core.views.docview"
 local stderr = require "libraries.stderr"
 
+-- minimum distance in px after which tab dragging event will be triggered/recognized
+local DRAGGING_MINIMUM_DISTANCE = (170 * SCALE * 0.05)
+
 ---@class core.rootview : core.view
 ---@field super core.view
 ---@field root_node core.node
@@ -454,8 +457,6 @@ function RootView:on_touch_released(x, y, ...)
   self.touched_view = nil
 end
 
--- minimum distance in px after which tab dragging event will be triggered/recognized
-local DRAGGING_MINIMUM_DISTANCE = (170 * SCALE * 0.05)
 
 function RootView:on_touch_moved(x, y, dx, dy, ...)
   if not self.touched_view then return end
@@ -503,12 +504,11 @@ end
 
 
 function RootView:interpolate_drag_overlay(overlay)
-  self:move_towards(overlay, "x", overlay.to.x, nil, "tab_drag")
-  self:move_towards(overlay, "y", overlay.to.y, nil, "tab_drag")
-  self:move_towards(overlay, "w", overlay.to.w, nil, "tab_drag")
-  self:move_towards(overlay, "h", overlay.to.h, nil, "tab_drag")
-
-  self:move_towards(overlay, "opacity", overlay.visible and 100 or 0, nil, "tab_drag")
+  overlay.x = overlay.to.x
+  overlay.y = overlay.to.y
+  overlay.w = overlay.to.w
+  overlay.h = overlay.to.h
+  overlay.opacity = overlay.visible and 100 or 0
   overlay.color[4] = overlay.base_color[4] * overlay.opacity / 100
 end
 
@@ -601,7 +601,7 @@ function RootView:draw_grabbed_tab()
   local x = self.mouse.x - w / 2
   local y = self.mouse.y - h / 2
   local view = dn.node.views[dn.idx]
-  self.root_node:draw_tab(view, true, true, false, x, y, w, h, true)
+  self.root_node:draw_tab(view, true, true, x, y, w, h, true)
 end
 
 

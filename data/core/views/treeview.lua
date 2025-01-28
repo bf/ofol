@@ -889,7 +889,7 @@ function TreeView:update()
     self.size.x = dest
     self.init_size = false
   else
-    self:move_towards(self.size, "x", dest, nil, "treeview")
+    self.size.x = dest
   end
 
   if self.size.x == 0 or self.size.y == 0 or not self.visible then return end

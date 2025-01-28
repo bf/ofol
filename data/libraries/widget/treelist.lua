@@ -307,10 +307,8 @@ end
 function TreeList:update()
   if not self:is_visible() then return end
 
-  local duration = system.get_time() - self.tooltip.begin
-  local tooltip_delay = 0.5
-  if self.hovered_item and self.tooltip.x and duration > tooltip_delay then
-    self:move_towards(self.tooltip, "alpha", 255, 1, "treeview")
+  if self.hovered_item and self.tooltip.x then
+    self.tooltip.alpha = 255
   else
     self.tooltip.alpha = 0
   end

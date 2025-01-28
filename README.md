@@ -12,6 +12,7 @@ Goals:
 - - [ ] file loading in thread with progress bar: no crash when opening large files
 - - [ ] hex view for binary files
 - - [ ] reopen closed tab with ctrl shift t
+- - [ ] file search "tex eis" & "eis tex" should work
 - - [x] click on tab label does not switch to tab
 - - [x] double click title bar maximize
 - - [x] CTRL+P :123 to go to line 123 of current file
@@ -25,6 +26,7 @@ Goals:
 - [ ] different handling open project vs. open individual files
 - [ ] refactor toolbar combine build + normal toolbar
 - [ ] move to sdl3?
+- [x] dynamic width tabs
 - [x] treeview: fix context menu
 
 

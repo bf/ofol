@@ -69,7 +69,7 @@ end
 
 -- this is used for animation
 function View:move_towards(t, k, dest, rate, name)
-  stderr.warn_backtrace("move_towards is deprecated")
+  stderr.error("move_towards is deprecated %s", k)
 
   if type(t) ~= "table" then
     return self:move_towards(self, t, k, dest, rate, name)
@@ -311,8 +311,8 @@ function View:update()
   end
 
   self:clamp_scroll_position()
-  self:move_towards(self.scroll, "x", self.scroll.to.x, 0.3, "scroll")
-  self:move_towards(self.scroll, "y", self.scroll.to.y, 0.3, "scroll")
+  self.scroll.x = self.scroll.to.x
+  self.scroll.y = self.scroll.to.y
   if not self.scrollable then return end
   self:update_scrollbar()
 end

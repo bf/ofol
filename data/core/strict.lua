@@ -14,13 +14,13 @@ end
 
 
 function strict.__newindex(t, k, v)
-  stderr.error("cannot set undefined variable: " .. k, 2)
+  stderr.error("cannot SET undefined variable: " .. k)
 end
 
 
 function strict.__index(t, k)
   if not strict.defined[k] then
-    stderr.error("cannot get undefined variable: " .. k, 2)
+    stderr.error("cannot GET undefined variable: " .. k)
   end
 end
 

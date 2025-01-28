@@ -101,12 +101,6 @@ config.undo_merge_timeout = 0.3
 ---@type number
 config.max_undos = 10000
 
----The maximum number of tabs shown at a time.
----
----The default is 8.
----@type number
-config.max_tabs = math.huge
-
 ---The maximum number of entries shown at a time in the command palette.
 ---
 ---The default is 10.

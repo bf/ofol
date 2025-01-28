@@ -34,7 +34,7 @@ function ToolbarView:update()
     self.size.y = dest_size
     self.init_size = nil
   else
-    self:move_towards(self.size, "y", dest_size)
+    self.size.y = dest_size
   end
   ToolbarView.super.update(self)
 end

@@ -53,9 +53,7 @@ function ProgressBar:update()
     font:get_height() + style.padding.y
   )
 
-  local percent_width = (self.size.x * (self.percent / 100))
-
-  self:move_towards(self, "percent_width", percent_width, 0.2)
+  self.percent_width = (self.size.x * (self.percent / 100))
 
   if self.show_percent then
     self.percent_x = (self:get_width() / 2)

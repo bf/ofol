@@ -178,12 +178,12 @@ function NagView:update()
 
   if self.visible and core.active_view == self and self.title then
     local target_height = self:get_target_height()
-    self:move_towards(self, "show_height", target_height, nil, "nagbar")
-    self:move_towards(self, "underline_progress", 1, nil, "nagbar")
-    self:move_towards(self, "dim_alpha", self.show_height / target_height, nil, "nagbar")
+    self.show_height = target_height
+    self.underline_progress = 1
+    self.dim_alpha = self.show_height / target_height
   else
-    self:move_towards(self, "show_height", 0, nil, "nagbar")
-    self:move_towards(self, "dim_alpha", 0, nil, "nagbar")
+    self.show_height = 0
+    self.dim_alpha = 0
     if self.show_height <= 0 then
       self.title = nil
       self.message = nil

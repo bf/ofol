@@ -419,7 +419,7 @@ function BuildMessageView:update()
     self.size.y = dest
     self.init_size = false
   else
-    self:move_towards(self.size, "y", dest)
+    self.size.y = dest
   end
   BuildMessageView.super.update(self)
 end
