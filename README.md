@@ -2,6 +2,7 @@
 
 Goals:
 
+- [x] remove all animations
 - [ ] ready for rust development, like an improved version of Lapce
 - - [ ] fix line wrap for error messages
 - - [x] refactor IDE components
