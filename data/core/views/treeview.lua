@@ -19,7 +19,7 @@ local stderr = require "libraries.stderr"
 local fsutils = require "libraries.fsutils"
 
 local ICON_FOR_TEXT_SPACING = "f"
-local ICON_FILE = ""
+local ICON_FILE = "f"
 local ICON_DIR_OPEN = "D"
 local ICON_DIR_CLOSED = "d"
 local ICON_TREE_OPEN = "-"
@@ -987,7 +987,8 @@ function TreeView:get_item_icon(item, active, hovered)
       end
     end
   elseif item.type == "file" then
-    character = ICON_FILE
+    -- character = ICON_FILE
+    character = nil
   else 
     stderr.error("unexpected item.type: %s", item.type)
     os.exit(1)

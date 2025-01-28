@@ -6,7 +6,7 @@ local View = require "core.view"
 local EmptyView = View:extend()
 
 function EmptyView:get_name()
-  return "Get Started"
+  return ""
 end
 
 function EmptyView:get_filename()
