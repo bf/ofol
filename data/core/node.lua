@@ -360,7 +360,7 @@ end
 
 -- get total width of all preceding tabs combined (without tab at position $idx)
 function Node:get_total_width_of_all_preceding_tabs(idx)
-  stderr.debug("get_total_width_of_all_preceding_tabs %d", idx)
+  -- stderr.debug("get_total_width_of_all_preceding_tabs %d", idx)
 
   -- calculate width of all preceding tabs until this one
   local sum_width_of_all_preceding_tabs = 0
@@ -386,14 +386,14 @@ function Node:get_total_width_of_all_preceding_tabs(idx)
       -- add little spacing inbetween tabs
       sum_width_of_all_preceding_tabs = sum_width_of_all_preceding_tabs + self.tab_shift
 
-      stderr.debug("get_total_width_of_all_preceding_tabs => counter %d -> sum_width_of_all_preceding_tabs %f", counter, sum_width_of_all_preceding_tabs)
+      -- stderr.debug("get_total_width_of_all_preceding_tabs => counter %d -> sum_width_of_all_preceding_tabs %f", counter, sum_width_of_all_preceding_tabs)
     end
 
     -- look at next tab
     counter = counter - 1
   end
 
-  stderr.debug("idx %d sum_width_of_all_preceding_tabs %f", idx, sum_width_of_all_preceding_tabs)
+  -- stderr.debug("idx %d sum_width_of_all_preceding_tabs %f", idx, sum_width_of_all_preceding_tabs)
   return sum_width_of_all_preceding_tabs
 end
 
@@ -427,7 +427,7 @@ function Node:get_tab_rect(idx)
   local rect_height = h
   local rect_margin_y = margin_y
 
-  stderr.debug("get_tab_rect for idx %d returning x %f and width %f with y %f and height %f (rect_margin_y %f)", idx, rect_x, rect_width, rect_y, rect_height, rect_margin_y)
+  -- stderr.debug("get_tab_rect for idx %d returning x %f and width %f with y %f and height %f (rect_margin_y %f)", idx, rect_x, rect_width, rect_y, rect_height, rect_margin_y)
 
   return rect_x, rect_y, rect_width, rect_height, rect_margin_y
 end
@@ -543,7 +543,7 @@ function Node:update()
     for view_index, view in ipairs(self.views) do
       view:update()
       total_tab_width = total_tab_width + self:get_tab_width_by_view(view)
-      stderr.debug("view_index %d total_tab_width %f ", view_index, total_tab_width)
+      -- stderr.debug("view_index %d total_tab_width %f ", view_index, total_tab_width)
     end
 
 
@@ -559,7 +559,7 @@ end
 
 function Node:get_tab_title_text(view, font, w) 
   local text = view and view:get_name() or ""
-  stderr.debug("get_tab_title_text", text)
+  -- stderr.debug("get_tab_title_text", text)
 
   -- local dots_width = font:get_width("…")
   -- if font:get_width(text) > w then
@@ -586,13 +586,13 @@ function Node:get_tab_width_by_view(view)
   -- total width is text width plus padding
   local tab_width = tab_title_width + padding_left_right
 
-  stderr.debug("get_tab_width_by_view %f", tab_width)
+  -- stderr.debug("get_tab_width_by_view %f", tab_width)
   return tab_width
 
 end
 
 function Node:draw_tab_title(view, font, is_active, is_hovered, x, y, w, h)
-  stderr.debug("draw_tab_title", x, y, w, h)
+  -- stderr.debug("draw_tab_title", x, y, w, h)
 
   local text = self:get_tab_title_text(view, font, w)
 
@@ -605,7 +605,7 @@ function Node:draw_tab_title(view, font, is_active, is_hovered, x, y, w, h)
 end
 
 function Node:draw_tab_borders(view, is_active, is_hovered, x, y, w, h, standalone)
-  stderr.debug("draw_tab_borders", x, y, w, h)
+  -- stderr.debug("draw_tab_borders", x, y, w, h)
 
   -- Tabs deviders
   local ds = style.divider_size
@@ -629,7 +629,7 @@ function Node:draw_tab_borders(view, is_active, is_hovered, x, y, w, h, standalo
 end
 
 function Node:draw_tab(view, is_active, is_hovered, x, y, w, h, standalone)
-  stderr.debug("draw_tab", x, y, w, h)
+  -- stderr.debug("draw_tab", x, y, w, h)
 
   -- stderr.debug("draw tab %s width %s", view, w)
   local _, padding_y, margin_y = get_tab_y_sizes()
@@ -650,7 +650,7 @@ function Node:draw_tab(view, is_active, is_hovered, x, y, w, h, standalone)
 end
 
 function Node:draw_tabs()
-  stderr.debug("draw_tabs()")
+  -- stderr.debug("draw_tabs()")
   local _, y, w, h, scroll_padding = self:get_scroll_button_rect(1)
   local x = self.position.x
   local ds = style.divider_size

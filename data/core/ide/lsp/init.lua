@@ -1617,8 +1617,7 @@ function lsp.request_hover(doc, line, col, in_tab)
                 if LineWrapping then
                   LineWrapping.update_docview_breaks(helpview)
                 end
-                if
-                  not help_bottom_node
+                if not help_bottom_node
                   or
                   (
                     #help_bottom_node.views == 1
