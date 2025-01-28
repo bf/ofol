@@ -13,6 +13,10 @@ local t = {
     node:close_active_view(core.root_view.root_node)
   end,
 
+  ["root:reopen-closed"] = function(node)
+    node:reopen_closed_view(core.root_view.root_node)
+  end,
+
   ["root:close-or-quit"] = function(node)
     if node and (not node:is_empty() or not node.is_primary_node) then
       node:close_active_view(core.root_view.root_node)
