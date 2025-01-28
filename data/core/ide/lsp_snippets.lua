@@ -4,7 +4,6 @@
 -- shamelessly 'inspired by' (stolen from) LuaSnip
 -- https://github.com/L3MON4D3/LuaSnip/blob/master/lua/luasnip/util/parser/neovim_parser.lua
 
-local system   = require 'system'
 local regex    = require 'regex'
 
 local core     = require 'core'

@@ -18,7 +18,6 @@ local TreeView
 local ToolbarView
 local StatusView
 local CommandView
-local NagView
 local DocView
 local Doc
 
@@ -496,7 +495,6 @@ function core.init()
   StatusView = require "core.views.statusview"
   CommandView = require "core.views.commandview"
   
-  NagView = require "core.views.nagview"
   DocView = require "core.views.docview"
   TreeView = require "core.views.treeview"
   ToolbarView = require "core.views.toolbarview"
@@ -587,8 +585,6 @@ function core.init()
   core.command_view = CommandView()
   ---@type core.statusview
   core.status_view = StatusView()
-  ---@type core.nagview
-  core.nag_view = NagView()
 
   -- Load default commands first so plugins can override them
   command.add_defaults()
@@ -596,8 +592,6 @@ function core.init()
   -- Some plugins (eg: console) require the nodes to be initialized to defaults
   local cur_node = core.root_view.root_node
   cur_node.is_primary_node = true
-  cur_node:split("up", core.nag_view, {y = true})
-  cur_node = cur_node.b
   cur_node:split("up", core.command_view, {y = true})
   cur_node = cur_node.b
   cur_node = cur_node:split("down", core.status_view, {y = true})
@@ -614,11 +608,6 @@ function core.init()
   local min_toolbar_width = math.floor(core.toolbar_view:get_min_width())
   core.tree_view:set_minimum_target_size_x(min_toolbar_width)
   core.tree_view:set_target_size("x", min_toolbar_width)
-
-  -- core.nag_view:show("File Changed"," has changed. Reload this file?", {
-  --     { text = "Yes", default_yes = true },
-  --     { text = "No", default_no = true }
-  --   })
 
 
   -- Load user settings
@@ -731,11 +720,8 @@ function core.init()
         , table.concat(msg, ".\n\n"))
 
     stderr.error("Error:", errorMessage)
-    core.nag_view:show(
-      "Refused Plugins", errorMessage,
-      opt, function(item)
-        if item.text == "Exit" then os.exit(1) end
-      end)
+    system.show_fatal_error("Refused Plugins: " .. errorMessage)
+    os.exit(1)
   end
 end
 

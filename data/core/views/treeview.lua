@@ -344,36 +344,24 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
       local file_info = system.get_file_info(filename)
       local file_type = file_info.type == "dir" and "Directory" or "File"
       -- Ask before deleting
-      local opt = {
-        { text = "Yes", default_yes = true },
-        { text = "No", default_no = true }
-      }
-      core.nag_view:show(
-        string.format("Delete %s", file_type),
-        string.format(
-          "Are you sure you want to delete the %s?\n%s: %s",
-          file_type:lower(), file_type, relfilename
-        ),
-        opt,
-        function(item)
-          if item.text == "Yes" then
-            if file_info.type == "dir" then
-              local deleted, error, path = common.rm(filename, true)
-              if not deleted then
-                stderr.error("Error: %s - \"%s\" ", error, path)
-                return
-              end
-            else
-              local removed, error = os.remove(filename)
-              if not removed then
-                stderr.error("Error: %s - \"%s\"", error, filename)
-                return
-              end
-            end
-            stderr.info("Deleted \"%s\"", filename)
+      if system.show_dialog_confirm(string.format("Delete %s", file_type),
+        string.format("Are you sure you want to delete the %s?\n%s: %s",
+          file_type:lower(), file_type, relfilename)) then
+        if file_info.type == "dir" then
+          local deleted, error, path = common.rm(filename, true)
+          if not deleted then
+            stderr.error("Error: %s - \"%s\" ", error, path)
+            return
+          end
+        else
+          local removed, error = os.remove(filename)
+          if not removed then
+            stderr.error("Error: %s - \"%s\"", error, filename)
+            return
           end
         end
-      )
+        stderr.info("Deleted \"%s\"", filename)
+      end
     end,
 
     ["treeview:rename"] = function(item)
@@ -521,26 +509,11 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
     core.command_view:enter("Copy to", function(dest_filename)
       if (fsutils.is_object_exist(dest_filename)) then
         -- Ask before rewriting
-          local opt = {
-            { font = style.font, text = "Yes", default_yes = true },
-            { font = style.font, text = "No" , default_no = true }
-          }
-          core.nag_view:show(
-            string.format("Rewrite existing file?"),
-            string.format(
-              "File %s already exist. Rewrite file?",
-              dest_filename
-            ),
-            opt,
-            function(item)
-              if item.text == "Yes" then
-                os.remove(dest_filename)
-                fsutils.copy_file(source_filename, dest_filename)
-              else
-                return
-              end
-            end
-          )
+        if system.show_dialog_confirm(string.format("Rewrite existing file?"), 
+          string.format("File %s already exist. Rewrite file?", dest_filename)) then
+          os.remove(dest_filename)
+          fsutils.copy_file(source_filename, dest_filename)
+        end
       else
         fsutils.copy_file(source_filename, dest_filename)
       end
@@ -567,26 +540,12 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
         function(new_abs_filename)
           if (fsutils.is_object_exist(new_abs_filename)) then
             -- Ask before rewriting
-            local opt = {
-              { font = style.font, text = "Yes", default_yes = true },
-              { font = style.font, text = "No" , default_no = true }
-            }
-            core.nag_view:show(
-              string.format("Rewrite existing file?"),
-              string.format(
-                "File %s already exist. Rewrite file?",
-                new_abs_filename
-              ),
-              opt,
-              function(item)
-                if item.text == "Yes" then
-                  os.remove(new_abs_filename)
-                  fsutils.move_object(old_abs_filename, new_abs_filename)
-
-                  stderr.info("[treeview-extender] %s moved to %s", old_abs_filename, new_abs_filename)
-                end
-              end
-            )
+            if system.show_dialog_confirm(string.format("Rewrite existing file?"), 
+              string.format("File %s already exist. Rewrite file?", new_abs_filename)) then
+              os.remove(new_abs_filename)
+              fsutils.move_object(old_abs_filename, new_abs_filename)
+              stderr.info("[treeview-extender] %s moved to %s", old_abs_filename, new_abs_filename)
+            end
           else
             fsutils.move_object(old_abs_filename, new_abs_filename)
             stderr.info("[treeview-extender] %s moved to %s", old_abs_filename, new_abs_filename)

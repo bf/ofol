@@ -46,18 +46,11 @@ local function save(filename)
     stderr.info("Saved \"%s\"", saved_filename)
   else
     stderr.error(err)
-    -- TODO: use https://github.com/native-toolkit/libtinyfiledialogs for this
-    core.nag_view:show("Saving failed", string.format("Couldn't save file \"%s\". Do you want to save to another location?", doc().filename), {
-      { text = "Yes", default_yes = true },
-      { text = "No", default_no = true }
-    }, function(item)
-      if item.text == "Yes" then
-        core.add_thread(function()
-          -- we need to run this in a thread because of the odd way the nagview is.
-          command.perform("doc:save-as")
-        end)
-      end
-    end)
+
+    if system.show_confirm_dialog("Saving failed", string.format("Couldn't save file \"%s\". Do you want to save to another location?", doc().filename)) then
+      -- we need to run this in a thread because of the odd way the nagview is.
+      command.perform("doc:save-as")
+    end
   end
 end
 
