@@ -193,6 +193,7 @@ function View:on_mouse_moved(x, y, dx, dy)
 end
 
 
+-- mouse moved outside of the window
 function View:on_mouse_left()
   if not self.scrollable then 
     -- stderr.debug_backtrace("on_mouse_left -> not scrollable -> return")

@@ -1096,19 +1096,20 @@ function core.on_event(type, ...)
   return did_keymap
 end
 
-
+-- filename
 local function get_title_filename(view)
   local doc_filename = view.get_filename and view:get_filename() or view:get_name()
   if doc_filename ~= "---" then return doc_filename end
   return ""
 end
 
-
+-- title for window
 function core.compose_window_title(title)
-  return (title == "" or title == nil) and "OFOL" or title
+  local window_title = (title == "" or title == nil) and "OFOL" or title
+  stderr.debug("compose_window_title", window_title)
 end
 
-
+-- main stepping loop for event handling
 function core.step()
   -- handle events
   local did_keymap = false
@@ -1179,6 +1180,7 @@ function core.step()
 end
 
 
+-- main threading loop which will interrupt threads to keep fps
 local run_threads = coroutine.wrap(function()
   while true do
     local max_time = 1 / config.fps - 0.004
@@ -1218,6 +1220,7 @@ local run_threads = coroutine.wrap(function()
 end)
 
 
+-- main run loop for rendering
 function core.run()
   local next_step
   local last_frame_time
@@ -1239,7 +1242,11 @@ function core.run()
       next_step = nil
       did_step = true
     end
-    if core.restart_request or core.quit_request then break end
+
+    if core.restart_request or core.quit_request then 
+      stderr.debug("core.restart_request %s core.quit_request %s", core.restart_request, core.quit_request)
+      break 
+    end
 
     if not did_redraw and not core.window_is_being_resized then
       if system.window_has_focus(core.window) or not did_step or run_threads_full < 2 then
@@ -1295,14 +1302,9 @@ function core.on_error(err)
 end
 
 
-local alerted_deprecations = {}
----Show deprecation notice once per `kind`.
----
----@param kind string
+---Show deprecation notice
 function core.deprecation_log(kind)
   stderr.error("Used deprecated functionality [%s]. Check if your plugins are up to date.", kind)
-  -- if alerted_deprecations[kind] then return end
-  -- alerted_deprecations[kind] = true
 end
 
 
