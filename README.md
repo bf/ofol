@@ -8,7 +8,7 @@ Goals:
 - - [x] refactor IDE components
 - [ ] focus on linux/wayland/gnome, should out of the box w/o needing wayland parameters
 - [ ] UX should feel familiar for someone coming from sublime text editor:
-- - [ ] remove nagview, use system dialogs for file open / prompts
+- - [ ] remove nagview, use native system dialogs for file open / prompts https://github.com/native-toolkit/libtinyfiledialogs
 - - [ ] same keybindings as sublime text
 - - [ ] file loading in thread with progress bar: no crash when opening large files
 - - [ ] hex view for binary files

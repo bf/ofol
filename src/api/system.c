@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "api.h"
+#include "tinyfiledialogs.h"
 #include "../rencache.h"
 #include "../renwindow.h"
 #ifdef _WIN32
@@ -24,6 +25,10 @@
   #include <sys/vfs.h>
 #endif
 #endif
+
+
+
+
 
 static const char* button_name(int button) {
   switch (button) {
@@ -603,6 +608,17 @@ static int f_show_fatal_error(lua_State *L) {
   SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, msg, NULL);
 #endif
   return 0;
+}
+
+static int f_show_dialog_confirm(lua_State *L) {
+  const char *title = luaL_checkstring(L, 1);
+  const char *msg = luaL_checkstring(L, 2);
+
+  int result = tinyfd_messageBox(title, msg,
+      "yesno", "warning", 1);
+
+  lua_pushinteger(L, result);
+  return 1;
 }
 
 
@@ -1316,6 +1332,7 @@ static const luaL_Reg lib[] = {
   { "window_has_focus",      f_window_has_focus      },
   { "raise_window",          f_raise_window          },
   { "show_fatal_error",      f_show_fatal_error      },
+  { "show_dialog_confirm",   f_show_dialog_confirm   },
   { "rmdir",                 f_rmdir                 },
   { "chdir",                 f_chdir                 },
   { "mkdir",                 f_mkdir                 },
