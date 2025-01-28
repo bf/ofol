@@ -1107,6 +1107,7 @@ end
 function core.compose_window_title(title)
   local window_title = (title == "" or title == nil) and "OFOL" or title
   stderr.debug("compose_window_title", window_title)
+  return window_title
 end
 
 -- main stepping loop for event handling
