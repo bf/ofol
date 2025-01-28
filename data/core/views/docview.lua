@@ -69,27 +69,14 @@ function DocView:new(doc)
 end
 
 
-function DocView:try_close(do_close)
-  if self.doc:is_dirty()
-  and #core.get_views_referencing_doc(self.doc) == 1 then
-    core.command_view:enter("Unsaved Changes; Confirm Close", {
-      submit = function(_, item)
-        if item.text:match("^[cC]") then
-          do_close()
-        elseif item.text:match("^[sS]") then
-          self.doc:save()
-          do_close()
-        end
-      end,
-      suggest = function(text)
-        local items = {}
-        if not text:find("^[^cC]") then table.insert(items, "Close Without Saving") end
-        if not text:find("^[^sS]") then table.insert(items, "Save And Close") end
-        return items
-      end
-    })
+-- try closing something, return true if it can be closed, false if it should be stopped
+function DocView:try_close()
+  if self.doc:is_dirty() and #core.get_views_referencing_doc(self.doc) == 1 then
+    -- let doc handle close request
+    return self.doc:try_close()
   else
-    do_close()
+    -- non-dirty docs can be closed
+    return true
   end
 end
 

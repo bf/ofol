@@ -173,10 +173,9 @@ end
 
 -- close a view / document
 function Node:close_view(root, view)
-  local do_close = function()
+  if view:try_close() then
     self:remove_view(root, view)
   end
-  view:try_close(do_close)
 end
 
 

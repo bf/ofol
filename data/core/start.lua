@@ -19,6 +19,7 @@ USERDIR = (system.get_file_info(EXEDIR .. PATHSEP .. 'user') and (EXEDIR .. PATH
 
 
 
+
 package.path = DATADIR .. '/?.lua;'
 package.path = DATADIR .. '/?/init.lua;' .. package.path
 -- TODO: check if this is needed

@@ -739,34 +739,23 @@ function core.init()
   end
 end
 
+-- close all docs, prompt user about unsaved changes
+function core.confirm_close_docs()
+  stderr.debug("confirm closing docs")
 
-function core.confirm_close_docs(docs, close_fn, ...)
-  local dirty_count = 0
-  local dirty_name
-  for _, doc in ipairs(docs or core.docs) do
-    if doc:is_dirty() then
-      dirty_count = dirty_count + 1
-      dirty_name = doc:get_name()
+  -- iterate over all open documents
+  for _, doc in ipairs(core.docs) do
+    -- try to close document
+    -- this will prompt user about unsaved changes
+    if not doc:try_close() then
+      -- if user doesn't want to quit, return false
+      stderr.warn("cannot be closed")
+      return false
     end
   end
-  if dirty_count > 0 then
-    local text
-    if dirty_count == 1 then
-      text = string.format("\"%s\" has unsaved changes. Quit anyway?", dirty_name)
-    else
-      text = string.format("%d docs have unsaved changes. Quit anyway?", dirty_count)
-    end
-    local args = {...}
-    local opt = {
-      { text = "Yes", default_yes = true },
-      { text = "No", default_no = true }
-    }
-    core.nag_view:show("Unsaved Changes", text, opt, function(item)
-      if item.text == "Yes" then close_fn(table.unpack(args)) end
-    end)
-  else
-    close_fn(...)
-  end
+
+  stderr.debug("CAN BE CLOSED")
+  return true
 end
 
 local temp_uid = math.floor(system.get_time() * 1000) % 0xffffffff
@@ -797,34 +786,18 @@ do
   core.on_enter_project = do_nothing
 end
 
-
-local function quit_with_function(quit_fn, force)
-  if force then
-    core.delete_temp_files()
-    core.on_quit_project()
-
-    -- prepare user session object
-    local session_data = {}
-    session_data.recent_projects = core.recent_projects
-    session_data.window_mode = system.get_window_mode(core.window)
-    session_data.previous_find = core.previous_find
-    session_data.previous_replace = core.previous_replace
-
-    -- special handlign for window height/width/x/y
-    local w, h, x, y = system.get_window_size(core.window)
-    session_data.window = { w, h, x, y }
-
-    -- store session
-    user_session.save_user_session(session_data)
-
+-- quit with option for restarting
+local function quit_with_function(quit_fn)
+  if core.confirm_close_docs() then
+    stderr.debug("quit_with_function will quit because confirm_close_docs() true")
     quit_fn()
-  else
-    core.confirm_close_docs(core.docs, quit_with_function, quit_fn, true)
   end
+
+  stderr.debug("quit_with_function will not quit")
 end
 
-function core.quit(force)
-  quit_with_function(function() core.quit_request = true end, force)
+function core.quit()
+  quit_with_function(function() core.quit_request = true end)
 end
 
 

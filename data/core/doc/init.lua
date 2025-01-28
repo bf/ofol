@@ -3,6 +3,7 @@ local Highlighter = require ".highlighter"
 local translate = require ".translate"
 local core = require "core"
 local syntax = require "core.syntax"
+local system = require "system"
 local config = require "core.config"
 local common = require "core.common"
 local stderr = require "libraries.stderr"
@@ -64,6 +65,19 @@ function Doc:set_filename(filename, abs_filename)
   self.filename = filename
   self.abs_filename = abs_filename
   self:reset_syntax()
+end
+
+function Doc:try_close() 
+  local retval = system.show_dialog_confirm("Unsaved changes", 
+    string.format("\"%s\" has unsaved changes. Quit anyway?", self.filename))
+
+  -- 1 means we can close it
+  if retval == 1 then
+    return true
+  else
+    -- prevent closing 
+    return false
+  end
 end
 
 function Doc:load(filename)

@@ -26,13 +26,20 @@ local t = {
   end,
 
   ["root:close-all"] = function()
-    core.confirm_close_docs(core.docs, core.root_view.close_all_docviews, core.root_view)
+    core.confirm_close_docs()
   end,
 
   ["root:close-all-others"] = function()
-    local active_doc, docs = core.active_view and core.active_view.doc, {}
-    for i, v in ipairs(core.docs) do if v ~= active_doc then table.insert(docs, v) end end
-    core.confirm_close_docs(docs, core.root_view.close_all_docviews, core.root_view, true)
+    local active_doc = core.active_view and core.active_view.doc
+
+    -- iterate over all open docs
+    for i, v in ipairs(core.docs) do 
+      -- ensure it is not active doc
+      if v ~= active_doc then 
+        -- try to close doc
+        v.doc:try_close()
+      end
+    end
   end,
 
   ["root:move-tab-left"] = function(node)

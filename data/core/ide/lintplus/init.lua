@@ -147,8 +147,9 @@ end
 
 
 function lint.add_message(filename, line, column, kind, message, rail)
-  stderr.warn("add_message for %s:%d %s", filename, line, message)
+  stderr.warn("add_message for %s:%d:%d %s", filename, line, column, message)
   filename = core.project_absolute_path(filename)
+  stderr.warn("add_message for %s:%d:%d %s", filename, line, column, message)
   if not lint.messages[filename] then
     stderr.warn("context not set up!", filename)
     -- This allows us to at least store messages until context is properly
@@ -245,7 +246,7 @@ function lint.check(doc)
   doc.__lintplus = {
     rail_count = 0,
   }
---   clear_messages(linter)
+  clear_messages(linter)
   lint.messages[filename] = {
     context = context,
     lines = {},

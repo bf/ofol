@@ -17,8 +17,8 @@ function PreviewView:get_name()
   return "[" .. PreviewView.super.get_name(self) .. "]"
 end
 
-function PreviewView:try_close(do_close)
-  do_close()
+function PreviewView:try_close()
+  return true
 end
 
 return PreviewView

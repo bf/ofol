@@ -83,8 +83,8 @@ function View:move_towards(t, k, dest, rate, name)
 end
 
 
-function View:try_close(do_close)
-  do_close()
+function View:try_close()
+  return true
 end
 
 

@@ -34,10 +34,6 @@ command.add(nil, {
     core.restart()
   end,
 
-  ["core:force-quit"] = function()
-    core.quit(true)
-  end,
-
   ["core:toggle-fullscreen"] = function()
     fullscreen = not fullscreen
     system.set_window_mode(core.window, fullscreen and "fullscreen" or "normal")
@@ -213,10 +209,15 @@ command.add(nil, {
           stderr.error("Cannot open directory %q", path)
           return
         end
+
+        -- do nothing if old project equals new project
         if abs_path == core.project_dir then return end
-        core.confirm_close_docs(core.docs, function(dirpath)
-          core.open_folder_project(dirpath)
-        end, abs_path)
+
+        -- close all open files
+        if core.confirm_close_docs() then
+          -- open new project
+          core.open_folder_project(abs_path)
+        end
       end,
       suggest = suggest_directory
     })

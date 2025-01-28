@@ -210,13 +210,23 @@ function RootView:on_mouse_pressed(button, x, y, clicks)
   local idx = node:get_tab_overlapping_point(x, y)
   if idx then
     if button == "middle" or node.hovered_close == idx then
-      node:close_view(self.root_node, node.views[idx])
+      -- FIXME: node.views[idx] is invalid for middle click ont ab
+      local view = node.views[idx]
+      if view == nil then
+        stderr.error("mouse middle button does not find view %d for total views %d", idx, #node.views)
+      end
+      node:close_view(self.root_node, view) 
       return true
     else
       if button == "left" then
         self.dragged_node = { node = node, idx = idx, dragging = false, drag_start_x = x, drag_start_y = y}
       end
-      node:set_active_view(node.views[idx])
+      -- FIXME: node.views[idx] is invalid for middle click ont ab
+      local view = node.views[idx]
+      if view == nil then
+        stderr.error("mouse click does not find view %d for total views %d", idx, #node.views)
+      end
+      node:set_active_view(view)
       return true
     end
   elseif not self.dragged_node then -- avoid sending on_mouse_pressed events when dragging tabs
@@ -418,9 +428,12 @@ function RootView:on_file_dropped(filename, x, y)
       system.exec(string.format("%q %q", EXEFILE, filename))
     else
       -- DND event before first update, this is sent by macOS when folder is dropped into the dock
-      core.confirm_close_docs(core.docs, function(dirpath)
+      -- first close all open documents
+      if core.confirm_close_docs() then
+        -- then open new folder as project
+        local dirpath = system.absolute_path(filename)
         core.open_folder_project(dirpath)
-      end, system.absolute_path(filename))
+      end
       self.first_dnd_processed = true
     end
   else
