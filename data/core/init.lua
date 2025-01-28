@@ -463,13 +463,6 @@ function core.remove_project_directory(path)
 end
 
 
-function core.configure_borderless_window()
-  system.set_window_hit_test()
-  system.set_window_bordered(true)
-end
-
-
-
 -- The function below works like system.absolute_path except it
 -- doesn't fail if the file does not exist. We consider that the
 -- current dir is core.project_dir so relative filename are considered
@@ -706,7 +699,9 @@ function core.init()
     end)
   end
 
-  core.configure_borderless_window()
+  -- enable native borderes
+  system.set_window_hit_test()
+  system.set_window_bordered(true)
 
   if #plugins_refuse_list.userdir.plugins > 0 or #plugins_refuse_list.datadir.plugins > 0 then
     if #plugins_refuse_list.userdir.plugins > 0 then
@@ -846,6 +841,11 @@ function core.load_plugins()
     userdir = {dir = USERDIR, plugins = {}},
     datadir = {dir = DATADIR, plugins = {}},
   }
+
+  if config.disable_all_plugins then
+    stderr.warn("plugins are disabled with config.disable_all_plugins flag!")
+    return no_errors, refused_list
+  end
 
 
   local files, ordered = {}, {}

@@ -194,14 +194,8 @@ config.disable_blink = false
 ---@deprecated
 config.draw_whitespace = false
 
----Disables system-drawn window borders.
----
----When set to true, Lite XL draws its own window decorations,
----which can be useful for certain setups.
----
----Defaults to false.
----@type boolean
-config.borderless = false
+-- disable all plugins
+config.disable_all_plugins = true
 
 ---Shows/hides the close buttons on tabs.
 ---When hidden, users can close tabs via keyboard shortcuts or commands.
