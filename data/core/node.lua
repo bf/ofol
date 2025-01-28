@@ -9,6 +9,9 @@ local stderr = require "libraries.stderr"
 local EmptyView = require "core.views.emptyview"
 local View = require "core.view"
 
+
+local SYMBOL_CLOSE_BUTTON = "C"
+
 ---@class core.node : core.object
 local Node = Object:extend()
 
@@ -17,6 +20,7 @@ function Node:new(type)
   self.position = { x = 0, y = 0 }
   self.size = { x = 0, y = 0 }
   self.views = {}
+  -- self.closed_views = {}
   self.divider = 0.5
   if self.type == "leaf" then
     self:add_view(EmptyView())
@@ -116,13 +120,20 @@ function Node:split(dir, view, locked, resizable)
   return self.b
 end
 
+-- function Node:reopen_closed_view(root, view) 
+--   if #self.closed_views > 0 then
+
+
+-- end
+
 function Node:remove_view(root, view)
   if #self.views > 1 then
     local idx = self:get_view_idx(view)
     if idx < self.tab_offset then
       self.tab_offset = self.tab_offset - 1
     end
-    table.remove(self.views, idx)
+    local removed_view = table.remove(self.views, idx)
+    -- table.insert(self.closed_views, removed_view)
     if self.active_view == view then
       self:set_active_view(self.views[idx] or self.views[#self.views])
     end
@@ -293,9 +304,8 @@ function Node:should_show_tabs()
   return false
 end
 
-
 local function close_button_location(x, w)
-  local cw = style.icon_font:get_width("C")
+  local cw = style.icon_font:get_width(SYMBOL_CLOSE_BUTTON)
   local pad = style.padding.x / 2
   return x + w - cw - pad, cw, pad
 end
@@ -356,14 +366,81 @@ function Node:get_scroll_button_rect(index)
   return x, self.position.y, w, h, pad
 end
 
+-- get total width of all preceding tabs combined (without tab at position $idx)
+function Node:get_total_width_of_all_preceding_tabs(idx)
+  stderr.debug("get_total_width_of_all_preceding_tabs %d", idx)
 
+  -- calculate width of all preceding tabs until this one
+  local sum_width_of_all_preceding_tabs = 0
+  local counter = idx - 1
+
+  -- iterate over all tabs until this one and sum up the width
+  while counter > 0 do
+    -- load view
+    local preceding_view = self.views[counter]
+
+    -- break if view does not exist
+    if preceding_view == nil then
+      stderr.error("breaking from loop because view is null for index %d", counter)
+      break
+    end
+
+    -- get width of tab at $counter position 
+    local tab_at_specific_position_width = self:get_tab_width_by_view(preceding_view)
+
+    -- add to sum
+    sum_width_of_all_preceding_tabs = sum_width_of_all_preceding_tabs + tab_at_specific_position_width
+
+    -- add little spacing inbetween tabs
+    sum_width_of_all_preceding_tabs = sum_width_of_all_preceding_tabs + self.tab_shift
+
+    stderr.debug("get_total_width_of_all_preceding_tabs => counter %d -> sum_width_of_all_preceding_tabs %f", counter, sum_width_of_all_preceding_tabs)
+
+    -- look at next tab
+    counter = counter - 1
+  end
+
+  stderr.debug("idx %d sum_width_of_all_preceding_tabs %f", idx, sum_width_of_all_preceding_tabs)
+  return sum_width_of_all_preceding_tabs
+end
+
+
+-- rect size for specific tab
 function Node:get_tab_rect(idx)
+  -- load view for this tab by index
+  local view_for_this_tab = self.views[idx]
+
+  -- maximum width
   local maxw = self.size.x
+
+  -- start x of first (leftmost) tab in the line
   local x0 = self.position.x
-  local x1 = x0 + common.clamp(self.tab_width * (idx - 1) - self.tab_shift, 0, maxw)
-  local x2 = x0 + common.clamp(self.tab_width * idx - self.tab_shift, 0, maxw)
+
+  -- calculate width of all preceding tabs until this one
+  local total_width_of_all_preceding_tabs = self:get_total_width_of_all_preceding_tabs(idx)
+
+  -- start x of tab at position $idx
+  -- local x1 = x0 + common.clamp(self.tab_width * (idx - 1) - self.tab_shift, 0, maxw)
+  local x1 = x0 + common.clamp(total_width_of_all_preceding_tabs, 0, maxw)
+
+  -- calculate width of my own tab
+  local my_width = self:get_tab_width_by_view(view_for_this_tab)
+
+  -- -- end x of tab at position $idx
+  -- -- local x2 = x0 + common.clamp(self.tab_width * idx - self.tab_shift, 0, maxw)
+  -- local x2 = x0 + common.clamp(my_width, 0, maxw)
+
   local h, pad_y, margin_y = get_tab_y_sizes()
-  return x1, self.position.y, x2 - x1, h, margin_y
+  
+  local rect_x = x1
+  local rect_y = self.position.y
+  local rect_width = my_width
+  local rect_height = h
+  local rect_margin_y = margin_y
+
+  stderr.debug("get_tab_rect for idx %d returning x %f and width %f with y %f and height %f (rect_margin_y %f)", idx, rect_x, rect_width, rect_y, rect_height, rect_margin_y)
+
+  return rect_x, rect_y, rect_width, rect_height, rect_margin_y
 end
 
 
@@ -499,11 +576,18 @@ end
 function Node:update()
   if self.type == "leaf" then
     self:scroll_tabs_to_visible()
-    for _, view in ipairs(self.views) do
+
+    local total_tab_width = 0
+    for view_index, view in ipairs(self.views) do
       view:update()
+      total_tab_width = total_tab_width + self:get_tab_width_by_view(view)
+      stderr.debug("view_index %d total_tab_width %f ", view_index, total_tab_width)
     end
+
+
     self:tab_hovered_update(core.root_view.mouse.x, core.root_view.mouse.y)
-    local tab_width = self:target_tab_width()
+    -- local tab_width = self:target_tab_width()
+    local tab_width = total_tab_width
     self:move_towards("tab_shift", tab_width * (self.tab_offset - 1), nil, "tabs")
     self:move_towards("tab_width", tab_width, nil, "tabs")
   else
@@ -512,27 +596,61 @@ function Node:update()
   end
 end
 
-function Node:draw_tab_title(view, font, is_active, is_hovered, x, y, w, h)
+function Node:get_tab_title_text(view, font, w) 
   local text = view and view:get_name() or ""
-  local dots_width = font:get_width("…")
+  stderr.debug("get_tab_title_text", text)
+
+  -- local dots_width = font:get_width("…")
+  -- if font:get_width(text) > w then
+  --   for i = 1, #text do
+  --     local reduced_text = text:sub(1, #text - i)
+  --     if font:get_width(reduced_text) + dots_width <= w then
+  --       text = reduced_text .. "…"
+  --       break
+  --     end
+  --   end
+  -- end
+  return text
+end
+
+-- get width of a tab based on the tab view's file name length
+function Node:get_tab_width_by_view(view) 
+  -- -- load view object
+  -- local view = self.views[idx]
+
+  -- width of tab title text
+  local text = self:get_tab_title_text(view, style.font, 0)
+  local tab_title_width = style.font:get_width(text)
+
+  -- width of close button
+  -- local close_button_width = style.icon_font:get_width(SYMBOL_CLOSE_BUTTON)
+  -- return tab_title_width + close_button_width + style.padding.x * 2
+
+  local padding_left_right = style.padding.x * 2
+
+  local tab_width = tab_title_width + padding_left_right
+
+  stderr.debug("get_tab_width_by_view %f", tab_width)
+  return tab_width
+
+end
+
+function Node:draw_tab_title(view, font, is_active, is_hovered, x, y, w, h)
+  stderr.debug("draw_tab_title", x, y, w, h)
+
+  local text = self:get_tab_title_text(view, font, w)
+
   local align = "left"
-  if font:get_width(text) > w then
-    align = "left"
-    for i = 1, #text do
-      local reduced_text = text:sub(1, #text - i)
-      if font:get_width(reduced_text) + dots_width <= w then
-        text = reduced_text .. "…"
-        break
-      end
-    end
-  end
   local color = style.text
   if is_active then color = style.accent end
   if is_hovered then color = style.accent end
+
   common.draw_text(font, color, text, align, x, y, w, h)
 end
 
 function Node:draw_tab_borders(view, is_active, is_hovered, x, y, w, h, standalone)
+  stderr.debug("draw_tab_borders", x, y, w, h)
+
   -- Tabs deviders
   local ds = style.divider_size
   local color = style.dim
@@ -553,25 +671,39 @@ function Node:draw_tab_borders(view, is_active, is_hovered, x, y, w, h, standalo
 end
 
 function Node:draw_tab(view, is_active, is_hovered, is_close_hovered, x, y, w, h, standalone)
+  stderr.debug("draw_tab", x, y, w, h)
+
+  -- always show close button
+  is_close_hovered = true
+
   -- stderr.debug("draw tab %s width %s", view, w)
   local _, padding_y, margin_y = get_tab_y_sizes()
+
+  -- border
   x, y, w, h = self:draw_tab_borders(view, is_active, is_hovered, x, y + margin_y, w, h - margin_y, standalone)
-  -- Close button
-  local cx, cw, cpad = close_button_location(x, w)
-  local show_close_button = ((is_active or is_hovered) and not standalone and config.tab_close_button)
-  if show_close_button then
-    local close_style = is_close_hovered and style.text or style.dim
-    common.draw_text(style.icon_font, close_style, "C", nil, cx, y, cw, h)
-  end
+  
+  -- -- Close button
+  -- local cx, cw, cpad = close_button_location(x, w)
+  -- local show_close_button = ((is_active or is_hovered) and not standalone and config.tab_close_button)
+  -- if show_close_button then
+  --   local close_style = is_close_hovered and style.text or style.dim
+  --   common.draw_text(style.icon_font, close_style, SYMBOL_CLOSE_BUTTON, nil, cx, y, cw, h)
+  -- end 
+
   -- Title
-  x = x + cpad
-  w = cx - x
-  core.push_clip_rect(x, y, w, h)
-  self:draw_tab_title(view, style.font, is_active, is_hovered, x, y, w, h)
+  local text_start_x = x + style.padding.x
+  local text_start_y = y
+  local text_width = w
+  local text_height = h
+  
+  core.push_clip_rect(text_start_x, text_start_y, text_width, text_height)
+  self:draw_tab_title(view, style.font, is_active, is_hovered, text_start_x, text_start_y, text_width, text_height)
+
   core.pop_clip_rect()
 end
 
 function Node:draw_tabs()
+  stderr.debug("draw_tabs()")
   local _, y, w, h, scroll_padding = self:get_scroll_button_rect(1)
   local x = self.position.x
   local ds = style.divider_size

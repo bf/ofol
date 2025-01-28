@@ -20,7 +20,7 @@ style.padding = {
 
 style.margin = {
   tab = {
-    top = common.round(-style.divider_size * SCALE)
+    top = common.round(style.divider_size * SCALE)
   }
 }
 
