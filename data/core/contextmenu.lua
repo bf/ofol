@@ -169,8 +169,11 @@ end
 function ContextMenu:on_selected(item)
   if type(item.command) == "string" then
     command.perform(item.command)
-  else
+  elseif item.command then
     item.command()
+  else 
+    -- this will be triggered when user clicks on horizontal spacer between context menu items
+    stderr.warn("unrecognized selected item in context menu, most likely spacer between items", item)
   end
 end
 
