@@ -66,7 +66,11 @@ function View:new()
   self.current_scale = SCALE
 end
 
+
+-- this is used for animation
 function View:move_towards(t, k, dest, rate, name)
+  stderr.warn_backtrace("move_towards is deprecated")
+
   if type(t) ~= "table" then
     return self:move_towards(self, t, k, dest, rate, name)
   end

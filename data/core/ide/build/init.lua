@@ -744,7 +744,7 @@ keymap.add {
   ["ctrl+alt+b"]         = "build:rebuild",
   ["ctrl+e"]             = "build:run-or-term-or-kill",
   ["ctrl+shift+e"]       = "build:run-or-term-or-kill-with-arguments",
-  ["ctrl+t"]             = "build:next-target",
+  -- ["ctrl+t"]             = "build:next-target",
   ["ctrl+shift+b"]       = "build:clean",
   ["f6"]                 = "build:toggle-drawer",
   ["escape"]             = "build:contextual-close-drawer"

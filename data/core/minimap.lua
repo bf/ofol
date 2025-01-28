@@ -35,7 +35,7 @@ config.plugins.bf_minimap = common.merge({
   -- hide on small docs (can be true, false or min number of lines)
   avoid_small_docs = false,
   -- how many spaces one tab is equivalent to
-  tab_width = 4,
+  number_of_spaces_per_tab_character = 4,
   draw_background = true,
   -- you can override these colors
   selection_color = nil,
@@ -118,15 +118,15 @@ config.plugins.bf_minimap = common.merge({
         end
       end
     },
-    {
-      label = "Tabs Width",
-      description = "The amount of spaces that represent a tab.",
-      path = "tab_width",
-      type = "number",
-      default = 4,
-      min = 1,
-      max = 8
-    },
+    -- {
+    --   label = "Tabs Width",
+    --   description = "The amount of spaces that represent a tab.",
+    --   path = "number_of_spaces_per_tab_character",
+    --   type = "number",
+    --   default = 4,
+    --   min = 1,
+    --   max = 8
+    -- },
     {
       label = "Draw Background",
       description = "When disabled makes the minimap transparent.",
@@ -547,7 +547,7 @@ function MiniMap:draw()
           for i=w,e do
             local whitespace = string.sub(text, i, i)
             if whitespace == "\t" then
-              nspaces = nspaces + config.plugins.bf_minimap.tab_width
+              nspaces = nspaces + config.plugins.bf_minimap.number_of_spaces_per_tab_character
             elseif whitespace == " " then
               nspaces = nspaces + 1
             end

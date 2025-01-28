@@ -358,7 +358,7 @@ function RootView:on_mouse_moved(x, y, dx, dy)
   local dn = self.dragged_node
   if dn and not dn.dragging then
     -- start dragging only after enough movement
-    dn.dragging = common.distance(x, y, dn.drag_start_x, dn.drag_start_y) > style.tab_width * .05
+    dn.dragging = common.distance(x, y, dn.drag_start_x, dn.drag_start_y) > DRAGGING_MINIMUM_DISTANCE
     if dn.dragging then
       core.request_cursor("hand")
     end
@@ -454,6 +454,9 @@ function RootView:on_touch_released(x, y, ...)
   self.touched_view = nil
 end
 
+-- minimum distance in px after which tab dragging event will be triggered/recognized
+local DRAGGING_MINIMUM_DISTANCE = (170 * SCALE * 0.05)
+
 function RootView:on_touch_moved(x, y, dx, dy, ...)
   if not self.touched_view then return end
   if core.active_view == core.nag_view then
@@ -477,7 +480,7 @@ function RootView:on_touch_moved(x, y, dx, dy, ...)
   local dn = self.dragged_node
   if dn and not dn.dragging then
     -- start dragging only after enough movement
-    dn.dragging = common.distance(x, y, dn.drag_start_x, dn.drag_start_y) > style.tab_width * .05
+    dn.dragging = common.distance(x, y, dn.drag_start_x, dn.drag_start_y) > DRAGGING_MINIMUM_DISTANCE
     if dn.dragging then
       core.request_cursor("hand")
     end
