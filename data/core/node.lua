@@ -176,30 +176,74 @@ end
 
 
 -- add a view to a certain index
-function Node:add_view(view, idx)
+function Node:add_view(view, requested_idx)
   assert(self.type == "leaf", "Tried to add view to non-leaf node")
   assert(not self.locked, "Tried to add view to locked node")
   
-  stderr.debug("add_view at idx %d", idx)
+  stderr.debug("add_view at requested_idx %d (total: %d)", requested_idx, #self.views)
 
-  -- check this is empty
+  self:print_debug_tab_order()
+
+
+  -- when views has one item but it is the EmptyView
   if self.views[1] and self.views[1]:is(EmptyView) then
+    -- remove EmptyView
     table.remove(self.views)
-    if idx and idx > 1 then
-      idx = idx - 1
+
+    -- if index was requested, then decrease it by one
+    -- because we have removed EmptyView
+    if requested_idx and requested_idx > 1 then
+      requested_idx = requested_idx - 1
     end
   end
-  idx = common.clamp(idx or (self:get_visible_tabs_number()), 1, (#self.views + 1))
-  table.insert(self.views, idx, view)
+
+  -- when specific index is requested
+  if requested_idx then
+    -- check if index too small
+    if requested_idx < 1 then
+      stderr.error("add_view requested_idx too small: %d", requested_idx)
+    end
+    -- check if index is too large
+    if requested_idx > #self.views + 1 then
+      stderr.error("add_view requested_idx %d is larger than total views + 1: %d", requested_idx, #self.views + 1)
+    end
+
+    -- use the requested index for insertion
+    table.insert(self.views, requested_idx, view)
+  else
+    -- no index was requested, just insert at the end
+    table.insert(self.views, view)
+  end
+
+  self:print_debug_tab_order()
+
+  -- set view as active
   self:set_active_view(view)
 end
 
+function Node:print_debug_tab_order()
+  local result = string.format("[%d tabs]:", #self.views)
+  for i, v in ipairs(self.views) do
+    result = result .. string.format("[#%d %s] ", i, self:get_tab_title_text(v))
+  end
+  stderr.debug(result)
+end
 
+-- select a specific view
 function Node:set_active_view(view)
   assert(self.type == "leaf", "Tried to set active view on non-leaf node")
+  stderr.debug("select active view")
+
   local last_active_view = self.active_view
+
+  -- set active view
   self.active_view = view
+
+  -- update text input handlers
   core.set_active_view(view)
+
+  -- send "focus lost" (falsely named "mouse left") event
+  -- to the last active view
   if last_active_view and last_active_view ~= view then
     last_active_view:on_mouse_left()
   end

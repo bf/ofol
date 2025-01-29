@@ -883,6 +883,9 @@ function core.set_visited(filename)
 end
 
 
+
+-- this is called from node.set_active_view() in order to
+-- re-focus the text input handling onto another view
 function core.set_active_view(view)
   assert(view, "Tried to set active view to nil")
   -- Reset the IME even if the focus didn't change
