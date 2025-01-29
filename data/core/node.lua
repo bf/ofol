@@ -26,13 +26,6 @@ function Node:new(type)
   if self.type == "leaf" then
     self:add_view(EmptyView())
   end
-
-  -- spacing inbetween tabs
-  self.tab_shift = 1
-
-  -- offset for counting tabs, set to 1 when no document is open
-  -- e.g. 1 = emptyview() or any other value if not emptyview
-  self.tab_offset = 1
 end
 
 
@@ -127,9 +120,6 @@ end
 function Node:remove_view(root, view)
   if #self.views > 1 then
     local idx = self:get_view_idx(view)
-    if idx < self.tab_offset then
-      self.tab_offset = self.tab_offset - 1
-    end
     local removed_view = table.remove(self.views, idx)
     -- table.insert(self.closed_views, removed_view)
     if self.active_view == view then
@@ -283,12 +273,20 @@ end
 function Node:get_tab_overlapping_point(px, py)
   if not self:should_show_tabs() then return nil end
 
-  local tabs_number = #self.views - self.tab_offset + 1
-  local x1, y1, w, h = self:get_tab_rect(self.tab_offset)
-  local x2, y2 = self:get_tab_rect(self.tab_offset + tabs_number)
-  if px >= x1 and py >= y1 and px < x2 and py < y1 + h then
-    return math.floor((px - x1) / w) + self.tab_offset
+  for view_index, _ in ipairs(self.views) do
+    local x1, y1, w, h = self:get_tab_rect(view_index)
+    if px >= x1 and py >= y1 and px < x1 + w and py < y1 + h then
+      return view_index
+    end
   end
+
+  return nil
+  -- local tabs_number = #self.views
+  -- local x1, y1, w, h = self:get_tab_rect(self.tab_offset)
+  -- local x2, y2 = self:get_tab_rect(self.tab_offset + tabs_number)
+  -- if px >= x1 and py >= y1 and px < x2 and py < y1 + h then
+  --   return math.floor((px - x1) / w) + self.tab_offset
+  -- end
 end
 
 
@@ -386,9 +384,6 @@ function Node:get_total_width_of_all_preceding_tabs(idx)
 
       -- add to sum
       sum_width_of_all_preceding_tabs = sum_width_of_all_preceding_tabs + tab_at_specific_position_width
-
-      -- add little spacing inbetween tabs
-      sum_width_of_all_preceding_tabs = sum_width_of_all_preceding_tabs + self.tab_shift
 
       -- stderr.debug("get_total_width_of_all_preceding_tabs => counter %d -> sum_width_of_all_preceding_tabs %f", counter, sum_width_of_all_preceding_tabs)
     -- end
@@ -550,11 +545,7 @@ function Node:update()
       -- stderr.debug("view_index %d total_tab_width %f ", view_index, total_tab_width)
     end
 
-
     self:tab_hovered_update(core.root_view.mouse.x, core.root_view.mouse.y)
-    local tab_width = total_tab_width
-    
-    self.tab_shift = tab_width * (self.tab_offset - 1)
   else
     self.a:update()
     self.b:update()
@@ -750,7 +741,7 @@ function Node:close_all_docviews(keep_active)
         i = i + 1
       end
     end
-    self.tab_offset = 1
+
     if #self.views == 0 and self.is_primary_node then
       -- if we are not the primary view and we had the active view it doesn't
       -- matter to reattribute the active view because, within the close_all_docviews
@@ -877,10 +868,10 @@ function Node:get_drag_overlay_tab_position(x, y, dragged_node, dragged_index)
     local first_tab_x = self:get_tab_rect(1)
     if x < first_tab_x then
       -- mouse before first visible tab
-      tab_index = self.tab_offset or 1
+      tab_index = 1
     else
       -- mouse after last visible tab
-      tab_index = self:get_visible_tabs_number() + (self.tab_offset - 1 or 0)
+      tab_index = self:get_visible_tabs_number() 
     end
   end
   local tab_x, tab_y, tab_w, tab_h, margin_y = self:get_tab_rect(tab_index)
