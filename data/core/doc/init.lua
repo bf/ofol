@@ -67,8 +67,13 @@ function Doc:set_filename(filename, abs_filename)
 end
 
 function Doc:try_close() 
-  return system.show_dialog_confirm("Unsaved changes", 
-    string.format("\"%s\" has unsaved changes. Quit anyway?", self.filename))
+  if doc.is_dirty() then
+    -- when doc is not saved yet, return result of confirmation question
+    return system.show_dialog_confirm("Unsaved changes", string.format("\"%s\" has unsaved changes. Quit anyway?", self.filename))
+  else 
+    -- if doc is not dirty, just return true to signal that it can be closed
+    return true
+  end
 end
 
 function Doc:load(filename)
