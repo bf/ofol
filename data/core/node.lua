@@ -281,12 +281,6 @@ function Node:get_tab_overlapping_point(px, py)
   end
 
   return nil
-  -- local tabs_number = #self.views
-  -- local x1, y1, w, h = self:get_tab_rect(self.tab_offset)
-  -- local x2, y2 = self:get_tab_rect(self.tab_offset + tabs_number)
-  -- if px >= x1 and py >= y1 and px < x2 and py < y1 + h then
-  --   return math.floor((px - x1) / w) + self.tab_offset
-  -- end
 end
 
 
@@ -363,33 +357,15 @@ function Node:get_total_width_of_all_preceding_tabs(idx)
   local sum_width_of_all_preceding_tabs = 0
   -- local counter = idx - 1
 
-  -- iterate over all tabs until this one and sum up the width
-  -- while counter > 0 do
+  -- iterate over all tabs on left side of $idx
   for view_index, preceding_view in ipairs(self.views) do
+    -- if we reach tab with index $idx, stop
     if view_index == idx then
       break
     end
 
-    -- -- load view
-    -- local preceding_view = self.views[counter]
-
-    -- -- check if view does exist with this index
-    -- if preceding_view == nil then
-    --   -- view does not exist. this will happen if tabs are rearranged / reordered by the user
-    --   -- print warning but continue
-    --   stderr.warn_backtrace("view is null for counter %d counting from %d - 1 even though total views %d! will skip counting this one", counter, idx, #self.views)
-    -- else
-    --   -- get width of tab at $counter position 
-      local tab_at_specific_position_width = self:get_tab_width_by_view(preceding_view)
-
-      -- add to sum
-      sum_width_of_all_preceding_tabs = sum_width_of_all_preceding_tabs + tab_at_specific_position_width
-
-      -- stderr.debug("get_total_width_of_all_preceding_tabs => counter %d -> sum_width_of_all_preceding_tabs %f", counter, sum_width_of_all_preceding_tabs)
-    -- end
-
-    -- -- look at next tab
-    -- counter = counter - 1
+    -- add to sum
+    sum_width_of_all_preceding_tabs = sum_width_of_all_preceding_tabs + self:get_tab_width_by_view(preceding_view)
   end
 
   -- stderr.debug("idx %d sum_width_of_all_preceding_tabs %f", idx, sum_width_of_all_preceding_tabs)

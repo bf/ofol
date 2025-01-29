@@ -105,7 +105,10 @@ end
 ---@return core.docview
 function RootView:open_doc(doc, go_to_line_number)
   stderr.debug("open_doc %s go_to_line_number %s", doc.filename, go_to_line_number)
+
   local node = self:get_active_node_default()
+
+  -- check if doc is already opened in a view
   for i, view in ipairs(node.views) do
     if view.doc == doc then
       node:set_active_view(node.views[i])
@@ -120,11 +123,17 @@ function RootView:open_doc(doc, go_to_line_number)
         view.doc:set_selection(go_to_line_number, 1, go_to_line_number, 1)
       end
 
+      -- return already opened view
       return view
     end
   end
+
+  -- create new view
   local view = DocView(doc)
+
+  -- add view to node
   node:add_view(view)
+
   self.root_node:update_layout()
 
   if go_to_line_number then
