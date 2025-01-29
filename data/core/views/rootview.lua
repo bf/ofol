@@ -564,7 +564,11 @@ end
 
 
 function RootView:update_drag_overlay()
-  if not (self.dragged_node and self.dragged_node.dragging) then return end
+  if not (self.dragged_node and self.dragged_node.dragging) then 
+    -- skip when not dragging
+    return 
+  end
+  
   local over = self.root_node:get_child_overlapping_point(self.mouse.x, self.mouse.y)
   if over and not over.locked then
     local _, _, _, tab_h = over:get_scroll_button_rect(1)

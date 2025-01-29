@@ -195,6 +195,7 @@ function DocView:get_x_offset_col(line, x)
   for _, type, text in self.doc.highlighter:each_token(line) do
     local font = style.syntax_fonts[type] or default_font
     if font ~= default_font then font:set_tab_size(indent_size) end
+    -- tab_offset is the actual number of pixels a tab should use from renderer.c
     local width = font:get_width(text, {tab_offset = xoffset})
     -- Don't take the shortcut if the width matches x,
     -- because we need last_i which should be calculated using utf-8.
@@ -203,6 +204,7 @@ function DocView:get_x_offset_col(line, x)
       i = i + #text
     else
       for char in common.utf8_chars(text) do
+        -- tab_offset is the actual number of pixels a tab should use from renderer.c
         local w = font:get_width(char, {tab_offset = xoffset})
         if xoffset >= x then
           return (xoffset - x > w / 2) and last_i or i

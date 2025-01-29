@@ -363,20 +363,25 @@ function Node:get_total_width_of_all_preceding_tabs(idx)
 
   -- calculate width of all preceding tabs until this one
   local sum_width_of_all_preceding_tabs = 0
-  local counter = idx - 1
+  -- local counter = idx - 1
 
   -- iterate over all tabs until this one and sum up the width
-  while counter > 0 do
-    -- load view
-    local preceding_view = self.views[counter]
+  -- while counter > 0 do
+  for view_index, preceding_view in ipairs(self.views) do
+    if view_index == idx then
+      break
+    end
 
-    -- check if view does exist with this index
-    if preceding_view == nil then
-      -- view does not exist. this will happen if tabs are rearranged / reordered by the user
-      -- print warning but continue
-      stderr.warn_backtrace("view is null for counter %d counting from %d - 1 even though total views %d! will skip counting this one", counter, idx, #self.views)
-    else
-      -- get width of tab at $counter position 
+    -- -- load view
+    -- local preceding_view = self.views[counter]
+
+    -- -- check if view does exist with this index
+    -- if preceding_view == nil then
+    --   -- view does not exist. this will happen if tabs are rearranged / reordered by the user
+    --   -- print warning but continue
+    --   stderr.warn_backtrace("view is null for counter %d counting from %d - 1 even though total views %d! will skip counting this one", counter, idx, #self.views)
+    -- else
+    --   -- get width of tab at $counter position 
       local tab_at_specific_position_width = self:get_tab_width_by_view(preceding_view)
 
       -- add to sum
@@ -386,10 +391,10 @@ function Node:get_total_width_of_all_preceding_tabs(idx)
       sum_width_of_all_preceding_tabs = sum_width_of_all_preceding_tabs + self.tab_shift
 
       -- stderr.debug("get_total_width_of_all_preceding_tabs => counter %d -> sum_width_of_all_preceding_tabs %f", counter, sum_width_of_all_preceding_tabs)
-    end
+    -- end
 
-    -- look at next tab
-    counter = counter - 1
+    -- -- look at next tab
+    -- counter = counter - 1
   end
 
   -- stderr.debug("idx %d sum_width_of_all_preceding_tabs %f", idx, sum_width_of_all_preceding_tabs)
@@ -663,15 +668,15 @@ function Node:draw_tabs()
   renderer.draw_rect(x, y + h - ds, self.size.x, ds, style.divider)
 
   -- iterate over all views
-  for i = 0, #self.views do
-    local view = self.views[i]
-
+  -- for i = 0, #self.views do
+  --   local view = self.views[i]
+  for view_index, view in ipairs(self.views) do
     -- get bounding box for tab
-    local x, y, w, h = self:get_tab_rect(i)
+    local x, y, w, h = self:get_tab_rect(view_index)
 
     -- figure out if active / hovered
     local tab_is_active = view == self.active_view
-    local tab_is_hovered = i == self.hovered_tab
+    local tab_is_hovered = view_index == self.hovered_tab
 
     -- draw tab 
     self:draw_tab(view, tab_is_active, tab_is_hovered, x, y, w, h)
