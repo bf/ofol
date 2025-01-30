@@ -516,6 +516,7 @@ function common.home_expand(text)
 end
 
 
+-- fixme: sep_pattern is defined but not used
 local function split_on_slash(s, sep_pattern)
   local t = {}
   if s:match("^["..PATHSEP.."]") then
@@ -527,6 +528,10 @@ local function split_on_slash(s, sep_pattern)
   return t
 end
 
+
+function common.split_on_slash(str) 
+  return split_on_slash(str)
+end
 
 ---Normalizes the drive letter in a Windows path to uppercase.
 ---This function expects an absolute path, e.g. a path from `system.absolute_path`.

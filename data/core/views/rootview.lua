@@ -108,7 +108,7 @@ function RootView:open_doc(doc, go_to_line_number)
 
 
   -- handle metadata for file
-  core.file_metadata:handle_open_file(doc.abs_filename)
+  core.file_metadata:handle_open_file(doc)
 
 
   local node = self:get_active_node_default()

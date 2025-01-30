@@ -11,7 +11,12 @@ function fsutils.normalize_path(path)
   end
 end
 
+-- FIXME: does not work for windows
 function fsutils.parent_directory(path)
+  if PLATFORM == "Windows" then
+    error("this function is not adapted for windows yet")
+  end
+
   path = fsutils.normalize_path(path)
   path = path:match("^(.-)/*$")
   local last_slash_pos = -1

@@ -83,8 +83,10 @@ end
 
 function DocView:get_name()
   local post = self.doc:is_dirty() and "*" or ""
-  local name = self.doc:get_name()
-  return name:match("[^/%\\]*$") .. post
+  -- local name = self.doc:get_name()
+  -- return name:match("[^/%\\]*$") .. post
+
+  return core.file_metadata:get_filename_for_display_unstyled(self.doc.abs_filename) .. post
 end
 
 
