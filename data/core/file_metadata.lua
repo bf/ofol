@@ -17,6 +17,12 @@ function FileMetadata:new()
 
   -- store counter for duplicate absolute paths
   self._store_number_of_files_with_same_absolute_path = {}
+
+  -- storage object for status from version control
+  self._store_status_from_version_control = {}
+
+  -- storage object for status from compiler
+  self._store_status_from_compiler = {}
 end
 
 -- increase counter of open files with same basename
@@ -91,9 +97,7 @@ function FileMetadata:handle_open_file(doc)
   -- update store of metadata
   self._store_metadata_by_file_absolute_path[absolute_path] = {
     basename = basename,
-    doc = doc,
-    status_from_compiler = nil,
-    status_from_source_control = nil
+    doc = doc
   }
 end
 
@@ -241,14 +245,41 @@ function FileMetadata:get_filename_for_display_unstyled(absolute_path)
   -- in order to differentiate between these files
   local filename_differentiator = self:_get_filename_differentiator(absolute_path, metadata["basename"])
 
-  if #filename_differentiator > 0 then
+  if filename_differentiator and #filename_differentiator > 0 then
     -- add differentiator to filename if needed
-    filename = filename .. " - " .. filename_differentiator
+    filename = filename .. " — " .. filename_differentiator
+  end
+
+  -- check version control status
+  local status_from_version_control = self:get_status_from_version_control(absolute_path)
+  if status_from_version_control and #status_from_version_control > 0 then
+    filename = string.format("(%s) %s", status_from_version_control, filename)
   end
 
   return filename
 end
 
+-- set version control status
+function FileMetadata:set_status_from_version_control(absolute_path, new_status_from_version_control)
+  stderr.debug("set_status_from_version_control %s %s", absolute_path, new_status_from_version_control)
+  self._store_status_from_version_control[absolute_path] = new_status_from_version_control
+end
+
+-- get version control status
+function FileMetadata:get_status_from_version_control(absolute_path)
+  return self._store_status_from_version_control[absolute_path]
+end
+
+-- set compiler status
+function FileMetadata:set_status_from_compiler(absolute_path, new_status_from_compiler)
+  stderr.debug("set_status_from_compiler %s %s", absolute_path, new_status_from_compiler)
+  self._store_status_from_compiler[absolute_path] = new_status_from_compiler
+end
+
+-- get compiler status
+function FileMetadata:get_status_from_compiler(absolute_path)
+  return self._store_status_from_compiler[absolute_path]
+end
 
 
 return FileMetadata

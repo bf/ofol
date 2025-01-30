@@ -619,6 +619,10 @@ function scm.update()
               changed_files[path] = { color = style.modified }
               path = common.dirname(path)
             end
+
+            -- update metadata
+            core.file_metadata:set_status_from_version_control(change.path, change.status)
+
             if i % 10 == 0 then
               coroutine.yield()
             end
