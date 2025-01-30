@@ -11,6 +11,9 @@ local View = require "core.view"
 
 
 local SYMBOL_CLOSE_BUTTON = "C"
+local ICON_SCROLL_BUTTON_LEFT = "<"
+local ICON_SCROLL_BUTTON_RIGHT = ">"
+
 
 ---@class core.node : core.object
 local Node = Object:extend()
@@ -286,13 +289,14 @@ function Node:get_children(t)
   return t
 end
 
-
 -- return the width including the padding space and separately
 -- the padding space itself
 local function get_scroll_button_width()
-  local w = style.icon_font:get_width(">")
-  local pad = w
-  return w + 2 * pad, pad
+  local w = style.icon_font:get_width(ICON_SCROLL_BUTTON_RIGHT)
+  local pad = w/2
+  -- local pad = w
+  -- return w + 2 * pad, pad
+  return w + pad, pad/2
 end
 
 
@@ -386,11 +390,23 @@ local function get_tab_y_sizes()
   return height + (padding * 2) + margin, padding, margin
 end
 
+-- get position of scroll button
 function Node:get_scroll_button_rect(index)
+  assert(index == 1 or index == 2, "get_scroll_button_rect can only handle index == 1 or 2 ")
+
   local w, pad = get_scroll_button_width()
   local h = get_tab_y_sizes()
-  local x = self.position.x + (index == 1 and self.size.x - w * 2 or self.size.x - w)
-  return x, self.position.y, w, h, pad
+  local x = self.position.x
+
+  if index == 1 then
+    -- x = x + self.size.x - w * 2
+    x = x
+  elseif index == 2 then
+    -- x = x + self.size.x - w
+    x = x + w 
+  end
+
+  return x, self.position.y, w, h, 0
 end
 
 -- get total width of all preceding tabs combined (without tab at position $idx)
@@ -419,6 +435,8 @@ end
 
 -- rect size for specific tab
 function Node:get_tab_rect(idx)
+  local scroll_button_x, _, scroll_button_width, _ =  self:get_scroll_button_rect(2)
+
   -- load view for this tab by index
   local view_for_this_tab = self.views[idx]
 
@@ -426,7 +444,8 @@ function Node:get_tab_rect(idx)
   local maxw = self.size.x
 
   -- start x of first (leftmost) tab in the line
-  local x0 = self.position.x
+  -- local x0 = self.position.x
+  local x0 = scroll_button_x + scroll_button_width
 
   -- calculate width of all preceding tabs until this one
   local total_width_of_all_preceding_tabs = self:get_total_width_of_all_preceding_tabs(idx)
@@ -542,17 +561,41 @@ function Node:update_layout()
 end
 
 
-function Node:scroll_tabs(dir)
+-- scroll tabs, with parameter
+-- scroll_direction = 1 for backwards scroll and 
+-- scroll_direction = 2 for forwards scroll
+function Node:scroll_tabs(scroll_direction)
+  assert(scroll_direction == 1 or scroll_direction == 2, "scroll_tabs requires scroll_direction to be 1 (backwards) or 2 (forwards)")
+
+  -- get active view index
   local view_index = self:get_view_idx(self.active_view)
-  if dir == 1 then
+
+  -- determine next view index
+  local go_to_view_index
+
+  -- backwards scrolling
+  if scroll_direction == 1 then
     if view_index > 1 then
-      self:set_active_view(self.views[view_index - 1])
+      -- scroll backwards
+      go_to_view_index = view_index - 1
+    else 
+      -- wrap over to last item
+      go_to_view_index = #self.views
     end
-  elseif dir == 2 then
-    if view_index  < #self.views then
-      self:set_active_view(self.views[view_index + 1])
+  elseif scroll_direction == 2 then
+    if view_index < #self.views then
+    -- scroll forwards
+      go_to_view_index = view_index + 1
+    else
+      -- wrap over to first item
+      go_to_view_index = 1
     end
   end
+
+  stderr.debug("scroll_tabs direction %d view_index %d -> go_to_view_index %d", scroll_direction, view_index, go_to_view_index)
+
+  -- change to new index
+  self:set_active_view(self.views[go_to_view_index])
 end
 
 
@@ -679,8 +722,6 @@ function Node:draw_tabs()
   renderer.draw_rect(x, y + h - ds, self.size.x, ds, style.divider)
 
   -- iterate over all views
-  -- for i = 0, #self.views do
-  --   local view = self.views[i]
   for view_index, view in ipairs(self.views) do
     -- get bounding box for tab
     local x, y, w, h = self:get_tab_rect(view_index)
@@ -693,20 +734,42 @@ function Node:draw_tabs()
     self:draw_tab(view, tab_is_active, tab_is_hovered, x, y, w, h)
   end
 
-  -- draw scroll buttons
-  -- local draw_scroll_buttons = (#self.views > tabs_number)
-  local draw_scroll_buttons = true
-  if draw_scroll_buttons then
-    local _, pad = get_scroll_button_width()
-    local xrb, yrb, wrb, hrb = self:get_scroll_button_rect(1)
-    renderer.draw_rect(xrb + pad, yrb, wrb * 2, hrb, style.background2)
-    local left_button_style = (self.hovered_scroll_button == 1) and style.text or style.dim
-    common.draw_text(style.icon_font, left_button_style, "<", nil, xrb + scroll_padding, yrb, 0, h)
-
-    xrb, yrb, wrb = self:get_scroll_button_rect(2)
-    local right_button_style = (self.hovered_scroll_button == 2) and style.text or style.dim
-    common.draw_text(style.icon_font, right_button_style, ">", nil, xrb + scroll_padding, yrb, 0, h)
+  -- draw scroll buttons 
+  -- styling for left scroll button
+  local left_button_style
+  if self.hovered_scroll_button == 1 then
+    left_button_style = style.text 
+  else 
+    left_button_style = style.dim
   end
+
+  -- styling for right scroll button
+  local right_button_style
+  if self.hovered_scroll_button == 2 then
+    right_button_style = style.text 
+  else
+    right_button_style = style.dim
+  end
+
+  local scroll_button_text_align = "center"
+
+  -- get padding for scroll buttons
+  local _, pad = get_scroll_button_width()
+
+  -- first scroll button width
+  local xrb, yrb, wrb, hrb = self:get_scroll_button_rect(1)
+
+  -- draw backgroudn for scroll button
+  renderer.draw_rect(xrb + pad, yrb, wrb * 2, hrb, style.background2)
+
+  -- draw left scroll button text
+  common.draw_text(style.icon_font, left_button_style, ICON_SCROLL_BUTTON_LEFT, scroll_button_text_align, xrb, yrb, wrb, h)
+
+  -- second scroll button
+  xrb, yrb, wrb = self:get_scroll_button_rect(2)
+
+  -- draw right scroll button text
+  common.draw_text(style.icon_font, right_button_style, ICON_SCROLL_BUTTON_RIGHT, scroll_button_text_align, xrb, yrb, wrb, h)
 
   core.pop_clip_rect()
 end

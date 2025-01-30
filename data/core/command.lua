@@ -136,6 +136,7 @@ function command.is_valid(name, ...)
 end
 
 local function perform(name, ...)
+  stderr.debug("command: %s", name)
   local cmd = command.map[name]
   if not cmd then return false end
   local res = { cmd.predicate(...) }

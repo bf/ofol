@@ -1,8 +1,8 @@
 local common = require "core.common"
 local style = {}
 
-style.DEFAULT_FONT_SIZE = common.round(22 * SCALE)
-style.DEFAULT_ICON_SIZE = common.round(23 * SCALE)
+style.DEFAULT_FONT_SIZE = common.round(16 * SCALE)
+style.DEFAULT_ICON_SIZE = common.round(17 * SCALE)
 
 style.divider_size = common.round(1 * SCALE)
 style.scrollbar_size = common.round(4 * SCALE)
