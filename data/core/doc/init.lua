@@ -704,6 +704,9 @@ end
 -- For plugins to get notified when a document is closed
 function Doc:on_close()
   stderr.debug("Closed doc \"%s\"", self:get_name())
+
+  -- update metadata
+  core.file_metadata:handle_close_file(self.abs_filename)
 end
 
 return Doc

@@ -170,7 +170,9 @@ end
 
 -- close a view / document
 function Node:close_view(root, view)
+  stderr.debug("close view")
   if view:try_close() then
+    stderr.debug("remove view")
     self:remove_view(root, view)
   end
 end

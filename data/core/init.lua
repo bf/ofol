@@ -567,6 +567,11 @@ function core.init()
   core.window_mode = "normal"
   core.threads = setmetatable({}, { __mode = "k" })
 
+  -- store for file metadata
+  local FileMetadata = require "core.file_metadata"
+  core.file_metadata = FileMetadata()
+  
+
   -- flag when user is actively resizing window
   core.window_is_being_resized = false
 
@@ -966,6 +971,8 @@ function core.open_doc(filename)
     -- try to find existing doc for filename
     filename = core.normalize_to_project_dir(filename)
     abs_filename = core.project_absolute_path(filename)
+    
+    -- find already openend doc for this absolute path
     for _, doc in ipairs(core.docs) do
       if doc.abs_filename and abs_filename == doc.abs_filename then
         return doc
