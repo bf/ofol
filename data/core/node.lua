@@ -25,6 +25,10 @@ function Node:new(type)
   self.views = {}
   self.divider = 0.5
 
+  -- shift tab x position by this value
+  -- so that active tab stays visible
+  self.tab_shift_by_x_so_that_active_tab_stays_visible = 0
+
   -- add emptyview on startup
   if self.type == "leaf" then
     self:add_view(EmptyView())
@@ -440,18 +444,14 @@ function Node:get_tab_rect(idx)
   -- load view for this tab by index
   local view_for_this_tab = self.views[idx]
 
-  -- maximum width
-  local maxw = self.size.x
-
   -- start x of first (leftmost) tab in the line
-  -- local x0 = self.position.x
-  local x0 = scroll_button_x + scroll_button_width
+  local x0 = scroll_button_x + scroll_button_width - self.tab_shift_by_x_so_that_active_tab_stays_visible
 
   -- calculate width of all preceding tabs until this one
   local total_width_of_all_preceding_tabs = self:get_total_width_of_all_preceding_tabs(idx)
 
   -- start x of tab at position $idx
-  local x1 = x0 + common.clamp(total_width_of_all_preceding_tabs, 0, maxw)
+  local x1 = x0 + total_width_of_all_preceding_tabs
 
   -- calculate width of my own tab
   local my_width = self:get_tab_width_by_view(view_for_this_tab)
@@ -707,9 +707,23 @@ function Node:draw_tab(view, is_active, is_hovered, x, y, w, h, standalone)
   core.pop_clip_rect()
 end
 
+
+-- return total width of all tabs
+function Node:get_total_width_of_all_tabs () 
+  local total_width = 0
+  for view_index, view in ipairs(self.views) do 
+    total_width = total_width + self:get_tab_width_by_view(view)
+  end
+  return total_width
+end
+
 function Node:draw_tabs()
-  -- stderr.debug("draw_tabs()")
-  local _, y, w, h, scroll_padding = self:get_scroll_button_rect(1)
+  stderr.warn("draw_tabs()")
+
+  -- ensure shift factor is not negative
+  assert(self.tab_shift_by_x_so_that_active_tab_stays_visible >= 0, "self.tab_shift_by_x_so_that_active_tab_stays_visible should never be negative")
+
+  local _, y, scroll_button_width, h, scroll_padding = self:get_scroll_button_rect(2)
   local x = self.position.x
   local ds = style.divider_size
 
@@ -720,6 +734,51 @@ function Node:draw_tabs()
 
   -- draw horizontal divider
   renderer.draw_rect(x, y + h - ds, self.size.x, ds, style.divider)
+
+  -- if more than one tab is open, then we need to ensure that active tab 
+  -- does not appear outside of the window 
+  if #self.views > 1 then
+    -- get index of active view
+    local active_view_index = self:get_view_idx(self.active_view)
+
+    -- get x position (start and end) for the active tab
+    local active_tab_x, _, active_tab_w, _ = self:get_tab_rect(active_view_index)
+
+    -- when shift factor is already set, figure out if it is still needed
+    if self.tab_shift_by_x_so_that_active_tab_stays_visible > 0 then
+      -- fetch total width of all tabs
+      local total_width_of_all_tabs = self:get_total_width_of_all_tabs()
+
+      -- check if total width fits into current tab bar width
+      if self.size.x - 2 * scroll_button_width > total_width_of_all_tabs then
+        -- if it fits, reset tab shift to zero
+        self.tab_shift_by_x_so_that_active_tab_stays_visible = 0
+      end
+    end
+
+    -- remember old shift factor
+    local old_shift_factor_x = self.tab_shift_by_x_so_that_active_tab_stays_visible
+
+    -- check if tab has grown outside right side
+    if active_tab_x + active_tab_w > self.position.x + self.size.x then
+      -- figure out shift factor
+      self.tab_shift_by_x_so_that_active_tab_stays_visible = active_tab_x + active_tab_w + old_shift_factor_x - self.position.x - self.size.x
+
+    -- check if tab is hidden on the left side
+    elseif self.tab_shift_by_x_so_that_active_tab_stays_visible > 0 then
+      -- get right corner x of the right scroll button
+      local scroll_button_x, _, scroll_button_width, _ =  self:get_scroll_button_rect(2)
+      local scroll_buttons_end_at_x = scroll_button_x + scroll_button_width
+
+      -- check if active tab x is left of scroll button right side x
+      if active_tab_x < scroll_buttons_end_at_x then
+        -- in this case we need to move at least $active_tab_width to the left
+        -- we achieve this by subtracting $active_tab_width from the current tab shift by x factor
+        -- with math.max(.., 0) we ensure that it never goes below zero
+        self.tab_shift_by_x_so_that_active_tab_stays_visible = math.max(old_shift_factor_x - active_tab_w, 0)
+      end
+    end
+  end
 
   -- iterate over all views
   for view_index, view in ipairs(self.views) do

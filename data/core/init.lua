@@ -888,6 +888,8 @@ end
 -- re-focus the text input handling onto another view
 function core.set_active_view(view)
   assert(view, "Tried to set active view to nil")
+  stderr.debug("set_active_view")
+
   -- Reset the IME even if the focus didn't change
   ime.stop()
   if view ~= core.active_view then
