@@ -256,6 +256,12 @@ function FileMetadata:get_filename_for_display_unstyled(absolute_path)
     filename = string.format("(%s) %s", status_from_version_control, filename)
   end
 
+  -- check compiler status
+  local status_from_compiler = self:get_status_from_compiler(absolute_path)
+  if status_from_compiler and #status_from_compiler > 0 then
+    filename = string.format("[%s] %s", status_from_compiler, filename)
+  end
+
   return filename
 end
 

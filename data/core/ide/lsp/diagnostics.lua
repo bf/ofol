@@ -179,6 +179,20 @@ function diagnostics.add(filename, messages)
     diagnostics.list[index].messages = messages
   end
 
+  -- figure out minimum severity (0=error, 4=info)
+  local min_severity = 10
+  for _, m in ipairs(messages) do
+    if m.severity < min_severity then
+      min_severity = m.severity
+    end
+  end
+
+  -- convert integer error type to string
+  local error_human_readable = lintplus_kinds[min_severity]
+
+  -- store with metadata
+  core.file_metadata:set_status_from_compiler(filename, error_human_readable)
+
   return true
 end
 
