@@ -79,6 +79,11 @@ function FileMetadata:handle_open_file(doc)
 
   stderr.debug("handle open file %s", absolute_path)
 
+  if absolute_path == nil then
+    stderr.debug("absolute_path is nil, abort")
+    return
+  end
+
   -- increase counter for opened files with this absolute path
   self:_counter_number_of_open_files_with_same_absolute_path_increase(absolute_path)
 
@@ -104,6 +109,12 @@ end
 -- react to closing of file
 function FileMetadata:handle_close_file(absolute_path)
   stderr.debug("handle close file %s", absolute_path)
+
+  -- unsaved files dont have absolute path
+  if absolute_path == nil then
+    stderr.debug("absolute_path is nil, will abort")
+    return 
+  end
 
   assert(self._store_metadata_by_file_absolute_path[absolute_path], "file metadata should exist when closing file")
 
@@ -228,6 +239,14 @@ end
 -- get filename styled for display
 -- returns filename, styling, suffix
 function FileMetadata:get_filename_for_display_unstyled(absolute_path) 
+  stderr.debug("absolute_path %s", absolute_path)
+
+  -- unsaved files dont have absolute path
+  if absolute_path == nil then
+    stderr.debug("absolute_path is nil, it seems to be unsaved file -> return 'unsaved' as filename")
+    return "unsaved"
+  end
+
   assert(self._store_metadata_by_file_absolute_path[absolute_path], "metadata should exist when get_text_for_display is called")
 
   -- load metadata
