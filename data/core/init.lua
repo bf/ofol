@@ -568,10 +568,6 @@ function core.init()
   core.window_mode = "normal"
   core.threads = setmetatable({}, { __mode = "k" })
 
-  -- store for file metadata
-  local FileMetadata = require "core.file_metadata"
-  core.file_metadata = FileMetadata()
-  
   -- flag when user is actively resizing window
   core.window_is_being_resized = false
 

@@ -155,12 +155,17 @@ function stderr.debug_backtrace(...)
 end
 
 function stderr.warn_backtrace(...)
-  stderr.debug(...)
+  stderr.warn(...)
   stderr.backtrace()
 end
 
 function stderr.info_backtrace(...)
-  stderr.debug(...)
+  stderr.info(...)
+  stderr.backtrace()
+end
+
+function stderr.deprecated(...)
+  stderr.warn("DEPRECATED CODE")
   stderr.backtrace()
 end
 

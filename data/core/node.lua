@@ -9,6 +9,11 @@ local stderr = require "libraries.stderr"
 local EmptyView = require "core.views.emptyview"
 local View = require "core.view"
 
+local Cache = require "core.cache"
+local CachedTabTitles = Cache("tab-title")
+
+local FilenameInUI = require "core.ui.filename_in_ui"
+
 
 local SYMBOL_CLOSE_BUTTON = "C"
 local ICON_SCROLL_BUTTON_LEFT = "<"
@@ -233,7 +238,8 @@ end
 function Node:print_debug_tab_order()
   local result = string.format("[%d tabs]:", #self.views)
   for i, v in ipairs(self.views) do
-    result = result .. string.format("[#%d %s] ", i, self:get_tab_title_text(v))
+    -- result = result .. string.format("[#%d %s] ", i, self:get_tab_title_text(v))
+    result = result .. string.format("[#%d %s] ", i, v:get_name())
   end
   stderr.debug(result)
 end
@@ -617,51 +623,76 @@ function Node:update()
   end
 end
 
-function Node:get_tab_title_text(view, font, w) 
-  local text = view and view:get_name() or ""
-  -- stderr.debug("get_tab_title_text", text)
+-- function Node:get_tab_title_text(view, font, w) 
+--   local text = view and view:get_name() or ""
+--   -- stderr.debug("get_tab_title_text", text)
 
-  -- local dots_width = font:get_width("…")
-  -- if font:get_width(text) > w then
-  --   for i = 1, #text do
-  --     local reduced_text = text:sub(1, #text - i)
-  --     if font:get_width(reduced_text) + dots_width <= w then
-  --       text = reduced_text .. "…"
-  --       break
-  --     end
-  --   end
-  -- end
-  return text
-end
+--   -- local dots_width = font:get_width("…")
+--   -- if font:get_width(text) > w then
+--   --   for i = 1, #text do
+--   --     local reduced_text = text:sub(1, #text - i)
+--   --     if font:get_width(reduced_text) + dots_width <= w then
+--   --       text = reduced_text .. "…"
+--   --       break
+--   --     end
+--   --   end
+--   -- end
+--   return text
+-- end
 
 -- get width of a tab based on the tab view's file name length
 function Node:get_tab_width_by_view(view) 
-  -- width of tab title text
-  local text = self:get_tab_title_text(view, style.font, 0)
-  local tab_title_width = style.font:get_width(text)
+  stderr.debug("view %s", view)
+  -- -- width of tab title text
+  -- local text = self:get_tab_title_text(view, style.font, 0)
+  -- local tab_title_width = style.font:get_width(text)
 
   -- add padding on both sides
   local padding_left_right = style.padding.x * 2
 
-  -- total width is text width plus padding
-  local tab_width = tab_title_width + padding_left_right
+  -- -- total width is text width plus padding
+  -- local tab_width = tab_title_width + padding_left_right
 
-  -- stderr.debug("get_tab_width_by_view %f", tab_width)
-  return tab_width
+  -- return tab_width
+  if not view["get_abs_filename"] then
+    return 0
+  end
 
+  -- get absolute path for current document
+  local absolute_path = view:get_abs_filename()
+
+  -- get filename object for rendering
+  local filename_for_rendering = FilenameInUI.get_filename_for_tab_title(absolute_path, false, false)
+
+  -- get width of filename with icon and/or suffix
+  local tab_width =  filename_for_rendering:get_width()
+
+  stderr.debug("get_tab_width_by_view %f", tab_width)
+
+  return tab_width + padding_left_right
 end
 
 function Node:draw_tab_title(view, font, is_active, is_hovered, x, y, w, h)
-  -- stderr.debug("draw_tab_title", x, y, w, h)
+  -- -- stderr.debug("draw_tab_title", x, y, w, h)
 
-  local text = self:get_tab_title_text(view, font, w)
+  -- local text = self:get_tab_title_text(view, font, w)
 
-  local align = "left"
-  local color = style.text
-  if is_active then color = style.accent end
-  if is_hovered then color = style.accent end
+  -- local align = "left"
+  -- local color = style.text
+  -- if is_active then color = style.accent end
+  -- if is_hovered then color = style.accent end
 
-  common.draw_text(font, color, text, align, x, y, w, h)
+  -- common.draw_text(font, color, text, align, x, y, w, h)
+
+
+  -- get absolute path for current document
+  local absolute_path = view:get_abs_filename()
+
+  -- get filename object for rendering
+  local filename_for_rendering = FilenameInUI.get_filename_for_tab_title(absolute_path, is_active, is_hovered)
+
+  -- draw filename object
+  filename_for_rendering:draw(x , y + style.font:get_height() / 2)
 end
 
 function Node:draw_tab_borders(view, is_active, is_hovered, x, y, w, h, standalone)

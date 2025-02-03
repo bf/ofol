@@ -10,6 +10,8 @@ local Timer = require "core.ide.lsp.timer"
 
 local lintplus = require "core.ide.lintplus"
 
+local FileMetadataStore = require "core.stores.file_metadata_store"
+
 local stderr = require "libraries.stderr"
 
 ---@class lsp.diagnostics
@@ -191,7 +193,7 @@ function diagnostics.add(filename, messages)
   local error_human_readable = lintplus_kinds[min_severity]
 
   -- store with metadata
-  core.file_metadata:set_status_from_compiler(filename, error_human_readable)
+  FileMetadataStore.set_status_from_compiler(filename, error_human_readable)
 
   return true
 end

@@ -6,6 +6,7 @@ local keymap = require "core.keymap"
 local translate = require "core.doc.translate"
 local ime = require "core.ime"
 local View = require "core.view"
+local FilenameInUI = require "core.ui.filename_in_ui"
 
 local stderr = require "libraries.stderr"
 
@@ -81,14 +82,24 @@ function DocView:try_close()
 end
 
 
+-- render doc name for window title
 function DocView:get_name()
-  local post = self.doc:is_dirty() and "*" or ""
+  stderr.debug("docview get name")
+  -- local post = self.doc:is_dirty() and "*" or ""
   -- local name = self.doc:get_name()
   -- return name:match("[^/%\\]*$") .. post
 
-  return core.file_metadata:get_filename_for_display_unstyled(self.doc.abs_filename) .. post
+  return FilenameInUI.get_filename_for_window_title(self.doc.abs_filename)
 end
 
+-- return absolute filename
+function DocView:get_abs_filename()
+  if self.doc.abs_filename then
+    return self.doc.abs_filename
+  else
+    return nil
+  end
+end
 
 function DocView:get_filename()
   if self.doc.abs_filename then

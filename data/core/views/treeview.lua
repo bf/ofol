@@ -680,8 +680,9 @@ function TreeView:check_cache()
 end
 
 
+-- iterate over each item in treeview
 function TreeView:each_item()
-  -- stderr.warn("check each item of treeview")
+  stderr.debug("TreeView:each_item")
 
   return coroutine.wrap(function()
     self:check_cache()
@@ -796,13 +797,13 @@ function TreeView:set_selection_to_path(path, expand, scroll_to, instant)
 end
 
 
-function TreeView:get_text_bounding_box(item, x, y, w, h)
-  local icon_width = style.icon_font:get_width(ICON_DIR_OPEN)
-  local xoffset = item.depth * style.padding.x + style.padding.x + icon_width
-  x = x + xoffset
-  w = style.font:get_width(item.name) + 2 * style.padding.x
-  return x, y, w, h
-end
+-- function TreeView:get_text_bounding_box(item, x, y, w, h)
+--   local icon_width = style.icon_font:get_width(ICON_DIR_OPEN)
+--   local xoffset = item.depth * style.padding.x + style.padding.x + icon_width
+--   x = x + xoffset
+--   w = style.font:get_width(item.name) + 2 * style.padding.x
+--   return x, y, w, h
+-- end
 
 
 
@@ -1101,11 +1102,13 @@ function TreeView:draw_item(item, active, hovered, x, y, w, h)
 end
 
 
+-- draw treeview list
 function TreeView:draw()
   if not self.visible then return end
   self:draw_background(style.background2)
   local _y, _h = self.position.y, self.size.y
 
+  -- draw each item/file
   for item, x,y,w,h in self:each_item() do
     if y + h >= _y and y < _y + _h then
       self:draw_item(item,

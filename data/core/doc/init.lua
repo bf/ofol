@@ -5,7 +5,11 @@ local core = require "core"
 local syntax = require "core.syntax"
 local config = require "core.config"
 local common = require "core.common"
+
+local FileMetadataStore = require "core.stores.file_metadata_store"
+
 local stderr = require "libraries.stderr"
+
 
 ---@class core.doc : core.object
 local Doc = Object:extend()
@@ -141,10 +145,12 @@ function Doc:save(filename, abs_filename)
   self:clean()
 end
 
+-- get name from document for display
 function Doc:get_name()
   return self.filename or "unsaved"
 end
 
+-- undo/redo: returns true if document is dirty (unsaved)
 function Doc:is_dirty()
   if self.new_file then
     if self.filename then return true end
@@ -154,10 +160,12 @@ function Doc:is_dirty()
   end
 end
 
+-- undo/redo: marks document as clean 
 function Doc:clean()
   self.clean_change_id = self:get_change_id()
 end
 
+-- get tab/spaces indentation info
 function Doc:get_indent_info()
   if not self.indent_info then return config.tab_type, config.indent_size, false end
   return self.indent_info.type or config.tab_type,
@@ -165,10 +173,12 @@ function Doc:get_indent_info()
       self.indent_info.confirmed
 end
 
+-- undo/redo: get last change id from the undo stack
 function Doc:get_change_id()
   return self.undo_stack.idx
 end
 
+-- text selection: helper to ensure that start/end coordinates of selected text are in deterministic order
 local function sort_positions(line1, col1, line2, col2)
   if line1 > line2 or line1 == line2 and col1 > col2 then
     return line2, col2, line1, col1, true
@@ -203,6 +213,7 @@ function Doc:get_selection_idx(idx, sort)
   end
 end
 
+-- text selection: retrieve selected text
 function Doc:get_selection_text(limit)
   limit = limit or math.huge
   local result = {}
@@ -216,11 +227,13 @@ function Doc:get_selection_text(limit)
   return table.concat(result, "\n")
 end
 
+-- text selection: return true if doc has selection
 function Doc:has_selection()
   local line1, col1, line2, col2 = self:get_selection(false)
   return line1 ~= line2 or col1 ~= col2
 end
 
+-- text selection: return true if doc has any selection (??)
 function Doc:has_any_selection()
   for idx, line1, col1, line2, col2 in self:get_selections() do
     if line1 ~= line2 or col1 ~= col2 then return true end
@@ -228,12 +241,14 @@ function Doc:has_any_selection()
   return false
 end
 
+-- text selection: sanitize selection, e.g. combine small ones into larger one
 function Doc:sanitize_selection()
   for idx, line1, col1, line2, col2 in self:get_selections() do
     self:set_selections(idx, line1, col1, line2, col2)
   end
 end
 
+-- text selection: set ??
 function Doc:set_selections(idx, line1, col1, line2, col2, swap, rm)
   assert(not line2 == not col2, "expected 3 or 5 arguments")
   if swap then line1, col1, line2, col2 = line2, col2, line1, col1 end
@@ -242,6 +257,7 @@ function Doc:set_selections(idx, line1, col1, line2, col2, swap, rm)
   common.splice(self.selections, (idx - 1) * 4 + 1, rm == nil and 4 or rm, { line1, col1, line2, col2 })
 end
 
+-- text selection: add ??
 function Doc:add_selection(line1, col1, line2, col2, swap)
   local l1, c1 = sort_positions(line1, col1, line2 or line1, col2 or col1)
   local target = #self.selections / 4 + 1
@@ -255,6 +271,8 @@ function Doc:add_selection(line1, col1, line2, col2, swap)
   self.last_selection = target
 end
 
+
+-- text selection: remove ??
 function Doc:remove_selection(idx)
   if self.last_selection >= idx then
     self.last_selection = self.last_selection - 1
@@ -262,12 +280,14 @@ function Doc:remove_selection(idx)
   common.splice(self.selections, (idx - 1) * 4 + 1, 4)
 end
 
+-- text selection: set ??
 function Doc:set_selection(line1, col1, line2, col2, swap)
   self.selections = {}
   self:set_selections(1, line1, col1, line2, col2, swap)
   self.last_selection = 1
 end
 
+-- text selection: merge cursors
 function Doc:merge_cursors(idx)
   local table_index = idx and (idx - 1) * 4 + 1
   for i = (table_index or (#self.selections - 3)), (table_index or 5), -4 do
@@ -284,6 +304,7 @@ function Doc:merge_cursors(idx)
   end
 end
 
+-- text selection: helper function
 local function selection_iterator(invariant, idx)
   local target = invariant[3] and (idx * 4 - 7) or (idx * 4 + 1)
   if target > #invariant[1] or target <= 0 or (type(invariant[3]) == "number" and invariant[3] ~= idx - 1) then return end
@@ -294,6 +315,7 @@ local function selection_iterator(invariant, idx)
   end
 end
 
+-- text selection: get all selections
 -- If idx_reverse is true, it'll reverse iterate. If nil, or false, regular iterate.
 -- If a number, runs for exactly that iteration.
 function Doc:get_selections(sort_intra, idx_reverse)
@@ -706,7 +728,7 @@ function Doc:on_close()
   stderr.debug("Closed doc \"%s\"", self:get_name())
 
   -- update metadata
-  core.file_metadata:handle_close_file(self.abs_filename)
+  FileMetadataStore.handle_close_file(self.abs_filename)
 end
 
 return Doc

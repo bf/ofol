@@ -5,6 +5,9 @@ local Node = require "core.node"
 local View = require "core.view"
 
 local DocView = require "core.views.docview"
+
+local FileMetadataStore = require "core.stores.file_metadata_store"
+
 local stderr = require "libraries.stderr"
 
 -- minimum distance in px after which tab dragging event will be triggered/recognized
@@ -108,7 +111,7 @@ function RootView:open_doc(doc, go_to_line_number)
 
 
   -- handle metadata for file
-  core.file_metadata:handle_open_file(doc)
+  FileMetadataStore.handle_open_file(doc)
 
   local node = self:get_active_node_default()
 
