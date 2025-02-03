@@ -6,17 +6,17 @@ Goals:
 - [ ] ready for rust development, like an improved version of Lapce
 - - [ ] fix line wrap for error messages
 - - [x] refactor IDE components
-- [ ] focus on linux/wayland/gnome, should out of the box w/o needing wayland parameters
 - [ ] UX should feel familiar for someone coming from sublime text editor:
-- - [ ] remove nagview, use native system dialogs for file open / prompts https://github.com/native-toolkit/libtinyfiledialogs
 - - [ ] same keybindings as sublime text
 - - [ ] file loading in thread with progress bar: no crash when opening large files
 - - [ ] hex view for binary files
 - - [ ] reopen closed tab with ctrl shift t
 - - [ ] file search "tex eis" & "eis tex" should work
+- - [ ] reset zoom level with double click on zoom percentage in status bar
 - - [x] click on tab label does not switch to tab
 - - [x] double click title bar maximize
 - - [x] CTRL+P :123 to go to line 123 of current file
+- - [x] remove nagview, use native system dialogs for file open / prompts https://github.com/native-toolkit/libtinyfiledialogs
 - [ ] improved handling of plugins:
 - - [ ] no plugin manager
 - - [ ] better UX in settings::plugins ui
@@ -26,7 +26,8 @@ Goals:
 - [ ] treeview: sort files by scm status
 - [ ] different handling open project vs. open individual files
 - [ ] refactor toolbar combine build + normal toolbar
-- [ ] move to sdl3?
+- [x] focus on linux/wayland/gnome, should out of the box w/o needing wayland parameters
+- [x] move to sdl3? (done via sdl2-compat library on arch linux)
 - [x] dynamic width tabs
 - [x] treeview: fix context menu
 
