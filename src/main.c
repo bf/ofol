@@ -114,8 +114,9 @@ int main(int argc, char **argv) {
   // force wayland
   putenv("SDL_VIDEODRIVER=wayland");
 
+
   // see https://github.com/libsdl-org/SDL/blob/main/docs/README-wayland.md
-  putenv("SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=1");
+  putenv("SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=0");
 #endif
 
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
@@ -126,8 +127,10 @@ int main(int argc, char **argv) {
   SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
   atexit(SDL_Quit);
 
+  SDL_SetHint(SDL_HINT_VIDEODRIVER, "wayland");
+
 #ifdef SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR /* Available since 2.0.8 */
-  SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+  // SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
 #endif
 #if SDL_VERSION_ATLEAST(2, 0, 5)
   SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");

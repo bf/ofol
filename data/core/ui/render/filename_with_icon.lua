@@ -5,6 +5,11 @@ local Object = require "core.object"
 local style = require "core.style"
 local stderr = require "libraries.stderr"
 
+-- constants for padding between icon/suffix and text
+local SPACING_BETWEEN_ICON_AND_TEXT = style.font:get_width(" ")
+local SPACING_BETWEEN_SUFFIX_AND_TEXT = style.font:get_width(" ")
+
+-- singleton object
 local FilenameWithIcon = Object:extend()
 
 -- initialize 
@@ -42,10 +47,11 @@ function FilenameWithIcon:_get_filename_width()
   end
 end
 
+
 -- returns width of icon
 function FilenameWithIcon:_get_icon_width() 
   if self:_has_icon() then
-    return style.padding.x + style.icon_font:get_width(self.icon_symbol) 
+    return style.icon_font:get_width(self.icon_symbol) + SPACING_BETWEEN_ICON_AND_TEXT
   else
     return 0
   end
@@ -54,7 +60,7 @@ end
 -- returns width of suffix
 function FilenameWithIcon:_get_suffix_width() 
   if self:_has_suffix() then
-    return style.padding.x + style.font:get_width(self.suffix_text)
+    return style.font:get_width(self.suffix_text) + SPACING_BETWEEN_SUFFIX_AND_TEXT
   else
     return 0
   end
@@ -87,7 +93,7 @@ function FilenameWithIcon:draw(x, y)
 
   if self:_has_icon() then
     -- draw icon symbol with icon font and update starting x position for next drawing operation
-    start_x = renderer.draw_text(style.icon_font, self.icon_symbol, start_x, y, self.icon_color) + style.padding.x
+    start_x = renderer.draw_text(style.icon_font, self.icon_symbol, start_x, y, self.icon_color) + SPACING_BETWEEN_ICON_AND_TEXT
   end
   
   if self.filename_is_bold then
@@ -100,7 +106,7 @@ function FilenameWithIcon:draw(x, y)
   
   if self:_has_suffix() then
     -- draw suffix text
-    renderer.draw_text(style.font, self.suffix_text, start_x + style.padding.x, y, self.suffix_color)
+    renderer.draw_text(style.font, self.suffix_text, start_x + SPACING_BETWEEN_SUFFIX_AND_TEXT, y, self.suffix_color)
   end
 end
 

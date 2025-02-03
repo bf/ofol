@@ -52,7 +52,7 @@ function FilenameInUI.get_filename_for_tab_title(absolute_path,  is_active, is_h
 
   -- active tabs have bold text
   if is_active then
-    filename_is_bold = true
+    -- filename_is_bold = true
     filename_color = style.accent
     suffix_color = style.accent
   end
@@ -83,7 +83,7 @@ function FilenameInUI.get_filename_for_tab_title(absolute_path,  is_active, is_h
   local status_from_version_control = FileMetadataStore.get_status_from_version_control(absolute_path)
   if status_from_version_control and #status_from_version_control > 0 then
     if status_from_version_control ~= "untracked" then
-      filename_is_bold = true
+      -- filename_is_bold = true
     end
   end
 

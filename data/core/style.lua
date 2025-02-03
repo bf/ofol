@@ -1,7 +1,12 @@
 local common = require "core.common"
 local style = {}
 
-style.DEFAULT_FONT_SIZE = math.abs(common.round(16 * SCALE))
+local stderr = require("libraries.stderr")
+
+style.DEFAULT_FONT_SIZE = common.round(16 * SCALE)
+
+-- stderr.error("DEFAULT_FONT_SIZE %s %f %f", style.DEFAULT_FONT_SIZE, style.DEFAULT_FONT_SIZE, SCALE)
+
 -- style.DEFAULT_ICON_SIZE = math.abs(common.round(17 * SCALE))
 style.DEFAULT_ICON_SIZE = style.DEFAULT_FONT_SIZE
 
@@ -37,24 +42,29 @@ style.margin = {
 -- on ordinary LCD monitor with RGB patterns.
 --
 local FONT_SETTING_ANTIALIASING="subpixel"
-local FONT_SETTING_HINTING="slight"
+local FONT_SETTING_HINTING="full"
 
+local FONT_DEFAULT = DATADIR .. "/fonts/FiraSans-Regular.ttf"
+-- local FONT_DEFAULT = DATADIR .. "/fonts/JetBrainsMono-Regular.ttf"
+local FONT_DEFAULT_BOLD = DATADIR .. "/fonts/FiraSans-Medium.ttf"
+local FONT_ICONS = DATADIR .. "/fonts/icons.ttf"
+local FONT_MONOSPACE = DATADIR .. "/fonts/JetBrainsMonoNerdFontPropo-Regular.ttf"
 
 -- On High DPI monitor or non RGB monitor you may consider using antialiasing grayscale instead.
 -- The antialiasing grayscale with full hinting is interesting for crisp font rendering.
-style.font = renderer.font.load(DATADIR .. "/fonts/FiraSans-Regular.ttf", style.DEFAULT_FONT_SIZE, {antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING})
-style.bold_font = style.font:copy(style.DEFAULT_FONT_SIZE, {bold=true, antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING})
-style.big_font = style.bold_font:copy(46 * SCALE)
+style.font = renderer.font.load(FONT_DEFAULT, style.DEFAULT_FONT_SIZE, {antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING})
+style.bold_font = renderer.font.load(FONT_DEFAULT_BOLD, style.DEFAULT_FONT_SIZE, {antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING}) 
+style.big_font = renderer.font.load(FONT_DEFAULT_BOLD, 46 * SCALE, {antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING}) 
 -- style.code_font = renderer.font.load(DATADIR .. "/fonts/JetBrainsMono-Regular.ttf", style.DEFAULT_FONT_SIZE)
 
-style.icon_font = renderer.font.load(DATADIR .. "/fonts/icons.ttf", style.DEFAULT_ICON_SIZE, {antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING})
-style.icon_big_font = style.icon_font:copy(23 * SCALE)
+style.icon_font = renderer.font.load(FONT_ICONS, style.DEFAULT_ICON_SIZE, {antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING})
+style.icon_big_font = renderer.font.load(FONT_ICONS, 23 * SCALE, {antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING})
 
 -- style.font = renderer.font.load(DATADIR .. "/fonts/JetBrainsMonoNerdFontPropo-Regular.ttf", style.DEFAULT_FONT_SIZE)
 -- style.bold_font = renderer.font.load(DATADIR .. "/fonts/JetBrainsMonoNerdFontPropo-Bold.ttf", style.DEFAULT_FONT_SIZE)
 -- style.big_font = style.font:copy(46 * SCALE)
-style.code_font = renderer.font.load(DATADIR .. "/fonts/JetBrainsMonoNerdFontPropo-Regular.ttf", style.DEFAULT_FONT_SIZE)
-  
+style.code_font = renderer.font.load(FONT_MONOSPACE, style.DEFAULT_FONT_SIZE, {antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING})
+
 -- special font needed for "lspkind" and "autocomplete"
 -- see https://www.nerdfonts.com/
 -- style.kind_font = renderer.font.load(DATADIR .. "/fonts/symbols.ttf", style.DEFAULT_ICON_SIZE, {antialiasing="grayscale", hinting="full"})
