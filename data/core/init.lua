@@ -660,8 +660,8 @@ function core.init()
   core.redraw = true
 
 
-  -- -- Load core and user plugins giving preference to user ones with same name.
-  local plugins_success, plugins_refuse_list = core.load_plugins()
+  -- -- -- Load core and user plugins giving preference to user ones with same name.
+  -- local plugins_success, plugins_refuse_list = core.load_plugins()
   
 
   do
@@ -684,49 +684,49 @@ function core.init()
     core.root_view:open_doc(core.open_doc(filename))
   end
 
-  if not plugins_success or got_user_error or got_project_error then
-    -- defer LogView to after everything is initialized,
-    -- so that EmptyView won't be added after LogView.
-    core.add_thread(function()
-      command.perform("core:open-log")
-    end)
-  end
+  -- if not plugins_success or got_user_error or got_project_error then
+  --   -- defer LogView to after everything is initialized,
+  --   -- so that EmptyView won't be added after LogView.
+  --   core.add_thread(function()
+  --     command.perform("core:open-log")
+  --   end)
+  -- end
 
   -- enable native borderes
   system.set_window_hit_test()
   system.set_window_bordered(true)
 
-  if #plugins_refuse_list.userdir.plugins > 0 or #plugins_refuse_list.datadir.plugins > 0 then
-    if #plugins_refuse_list.userdir.plugins > 0 then
-      stderr.debug("plugins_refuse_list.userdir.plugins", json.encode(plugins_refuse_list.userdir.plugins))
-    end
-    if #plugins_refuse_list.datadir.plugins > 0 then
-      stderr.debug("plugins_refuse_list.datadir.plugins", json.encode(plugins_refuse_list.datadir.plugins))
-    end
+  -- if #plugins_refuse_list.userdir.plugins > 0 or #plugins_refuse_list.datadir.plugins > 0 then
+  --   if #plugins_refuse_list.userdir.plugins > 0 then
+  --     stderr.debug("plugins_refuse_list.userdir.plugins", json.encode(plugins_refuse_list.userdir.plugins))
+  --   end
+  --   if #plugins_refuse_list.datadir.plugins > 0 then
+  --     stderr.debug("plugins_refuse_list.datadir.plugins", json.encode(plugins_refuse_list.datadir.plugins))
+  --   end
 
-    local opt = {
-      { text = "Exit", default_no = true },
-      { text = "Continue", default_yes = true }
-    }
-    local msg = {}
-    for _, entry in pairs(plugins_refuse_list) do
-      if #entry.plugins > 0 then
-        local msg_list = {}
-        for _, p in pairs(entry.plugins) do
-          table.insert(msg_list, string.format("%s", p.file))
-        end
-        msg[#msg + 1] = string.format("Plugins from directory \"%s\":\n%s", common.home_encode(entry.dir), table.concat(msg_list, "\n"))
-      end
-    end
-    local errorMessage = string.format(
-        "Some plugins are not loaded due to version mismatch.\n\n%s.\n\n" ..
-        "Please download a recent version from https://github.com/lite-xl/lite-xl-plugins."
-        , table.concat(msg, ".\n\n"))
+  --   local opt = {
+  --     { text = "Exit", default_no = true },
+  --     { text = "Continue", default_yes = true }
+  --   }
+  --   local msg = {}
+  --   for _, entry in pairs(plugins_refuse_list) do
+  --     if #entry.plugins > 0 then
+  --       local msg_list = {}
+  --       for _, p in pairs(entry.plugins) do
+  --         table.insert(msg_list, string.format("%s", p.file))
+  --       end
+  --       msg[#msg + 1] = string.format("Plugins from directory \"%s\":\n%s", common.home_encode(entry.dir), table.concat(msg_list, "\n"))
+  --     end
+  --   end
+  --   local errorMessage = string.format(
+  --       "Some plugins are not loaded due to version mismatch.\n\n%s.\n\n" ..
+  --       "Please download a recent version from https://github.com/lite-xl/lite-xl-plugins."
+  --       , table.concat(msg, ".\n\n"))
 
-    stderr.error("Error:", errorMessage)
-    system.show_fatal_error("Refused Plugins: " .. errorMessage)
-    os.exit(1)
-  end
+  --   stderr.error("Error:", errorMessage)
+  --   system.show_fatal_error("Refused Plugins: " .. errorMessage)
+  --   os.exit(1)
+  -- end
 end
 
 -- close all docs, prompt user about unsaved changes
@@ -798,71 +798,71 @@ function core.restart()
   end)
 end
 
-function core.load_plugins()
-  local no_errors = true
-  local refused_list = {
-    userdir = {dir = USERDIR, plugins = {}},
-    datadir = {dir = DATADIR, plugins = {}},
-  }
+-- function core.load_plugins()
+--   local no_errors = true
+--   local refused_list = {
+--     userdir = {dir = USERDIR, plugins = {}},
+--     datadir = {dir = DATADIR, plugins = {}},
+--   }
 
-  if config.disable_all_plugins then
-    stderr.warn("plugins are disabled with config.disable_all_plugins flag!")
-    return no_errors, refused_list
-  end
+--   if config.disable_all_plugins then
+--     stderr.warn("plugins are disabled with config.disable_all_plugins flag!")
+--     return no_errors, refused_list
+--   end
 
 
-  local files, ordered = {}, {}
-  for _, root_dir in ipairs {DATADIR, USERDIR} do
-    local plugin_dir = root_dir .. PATHSEP .. "plugins"
-    for _, filename in ipairs(system.list_dir(plugin_dir) or {}) do
-      if not files[filename] then
-        table.insert(
-          ordered, {file = filename}
-        )
-      end
-      -- user plugins will always replace system plugins
-      files[filename] = plugin_dir
-    end
-  end
+--   local files, ordered = {}, {}
+--   for _, root_dir in ipairs {DATADIR, USERDIR} do
+--     local plugin_dir = root_dir .. PATHSEP .. "plugins"
+--     for _, filename in ipairs(system.list_dir(plugin_dir) or {}) do
+--       if not files[filename] then
+--         table.insert(
+--           ordered, {file = filename}
+--         )
+--       end
+--       -- user plugins will always replace system plugins
+--       files[filename] = plugin_dir
+--     end
+--   end
 
-  for _, plugin in ipairs(ordered) do
-    local dir = files[plugin.file]
-    local name = plugin.file:match("(.-)%.lua$") or plugin.file
+--   for _, plugin in ipairs(ordered) do
+--     local dir = files[plugin.file]
+--     local name = plugin.file:match("(.-)%.lua$") or plugin.file
 
-    plugin.name = name
-    plugin.dir = dir
-  end
+--     plugin.name = name
+--     plugin.dir = dir
+--   end
 
-  local load_start = system.get_time()
-  for _, plugin in ipairs(ordered) do
-    stderr.debug(string.format("[core] [plugin] [%s] loading from %s", plugin.name, plugin.dir))
-    if config.plugins[plugin.name] ~= false then
-      local start = system.get_time()
-      local ok, loaded_plugin = core.try(require, "plugins." .. plugin.name)
-      if ok then
-        stderr.debug(string.format("[core] [plugin] [%s] loaded", plugin.name))
-        stderr.debug(
-          "Loaded plugin %q from %s in %.1fms",
-          plugin.name,
-          plugin.dir,
-          (system.get_time() - start) * 1000
-        )
-      end
-      if not ok then
-        no_errors = false
-      elseif config.plugins[plugin.name].onload then
-        core.try(config.plugins[plugin.name].onload, loaded_plugin)
-      end
-    else
-      stderr.warn(string.format("[core] [plugin] [%s] skipped, NOT(config.plugins[plugin.name] ~= false) for %s", plugin.name, config.plugins[plugin.name]))
-    end
-  end
-  stderr.debug(
-    "Loaded all plugins in %.1fms",
-    (system.get_time() - load_start) * 1000
-  )
-  return no_errors, refused_list
-end
+--   local load_start = system.get_time()
+--   for _, plugin in ipairs(ordered) do
+--     stderr.debug(string.format("[core] [plugin] [%s] loading from %s", plugin.name, plugin.dir))
+--     if config.plugins[plugin.name] ~= false then
+--       local start = system.get_time()
+--       local ok, loaded_plugin = core.try(require, "plugins." .. plugin.name)
+--       if ok then
+--         stderr.debug(string.format("[core] [plugin] [%s] loaded", plugin.name))
+--         stderr.debug(
+--           "Loaded plugin %q from %s in %.1fms",
+--           plugin.name,
+--           plugin.dir,
+--           (system.get_time() - start) * 1000
+--         )
+--       end
+--       if not ok then
+--         no_errors = false
+--       elseif config.plugins[plugin.name].onload then
+--         core.try(config.plugins[plugin.name].onload, loaded_plugin)
+--       end
+--     else
+--       stderr.warn(string.format("[core] [plugin] [%s] skipped, NOT(config.plugins[plugin.name] ~= false) for %s", plugin.name, config.plugins[plugin.name]))
+--     end
+--   end
+--   stderr.debug(
+--     "Loaded all plugins in %.1fms",
+--     (system.get_time() - load_start) * 1000
+--   )
+--   return no_errors, refused_list
+-- end
 
 
 function core.reload_module(name)

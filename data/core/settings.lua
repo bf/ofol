@@ -1,4 +1,3 @@
--- mod-version:3 --priority:0
 local core = require "core"
 local config = require "core.config"
 local common = require "core.common"
@@ -1289,6 +1288,7 @@ end
 ---Unload a plugin settings from plugins section.
 ---@param plugin string
 function Settings:disable_plugin(plugin)
+  stderr.debug("disable_plugin %s", plugin)
   for _, section in ipairs(settings.plugin_sections) do
     local plugins = settings.plugins[section]
 
@@ -1317,6 +1317,7 @@ end
 ---Load plugin and append its settings to the plugins section.
 ---@param plugin string
 function Settings:enable_plugin(plugin)
+  stderr.debug("enable_plugin %s", plugin)
   local loaded = false
   local config_type = type(config.plugins[plugin])
   if config_type == "boolean" or config_type == "nil" then
@@ -1398,12 +1399,12 @@ function Settings:load_plugin_settings()
       local enabled = false
 
       if
-        (
-          type(config.plugins[plugin]) ~= "nil"
-          and
-          config.plugins[plugin] ~= false
-        )
-        or
+        -- (
+        --   type(config.plugins[plugin]) ~= "nil"
+        --   and
+        --   config.plugins[plugin] ~= false
+        -- )
+        -- or
         (
           settings.config.enabled_plugins
           and
@@ -1737,12 +1738,14 @@ end
 --------------------------------------------------------------------------------
 local core_run = core.run
 function core.run()
+  stderr.debug("overwritten core.run() in settings.lua")
   store_default_keybindings()
 
   -- load plugins disabled by default and enabled by user
   if settings.config.enabled_plugins then
     for name, _ in pairs(settings.config.enabled_plugins) do
       if not config.plugins[name] then
+        stderr.debug("loading plugin from settings.config.enabled_plugins: %s", name)
         require("plugins." .. name)
       end
     end
@@ -1777,7 +1780,9 @@ settings.config = user_settings.load_user_settings()
 -- only disable non already loaded plugins
 if settings.config.disabled_plugins then
   for name, _ in pairs(settings.config.disabled_plugins) do
+    stderr.debug("settings.config.disabled_plugins: disabling plugin %s", name)
     if not package.loaded[name] then
+      stderr.debug("settings.config.disabled_plugins: plugin %s was not in package.loaded[], setting to false", name)
       config.plugins[name] = false
     end
   end

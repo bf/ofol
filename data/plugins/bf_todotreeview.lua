@@ -638,7 +638,7 @@ function TodoTreeView:update()
     self.size.x = dest
     self.init_size = false
   else
-    self.size = x
+    self.size.x = dest
   end
 
   TodoTreeView.super.update(self)

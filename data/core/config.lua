@@ -188,8 +188,8 @@ config.disable_blink = false
 ---@deprecated
 config.draw_whitespace = false
 
--- disable all plugins
-config.disable_all_plugins = true
+-- -- disable all plugins
+-- config.disable_all_plugins = true
 
 ---Shows/hides the close buttons on tabs.
 ---When hidden, users can close tabs via keyboard shortcuts or commands.
