@@ -534,10 +534,9 @@ function core.init()
 
     -- apply other values from last session
     core.recent_projects = stored_session_data.recent_projects or {}
-    core.previous_find = stored_session_data.previous_find or {}
-    core.previous_replace = stored_session_data.previous_replace or {}
   end
 
+  -- try to load recent projects
   local project_dir = core.recent_projects[1] or "."
   local project_dir_explicit = false
   local files = {}
@@ -564,6 +563,8 @@ function core.init()
   core.docs = {}
   core.cursor_clipboard = {}
   core.cursor_clipboard_whole_line = {}
+  core.previous_find = {}
+  core.previous_replace = {}
   core.window_mode = "normal"
   core.threads = setmetatable({}, { __mode = "k" })
 
@@ -571,7 +572,6 @@ function core.init()
   local FileMetadata = require "core.file_metadata"
   core.file_metadata = FileMetadata()
   
-
   -- flag when user is actively resizing window
   core.window_is_being_resized = false
 
@@ -613,7 +613,6 @@ function core.init()
   local min_toolbar_width = math.floor(core.toolbar_view:get_min_width())
   core.tree_view:set_minimum_target_size_x(min_toolbar_width)
   core.tree_view:set_target_size("x", min_toolbar_width)
-
 
   -- Load user settings
   local got_user_error, got_project_error = not core.load_user_directory()
