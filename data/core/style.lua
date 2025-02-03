@@ -1,8 +1,8 @@
 local common = require "core.common"
 local style = {}
 
-style.DEFAULT_FONT_SIZE = common.round(16 * SCALE)
-style.DEFAULT_ICON_SIZE = common.round(17 * SCALE)
+style.DEFAULT_FONT_SIZE = math.abs(common.round(16 * SCALE))
+style.DEFAULT_ICON_SIZE = math.abs(common.round(17 * SCALE))
 
 style.divider_size = common.round(1 * SCALE)
 style.scrollbar_size = common.round(4 * SCALE)
@@ -35,14 +35,18 @@ style.margin = {
 -- The defaults values are antialiasing subpixel and hinting slight for optimal visualization
 -- on ordinary LCD monitor with RGB patterns.
 --
+local FONT_SETTING_ANTIALIASING="subpixel"
+local FONT_SETTING_HINTING="slight"
+
+
 -- On High DPI monitor or non RGB monitor you may consider using antialiasing grayscale instead.
 -- The antialiasing grayscale with full hinting is interesting for crisp font rendering.
-style.font = renderer.font.load(DATADIR .. "/fonts/FiraSans-Regular.ttf", style.DEFAULT_FONT_SIZE)
-style.bold_font = style.font:copy(style.DEFAULT_FONT_SIZE, {bold=true})
-style.big_font = style.font:copy(46 * SCALE)
+style.font = renderer.font.load(DATADIR .. "/fonts/FiraSans-Regular.ttf", style.DEFAULT_FONT_SIZE, {antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING})
+style.bold_font = style.font:copy(style.DEFAULT_FONT_SIZE, {bold=true, antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING})
+style.big_font = style.bold_font:copy(46 * SCALE)
 -- style.code_font = renderer.font.load(DATADIR .. "/fonts/JetBrainsMono-Regular.ttf", style.DEFAULT_FONT_SIZE)
 
-style.icon_font = renderer.font.load(DATADIR .. "/fonts/icons.ttf", style.DEFAULT_ICON_SIZE, {antialiasing="grayscale", hinting="full"})
+style.icon_font = renderer.font.load(DATADIR .. "/fonts/icons.ttf", style.DEFAULT_ICON_SIZE, {antialiasing=FONT_SETTING_ANTIALIASING, hinting=FONT_SETTING_HINTING})
 style.icon_big_font = style.icon_font:copy(23 * SCALE)
 
 -- style.font = renderer.font.load(DATADIR .. "/fonts/JetBrainsMonoNerdFontPropo-Regular.ttf", style.DEFAULT_FONT_SIZE)
