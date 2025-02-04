@@ -248,7 +248,7 @@ top:
       /* on macos 11.2.3 with sdl 2.0.14 the keyup handler for cmd+w below
       ** was not enough. Maybe the quit event started to be triggered from the
       ** keydown handler? In any case, flushing the quit event here too helped. */
-      if ((e.key.keysym.sym == SDLK_w) && (e.key.keysym.mod & KMOD_GUI)) {
+      if ((e.key.key == SDLK_w) && (e.key.mod & SDL_KMOD_GUI)) {
         SDL_FlushEvent(SDL_EVENT_QUIT);
       }
 #endif
@@ -262,7 +262,7 @@ top:
       ** we want to flush this event and let the keymapper
       ** handle this key combination.
       ** Thanks to mathewmariani, taken from his lite-macos github repository. */
-      if ((e.key.keysym.sym == SDLK_w) && (e.key.keysym.mod & KMOD_GUI)) {
+      if ((e.key.key == SDLK_w) && (e.key.mod & SDL_KMOD_GUI)) {
         SDL_FlushEvent(SDL_EVENT_QUIT);
       }
 #endif
