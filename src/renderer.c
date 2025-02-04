@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <math.h>
 #include <ft2build.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include FT_FREETYPE_H
 #include FT_LCD_FILTER_H
 #include FT_OUTLINE_H

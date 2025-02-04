@@ -105,13 +105,15 @@ if not get_option('source-only')
         )
     endif
 
+    sdl3ttf_dep = dependency('sdl3_ttf', required: true)
+
     pcre2_dep = dependency('libpcre2-8', fallback: ['pcre2', 'libpcre2_8'],
         default_options: default_fallback_options + ['default_library=static', 'grep=false', 'test=false']
     )
 
-    freetype_dep = dependency('freetype2', fallback: ['freetype2', 'freetype_dep'],
-        default_options: default_fallback_options + ['default_library=static', 'zlib=disabled', 'bzip2=disabled', 'png=disabled', 'harfbuzz=disabled', 'brotli=disabled']
-    )
+    # freetype_dep = dependency('freetype2', fallback: ['freetype2', 'freetype_dep'],
+    #     default_options: default_fallback_options + ['default_library=static', 'zlib=disabled', 'bzip2=disabled', 'png=disabled', 'harfbuzz=disabled', 'brotli=disabled']
+    # )
 
 
     sdl_options = ['default_library=static']
@@ -174,7 +176,10 @@ if not get_option('source-only')
     #     assert(not sdlmain_dep.found(), 'checking if fake dependency has been found')
     # endif
 
-    lite_deps = [lua_dep, sdl_dep, sdlmain_dep, freetype_dep, pcre2_dep, libm, libdl]
+    lite_deps = [lua_dep, sdl_dep, sdlmain_dep, 
+        # freetype_dep, 
+        sdl3ttf_dep,
+        pcre2_dep, libm, libdl]
 endif
 #===============================================================================
 # Install Configuration
