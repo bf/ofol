@@ -359,7 +359,7 @@ static void font_clear_glyph_cache(RenFont* font) {
     for (int atlas_idx = 0; atlas_idx < font->glyphs.natlas; atlas_idx++) {
       GlyphAtlas *atlas = &font->glyphs.atlas[bitmap_idx][atlas_idx];
       for (int surface_idx = 0; surface_idx < atlas->nsurface; surface_idx++) {
-        SDL_FreeSurface(atlas->surfaces[surface_idx]);
+        SDL_DestroySurface(atlas->surfaces[surface_idx]);
       }
       free(atlas->surfaces);
     }
@@ -378,11 +378,11 @@ static void font_clear_glyph_cache(RenFont* font) {
 // based on https://github.com/libsdl-org/SDL_ttf/blob/2a094959055fba09f7deed6e1ffeb986188982ae/SDL_ttf.c#L1735
 static unsigned long font_file_read(FT_Stream stream, unsigned long offset, unsigned char *buffer, unsigned long count) {
   uint64_t amount;
-  SDL_RWops *file = (SDL_RWops *) stream->descriptor.pointer;
-  SDL_RWseek(file, (int) offset, RW_SEEK_SET);
+  SDL_IOStream *file = (SDL_IOStream *) stream->descriptor.pointer;
+  SDL_SeekIO(file, (int) offset, SDL_IO_SEEK_SET);
   if (count == 0)
     return 0;
-  amount = SDL_RWread(file, buffer, sizeof(char), count);
+  amount = SDL_ReadIO(file, buffer, sizeof(char), count);
   if (amount <= 0)
     return 0;
   return (unsigned long) amount;
@@ -390,7 +390,7 @@ static unsigned long font_file_read(FT_Stream stream, unsigned long offset, unsi
 
 static void font_file_close(FT_Stream stream) {
   if (stream && stream->descriptor.pointer)
-    SDL_RWclose((SDL_RWops *) stream->descriptor.pointer);
+    SDL_CloseIO((SDL_IOStream *) stream->descriptor.pointer);
   free(stream);
 }
 
@@ -422,10 +422,10 @@ static int font_set_face_metrics(RenFont *font, FT_Face face) {
 }
 
 RenFont* ren_font_load(const char* path, float size, ERenFontAntialiasing antialiasing, ERenFontHinting hinting, unsigned char style) {
-  SDL_RWops *file = NULL; RenFont *font = NULL;
+  SDL_IOStream *file = NULL; RenFont *font = NULL;
   FT_Face face = NULL; FT_Stream stream = NULL;
 
-  file = SDL_RWFromFile(path, "rb");
+  file = SDL_IOFromFile(path, "rb");
   if (!file) return NULL;
   
   int len = strlen(path);
@@ -446,7 +446,7 @@ RenFont* ren_font_load(const char* path, float size, ERenFontAntialiasing antial
   stream->close = &font_file_close;
   stream->descriptor.pointer = file;
   stream->pos = 0;
-  stream->size = (unsigned long) SDL_RWsize(file);
+  stream->size = (unsigned long) SDL_GetIOSize(file);
 
   if (FT_Open_Face(library, &(FT_Open_Args) { .flags = FT_OPEN_STREAM, .stream = stream }, 0, &face) != 0)
     goto failure;
@@ -455,7 +455,7 @@ RenFont* ren_font_load(const char* path, float size, ERenFontAntialiasing antial
   return font;
 
 stream_failure:
-  if (file) SDL_RWclose(file);
+  if (file) SDL_CloseIO(file);
 failure:
   if (face) FT_Done_Face(face);
   if (font) free(font);
@@ -581,7 +581,7 @@ void ren_font_dump(RenFont *font) {
 double ren_draw_text(RenSurface *rs, RenFont **fonts, const char *text, size_t len, float x, int y, RenColor color, RenTab tab) {
   SDL_Surface *surface = rs->surface;
   SDL_Rect clip;
-  SDL_GetClipRect(surface, &clip);
+  SDL_GetSurfaceClipRect(surface, &clip);
 
   const int surface_scale = rs->scale;
   double pen_x = x * surface_scale;
@@ -692,17 +692,17 @@ void ren_draw_rect(RenSurface *rs, RenRect rect, RenColor color) {
 
   if (color.a == 0xff) {
     uint32_t translated = SDL_MapRGB(surface->format, color.r, color.g, color.b);
-    SDL_FillRect(surface, &dest_rect, translated);
+    SDL_FillSurfaceRect(surface, &dest_rect, translated);
   } else {
     // Seems like SDL doesn't handle clipping as we expect when using
     // scaled blitting, so we "clip" manually.
     SDL_Rect clip;
-    SDL_GetClipRect(surface, &clip);
-    if (!SDL_IntersectRect(&clip, &dest_rect, &dest_rect)) return;
+    SDL_GetSurfaceClipRect(surface, &clip);
+    if (!SDL_GetRectIntersection(&clip, &dest_rect, &dest_rect)) return;
 
     uint32_t *pixel = (uint32_t *)draw_rect_surface->pixels;
     *pixel = SDL_MapRGBA(draw_rect_surface->format, color.r, color.g, color.b, color.a);
-    SDL_BlitScaled(draw_rect_surface, NULL, surface, &dest_rect);
+    SDL_BlitSurfaceScaled(draw_rect_surface, NULL, surface, &dest_rect);
   }
 }
 
@@ -736,7 +736,7 @@ int ren_init(void) {
 }
 
 void ren_free(void) {
-  SDL_FreeSurface(draw_rect_surface);
+  SDL_DestroySurface(draw_rect_surface);
   FT_Done_FreeType(library);    
 }
 

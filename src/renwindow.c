@@ -59,14 +59,14 @@ static RenRect scaled_rect(const RenRect rect, const int scale) {
 
 
 void renwin_clip_to_surface(RenWindow *ren) {
-  SDL_SetClipRect(renwin_get_surface(ren).surface, NULL);
+  SDL_SetSurfaceClipRect(renwin_get_surface(ren).surface, NULL);
 }
 
 
 void renwin_set_clip_rect(RenWindow *ren, RenRect rect) {
   RenSurface rs = renwin_get_surface(ren);
   RenRect sr = scaled_rect(rect, rs.scale);
-  SDL_SetClipRect(rs.surface, &(SDL_Rect){.x = sr.x, .y = sr.y, .w = sr.width, .h = sr.height});
+  SDL_SetSurfaceClipRect(rs.surface, &(SDL_Rect){.x = sr.x, .y = sr.y, .w = sr.width, .h = sr.height});
 }
 
 

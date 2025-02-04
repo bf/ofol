@@ -114,7 +114,7 @@ static const char *get_key_name(const SDL_Event *e, char *buf) {
   ** We assume that SDL_SCANCODE_KP_1 up to SDL_SCANCODE_KP_9 and SDL_SCANCODE_KP_0
   ** and SDL_SCANCODE_KP_PERIOD are declared in SDL2 in that order. */
   if (scancode >= SDL_SCANCODE_KP_1 && scancode <= SDL_SCANCODE_KP_1 + 10 &&
-    !(e->key.keysym.mod & KMOD_NUM)) {
+    !(e->key.keysym.mod & SDL_KMOD_NUM)) {
     return numpad[scancode - SDL_SCANCODE_KP_1];
   } else {
     /* We need to correctly handle non-standard layouts such as dvorak.
@@ -175,7 +175,7 @@ top:
   // check if event is window event
   if (e.type >= SDL_EVENT_WINDOW_FIRST && e.type <= SDL_EVENT_WINDOW_LAST) {
     if (e.window.event == SDL_EVENT_WINDOW_RESIZED) {
-      // window has been resized to data1 x data2; this event is always preceded by SDL_EVENT_WINDOW_SIZE_CHANGED
+      // window has been resized to data1 x data2; this event is always preceded by SDL_EVENT_WINDOW_DISPLAY_CHANGED
       RenWindow* window_renderer = ren_find_window_from_id(e.window.windowID);
       ren_resize_window(window_renderer);
       lua_pushstring(L, "resized");
@@ -183,7 +183,7 @@ top:
       lua_pushinteger(L, e.window.data1);
       lua_pushinteger(L, e.window.data2);
       return 3;
-    } else if (e.window.event == SDL_EVENT_WINDOW_SIZE_CHANGED) {
+    } else if (e.window.event == SDL_EVENT_WINDOW_DISPLAY_CHANGED) {
       // The window size has changed, either as a result of an API call or through the system or user changing the window size
       RenWindow* window_renderer = ren_find_window_from_id(e.window.windowID);
       ren_resize_window(window_renderer);
@@ -226,7 +226,7 @@ top:
   }
 
   switch (e.type) {
-    case SDL_QUIT:
+    case SDL_EVENT_QUIT:
       lua_pushstring(L, "quit");
       return 1;
 
@@ -249,7 +249,7 @@ top:
       ** was not enough. Maybe the quit event started to be triggered from the
       ** keydown handler? In any case, flushing the quit event here too helped. */
       if ((e.key.keysym.sym == SDLK_w) && (e.key.keysym.mod & KMOD_GUI)) {
-        SDL_FlushEvent(SDL_QUIT);
+        SDL_FlushEvent(SDL_EVENT_QUIT);
       }
 #endif
       lua_pushstring(L, "keypressed");
@@ -263,7 +263,7 @@ top:
       ** handle this key combination.
       ** Thanks to mathewmariani, taken from his lite-macos github repository. */
       if ((e.key.keysym.sym == SDLK_w) && (e.key.keysym.mod & KMOD_GUI)) {
-        SDL_FlushEvent(SDL_QUIT);
+        SDL_FlushEvent(SDL_EVENT_QUIT);
       }
 #endif
       lua_pushstring(L, "keyreleased");

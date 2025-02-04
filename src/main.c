@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
     exit(1);
   }
   SDL_EnableScreenSaver();
-  SDL_EventState(SDL_EVENT_DROP_FILE, SDL_ENABLE);
+  SDL_SetEventEnabled(SDL_EVENT_DROP_FILE, true);
   atexit(SDL_Quit);
 
   SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "wayland");
@@ -201,8 +201,8 @@ init_lua:
     set_macos_bundle_resources(L);
   #endif
 #endif
-  SDL_EventState(SDL_EVENT_TEXT_INPUT, SDL_ENABLE);
-  SDL_EventState(SDL_EVENT_TEXT_EDITING, SDL_ENABLE);
+  SDL_SetEventEnabled(SDL_EVENT_TEXT_INPUT, true);
+  SDL_SetEventEnabled(SDL_EVENT_TEXT_EDITING, true);
 
   const char *init_lite_code = \
     "local core\n"
