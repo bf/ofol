@@ -112,7 +112,7 @@ static SDL_HitTestResult SDLCALL hit_test(SDL_Window *window, const SDL_Point *p
 static const char *numpad[] = { "end", "down", "pagedown", "left", "", "right", "home", "up", "pageup", "ins", "delete" };
 
 static const char *get_key_name(const SDL_Event *e, char *buf) {
-  SDL_Scancode scancode = e->key.keysym.scancode;
+  SDL_Scancode scancode = e->key.scancode;
   /* Is the scancode from the keypad and the number-lock off?
   ** We assume that SDL_SCANCODE_KP_1 up to SDL_SCANCODE_KP_9 and SDL_SCANCODE_KP_0
   ** and SDL_SCANCODE_KP_PERIOD are declared in SDL2 in that order. */
@@ -178,7 +178,7 @@ top:
 
   // check if event is window event
   if (e.type >= SDL_EVENT_WINDOW_FIRST && e.type <= SDL_EVENT_WINDOW_LAST) {
-    if (e.window.event == SDL_EVENT_WINDOW_RESIZED) {
+    if (e.window.type == SDL_EVENT_WINDOW_RESIZED) {
       // window has been resized to data1 x data2; this event is always preceded by SDL_EVENT_WINDOW_DISPLAY_CHANGED
       RenWindow* window_renderer = ren_find_window_from_id(e.window.windowID);
       ren_resize_window(window_renderer);
@@ -187,7 +187,7 @@ top:
       lua_pushinteger(L, e.window.data1);
       lua_pushinteger(L, e.window.data2);
       return 3;
-    // } else if (e.window.event == SDL_EVENT_WINDOW_DISPLAY_CHANGED) {
+    // } else if (e.window.type == SDL_EVENT_WINDOW_DISPLAY_CHANGED) {
     //   // The window size has changed, either as a result of an API call or through the system or user changing the window size
     //   RenWindow* window_renderer = ren_find_window_from_id(e.window.windowID);
     //   ren_resize_window(window_renderer);
@@ -196,34 +196,34 @@ top:
     //   lua_pushinteger(L, e.window.data1);
     //   lua_pushinteger(L, e.window.data2);
     //   return 3;
-    } else if (e.window.event == SDL_EVENT_WINDOW_EXPOSED) {
+    } else if (e.window.type == SDL_EVENT_WINDOW_EXPOSED) {
       rencache_invalidate();
       lua_pushstring(L, "exposed");
       return 1;
-    } else if (e.window.event == SDL_EVENT_WINDOW_MINIMIZED) {
+    } else if (e.window.type == SDL_EVENT_WINDOW_MINIMIZED) {
       lua_pushstring(L, "minimized");
       return 1;
-    } else if (e.window.event == SDL_EVENT_WINDOW_MAXIMIZED) {
+    } else if (e.window.type == SDL_EVENT_WINDOW_MAXIMIZED) {
       lua_pushstring(L, "maximized");
       return 1;
-    } else if (e.window.event == SDL_EVENT_WINDOW_RESTORED) {
+    } else if (e.window.type == SDL_EVENT_WINDOW_RESTORED) {
       lua_pushstring(L, "restored");
       return 1;
-    } else if (e.window.event == SDL_EVENT_WINDOW_MOUSE_LEAVE) {
+    } else if (e.window.type == SDL_EVENT_WINDOW_MOUSE_LEAVE) {
       // lua_pushstring(L, "mouse_has_left_the_window");
       // return 1;
-    } else if (e.window.event == SDL_EVENT_WINDOW_MOUSE_ENTER) {
+    } else if (e.window.type == SDL_EVENT_WINDOW_MOUSE_ENTER) {
       // lua_pushstring(L, "mouse_is_back_inside_window");
       // return 1;
     }
-    if (e.window.event == SDL_EVENT_WINDOW_FOCUS_LOST) {
+    if (e.window.type == SDL_EVENT_WINDOW_FOCUS_LOST) {
       // lua_pushstring(L, "focuslost");
       // return 1;
     }
     /* on some systems, when alt-tabbing to the window SDL will queue up
     ** several KEYDOWN events for the `tab` key; we flush all keydown
     ** events on focus so these are discarded */
-    if (e.window.event == SDL_EVENT_WINDOW_FOCUS_GAINED) {
+    if (e.window.type == SDL_EVENT_WINDOW_FOCUS_GAINED) {
       SDL_FlushEvent(SDL_EVENT_KEY_DOWN);
     }
     goto top;
@@ -239,11 +239,10 @@ top:
         RenWindow* window_renderer = ren_find_window_from_id(e.drop.windowID);
         SDL_GetMouseState(&mx, &my);
         lua_pushstring(L, "filedropped");
-        lua_pushstring(L, e.drop.file);
+        lua_pushstring(L, e.drop.data);
         // a DND into dock event fired before a window is created
         lua_pushinteger(L, mx * (window_renderer ? window_renderer->scale_x : 0));
         lua_pushinteger(L, my * (window_renderer ? window_renderer->scale_y : 0));
-        SDL_free(e.drop.file);
         return 4;
       }
 
