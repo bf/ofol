@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "renwindow.h"
 
 #ifdef LITE_USE_SDL_RENDERER

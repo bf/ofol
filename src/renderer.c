@@ -709,19 +709,6 @@ void ren_draw_rect(RenSurface *rs, RenRect rect, RenColor color) {
   }
 }
 
-// from migration to sdl3
-// see https://wiki.libsdl.org/SDL3/README/migration
-SDL_Surface *SDL_CreateRGBSurface(Uint32 flags, int width, int height, int depth, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask)
-{
-    return SDL_CreateSurface(width, height,
-            SDL_GetPixelFormatForMasks(depth, Rmask, Gmask, Bmask, Amask));
-}
-
-// SDL_Surface *SDL_CreateRGBSurfaceWithFormat(Uint32 flags, int width, int height, int depth, Uint32 format)
-// {
-//     return SDL_CreateSurface(width, height, format);
-// }
-
 
 /*************** Window Management ****************/
 static void ren_add_window(RenWindow *window_renderer) {
@@ -743,8 +730,17 @@ static void ren_remove_window(RenWindow *window_renderer) {
 int ren_init(void) {
   int err;
 
-  draw_rect_surface = SDL_CreateRGBSurface(0, 1, 1, 32,
-                       0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
+  // draw_rect_surface = SDL_CreateRGBSurface(0, 1, 1, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
+
+  draw_rect_surface = SDL_CreateSurface(1, 1, SDL_GetPixelFormatForMasks(32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF));
+
+// SDL_Surface *SDL_CreateRGBSurface(Uint32 flags, int width, int height, int depth, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask)
+// {
+//     return SDL_CreateSurface(width, height,
+//             SDL_GetPixelFormatForMasks(depth, Rmask, Gmask, Bmask, Amask));
+// }
+
+  // SDL_CreateSurface(width, height, SDL_GetPixelFormatForMasks(depth, Rmask, Gmask, Bmask, Amask));
 
   if ((err = FT_Init_FreeType(&library)) != 0)
     return err;
