@@ -576,14 +576,13 @@ static int f_set_text_input_rect(lua_State *L) {
   rect.y = luaL_checknumber(L, 2);
   rect.w = luaL_checknumber(L, 3);
   rect.h = luaL_checknumber(L, 4);
-  SDL_SetTextInputRect(&rect);
+  SDL_SetTextInputArea(&rect);
   return 0;
 }
 
 static int f_clear_ime(lua_State *L) {
-#if SDL_VERSION_ATLEAST(2, 0, 22)
-  SDL_ClearComposition();
-#endif
+  RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
+  SDL_ClearComposition(window_renderer->window);
   return 0;
 }
 
@@ -596,7 +595,7 @@ static int f_raise_window(lua_State *L) {
     to allow the window to be focused. Also on wayland the raise window event
     may not always be obeyed.
   */
-  SDL_SetWindowInputFocus(window_renderer->window);
+  // SDL_SetWindowInputFocus(window_renderer->window);
   SDL_RaiseWindow(window_renderer->window);
   return 0;
 }
