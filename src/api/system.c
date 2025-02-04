@@ -1,4 +1,6 @@
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_scancode.h>
+
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
@@ -114,7 +116,7 @@ static const char *get_key_name(const SDL_Event *e, char *buf) {
   ** We assume that SDL_SCANCODE_KP_1 up to SDL_SCANCODE_KP_9 and SDL_SCANCODE_KP_0
   ** and SDL_SCANCODE_KP_PERIOD are declared in SDL2 in that order. */
   if (scancode >= SDL_SCANCODE_KP_1 && scancode <= SDL_SCANCODE_KP_1 + 10 &&
-    !(e->key.keysym.mod & SDL_KMOD_NUM)) {
+    !(e->key.mod & SDL_KMOD_NUM)) {
     return numpad[scancode - SDL_SCANCODE_KP_1];
   } else {
     /* We need to correctly handle non-standard layouts such as dvorak.
@@ -127,8 +129,8 @@ static const char *get_key_name(const SDL_Event *e, char *buf) {
        and others, are masked with SDLK_SCANCODE_MASK, which moves them outside
        the unicode range (>0x10FFFF). Users can remap these buttons, so we need
        to return the correct name, not scancode based. */
-    if ((e->key.keysym.sym < 128) || (e->key.keysym.sym & SDLK_SCANCODE_MASK))
-      strcpy(buf, SDL_GetKeyName(e->key.keysym.sym));
+    if ((e->key.key < 128) || (e->key.key & SDLK_SCANCODE_MASK))
+      strcpy(buf, SDL_GetKeyName(e->key.key));
     else
       strcpy(buf, SDL_GetScancodeName(scancode));
     str_tolower(buf);
@@ -354,7 +356,7 @@ top:
         lua_pushstring(L, "touchpressed");
         lua_pushinteger(L, (lua_Integer)(e.tfinger.x * w));
         lua_pushinteger(L, (lua_Integer)(e.tfinger.y * h));
-        lua_pushinteger(L, e.tfinger.fingerId);
+        lua_pushinteger(L, e.tfinger.fingerID);
         return 4;
       }
 
@@ -366,7 +368,7 @@ top:
         lua_pushstring(L, "touchreleased");
         lua_pushinteger(L, (lua_Integer)(e.tfinger.x * w));
         lua_pushinteger(L, (lua_Integer)(e.tfinger.y * h));
-        lua_pushinteger(L, e.tfinger.fingerId);
+        lua_pushinteger(L, e.tfinger.fingerID);
         return 4;
       }
 
@@ -387,7 +389,7 @@ top:
         lua_pushinteger(L, (lua_Integer)(e.tfinger.y * h));
         lua_pushinteger(L, (lua_Integer)(e.tfinger.dx * w));
         lua_pushinteger(L, (lua_Integer)(e.tfinger.dy * h));
-        lua_pushinteger(L, e.tfinger.fingerId);
+        lua_pushinteger(L, e.tfinger.fingerID);
         return 6;
       }
     case SDL_EVENT_WILL_ENTER_FOREGROUND:
@@ -1289,11 +1291,15 @@ static int f_path_compare(lua_State *L) {
 }
 
 
+// from lua: set text input state
 static int f_text_input(lua_State* L) {
+  // get window
+  RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
+
   if (lua_toboolean(L, 1))
-    SDL_StartTextInput();
+    SDL_StartTextInput(window_renderer->window);
   else
-    SDL_StopTextInput();
+    SDL_StopTextInput(window_renderer->window);
   return 0;
 }
 
