@@ -183,15 +183,15 @@ top:
       lua_pushinteger(L, e.window.data1);
       lua_pushinteger(L, e.window.data2);
       return 3;
-    } else if (e.window.event == SDL_EVENT_WINDOW_DISPLAY_CHANGED) {
-      // The window size has changed, either as a result of an API call or through the system or user changing the window size
-      RenWindow* window_renderer = ren_find_window_from_id(e.window.windowID);
-      ren_resize_window(window_renderer);
-      lua_pushstring(L, "resize_in_progress");
-      /* The size below will be in points. */
-      lua_pushinteger(L, e.window.data1);
-      lua_pushinteger(L, e.window.data2);
-      return 3;
+    // } else if (e.window.event == SDL_EVENT_WINDOW_DISPLAY_CHANGED) {
+    //   // The window size has changed, either as a result of an API call or through the system or user changing the window size
+    //   RenWindow* window_renderer = ren_find_window_from_id(e.window.windowID);
+    //   ren_resize_window(window_renderer);
+    //   lua_pushstring(L, "resize_in_progress");
+    //   /* The size below will be in points. */
+    //   lua_pushinteger(L, e.window.data1);
+    //   lua_pushinteger(L, e.window.data2);
+    //   return 3;
     } else if (e.window.event == SDL_EVENT_WINDOW_EXPOSED) {
       rencache_invalidate();
       lua_pushstring(L, "exposed");
@@ -276,7 +276,7 @@ top:
       return 2;
 
 
-#if SDL_VERSION_ATLEAST(2, 0, 22)
+// #if SDL_VERSION_ATLEAST(2, 0, 22)
     case SDL_EVENT_TEXT_EDITING_EXT:
       lua_pushstring(L, "textediting");
       lua_pushstring(L, e.editExt.text);
@@ -284,14 +284,14 @@ top:
       lua_pushinteger(L, e.editExt.length);
       SDL_free(e.editExt.text);
       return 4;
-#else
-    case SDL_EVENT_TEXT_EDITING:
-      lua_pushstring(L, "textediting");
-      lua_pushstring(L, e.edit.text);
-      lua_pushinteger(L, e.edit.start);
-      lua_pushinteger(L, e.edit.length);
-      return 4;
-#endif
+// #else
+//     case SDL_EVENT_TEXT_EDITING:
+//       lua_pushstring(L, "textediting");
+//       lua_pushstring(L, e.edit.text);
+//       lua_pushinteger(L, e.edit.start);
+//       lua_pushinteger(L, e.edit.length);
+//       return 4;
+// #endif
 
     case SDL_EVENT_MOUSE_BUTTON_DOWN:
       {
