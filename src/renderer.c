@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <assert.h>
 #include <math.h>
 #include <ft2build.h>
@@ -704,9 +705,23 @@ void ren_draw_rect(RenSurface *rs, RenRect rect, RenColor color) {
 
     uint32_t *pixel = (uint32_t *)draw_rect_surface->pixels;
     *pixel = SDL_MapSurfaceRGBA(draw_rect_surface, color.r, color.g, color.b, color.a);
-    SDL_BlitSurfaceScaled(draw_rect_surface, NULL, surface, &dest_rect);
+    SDL_BlitSurfaceScaled(draw_rect_surface, NULL, surface, &dest_rect, SDL_SCALEMODE_NEAREST);
   }
 }
+
+// from migration to sdl3
+// see https://wiki.libsdl.org/SDL3/README/migration
+SDL_Surface *SDL_CreateRGBSurface(Uint32 flags, int width, int height, int depth, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask)
+{
+    return SDL_CreateSurface(width, height,
+            SDL_GetPixelFormatForMasks(depth, Rmask, Gmask, Bmask, Amask));
+}
+
+// SDL_Surface *SDL_CreateRGBSurfaceWithFormat(Uint32 flags, int width, int height, int depth, Uint32 format)
+// {
+//     return SDL_CreateSurface(width, height, format);
+// }
+
 
 /*************** Window Management ****************/
 static void ren_add_window(RenWindow *window_renderer) {
