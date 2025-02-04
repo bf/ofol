@@ -628,6 +628,7 @@ double ren_draw_text(RenSurface *rs, RenFont **fonts, const char *text, size_t l
         for (int x = glyph_start; x < glyph_end; ++x) {
           uint32_t destination_color = *destination_pixel;
           // the standard way of doing this would be SDL_GetRGBA, but that introduces a performance regression. needs to be investigated
+          // FIXME: change to SDL_GetRGBA and migrate to sdl3
           SDL_Color dst = { (destination_color & surface->format->Rmask) >> surface->format->Rshift, (destination_color & surface->format->Gmask) >> surface->format->Gshift, (destination_color & surface->format->Bmask) >> surface->format->Bshift, (destination_color & surface->format->Amask) >> surface->format->Ashift };
           SDL_Color src;
 
@@ -647,6 +648,7 @@ double ren_draw_text(RenSurface *rs, RenFont **fonts, const char *text, size_t l
           g = (color.g * src.g * color.a + dst.g * (65025 - src.g * color.a) + 32767) / 65025;
           b = (color.b * src.b * color.a + dst.b * (65025 - src.b * color.a) + 32767) / 65025;
           // the standard way of doing this would be SDL_GetRGBA, but that introduces a performance regression. needs to be investigated
+          // FIXME: change to SDL_GetRGBA and migrate to sdl3
           *destination_pixel++ = (unsigned int) dst.a << surface->format->Ashift | r << surface->format->Rshift | g << surface->format->Gshift | b << surface->format->Bshift;
         }
       }
@@ -691,7 +693,7 @@ void ren_draw_rect(RenSurface *rs, RenRect rect, RenColor color) {
                          rect.height * surface_scale };
 
   if (color.a == 0xff) {
-    uint32_t translated = SDL_MapRGB(surface->format, color.r, color.g, color.b);
+    uint32_t translated = SDL_MapSurfaceRGB(surface, color.r, color.g, color.b);
     SDL_FillSurfaceRect(surface, &dest_rect, translated);
   } else {
     // Seems like SDL doesn't handle clipping as we expect when using
@@ -701,7 +703,7 @@ void ren_draw_rect(RenSurface *rs, RenRect rect, RenColor color) {
     if (!SDL_GetRectIntersection(&clip, &dest_rect, &dest_rect)) return;
 
     uint32_t *pixel = (uint32_t *)draw_rect_surface->pixels;
-    *pixel = SDL_MapRGBA(draw_rect_surface->format, color.r, color.g, color.b, color.a);
+    *pixel = SDL_MapSurfaceRGBA(draw_rect_surface, color.r, color.g, color.b, color.a);
     SDL_BlitSurfaceScaled(draw_rect_surface, NULL, surface, &dest_rect);
   }
 }
