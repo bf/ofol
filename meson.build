@@ -159,20 +159,20 @@ if not get_option('source-only')
     sdl_options += 'use_power=disabled'
     sdl_options += 'system_iconv=disabled'
 
-    sdl_dep = dependency('sdl2', fallback: ['sdl2', 'sdl2_dep'],
+    sdl_dep = dependency('sdl3', fallback: [],
         default_options: default_fallback_options + sdl_options
     )
 
-    if host_machine.system() == 'windows'
-        if sdl_dep.type_name() == 'internal'
-            sdlmain_dep = dependency('sdl2main', fallback: ['sdl2main_dep'])
-        else
-            sdlmain_dep = cc.find_library('SDL2main')
-        endif
-    else
+    # if host_machine.system() == 'windows'
+    #     if sdl_dep.type_name() == 'internal'
+    #         sdlmain_dep = dependency('sdl2main', fallback: ['sdl2main_dep'])
+    #     else
+    #         sdlmain_dep = cc.find_library('SDL2main')
+    #     endif
+    # else
         sdlmain_dep = dependency('', required: false)
-        assert(not sdlmain_dep.found(), 'checking if fake dependency has been found')
-    endif
+    #     assert(not sdlmain_dep.found(), 'checking if fake dependency has been found')
+    # endif
 
     lite_deps = [lua_dep, sdl_dep, sdlmain_dep, freetype_dep, pcre2_dep, libm, libdl]
 endif

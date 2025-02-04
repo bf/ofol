@@ -1,6 +1,6 @@
 #include "api.h"
 #include "lua.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

@@ -1,25 +1,25 @@
 #include "api.h"
 #include "../renwindow.h"
 #include "lua.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 static RenWindow *persistant_window = NULL;
 
-static void init_window_icon(SDL_Window *window) {
-#if !defined(_WIN32) && !defined(__APPLE__)
-  #include "../resources/icons/icon.inl"
-  (void) icon_rgba_len; /* unused */
-  SDL_Surface *surf = SDL_CreateRGBSurfaceFrom(
-    icon_rgba, 64, 64,
-    32, 64 * 4,
-    0x000000ff,
-    0x0000ff00,
-    0x00ff0000,
-    0xff000000);
-  SDL_SetWindowIcon(window, surf);
-  SDL_FreeSurface(surf);
-#endif
-}
+// static void init_window_icon(SDL_Window *window) {
+// #if !defined(_WIN32) && !defined(__APPLE__)
+//   #include "../resources/icons/icon.inl"
+//   (void) icon_rgba_len; /* unused */
+//   SDL_Surface *surf = SDL_CreateRGBSurfaceFrom(
+//     icon_rgba, 64, 64,
+//     32, 64 * 4,
+//     0x000000ff,
+//     0x0000ff00,
+//     0x00ff0000,
+//     0xff000000);
+//   SDL_SetWindowIcon(window, surf);
+//   SDL_FreeSurface(surf);
+// #endif
+// }
 
 static int f_renwin_create(lua_State *L) {
   const char *title = luaL_checkstring(L, 1);
@@ -47,7 +47,7 @@ static int f_renwin_create(lua_State *L) {
   if (!window) {
     return luaL_error(L, "Error creating lite-xl window: %s", SDL_GetError());
   }
-  init_window_icon(window);
+  // init_window_icon(window);
 
   RenWindow **window_renderer = (RenWindow**)lua_newuserdata(L, sizeof(RenWindow*));
   luaL_setmetatable(L, API_TYPE_RENWINDOW);

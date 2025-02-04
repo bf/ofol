@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <CoreServices/CoreServices.h>
 
 struct dirmonitor_internal {

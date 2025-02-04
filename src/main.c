@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
+
 #include "api/api.h"
 #include "rencache.h"
 #include "renderer.h"
@@ -116,7 +118,7 @@ int main(int argc, char **argv) {
 
 
   // see https://github.com/libsdl-org/SDL/blob/main/docs/README-wayland.md
-  putenv("SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=0");
+  putenv("SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=1");
 #endif
 
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
@@ -124,10 +126,10 @@ int main(int argc, char **argv) {
     exit(1);
   }
   SDL_EnableScreenSaver();
-  SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+  SDL_EventState(SDL_EVENT_DROP_FILE, SDL_ENABLE);
   atexit(SDL_Quit);
 
-  SDL_SetHint(SDL_HINT_VIDEODRIVER, "wayland");
+  SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "wayland");
 
 #ifdef SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR /* Available since 2.0.8 */
   // SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
@@ -199,8 +201,8 @@ init_lua:
     set_macos_bundle_resources(L);
   #endif
 #endif
-  SDL_EventState(SDL_TEXTINPUT, SDL_ENABLE);
-  SDL_EventState(SDL_TEXTEDITING, SDL_ENABLE);
+  SDL_EventState(SDL_EVENT_TEXT_INPUT, SDL_ENABLE);
+  SDL_EventState(SDL_EVENT_TEXT_EDITING, SDL_ENABLE);
 
   const char *init_lite_code = \
     "local core\n"
