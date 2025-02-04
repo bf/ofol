@@ -279,20 +279,20 @@ top:
 
 
 // #if SDL_VERSION_ATLEAST(2, 0, 22)
-    case SDL_EVENT_TEXT_EDITING_EXT:
-      lua_pushstring(L, "textediting");
-      lua_pushstring(L, e.editExt.text);
-      lua_pushinteger(L, e.editExt.start);
-      lua_pushinteger(L, e.editExt.length);
-      SDL_free(e.editExt.text);
-      return 4;
+    // case SDL_EVENT_TEXT_EDITING_EXT:
+    //   lua_pushstring(L, "textediting");
+    //   lua_pushstring(L, e.editExt.text);
+    //   lua_pushinteger(L, e.editExt.start);
+    //   lua_pushinteger(L, e.editExt.length);
+    //   SDL_free(e.editExt.text);
+    //   return 4;
 // #else
-//     case SDL_EVENT_TEXT_EDITING:
-//       lua_pushstring(L, "textediting");
-//       lua_pushstring(L, e.edit.text);
-//       lua_pushinteger(L, e.edit.start);
-//       lua_pushinteger(L, e.edit.length);
-//       return 4;
+    case SDL_EVENT_TEXT_EDITING:
+      lua_pushstring(L, "textediting");
+      lua_pushstring(L, e.edit.text);
+      lua_pushinteger(L, e.edit.start);
+      lua_pushinteger(L, e.edit.length);
+      return 4;
 // #endif
 
     case SDL_EVENT_MOUSE_BUTTON_DOWN:
@@ -339,9 +339,9 @@ top:
     case SDL_EVENT_MOUSE_WHEEL:
       lua_pushstring(L, "mousewheel");
 #if SDL_VERSION_ATLEAST(2, 0, 18)
-      lua_pushnumber(L, e.wheel.preciseY);
+      lua_pushnumber(L, e.wheel.y);
       // Use -x to keep consistency with vertical scrolling values (e.g. shift+scroll)
-      lua_pushnumber(L, -e.wheel.preciseX);
+      lua_pushnumber(L, -e.wheel.x);
 #else
       lua_pushinteger(L, e.wheel.y);
       lua_pushinteger(L, -e.wheel.x);
@@ -449,7 +449,7 @@ static const char *cursor_opts[] = {
 static const int cursor_enums[] = {
   SDL_SYSTEM_CURSOR_DEFAULT,
   SDL_SYSTEM_CURSOR_TEXT,
-  SDL_SYSTEM_CURSOR_WE_RESIZE,
+  SDL_SYSTEM_CURSOR_EW_RESIZE,
   SDL_SYSTEM_CURSOR_NS_RESIZE,
   SDL_SYSTEM_CURSOR_POINTER
 };

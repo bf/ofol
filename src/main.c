@@ -131,18 +131,17 @@ int main(int argc, char **argv) {
 
   SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "wayland");
 
-#ifdef SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR /* Available since 2.0.8 */
-  // SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
-#endif
+// #ifdef SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR /* Available since 2.0.8 */
+//   // SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+// #endif
 #if SDL_VERSION_ATLEAST(2, 0, 5)
   SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 #endif
-#if SDL_VERSION_ATLEAST(2, 0, 18)
-  SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
-#endif
-#if SDL_VERSION_ATLEAST(2, 0, 22)
-  SDL_SetHint(SDL_HINT_IME_SUPPORT_EXTENDED_TEXT, "1");
-#endif
+  SDL_SetHint(SDL_HINT_IME_IMPLEMENTED_UI, "1");
+
+// #if SDL_VERSION_ATLEAST(2, 0, 22)
+//   SDL_SetHint(SDL_HINT_IME_SUPPORT_EXTENDED_TEXT, "1"); // has been removed in sdl3
+// #endif
 
 #if SDL_VERSION_ATLEAST(2, 0, 8)
   /* This hint tells SDL to respect borderless window as a normal window.
