@@ -29,32 +29,48 @@ static int f_renwin_create(lua_State *L) {
   float height = luaL_optnumber(L, 5, 0);
 
   if (width < 1 || height < 1) {
-    SDL_DisplayMode dm;
-    SDL_GetCurrentDisplayMode(0, &dm);
+    // SDL_DisplayID display = SDL_GetPrimaryDisplay();
+    // SDL_DisplayMode *dm = SDL_GetCurrentDisplayMode(display);
 
-    if (width < 1) {
-      width = dm.w * 0.8;
-    }
-    if (height < 1) {
-      height = dm.h * 0.8;
-    }
+    // if (width < 1) {
+    //   width = dm->w * 0.8;
+    // }
+    // if (height < 1) {
+    //   height = dm->h * 0.8;
+    // }
+    width = 500;
+    height = 500;
   }
 
-  SDL_Window *window = SDL_CreateWindow(
-    title, x, y, width, height,
-    SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_HIDDEN
-  );
-  if (!window) {
+  // SDL3 CreateWindowWithProperties
+  SDL_PropertiesID props = SDL_CreateProperties();
+  SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, title);
+  SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER, x);
+  SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, y);
+  SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, width);
+  SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, height);
+  // For window flags you should use separate window creation properties,
+  // but for easier migration from SDL2 you can use the following:
+  SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_HIDDEN);
+  SDL_Window *window = SDL_CreateWindowWithProperties(props);
+  SDL_DestroyProperties(props);
+
+  // SDL_Window *window = SDL_CreateWindowWithProperties(
+  //   title, x, y, width, height,
+  //   SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_HIDDEN
+  // );
+  if (window) {
+    // init_window_icon(window);
+
+    RenWindow **window_renderer = (RenWindow**)lua_newuserdata(L, sizeof(RenWindow*));
+    luaL_setmetatable(L, API_TYPE_RENWINDOW);
+
+    *window_renderer = ren_create(window);
+
+    return 1;
+  } else {
     return luaL_error(L, "Error creating lite-xl window: %s", SDL_GetError());
   }
-  // init_window_icon(window);
-
-  RenWindow **window_renderer = (RenWindow**)lua_newuserdata(L, sizeof(RenWindow*));
-  luaL_setmetatable(L, API_TYPE_RENWINDOW);
-
-  *window_renderer = ren_create(window);
-
-  return 1;
 }
 
 static int f_renwin_gc(lua_State *L) {

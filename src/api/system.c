@@ -166,7 +166,8 @@ static void push_win32_error(lua_State *L, DWORD rc) {
 
 static int f_poll_event(lua_State *L) {
   char buf[16];
-  int mx, my, w, h;
+  float mx, my;
+  int w, h;
   SDL_Event e;
   SDL_Event event_plus;
 
@@ -572,12 +573,13 @@ static int f_get_window_mode(lua_State *L) {
 }
 
 static int f_set_text_input_rect(lua_State *L) {
+  RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
   SDL_Rect rect;
   rect.x = luaL_checknumber(L, 1);
   rect.y = luaL_checknumber(L, 2);
   rect.w = luaL_checknumber(L, 3);
   rect.h = luaL_checknumber(L, 4);
-  SDL_SetTextInputArea(&rect);
+  SDL_SetTextInputArea(window_renderer->window, &rect, 0);
   return 0;
 }
 
