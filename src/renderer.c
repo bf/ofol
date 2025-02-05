@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-#include <ft2build.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_LCD_FILTER_H
 #include FT_OUTLINE_H
@@ -625,13 +625,18 @@ double ren_draw_text(RenSurface *rs, RenFont **fonts, const char *text, size_t l
           start_x += offset;
           glyph_start += offset;
         }
-        uint32_t* destination_pixel = (uint32_t*)&(destination_pixels[surface->pitch * target_y + start_x * surface->format->BytesPerPixel  ]);
-        uint8_t* source_pixel = &source_pixels[line * font_surface->pitch + glyph_start * font_surface->format->BytesPerPixel];
+
+          const SDL_PixelFormatDetails *pixel_details = SDL_GetPixelFormatDetails(surface->format);
+
+        uint32_t* destination_pixel = (uint32_t*)&(destination_pixels[surface->pitch * target_y + start_x * pixel_details->bytes_per_pixel  ]);
+        uint8_t* source_pixel = &source_pixels[line * font_surface->pitch + glyph_start * SDL_GetPixelFormatDetails(font_surface->format)->bytes_per_pixel];
         for (int x = glyph_start; x < glyph_end; ++x) {
           uint32_t destination_color = *destination_pixel;
+
           // the standard way of doing this would be SDL_GetRGBA, but that introduces a performance regression. needs to be investigated
           // FIXME: change to SDL_GetRGBA and migrate to sdl3
-          SDL_Color dst = { (destination_color & surface->format->Rmask) >> surface->format->Rshift, (destination_color & surface->format->Gmask) >> surface->format->Gshift, (destination_color & surface->format->Bmask) >> surface->format->Bshift, (destination_color & surface->format->Amask) >> surface->format->Ashift };
+
+          SDL_Color dst = { (destination_color & pixel_details->Rmask) >> pixel_details->Rshift, (destination_color & pixel_details->Gmask) >> pixel_details->Gshift, (destination_color & pixel_details->Bmask) >> pixel_details->Bshift, (destination_color & pixel_details->Amask) >> pixel_details->Ashift };
           SDL_Color src;
 
           if (font->antialiasing == FONT_ANTIALIASING_SUBPIXEL) {
@@ -651,7 +656,8 @@ double ren_draw_text(RenSurface *rs, RenFont **fonts, const char *text, size_t l
           b = (color.b * src.b * color.a + dst.b * (65025 - src.b * color.a) + 32767) / 65025;
           // the standard way of doing this would be SDL_GetRGBA, but that introduces a performance regression. needs to be investigated
           // FIXME: change to SDL_GetRGBA and migrate to sdl3
-          *destination_pixel++ = (unsigned int) dst.a << surface->format->Ashift | r << surface->format->Rshift | g << surface->format->Gshift | b << surface->format->Bshift;
+
+          *destination_pixel++ = (unsigned int) dst.a << pixel_details->Ashift | r << pixel_details->Rshift | g << pixel_details->Gshift | b << pixel_details->Bshift;
         }
       }
     }

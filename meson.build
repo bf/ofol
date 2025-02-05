@@ -49,9 +49,9 @@ cc = meson.get_compiler('c')
 lite_includes = []
 lite_cargs = ['-DSDL_MAIN_HANDLED', '-DPCRE2_STATIC']
 # On macos we need to use the SDL renderer to support retina displays
-if get_option('renderer') or host_machine.system() == 'darwin'
-    lite_cargs += '-DLITE_USE_SDL_RENDERER'
-endif
+# if get_option('renderer') or host_machine.system() == 'darwin'
+#     lite_cargs += '-DLITE_USE_SDL_RENDERER'
+# endif
 if get_option('arch_tuple') != ''
     arch_tuple = get_option('arch_tuple')
 else
@@ -111,9 +111,9 @@ if not get_option('source-only')
         default_options: default_fallback_options + ['default_library=static', 'grep=false', 'test=false']
     )
 
-    # freetype_dep = dependency('freetype2', fallback: ['freetype2', 'freetype_dep'],
-    #     default_options: default_fallback_options + ['default_library=static', 'zlib=disabled', 'bzip2=disabled', 'png=disabled', 'harfbuzz=disabled', 'brotli=disabled']
-    # )
+    freetype_dep = dependency('freetype2', fallback: ['freetype2', 'freetype_dep'],
+        default_options: default_fallback_options + ['default_library=static', 'zlib=disabled', 'bzip2=disabled', 'png=disabled', 'harfbuzz=disabled', 'brotli=disabled']
+    )
 
 
     sdl_options = ['default_library=static']
@@ -177,7 +177,7 @@ if not get_option('source-only')
     # endif
 
     lite_deps = [lua_dep, sdl_dep, sdlmain_dep, 
-        # freetype_dep, 
+        freetype_dep, 
         sdl3ttf_dep,
         pcre2_dep, libm, libdl]
 endif

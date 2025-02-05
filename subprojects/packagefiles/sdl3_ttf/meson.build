@@ -28,7 +28,10 @@ sdl3_ttf = library(
   install: true
 )
 
-depinc = include_directories('.', '/usr/include/freetype2/', './include/')
+depinc = include_directories(
+  '.', 
+  # '/usr/include/freetype2/', 
+  './include/')
 sdl3_ttf_dep = declare_dependency(
   link_with: sdl3_ttf,
   version: meson.project_version(),
