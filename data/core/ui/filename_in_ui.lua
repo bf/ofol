@@ -9,7 +9,7 @@ local FilenameInUI = {}
 
 -- returns string for filename display in window title
 function FilenameInUI.get_filename_for_window_title(absolute_path) 
-  stderr.debug("absolute_path %s", absolute_path)
+  -- stderr.debug("absolute_path %s", absolute_path)
 
   -- get file basename
   local window_title = FileMetadataStore.get_basename(absolute_path)
@@ -38,7 +38,7 @@ end
 
 -- returns FilenameWithIcon object for rendering in tab title
 function FilenameInUI.get_filename_for_tab_title(absolute_path,  is_active, is_hovered)
-  stderr.debug("absolute_path %s is_active:%s is_hovered:%s", absolute_path, is_active, is_hovered)
+  -- stderr.debug("absolute_path %s is_active:%s is_hovered:%s", absolute_path, is_active, is_hovered)
   
   -- get file basename
   local filename_text = FileMetadataStore.get_basename(absolute_path)
@@ -109,7 +109,7 @@ function FilenameInUI.get_filename_for_tab_title(absolute_path,  is_active, is_h
   -- (filename_text, filename_color, filename_is_bold, icon_symbol, icon_color, suffix_text, suffix_color) 
   local object_for_rendering = FilenameWithIcon(filename_text, filename_color, filename_is_bold, icon_symbol, icon_color, suffix_text, suffix_color)
 
-  stderr.debug("object_for_rendering %s", object_for_rendering)
+  -- stderr.debug("object_for_rendering %s", object_for_rendering)
 
   return object_for_rendering
 end

@@ -71,11 +71,12 @@ static int f_renwin_create(lua_State *L) {
   SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, height);
   // For window flags you should use separate window creation properties,
   // but for easier migration from SDL2 you can use the following:
-  SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY
-   | SDL_WINDOW_HIDDEN
+  SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_INPUT_FOCUS
+   // | SDL_WINDOW_HIDDEN
     );
   SDL_Window *window = SDL_CreateWindowWithProperties(props);
   SDL_DestroyProperties(props);
+
 
   // SDL_Window *window = SDL_CreateWindowWithProperties(
   //   title, x, y, width, height,
@@ -87,11 +88,21 @@ static int f_renwin_create(lua_State *L) {
     RenWindow **window_renderer = (RenWindow**)lua_newuserdata(L, sizeof(RenWindow*));
     luaL_setmetatable(L, API_TYPE_RENWINDOW);
 
+
     *window_renderer = ren_create(window);
+
+    // SDL3 start text input explicitly
+    if (SDL_StartTextInput(window)) {
+      // success
+    } else {
+      // error 
+      SDL_Log("renwin_create Error SDL_StartTextInput %s\n", SDL_GetError());
+      exit(1);
+    }
 
     return 1;
   } else {
-    SDL_Log("Error creating window %s\n", SDL_GetError());
+    SDL_Log("renwin_create Error creating window %s\n", SDL_GetError());
     exit(1);
     return luaL_error(L, "Error creating lite-xl window: %s", SDL_GetError());
   }

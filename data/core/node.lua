@@ -642,18 +642,11 @@ end
 
 -- get width of a tab based on the tab view's file name length
 function Node:get_tab_width_by_view(view) 
-  stderr.debug("view %s", view)
-  -- -- width of tab title text
-  -- local text = self:get_tab_title_text(view, style.font, 0)
-  -- local tab_title_width = style.font:get_width(text)
+  -- stderr.debug("view %s", view)
 
   -- add padding on both sides
   local padding_left_right = style.padding.x * 2
 
-  -- -- total width is text width plus padding
-  -- local tab_width = tab_title_width + padding_left_right
-
-  -- return tab_width
   if not view["get_abs_filename"] then
     return 0
   end
@@ -667,7 +660,7 @@ function Node:get_tab_width_by_view(view)
   -- get width of filename with icon and/or suffix
   local tab_width =  filename_for_rendering:get_width()
 
-  stderr.debug("get_tab_width_by_view %f", tab_width)
+  -- stderr.debug("get_tab_width_by_view %f", tab_width)
 
   return tab_width + padding_left_right
 end
@@ -751,7 +744,7 @@ function Node:get_total_width_of_all_tabs ()
 end
 
 function Node:draw_tabs()
-  stderr.warn("draw_tabs()")
+  -- stderr.warn("draw_tabs()")
 
   -- ensure shift factor is not negative
   assert(self.tab_shift_by_x_so_that_active_tab_stays_visible >= 0, "self.tab_shift_by_x_so_that_active_tab_stays_visible should never be negative")

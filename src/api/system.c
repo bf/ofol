@@ -255,8 +255,10 @@ top:
         SDL_FlushEvent(SDL_EVENT_QUIT);
       }
 #endif
+      char* key_name = get_key_name(&e, buf);
+      SDL_Log("keypressed %s\n", key_name);
       lua_pushstring(L, "keypressed");
-      lua_pushstring(L, get_key_name(&e, buf));
+      lua_pushstring(L, key_name);
       return 2;
 
     case SDL_EVENT_KEY_UP:

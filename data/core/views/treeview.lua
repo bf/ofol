@@ -682,7 +682,7 @@ end
 
 -- iterate over each item in treeview
 function TreeView:each_item()
-  stderr.debug("TreeView:each_item")
+  -- stderr.debug("TreeView:each_item")
 
   return coroutine.wrap(function()
     self:check_cache()

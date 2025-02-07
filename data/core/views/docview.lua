@@ -84,11 +84,7 @@ end
 
 -- render doc name for window title
 function DocView:get_name()
-  stderr.debug("docview get name")
-  -- local post = self.doc:is_dirty() and "*" or ""
-  -- local name = self.doc:get_name()
-  -- return name:match("[^/%\\]*$") .. post
-
+  -- stderr.debug("docview get name")
   return FilenameInUI.get_filename_for_window_title(self.doc.abs_filename)
 end
 

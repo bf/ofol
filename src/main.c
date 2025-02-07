@@ -120,6 +120,10 @@ int main(int argc, char **argv) {
   // // see https://github.com/libsdl-org/SDL/blob/main/docs/README-wayland.md
   // putenv("SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=1");
 #endif
+  
+  // Initialize IME for SDL3 before SDL_Init() is called
+  // see https://wiki.libsdl.org/SDL3/SDL_HINT_IME_IMPLEMENTED_UI
+  SDL_SetHint(SDL_HINT_IME_IMPLEMENTED_UI, "composition");
 
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
     // success
@@ -132,7 +136,7 @@ int main(int argc, char **argv) {
   SDL_SetEventEnabled(SDL_EVENT_DROP_FILE, true);
   atexit(SDL_Quit);
 
-  SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "wayland");
+  // SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "wayland");
 
 // #ifdef SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR /* Available since 2.0.8 */
 //   // SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
@@ -140,7 +144,7 @@ int main(int argc, char **argv) {
 #if SDL_VERSION_ATLEAST(2, 0, 5)
   SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 #endif
-  SDL_SetHint(SDL_HINT_IME_IMPLEMENTED_UI, "1");
+
 
 // #if SDL_VERSION_ATLEAST(2, 0, 22)
 //   SDL_SetHint(SDL_HINT_IME_SUPPORT_EXTENDED_TEXT, "1"); // has been removed in sdl3

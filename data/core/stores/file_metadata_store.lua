@@ -156,7 +156,7 @@ end
 
 -- returns differentiator suffix for when files with same basename are opened at the same time
 function FileMetadataStore.get_filename_differentiator(absolute_path) 
-  stderr.debug("absolute_path %s", absolute_path)
+  -- stderr.debug("absolute_path %s", absolute_path)
 
   if absolute_path == nil then
     return nil
