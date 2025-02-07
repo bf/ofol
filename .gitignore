@@ -1,6 +1,7 @@
 lhelper/
 submodules/
 subprojects/*/
+!subprojects/packagefiles/
 /appimage*
 .vscode
 .cache

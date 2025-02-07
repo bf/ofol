@@ -46,6 +46,7 @@ endif
 
 cc = meson.get_compiler('c')
 
+
 lite_includes = []
 lite_cargs = ['-DSDL_MAIN_HANDLED', '-DPCRE2_STATIC']
 # On macos we need to use the SDL renderer to support retina displays
