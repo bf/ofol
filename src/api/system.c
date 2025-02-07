@@ -582,7 +582,7 @@ static int f_clear_ime(lua_State *L) {
 
 
 static int f_raise_window(lua_State *L) {
-  RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
+  // RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
   /*
     SDL_RaiseWindow should be enough but on some window managers like the
     one used on Gnome the window needs to first have input focus in order
@@ -590,7 +590,7 @@ static int f_raise_window(lua_State *L) {
     may not always be obeyed.
   */
   // SDL_SetWindowInputFocus(window_renderer->window);
-  SDL_RaiseWindow(window_renderer->window);
+  SDL_RaiseWindow(SDL_GetWindowFromID(0));
   return 0;
 }
 
