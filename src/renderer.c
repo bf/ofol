@@ -770,7 +770,6 @@ RenWindow* ren_create(SDL_Window *win) {
   assert(win);
   RenWindow* window_renderer = calloc(1, sizeof(RenWindow));
 
-
   window_renderer->window = win;
   renwin_init_surface(window_renderer);
   renwin_init_command_buf(window_renderer);

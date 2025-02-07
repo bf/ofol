@@ -2,6 +2,7 @@
 #include "../renwindow.h"
 #include "lua.h"
 #include <SDL3/SDL.h>
+#include <stdlib.h>
 
 static RenWindow *persistant_window = NULL;
 
@@ -23,24 +24,34 @@ static RenWindow *persistant_window = NULL;
 
 static int f_renwin_create(lua_State *L) {
   const char *title = luaL_checkstring(L, 1);
-  const int x = luaL_optinteger(L, 2, SDL_WINDOWPOS_UNDEFINED);
-  const int y = luaL_optinteger(L, 3, SDL_WINDOWPOS_UNDEFINED);
-  float width = luaL_optnumber(L, 4, 0);
-  float height = luaL_optnumber(L, 5, 0);
+  // const int x = luaL_optinteger(L, 2, SDL_WINDOWPOS_UNDEFINED);
+  // const int y = luaL_optinteger(L, 3, SDL_WINDOWPOS_UNDEFINED);
+  const int x = luaL_optinteger(L, 2, SDL_WINDOWPOS_CENTERED);
+  const int y = luaL_optinteger(L, 3, SDL_WINDOWPOS_CENTERED);
+  // const int x = luaL_optinteger(L, 2, 0);
+  // const int y = luaL_optinteger(L, 3, 0);
+  float width = luaL_optnumber(L, 4, 500.0);
+  float height = luaL_optnumber(L, 5, 500.0);
 
-  if (width < 1 || height < 1) {
-    // SDL_DisplayID display = SDL_GetPrimaryDisplay();
-    // SDL_DisplayMode *dm = SDL_GetCurrentDisplayMode(display);
+  SDL_Log("renwin_create 1 x %d y %d width %f height %f \n", x, y, width, height);
 
-    // if (width < 1) {
-    //   width = dm->w * 0.8;
-    // }
-    // if (height < 1) {
-    //   height = dm->h * 0.8;
-    // }
-    width = 500;
-    height = 500;
-  }
+
+  // if (width < 1 || height < 1) {
+  //   // SDL_DisplayID display = SDL_GetPrimaryDisplay();
+  //   // SDL_DisplayMode *dm = SDL_GetCurrentDisplayMode(display);
+
+  //   // if (width < 1) {
+  //   //   width = dm->w * 0.8;
+  //   // }
+  //   // if (height < 1) {
+  //   //   height = dm->h * 0.8;
+  //   // }
+  //   width = 500;
+  //   height = 500;
+  // }
+
+  // SDL_Log("renwin_create 2 x %d y %d width %f height %f \n", x, y, width, height);
+  // return 1;
 
   // SDL3 CreateWindowWithProperties
   SDL_PropertiesID props = SDL_CreateProperties();
@@ -51,7 +62,9 @@ static int f_renwin_create(lua_State *L) {
   SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, height);
   // For window flags you should use separate window creation properties,
   // but for easier migration from SDL2 you can use the following:
-  SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_HIDDEN);
+  SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY
+   | SDL_WINDOW_HIDDEN
+    );
   SDL_Window *window = SDL_CreateWindowWithProperties(props);
   SDL_DestroyProperties(props);
 
@@ -69,6 +82,8 @@ static int f_renwin_create(lua_State *L) {
 
     return 1;
   } else {
+    SDL_Log("Error creating window %s\n", SDL_GetError());
+    exit(1);
     return luaL_error(L, "Error creating lite-xl window: %s", SDL_GetError());
   }
 }
@@ -91,6 +106,9 @@ static int f_renwin_get_size(lua_State *L) {
 }
 
 static int f_renwin_persist(lua_State *L) {
+  SDL_Log("f_renwin_persist\n");
+  exit(1);
+
   RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
 
   persistant_window = window_renderer;

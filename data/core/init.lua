@@ -509,7 +509,7 @@ function core.init()
 
   core.window = renwindow._restore()
   if core.window == nil then
-    core.window = renwindow.create("")
+    core.window = renwindow.create("OFOL2")
   end
   do
     -- load last session
@@ -783,11 +783,13 @@ local function quit_with_function(quit_fn)
 end
 
 function core.quit()
+  stderr.debug("core.quit() called")
   quit_with_function(function() core.quit_request = true end)
 end
 
 
 function core.restart()
+  stderr.debug("core.restart() called")
   quit_with_function(function()
     core.restart_request = true
     core.window:_persist()
@@ -1212,6 +1214,7 @@ function core.run()
 
     if core.restart_request or core.quit_request then 
       stderr.debug("core.restart_request %s core.quit_request %s", core.restart_request, core.quit_request)
+      os.exit(1)
       break 
     end
 

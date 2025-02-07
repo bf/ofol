@@ -113,12 +113,12 @@ int main(int argc, char **argv) {
 #endif
 
 #if  __linux__
-  // force wayland
-  putenv("SDL_VIDEODRIVER=wayland");
+  // // force wayland
+  // putenv("SDL_VIDEODRIVER=wayland");
 
 
-  // see https://github.com/libsdl-org/SDL/blob/main/docs/README-wayland.md
-  putenv("SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=1");
+  // // see https://github.com/libsdl-org/SDL/blob/main/docs/README-wayland.md
+  // putenv("SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=1");
 #endif
 
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
@@ -161,7 +161,7 @@ int main(int argc, char **argv) {
   SDL_SetHint("SDL_MOUSE_DOUBLE_CLICK_RADIUS", "4");
 #endif
 
-  SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
+  // SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
 
   if ( ren_init() ) {
     SDL_Log("internal font error when starting the application\n");
