@@ -246,7 +246,8 @@ static int f_font_set_size(lua_State *L) {
 #ifdef LITE_USE_SDL_RENDERER
   RenWindow *window = ren_get_target_window();
   if (window != NULL) {
-    scale = renwin_get_surface(window).scale;
+    // scale = renwin_get_surface(window).scale;
+    scale = 1;
   }
 #endif
   ren_font_group_set_size(fonts, size, scale);
