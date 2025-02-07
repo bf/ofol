@@ -105,7 +105,7 @@ if not get_option('source-only')
         )
     endif
 
-    sdl3ttf_dep = dependency('sdl3_ttf', required: true)
+    # sdl3ttf_dep = dependency('sdl3_ttf', required: true)
 
     pcre2_dep = dependency('libpcre2-8', fallback: ['pcre2', 'libpcre2_8'],
         default_options: default_fallback_options + ['default_library=static', 'grep=false', 'test=false']
@@ -178,7 +178,7 @@ if not get_option('source-only')
 
     lite_deps = [lua_dep, sdl_dep, sdlmain_dep, 
         freetype_dep, 
-        sdl3ttf_dep,
+        # sdl3ttf_dep,
         pcre2_dep, libm, libdl]
 endif
 #===============================================================================

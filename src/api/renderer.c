@@ -299,11 +299,11 @@ static RenColor checkcolor(lua_State *L, int idx, int def) {
 }
 
 
-static int f_show_debug(lua_State *L) {
-  luaL_checkany(L, 1);
-  rencache_show_debug(lua_toboolean(L, 1));
-  return 0;
-}
+// static int f_show_debug(lua_State *L) {
+//   luaL_checkany(L, 1);
+//   rencache_show_debug(lua_toboolean(L, 1));
+//   return 0;
+// }
 
 
 static int f_get_size(lua_State *L) {
@@ -395,7 +395,7 @@ static int f_draw_text(lua_State *L) {
 }
 
 static const luaL_Reg lib[] = {
-  { "show_debug",         f_show_debug         },
+  // { "show_debug",         f_show_debug         },
   { "get_size",           f_get_size           },
   { "begin_frame",        f_begin_frame        },
   { "end_frame",          f_end_frame          },

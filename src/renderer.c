@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-#include <SDL3_ttf/SDL_ttf.h>
+// #include <SDL3_ttf/SDL_ttf.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_LCD_FILTER_H
@@ -223,15 +223,15 @@ static SDL_Surface *font_allocate_glyph_surface(RenFont *font, FT_GlyphSlot slot
 
   // find the surface with the minimum height that can fit the glyph (limited to last 100 surfaces)
   int surface_idx = -1, max_surface_idx = (int) atlas->nsurface - 100, min_waste = INT_MAX;
-  for (int i = atlas->nsurface - 1; i >= 0 && i > max_surface_idx; i--) {
-    assert(atlas->surfaces[i]->userdata);
-    GlyphMetric *m = (GlyphMetric *) atlas->surfaces[i]->userdata;
-    int new_min_waste = (int) atlas->surfaces[i]->h - (int) m->y1;
-    if (new_min_waste >= metric->y1 && new_min_waste < min_waste) {
-      surface_idx = i;
-      min_waste = new_min_waste;
-    }
-  }
+  // for (int i = atlas->nsurface - 1; i >= 0 && i > max_surface_idx; i--) {
+  //   assert(atlas->surfaces[i]->userdata);
+  //   GlyphMetric *m = (GlyphMetric *) atlas->surfaces[i]->userdata;
+  //   int new_min_waste = (int) atlas->surfaces[i]->h - (int) m->y1;
+  //   if (new_min_waste >= metric->y1 && new_min_waste < min_waste) {
+  //     surface_idx = i;
+  //     min_waste = new_min_waste;
+  //   }
+  // }
   if (surface_idx < 0) {
     // allocate a new surface array, and a surface
     int h = FONT_HEIGHT_OVERFLOW_PX + (double) font->face->size->metrics.height / 64.0f;
@@ -242,16 +242,16 @@ static SDL_Surface *font_allocate_glyph_surface(RenFont *font, FT_GlyphSlot slot
       // SDL_CreateRGBSurface( 0, atlas->width, GLYPHS_PER_ATLAS * h, FONT_BITMAP_COUNT(font) * 8, 0, 0, 0, 0)
       SDL_CreateSurface(atlas->width, GLYPHS_PER_ATLAS * h, SDL_GetPixelFormatForMasks(FONT_BITMAP_COUNT(font) * 8, 0, 0, 0, 0))
     );
-    atlas->surfaces[atlas->nsurface]->userdata = NULL;
+    // atlas->surfaces[atlas->nsurface]->userdata = NULL;
     surface_idx = atlas->nsurface++;
     font->glyphs.bytesize += (sizeof(SDL_Surface *) + sizeof(SDL_Surface) + atlas->width * GLYPHS_PER_ATLAS * h * FONT_BITMAP_COUNT(font));
   }
   metric->surface_idx = surface_idx;
-  if (atlas->surfaces[surface_idx]->userdata) {
-    GlyphMetric *last_metric = (GlyphMetric *) atlas->surfaces[surface_idx]->userdata;
-    metric->y0 = last_metric->y1; metric->y1 += last_metric->y1;
-  }
-  atlas->surfaces[surface_idx]->userdata = (void *) metric;
+  // if (atlas->surfaces[surface_idx]->userdata) {
+  //   GlyphMetric *last_metric = (GlyphMetric *) atlas->surfaces[surface_idx]->userdata;
+  //   metric->y0 = last_metric->y1; metric->y1 += last_metric->y1;
+  // }
+  // atlas->surfaces[surface_idx]->userdata = (void *) metric;
   return atlas->surfaces[surface_idx];
 }
 
@@ -384,7 +384,8 @@ static unsigned long font_file_read(FT_Stream stream, unsigned long offset, unsi
   SDL_SeekIO(file, (int) offset, SDL_IO_SEEK_SET);
   if (count == 0)
     return 0;
-  amount = SDL_ReadIO(file, buffer, sizeof(char), count);
+  // amount = SDL_RWread(file, buffer, sizeof(char), count);
+  amount = SDL_ReadIO(file, buffer, sizeof(char) * count) / sizeof(char);
   if (amount <= 0)
     return 0;
   return (unsigned long) amount;
