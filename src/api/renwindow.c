@@ -30,15 +30,24 @@ static int f_renwin_create(lua_State *L) {
   const int y = luaL_optinteger(L, 3, SDL_WINDOWPOS_CENTERED);
   // const int x = luaL_optinteger(L, 2, 0);
   // const int y = luaL_optinteger(L, 3, 0);
-  float width = luaL_optnumber(L, 4, 500.0);
-  float height = luaL_optnumber(L, 5, 500.0);
+  float width = luaL_optnumber(L, 4, 0);
+  float height = luaL_optnumber(L, 5, 0);
 
-  SDL_Log("renwin_create 1 x %d y %d width %f height %f \n", x, y, width, height);
+  SDL_Log("renwin_create 1: x %d y %d width %f height %f \n", x, y, width, height);
 
 
-  // if (width < 1 || height < 1) {
-  //   // SDL_DisplayID display = SDL_GetPrimaryDisplay();
-  //   // SDL_DisplayMode *dm = SDL_GetCurrentDisplayMode(display);
+  if (width < 1 || height < 1) {
+    SDL_DisplayID displayID = SDL_GetPrimaryDisplay();
+    SDL_DisplayMode *dm = SDL_GetCurrentDisplayMode(displayID);
+    
+    if (dm) {
+      width = dm->w * 0.8;
+      height = dm->h * 0.8;
+    } else {
+      // error
+      SDL_Log("renwin_create error SDL_GetCurrentDisplayMode %s\n", SDL_GetError());
+      exit(1);
+    }
 
   //   // if (width < 1) {
   //   //   width = dm->w * 0.8;
@@ -48,9 +57,9 @@ static int f_renwin_create(lua_State *L) {
   //   // }
   //   width = 500;
   //   height = 500;
-  // }
+  }
 
-  // SDL_Log("renwin_create 2 x %d y %d width %f height %f \n", x, y, width, height);
+  SDL_Log("renwin_create 2: x %d y %d width %f height %f \n", x, y, width, height);
   // return 1;
 
   // SDL3 CreateWindowWithProperties
