@@ -4,7 +4,7 @@ lite_sources = [
     'api/renwindow.c',
     'api/regex.c',
     'api/system.c',
-    'api/tinyfiledialogs.c',
+    # 'api/tinyfiledialogs.c',
     'api/process.c',
     'api/utf8.c',
     'arena_allocator.c',
