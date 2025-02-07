@@ -73,7 +73,9 @@ end
 function Doc:try_close() 
   if self:is_dirty() then
     -- when doc is not saved yet, return result of confirmation question
-    return system.show_dialog_confirm("Unsaved changes", string.format("\"%s\" has unsaved changes. Close anyway?", self.filename))
+    local dialog_confirmed_by_user = system.show_dialog_confirm("Unsaved changes", string.format("\"%s\" has unsaved changes. Close anyway?", self.filename))
+    stderr.warn("show dialog confirm result is: %s", dialog_confirmed_by_user)
+    return dialog_confirmed_by_user
   else 
     -- if doc is not dirty, just return true to signal that it can be closed
     return true

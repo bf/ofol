@@ -133,7 +133,7 @@ end
 
 -- set version control status
 function FileMetadataStore.set_status_from_version_control(absolute_path, new_status_from_version_control)
-  stderr.debug("set_status_from_version_control %s %s", absolute_path, new_status_from_version_control)
+  -- stderr.debug("set_status_from_version_control %s %s", absolute_path, new_status_from_version_control)
   _store_status_from_version_control[absolute_path] = new_status_from_version_control
 end
 

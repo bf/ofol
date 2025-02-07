@@ -612,8 +612,8 @@ static int f_show_dialog_confirm(lua_State *L) {
 
 // Define the message box buttons
     SDL_MessageBoxButtonData buttons[] = {
-        { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 0, "Yes" },
-        { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 1, "No" }
+        { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 3, "Yes" },
+        { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 4, "No" }
     };
 
     // Define the message box configuration
@@ -631,9 +631,12 @@ static int f_show_dialog_confirm(lua_State *L) {
   int buttonid;
   if (SDL_ShowMessageBox(&messageboxdata, &buttonid)) {
     // success
-    SDL_Log("SDL_ShowMessageBox %d", buttonid);
+    SDL_Log("SDL_ShowMessageBox buttonid %d", buttonid);
+
+    bool returnvalue = (buttonid == 3);
+    SDL_Log("SDL_ShowMessageBox returnvalue %d", returnvalue);
     
-    lua_pushboolean(L, buttonid);
+    lua_pushboolean(L, returnvalue);
     return 1;
   } else {
     // error
