@@ -709,7 +709,12 @@ void ren_draw_rect(RenSurface *rs, RenRect rect, RenColor color) {
     // scaled blitting, so we "clip" manually.
     SDL_Rect clip;
     SDL_GetSurfaceClipRect(surface, &clip);
-    if (!SDL_GetRectIntersection(&clip, &dest_rect, &dest_rect)) return;
+    if (SDL_GetRectIntersection(&clip, &dest_rect, &dest_rect)) {
+      // SDL3 success
+    } else {
+      // SDL3 error
+      return;
+    }
 
     uint32_t *pixel = (uint32_t *)draw_rect_surface->pixels;
     *pixel = SDL_MapSurfaceRGBA(draw_rect_surface, color.r, color.g, color.b, color.a);
@@ -764,6 +769,7 @@ void ren_free(void) {
 RenWindow* ren_create(SDL_Window *win) {
   assert(win);
   RenWindow* window_renderer = calloc(1, sizeof(RenWindow));
+
 
   window_renderer->window = win;
   renwin_init_surface(window_renderer);

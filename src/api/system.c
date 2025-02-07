@@ -572,19 +572,19 @@ static int f_get_window_mode(lua_State *L) {
 }
 
 static int f_set_text_input_rect(lua_State *L) {
-  RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
+  // RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
   SDL_Rect rect;
   rect.x = luaL_checknumber(L, 1);
   rect.y = luaL_checknumber(L, 2);
   rect.w = luaL_checknumber(L, 3);
   rect.h = luaL_checknumber(L, 4);
-  SDL_SetTextInputArea(window_renderer->window, &rect, 0);
+  SDL_SetTextInputArea(SDL_GetWindowFromID(0), &rect, 0);
   return 0;
 }
 
 static int f_clear_ime(lua_State *L) {
-  RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
-  SDL_ClearComposition(window_renderer->window);
+  // RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
+  SDL_ClearComposition(SDL_GetWindowFromID(0));
   return 0;
 }
 
@@ -1063,13 +1063,13 @@ static int f_fuzzy_match(lua_State *L) {
   return 1;
 }
 
-static int f_set_window_opacity(lua_State *L) {
-  RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
-  double n = luaL_checknumber(L, 2);
-  int r = SDL_SetWindowOpacity(window_renderer->window, n);
-  lua_pushboolean(L, r > -1);
-  return 1;
-}
+// static int f_set_window_opacity(lua_State *L) {
+//   RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
+//   double n = luaL_checknumber(L, 2);
+//   int r = SDL_SetWindowOpacity(window_renderer->window, n);
+//   lua_pushboolean(L, r > -1);
+//   return 1;
+// }
 
 typedef void (*fptr)(void);
 
@@ -1160,46 +1160,46 @@ static int f_library_gc(lua_State *L) {
   return 0;
 }
 
-static int f_load_native_plugin(lua_State *L) {
-  char entrypoint_name[512]; entrypoint_name[sizeof(entrypoint_name) - 1] = '\0';
-  int result;
+// static int f_load_native_plugin(lua_State *L) {
+//   char entrypoint_name[512]; entrypoint_name[sizeof(entrypoint_name) - 1] = '\0';
+//   int result;
 
-  const char *name = luaL_checkstring(L, 1);
-  const char *path = luaL_checkstring(L, 2);
-  void *library = SDL_LoadObject(path);
-  if (!library)
-    return (lua_pushstring(L, SDL_GetError()), lua_error(L));
+//   const char *name = luaL_checkstring(L, 1);
+//   const char *path = luaL_checkstring(L, 2);
+//   void *library = SDL_LoadObject(path);
+//   if (!library)
+//     return (lua_pushstring(L, SDL_GetError()), lua_error(L));
 
-  lua_getglobal(L, "package");
-  lua_getfield(L, -1, "native_plugins");
-  lua_newtable(L);
-  lua_pushlightuserdata(L, library);
-  lua_setfield(L, -2, "handle");
-  luaL_setmetatable(L, API_TYPE_NATIVE_PLUGIN);
-  lua_setfield(L, -2, name);
-  lua_pop(L, 2);
+//   lua_getglobal(L, "package");
+//   lua_getfield(L, -1, "native_plugins");
+//   lua_newtable(L);
+//   lua_pushlightuserdata(L, library);
+//   lua_setfield(L, -2, "handle");
+//   luaL_setmetatable(L, API_TYPE_NATIVE_PLUGIN);
+//   lua_setfield(L, -2, name);
+//   lua_pop(L, 2);
 
-  const char *basename = strrchr(name, '.');
-  basename = !basename ? name : basename + 1;
-  snprintf(entrypoint_name, sizeof(entrypoint_name), "luaopen_lite_xl_%s", basename);
-  int (*ext_entrypoint) (lua_State *L, void* (*)(const char*));
-  *(void**)(&ext_entrypoint) = SDL_LoadFunction(library, entrypoint_name);
-  if (!ext_entrypoint) {
-    snprintf(entrypoint_name, sizeof(entrypoint_name), "luaopen_%s", basename);
-    int (*entrypoint)(lua_State *L);
-    *(void**)(&entrypoint) = SDL_LoadFunction(library, entrypoint_name);
-    if (!entrypoint)
-      return luaL_error(L, "Unable to load %s: Can't find %s(lua_State *L, void *XL)", name, entrypoint_name);
-    result = entrypoint(L);
-  } else {
-    result = ext_entrypoint(L, api_require);
-  }
+//   const char *basename = strrchr(name, '.');
+//   basename = !basename ? name : basename + 1;
+//   snprintf(entrypoint_name, sizeof(entrypoint_name), "luaopen_lite_xl_%s", basename);
+//   int (*ext_entrypoint) (lua_State *L, void* (*)(const char*));
+//   *(void**)(&ext_entrypoint) = SDL_LoadFunction(library, entrypoint_name);
+//   if (!ext_entrypoint) {
+//     snprintf(entrypoint_name, sizeof(entrypoint_name), "luaopen_%s", basename);
+//     int (*entrypoint)(lua_State *L);
+//     *(void**)(&entrypoint) = SDL_LoadFunction(library, entrypoint_name);
+//     if (!entrypoint)
+//       return luaL_error(L, "Unable to load %s: Can't find %s(lua_State *L, void *XL)", name, entrypoint_name);
+//     result = entrypoint(L);
+//   } else {
+//     result = ext_entrypoint(L, api_require);
+//   }
 
-  if (!result)
-    return luaL_error(L, "Unable to load %s: entrypoint must return a value", name);
+//   if (!result)
+//     return luaL_error(L, "Unable to load %s: entrypoint must return a value", name);
 
-  return result;
-}
+//   return result;
+// }
 
 #ifdef _WIN32
 #define PATHSEP '\\'
@@ -1294,13 +1294,12 @@ static int f_path_compare(lua_State *L) {
 
 // from lua: set text input state
 static int f_text_input(lua_State* L) {
-  // get window
-  RenWindow *window_renderer = *(RenWindow**)luaL_checkudata(L, 1, API_TYPE_RENWINDOW);
+  if (lua_toboolean(L, 1)) {
+    SDL_StartTextInput(SDL_GetWindowFromID(0));
+  } else {
+    SDL_StopTextInput(SDL_GetWindowFromID(0));
+  }
 
-  if (lua_toboolean(L, 1))
-    SDL_StartTextInput(window_renderer->window);
-  else
-    SDL_StopTextInput(window_renderer->window);
   return 0;
 }
 
@@ -1357,8 +1356,8 @@ static const luaL_Reg lib[] = {
   { "sleep",                 f_sleep                 },
   { "exec",                  f_exec                  },
   { "fuzzy_match",           f_fuzzy_match           },
-  { "set_window_opacity",    f_set_window_opacity    },
-  { "load_native_plugin",    f_load_native_plugin    },
+  // { "set_window_opacity",    f_set_window_opacity    },
+  // { "load_native_plugin",    f_load_native_plugin    },
   { "path_compare",          f_path_compare          },
   { "get_fs_type",           f_get_fs_type           },
   { "text_input",            f_text_input            },
