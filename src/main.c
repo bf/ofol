@@ -121,8 +121,11 @@ int main(int argc, char **argv) {
   putenv("SDL_VIDEO_WAYLAND_SCALE_TO_DISPLAY=1");
 #endif
 
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
-    fprintf(stderr, "Error initializing sdl: %s", SDL_GetError());
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
+    // success
+  } else {
+    //error
+    SDL_Log("Error initializing sdl: %s\n", SDL_GetError());
     exit(1);
   }
   SDL_EnableScreenSaver();
@@ -161,7 +164,7 @@ int main(int argc, char **argv) {
   SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
 
   if ( ren_init() ) {
-    fprintf(stderr, "internal font error when starting the application\n");
+    SDL_Log("internal font error when starting the application\n");
   }
 
   lua_State *L;
