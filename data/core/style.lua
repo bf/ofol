@@ -42,7 +42,7 @@ style.margin = {
 -- on ordinary LCD monitor with RGB patterns.
 --
 local FONT_SETTING_ANTIALIASING="subpixel"
-local FONT_SETTING_HINTING="full"
+local FONT_SETTING_HINTING="slight"
 
 local FONT_DEFAULT = DATADIR .. "/fonts/FiraSans-Regular.ttf"
 -- local FONT_DEFAULT = DATADIR .. "/fonts/JetBrainsMono-Regular.ttf"

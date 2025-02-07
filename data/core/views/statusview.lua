@@ -247,6 +247,7 @@ function StatusView:register_docview_items()
         }
       end
     end,
+    command="scale:reset",
     position = 1,
     tooltip = "scale",
     separator = self.separator2,
