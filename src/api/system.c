@@ -396,15 +396,7 @@ top:
     case SDL_EVENT_WILL_ENTER_FOREGROUND:
     case SDL_EVENT_DID_ENTER_FOREGROUND:
       {
-        #ifdef LITE_USE_SDL_RENDERER
-          rencache_invalidate();
-        #else
-          RenWindow** window_list;
-          size_t window_count = ren_get_window_list(&window_list);
-          while (window_count) {
-            SDL_UpdateWindowSurface(window_list[--window_count]->window);
-          }
-        #endif
+        rencache_invalidate();
         lua_pushstring(L, e.type == SDL_EVENT_WILL_ENTER_FOREGROUND ? "enteringforeground" : "enteredforeground");
         return 1;
       }

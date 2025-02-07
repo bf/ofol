@@ -4,9 +4,9 @@
 #include "api.h"
 #include "../renderer.h"
 #include "../rencache.h"
-// #ifdef LITE_USE_SDL_RENDERER
-// #include "../renwindow.h"
-// #endif
+#ifdef LITE_USE_SDL_RENDERER
+#include "../renwindow.h"
+#endif
 #include "lua.h"
 
 // a reference index to a table that stores the fonts
