@@ -8,11 +8,9 @@ struct RenWindow {
   size_t command_buf_size;
   float scale_x;
   float scale_y;
-#ifdef LITE_USE_SDL_RENDERER
   SDL_Renderer *renderer;
   SDL_Texture *texture;
   RenSurface rensurface;
-#endif
 };
 typedef struct RenWindow RenWindow;
 

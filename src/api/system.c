@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "api.h"
-#include "tinyfiledialogs.h"
+// #include "tinyfiledialogs.h"
 #include "../rencache.h"
 #include "../renwindow.h"
 #ifdef _WIN32
@@ -599,11 +599,8 @@ static int f_show_fatal_error(lua_State *L) {
   const char *title = luaL_checkstring(L, 1);
   const char *msg = luaL_checkstring(L, 2);
 
-#ifdef _WIN32
-  MessageBox(0, msg, title, MB_OK | MB_ICONERROR);
-#else
   SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, msg, NULL);
-#endif
+
   return 0;
 }
 
@@ -611,11 +608,36 @@ static int f_show_dialog_confirm(lua_State *L) {
   const char *title = luaL_checkstring(L, 1);
   const char *msg = luaL_checkstring(L, 2);
 
-  int result = tinyfd_messageBox(title, msg,
-      "yesno", "warning", 1);
+// Define the message box buttons
+    SDL_MessageBoxButtonData buttons[] = {
+        { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 0, "Yes" },
+        { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 1, "No" }
+    };
 
-  lua_pushboolean(L, result);
-  return 1;
+    // Define the message box configuration
+    SDL_MessageBoxData messageboxdata = {
+        SDL_MESSAGEBOX_WARNING,    // MessageBox type
+        SDL_GetWindowFromID(0),                          // No parent window
+        title,              // Title of the dialog
+        msg,     // Message
+        SDL_arraysize(buttons),        // Number of buttons
+        buttons,                       // Button data
+        NULL                           // No callback
+    };
+
+  // int result = tinyfd_messageBox(title, msg, "yesno", "warning", 1);
+  int buttonid;
+  if (SDL_ShowMessageBox(&messageboxdata, &buttonid)) {
+    // success
+    SDL_Log("SDL_ShowMessageBox %d", buttonid);
+    
+    lua_pushboolean(L, buttonid);
+    return 1;
+  } else {
+    // error
+    SDL_Log("Error SDL_ShowMessageBox %s\n", SDL_GetError());
+    exit(1);
+  }
 }
 
 

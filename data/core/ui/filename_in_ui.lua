@@ -14,6 +14,10 @@ function FilenameInUI.get_filename_for_window_title(absolute_path)
   -- get file basename
   local window_title = FileMetadataStore.get_basename(absolute_path)
 
+  if window_title == nil then
+    return "untitled window_title"
+  end
+
   -- get status for unsaved docs
   local status_file_has_no_unsaved_changes = FileMetadataStore.get_file_has_no_unsaved_changes(absolute_path)
 

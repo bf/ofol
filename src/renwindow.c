@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include "renwindow.h"
 
-#ifdef LITE_USE_SDL_RENDERER
 static int query_surface_scale(RenWindow *ren) {
   int w_pixels, h_pixels;
   int w_points, h_points;
@@ -55,12 +54,10 @@ static void setup_renderer(RenWindow *ren, int w, int h) {
 
   ren->rensurface.scale = query_surface_scale(ren);
 }
-#endif
 
 
 void renwin_init_surface(RenWindow *ren) {
   ren->scale_x = ren->scale_y = 1;
-#ifdef LITE_USE_SDL_RENDERER
   SDL_Log("renwin_init_surface\n");
   if (ren->rensurface.surface) {
     SDL_DestroySurface(ren->rensurface.surface);
@@ -84,8 +81,6 @@ void renwin_init_surface(RenWindow *ren) {
     SDL_Log("Error creating surface: %s", SDL_GetError());
     exit(1);
   }
-
-#endif
 }
 
 void renwin_init_command_buf(RenWindow *ren) {
@@ -113,20 +108,10 @@ void renwin_set_clip_rect(RenWindow *ren, RenRect rect) {
 
 
 RenSurface renwin_get_surface(RenWindow *ren) {
-#ifdef LITE_USE_SDL_RENDERER
   return ren->rensurface;
-#else
-  SDL_Surface *surface = SDL_GetWindowSurface(ren->window);
-  if (!surface) {
-    fprintf(stderr, "Error getting window surface: %s", SDL_GetError());
-    exit(1);
-  }
-  return (RenSurface){.surface = surface, .scale = 1};
-#endif
 }
 
 void renwin_resize_surface(RenWindow *ren) {
-#ifdef LITE_USE_SDL_RENDERER
   SDL_Log("********* renwin_resize_surface\n");
   int new_w, new_h, new_scale;
   SDL_GetWindowSizeInPixels(ren->window, &new_w, &new_h);
@@ -140,18 +125,9 @@ void renwin_resize_surface(RenWindow *ren) {
     renwin_clip_to_surface(ren);
     setup_renderer(ren, new_w, new_h);
   }
-#endif
 }
 
 void renwin_update_scale(RenWindow *ren) {
-#ifndef LITE_USE_SDL_RENDERER
-  // fprintf(stderr, "********* renwin_update_scale\n");
-  SDL_Surface *surface = SDL_GetWindowSurface(ren->window);
-  int window_w = surface->w, window_h = surface->h;
-  SDL_GetWindowSize(ren->window, &window_w, &window_h);
-  ren->scale_x = (float)surface->w / window_w;
-  ren->scale_y = (float)surface->h / window_h;
-#endif
 }
 
 void renwin_show_window(RenWindow *ren) {
@@ -159,7 +135,6 @@ void renwin_show_window(RenWindow *ren) {
 }
 
 void renwin_update_rects(RenWindow *ren, RenRect *rects, int count) {
-#ifdef LITE_USE_SDL_RENDERER
   // fprintf(stderr, "********* renwin_update_rects\n");
   const int scale = ren->rensurface.scale;
   for (int i = 0; i < count; i++) {
@@ -173,17 +148,10 @@ void renwin_update_rects(RenWindow *ren, RenRect *rects, int count) {
   // SDL_RenderCopy(ren->renderer, ren->texture, NULL, NULL);
   SDL_RenderTexture(ren->renderer, ren->texture, NULL, NULL);
   SDL_RenderPresent(ren->renderer);
-#else
-  SDL_UpdateWindowSurfaceRects(ren->window, (SDL_Rect*) rects, count);
-#endif
 }
 
 void renwin_free(RenWindow *ren) {
-#ifdef LITE_USE_SDL_RENDERER
   SDL_DestroyTexture(ren->texture);
   SDL_DestroyRenderer(ren->renderer);
   SDL_DestroySurface(ren->rensurface.surface);
-#endif
-  SDL_DestroyWindow(ren->window);
-  ren->window = NULL;
 }
