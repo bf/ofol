@@ -53,6 +53,11 @@ lite_cargs = ['-DSDL_MAIN_HANDLED', '-DPCRE2_STATIC']
 # if get_option('renderer') or host_machine.system() == 'darwin'
     lite_cargs += '-DLITE_USE_SDL_RENDERER'
 # endif
+
+
+# Add the -Wunused-functions flag here
+lite_cargs += '-Wunused-function'
+
 if get_option('arch_tuple') != ''
     arch_tuple = get_option('arch_tuple')
 else

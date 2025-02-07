@@ -233,7 +233,7 @@ main() {
     cp -r data "${build_dir}/src"
     "${build_dir}/src/lite-xl"
     meson configure -Db_pgo=use "${build_dir}"
-    meson compile -C "${build_dir}"
+    meson compile  -C "${build_dir}"
     rm -fr "${build_dir}/src/data"
   fi
 
