@@ -167,7 +167,10 @@ command.add(function(node)
 
 command.add(function()
     local node = core.root_view.root_node:get_child_overlapping_point(core.root_view.mouse.x, core.root_view.mouse.y)
-    if not node then return false end
+    if not node then 
+      return false 
+    end
+    
     return (node.hovered_tab or node.hovered_scroll_button > 0) and true, node
   end,
   {

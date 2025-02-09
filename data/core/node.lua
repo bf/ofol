@@ -30,6 +30,9 @@ function Node:new(type)
   self.views = {}
   self.divider = 0.5
 
+  self.hovered_scroll_button = 0
+  self.hovered_tab = 0
+
   -- shift tab x position by this value
   -- so that active tab stays visible
   self.tab_shift_by_x_so_that_active_tab_stays_visible = 0
