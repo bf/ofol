@@ -6,7 +6,7 @@ local View = require "core.view"
 
 local DocView = require "core.views.docview"
 
-local FileMetadataStore = require "core.stores.file_metadata_store"
+local OpenFilesStore = require "core.stores.open_files_store"
 
 local stderr = require "libraries.stderr"
 
@@ -111,7 +111,7 @@ function RootView:open_doc(doc, go_to_line_number)
 
 
   -- handle metadata for file
-  FileMetadataStore.handle_open_file(doc)
+  OpenFilesStore.handle_open_file(doc)
 
   local node = self:get_active_node_default()
 

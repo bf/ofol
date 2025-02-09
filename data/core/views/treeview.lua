@@ -14,6 +14,8 @@ local CommandView = require "core.views.commandview"
 local DocView = require "core.views.docview"
 local ToolbarView = require "core.views.toolbarview"
 
+local FilenameInUI = require "core.ui.filename_in_ui"
+
 
 local stderr = require "libraries.stderr"
 local fsutils = require "libraries.fsutils"
@@ -652,6 +654,7 @@ end
 
 
 function TreeView:get_name()
+  stderr.debug("treeview.get_name has been called")
   return nil
 end
 
@@ -1098,7 +1101,13 @@ function TreeView:draw_item(item, active, hovered, x, y, w, h)
   -- x = x + (item.depth-) * style.padding.x + style.padding.x
   -- x = x + self:draw_item_chevron(item, active, hovered, x, y, w, h)
 
-  self:draw_item_body(item, active, hovered, x, y, w, h)
+  if item.type == "dir" then
+    self:draw_item_body(item, active, hovered, x, y, w, h)
+  else
+    local filename_for_rendering = FilenameInUI.get_filename_for_tab_title(item.abs_filename, active, hovered)
+    filename_for_rendering:draw(x, y)
+  end
+  
 end
 
 

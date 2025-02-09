@@ -6,7 +6,7 @@ local syntax = require "core.syntax"
 local config = require "core.config"
 local common = require "core.common"
 
-local FileMetadataStore = require "core.stores.file_metadata_store"
+local OpenFilesStore = require "core.stores.open_files_store"
 
 local stderr = require "libraries.stderr"
 
@@ -730,7 +730,7 @@ function Doc:on_close()
   stderr.debug("Closed doc \"%s\"", self:get_name())
 
   -- update metadata
-  FileMetadataStore.handle_close_file(self.abs_filename)
+  OpenFilesStore.handle_close_file(self.abs_filename)
 end
 
 return Doc

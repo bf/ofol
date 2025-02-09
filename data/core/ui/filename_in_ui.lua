@@ -2,6 +2,8 @@ local style = require "core.style"
 local stderr = require "libraries.stderr"
 
 local FileMetadataStore = require "core.stores.file_metadata_store"
+local OpenFilesStore = require "core.stores.open_files_store"
+local common = require "core.common"
 
 local FilenameWithIcon = require "core.ui.render.filename_with_icon"
 
@@ -11,23 +13,23 @@ local FilenameInUI = {}
 function FilenameInUI.get_filename_for_window_title(absolute_path) 
   -- stderr.debug("absolute_path %s", absolute_path)
 
-  -- get file basename
-  local window_title = FileMetadataStore.get_basename(absolute_path)
-
-  if window_title == nil then
+  if absolute_path == nil then
     return "untitled window_title"
   end
 
-  -- get status for unsaved docs
-  local status_file_has_no_unsaved_changes = FileMetadataStore.get_file_has_no_unsaved_changes(absolute_path)
+  -- get file basename
+  local window_title = common.basename(absolute_path)
 
-  if not status_file_has_no_unsaved_changes then
+  -- get status for unsaved docs
+  local status_file_has_unsaved_changes = OpenFilesStore.get_file_has_unsaved_changes(absolute_path)
+
+  if status_file_has_unsaved_changes then
     window_title = window_title .. "*"
   end 
   
   -- when multiple files have same basename we need to use a part of the directory name
   -- in order to differentiate between these files
-  local filename_differentiator = FileMetadataStore.get_filename_differentiator(absolute_path)
+  local filename_differentiator = OpenFilesStore.get_filename_differentiator(absolute_path)
 
   if filename_differentiator then
     window_title = window_title .. " — " .. filename_differentiator
@@ -41,7 +43,7 @@ function FilenameInUI.get_filename_for_tab_title(absolute_path,  is_active, is_h
   -- stderr.debug("absolute_path %s is_active:%s is_hovered:%s", absolute_path, is_active, is_hovered)
   
   -- get file basename
-  local filename_text = FileMetadataStore.get_basename(absolute_path)
+  local filename_text
   local filename_color = style.text
   local filename_is_bold = false
   local icon_symbol 
@@ -50,8 +52,10 @@ function FilenameInUI.get_filename_for_tab_title(absolute_path,  is_active, is_h
   local suffix_color = style.dim
 
   -- handle case when filename_text is nil (e.g. new, unsaved document)
-  if filename_text == nil then
+  if absolute_path == nil then
     filename_text = "untitled"
+  else
+    filename_text = common.basename(absolute_path)
   end
 
   -- active tabs have bold text
@@ -68,15 +72,15 @@ function FilenameInUI.get_filename_for_tab_title(absolute_path,  is_active, is_h
   end
 
   -- get status for unsaved docs
-  local status_file_has_no_unsaved_changes = FileMetadataStore.get_file_has_no_unsaved_changes(absolute_path)
+  local status_file_has_unsaved_changes = OpenFilesStore.get_file_has_unsaved_changes(absolute_path)
 
-  if not status_file_has_no_unsaved_changes then
+  if status_file_has_unsaved_changes then
     filename_text = filename_text .. "*"
   end 
 
   -- when multiple files have same basename we need to use a part of the directory name
   -- in order to differentiate between these files
-  local filename_differentiator = FileMetadataStore.get_filename_differentiator(absolute_path)
+  local filename_differentiator = OpenFilesStore.get_filename_differentiator(absolute_path)
 
   local suffix_text
   if filename_differentiator then
