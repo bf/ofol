@@ -14,11 +14,9 @@ local CachedTabTitles = Cache("tab-title")
 
 local FilenameInUI = require "core.ui.filename_in_ui"
 
-
 local SYMBOL_CLOSE_BUTTON = "C"
 local ICON_SCROLL_BUTTON_LEFT = "<"
 local ICON_SCROLL_BUTTON_RIGHT = ">"
-
 
 ---@class core.node : core.object
 local Node = Object:extend()

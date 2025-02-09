@@ -1035,7 +1035,7 @@ function TreeView:draw_item_text(item, active, hovered, x, y, w, h)
   common.draw_text(item_font, item_color, item_text, nil, x, y, 0, h)
 end
 
-
+-- draw icon for treeview entry
 function TreeView:draw_item_icon(item, active, hovered, x, y, w, h)
   local icon_char, icon_font, icon_color = self:get_item_icon(item, active, hovered)
 
@@ -1055,7 +1055,7 @@ function TreeView:draw_item_icon(item, active, hovered, x, y, w, h)
   end
 end
 
-
+-- draw item body for treeview entry
 function TreeView:draw_item_body(item, active, hovered, x, y, w, h)
     x = x + self:draw_item_icon(item, active, hovered, x, y, w, h)
     self:draw_item_text(item, active, hovered, x, y, w, h)
@@ -1104,8 +1104,8 @@ function TreeView:draw_item(item, active, hovered, x, y, w, h)
   if item.type == "dir" then
     self:draw_item_body(item, active, hovered, x, y, w, h)
   else
-    local filename_for_rendering = FilenameInUI.get_filename_for_tab_title(item.abs_filename, active, hovered)
-    filename_for_rendering:draw(x, y)
+    local filename_for_rendering = FilenameInUI.get_filename_for_tree_view(item.abs_filename, active, hovered)
+    filename_for_rendering:draw(x, y + style.padding.y/2)
   end
   
 end
