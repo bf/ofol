@@ -946,6 +946,8 @@ function Settings:new()
   Settings.super.new(self, nil, false)
 
   self.name = "Settings"
+  self.tab_icon_symbol = "P"
+  
   self.defer_draw = false
   self.border.width = 0
   self.draggable = false

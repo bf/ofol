@@ -112,7 +112,11 @@ end
 
 -- custom __tostring method
 function FilenameWithIcon:__tostring()
-  local output = self.filename_text
+  local output = ""
+
+  if self.filename_text then
+    output = self.filename_text
+  end
 
   if self:_has_icon() then
     output = self.icon_symbol .. " " .. output

@@ -12,6 +12,7 @@ local View = require "core.view"
 local Cache = require "core.cache"
 local CachedTabTitles = Cache("tab-title")
 
+local FilenameWithIcon = require "core.ui.render.filename_with_icon"
 local FilenameInUI = require "core.ui.filename_in_ui"
 
 local SYMBOL_CLOSE_BUTTON = "C"
@@ -197,8 +198,7 @@ function Node:add_view(view, requested_idx)
   
   stderr.debug("add_view at requested_idx %d (total: %d)", requested_idx, #self.views)
 
-  self:print_debug_tab_order()
-
+  -- self:print_debug_tab_order()
 
   -- when views has one item but it is the EmptyView
   if self.views[1] and self.views[1]:is(EmptyView) then
@@ -230,7 +230,7 @@ function Node:add_view(view, requested_idx)
     table.insert(self.views, view)
   end
 
-  self:print_debug_tab_order()
+  -- self:print_debug_tab_order()
 
   -- set view as active
   self:set_active_view(view)
@@ -551,6 +551,7 @@ function Node:update_layout()
     local av = self.active_view
     if self:should_show_tabs() then
       local _, _, _, th = self:get_tab_rect(1)
+      -- local th, _, _ = get_tab_y_sizes()
       av.position.x, av.position.y = self.position.x, self.position.y + th
       av.size.x, av.size.y = self.size.x, self.size.y - th
     else
@@ -607,14 +608,12 @@ function Node:scroll_tabs(scroll_direction)
   self:set_active_view(self.views[go_to_view_index])
 end
 
-
+-- update node
 function Node:update()
   if self.type == "leaf" then
-    local total_tab_width = 0
+    -- if leaf mode then update all views
     for view_index, view in ipairs(self.views) do
       view:update()
-      total_tab_width = total_tab_width + self:get_tab_width_by_view(view)
-      -- stderr.debug("view_index %d total_tab_width %f ", view_index, total_tab_width)
     end
 
     self:tab_hovered_update(core.root_view.mouse.x, core.root_view.mouse.y)
@@ -641,49 +640,89 @@ end
 --   return text
 -- end
 
+
+-- get tab title text for "special" (non-file) views
+function Node:get_tab_title_text_for_special_non_file_views(view)
+  -- if view is not a proper file (e.g. settings dialog)
+  -- then we need to construct our own ui object for rendering
+  local filename_text = ""
+  local icon_symbol = nil
+
+  -- fetch name for view
+  if view["get_name"] ~= nil then
+    filename_text = view:get_name()
+  end
+
+  -- if no name was found
+  if filename_text == nil then
+    stderr.warn_backtrace("couldnt get name for view")
+    filename_text = ""
+  end
+
+  local filename_color = style.accent
+  local filename_is_bold = true
+  local icon_color = style.accent
+  local suffix_text = nil
+  local suffix_color = nil
+
+  -- get tab icon symbol 
+  if view["get_tab_icon_symbol"] ~= nil then 
+    icon_symbol = view:get_tab_icon_symbol()
+  end
+
+  -- create ui object
+  return FilenameWithIcon(filename_text, filename_color, filename_is_bold, icon_symbol, icon_color, suffix_text, suffix_color) 
+end
+
 -- get width of a tab based on the tab view's file name length
 function Node:get_tab_width_by_view(view) 
-  -- stderr.debug("view %s", view)
+  stderr.debug("view %s", view)
+
+  local filename_for_rendering
+
+  -- if view has absolute path (proper file) then use it for tab title
+  if view["get_abs_filename"] ~= nil then
+    -- get absolute path for current document
+    local absolute_path = view:get_abs_filename()
+
+    -- figure out how to display this file
+    filename_for_rendering = FilenameInUI.get_filename_for_tab_title(absolute_path, false, false)
+  else
+    -- if view is not a proper file (e.g. settings dialog)
+    -- then we need to construct our own ui object for rendering
+    filename_for_rendering = self:get_tab_title_text_for_special_non_file_views(view)
+  end
+
+  stderr.debug("filename_for_rendering %s", filename_for_rendering)
+
+  -- get width from ui object: filename with icon and/or suffix
+  local tab_width = filename_for_rendering:get_width()
+
+  -- stderr.debug("get_tab_width_by_view %f", tab_width)
 
   -- add padding on both sides
   local padding_left_right = style.padding.x * 2
 
-  if not view["get_abs_filename"] then
-    return 0
-  end
-
-  -- get absolute path for current document
-  local absolute_path = view:get_abs_filename()
-
-  -- get filename object for rendering
-  local filename_for_rendering = FilenameInUI.get_filename_for_tab_title(absolute_path, false, false)
-
-  -- get width of filename with icon and/or suffix
-  local tab_width =  filename_for_rendering:get_width()
-
-  -- stderr.debug("get_tab_width_by_view %f", tab_width)
-
   return tab_width + padding_left_right
 end
 
+-- draw tab title text as part of tab bar
 function Node:draw_tab_title(view, font, is_active, is_hovered, x, y, w, h)
-  -- -- stderr.debug("draw_tab_title", x, y, w, h)
+  -- stderr.debug("draw_tab_title", x, y, w, h)
 
-  -- local text = self:get_tab_title_text(view, font, w)
+  local filename_for_rendering
 
-  -- local align = "left"
-  -- local color = style.text
-  -- if is_active then color = style.accent end
-  -- if is_hovered then color = style.accent end
+  if view["get_abs_filename"] then
+    -- get absolute path for current document
+    local absolute_path = view:get_abs_filename()
 
-  -- common.draw_text(font, color, text, align, x, y, w, h)
-
-
-  -- get absolute path for current document
-  local absolute_path = view:get_abs_filename()
-
-  -- get filename object for rendering
-  local filename_for_rendering = FilenameInUI.get_filename_for_tab_title(absolute_path, is_active, is_hovered)
+    -- get filename object for rendering
+    filename_for_rendering = FilenameInUI.get_filename_for_tab_title(absolute_path, is_active, is_hovered)
+  else
+    -- for special non-file tabs we need to fetch the name in another way
+    -- this is used e.g. for settings page
+    filename_for_rendering = self:get_tab_title_text_for_special_non_file_views(view)
+  end
 
   -- draw filename object
   filename_for_rendering:draw(x , y + style.font:get_height() / 2)

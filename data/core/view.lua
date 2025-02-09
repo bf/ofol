@@ -90,7 +90,12 @@ end
 
 ---@return string
 function View:get_name()
+  stderr.warn_backtrace("view getname should never be called directly")
   return "---"
+end
+
+function View:get_tab_icon_symbol() 
+  return self.tab_icon_symbol
 end
 
 
