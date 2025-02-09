@@ -552,9 +552,9 @@ function BuildBarView:new()
   self.toolbar_commands = {
     {symbol = "!", command = "build:build"},
     {symbol = '"', command = "build:run-or-term-or-kill"},
-    {symbol = "#", command = "build:rebuild"},
-    {symbol = "$", command = "build:terminate"},
-    {symbol = "&", command = "build:next-target"},
+    -- {symbol = "#", command = "build:rebuild"},
+    -- {symbol = "$", command = "build:terminate"},
+    -- {symbol = "&", command = "build:next-target"},
     {symbol = "%", command = "build:toggle-drawer"},
   }
 end

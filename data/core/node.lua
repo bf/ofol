@@ -693,7 +693,7 @@ function Node:get_tab_width_by_view(view)
     filename_for_rendering = self:get_tab_title_text_for_special_non_file_views(view)
   end
 
-  stderr.debug("filename_for_rendering %s", filename_for_rendering)
+  -- stderr.debug("filename_for_rendering %s", filename_for_rendering)
 
   -- get width from ui object: filename with icon and/or suffix
   local tab_width = filename_for_rendering:get_width()
