@@ -82,7 +82,7 @@ config.plugins.lsp = common.merge({
   stop_unneeded_servers = true,
   log_file = "",
   prettify_json = false,
-  log_server_stderr = false,
+  log_server_stderr = true,
   more_yielding = true,
   autostart_server = true,
   -- The config specification used by the settings gui
@@ -1598,12 +1598,14 @@ function lsp.request_hover(doc, line, col, in_tab)
             if text and #text > 0 then
               text = text:gsub("^[\n%s]+", ""):gsub("[\n%s]+$", "")
               if not in_tab then
+                -- "show symbol info"
                 if kind == "markdown" then text = util.strip_markdown(text) end
                 listbox.show_text(
                   text,
                   { line = line, col = col }
                 )
               else
+                -- "show symbol info in tab"
                 local line1, col1 = translate.start_of_word(doc, line, col)
                 local line2, col2 = translate.end_of_word(doc, line1, col1)
                 local title = doc:get_text(line1, col1, line2, col2):gsub("%s*", "")

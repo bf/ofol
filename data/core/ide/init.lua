@@ -1,5 +1,5 @@
--- load context menu for doc
-require "core.ide.contextmenu_in_docview"
+-- -- load context menu for doc
+-- require "core.ide.contextmenu_in_docview"
 
 -- load lintplus explicitly
 -- local lintplus = require "core.ide.lintplus"

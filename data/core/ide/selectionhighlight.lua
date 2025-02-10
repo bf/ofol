@@ -1,10 +1,12 @@
 local style = require "core.style"
-
+local stderr = require "libraries.stderr"
 local DocView = require "core.views.docview"
 
 -- originally written by luveti
 
 local function draw_box(x, y, w, h, color)
+  stderr.debug("selectionhighlight draw_box")
+
   local r = renderer.draw_rect
   local s = math.ceil(SCALE)
   r(x, y, w, s, color)

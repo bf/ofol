@@ -1,5 +1,6 @@
 ---@type core.doc
 local Doc = require "core.doc"
+local stderr = require "libraries.stderr"
 
 ---A readonly core.doc.
 ---@class lsp.helpdoc : core.doc
@@ -8,6 +9,8 @@ local HelpDoc = Doc:extend()
 ---Set the help text.
 ---@param text string
 function HelpDoc:set_text(text)
+  stderr.debug("helpdoc %s", text)
+  
   self.lines = {}
   local i = 1
   for line in text:gmatch("([^\n]*)\n?") do

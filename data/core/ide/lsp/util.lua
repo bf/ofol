@@ -9,6 +9,7 @@ local common = require "core.common"
 local config = require "core.config"
 
 local json = require "libraries.json"
+local stderr = require "libraries.stderr"
 
 local util = {}
 
@@ -492,39 +493,105 @@ function util.strip_markdown(text)
   return clean_text
 end
 
+
+-- split string into pieces which are max_width pixels each
+function util.split_string_by_max_width(str, font, max_width)
+  stderr.debug("split_string_by_max_width %s max_width %f", str, max_width)
+
+  local result = {}
+
+  -- return early for small strings
+  if #str <= 2 then
+    table.insert(result, str)
+    return result
+  end
+
+  -- iterate over string and cut in pieces
+  local index_start = 1
+  local index_end = 2
+
+  while index_end <= #str do
+    -- create substring
+    local split_candidate = string.sub(str, index_start, index_end)
+    -- get width of substring
+    local width_in_pixel = font:get_width(split_candidate)
+
+    stderr.debug("index_start %d index_end %d width_in_pixel %f max_width %f", index_start, index_end, width_in_pixel, max_width)
+
+    -- check if too wide
+    if width_in_pixel >= max_width or index_end == #str then
+      local insert_candidate = string.sub(str, index_start, index_end - 1)
+      stderr.warn("insert_candidate %s", insert_candidate)
+
+      -- go back one position and use that string
+      table.insert(result, insert_candidate)
+
+      -- move start index to end index
+      index_start = index_end
+    end
+    
+    -- increment end index
+    index_end = index_end + 1
+  end 
+
+
+  return result
+end
+
 ---@param text string
 ---@param font renderer.font
 ---@param max_width number
 function util.wrap_text(text, font, max_width)
+  stderr.warn("TODO: refactor lsp using their own wrap_text function")
+
   local lines = util.split(text, "\n")
   local wrapped_text = ""
-  local longest_line = 0;
+  -- local longest_line = 0;
   for _, line in ipairs(lines) do
-    local line_len = line:ulen() or 0
-    if line_len > longest_line then
-      longest_line = line_len
-      local line_width = font:get_width(line)
-      if line_width > max_width then
-        local words = util.split(line, " ")
+    -- local line_len = line:ulen() or 0
+    -- if line_len > longest_line then
+      -- longest_line = line_len
+
+      -- -- calculate width of new line
+      -- local line_width = font:get_width(line)
+
+      -- if line_width > max_width then
+        -- when line is too long, we need to split the line into words
+        local words
+        -- -- check if line contains spaces
+        -- if string.find(line, " ") ~= nil then
+        --   -- split into words by spaces
+        --   words = util.split(line, " ")
+        -- else
+          -- no spaces found, we need to split by size
+          words = util.split_string_by_max_width(line, font, max_width)
+        -- end
+
+        -- new line is first word
         local new_line = words[1] and words[1] or ""
         wrapped_text = wrapped_text .. new_line
+
         for w=2, #words do
+          -- add words to line until new line is too long
           if font:get_width(new_line .. " " .. words[w]) <= max_width then
             new_line = new_line .. " " .. words[w]
             wrapped_text = wrapped_text .. " " .. words[w]
           else
+            -- if line will be too long then add a newline and then the next word
             wrapped_text = wrapped_text .. "\n" .. words[w]
             new_line = words[w]
           end
         end
         wrapped_text = wrapped_text .. "\n"
-      else
-        wrapped_text = wrapped_text .. line .. "\n"
-      end
-    else
-      wrapped_text = wrapped_text .. line .. "\n"
-    end
+      -- else
+      --   wrapped_text = wrapped_text .. line .. "\n"
+      -- end
+    -- else
+    --   wrapped_text = wrapped_text .. line .. "\n"
+    -- end
   end
+
+  -- stderr.debug("longest_line %d", longest_line)
 
   wrapped_text = wrapped_text:gsub("\n\n\n\n?", "\n\n"):gsub("%s*$", "")
 

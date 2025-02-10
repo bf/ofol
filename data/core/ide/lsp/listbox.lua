@@ -5,11 +5,15 @@
 --
 -- TODO implement select box with fuzzy search
 
+-- used for "show symbol info"
+
 local core = require "core"
 local common = require "core.common"
 local command = require "core.command"
 local style = require "core.style"
 local keymap = require "core.keymap"
+
+local stderr = require "libraries.stderr"
 
 local RootView = require "core.views.rootview"
 local DocView = require "core.views.docview"
@@ -64,7 +68,7 @@ local settings = {
   shown_items = {},
   selected_item_idx = 1,
   show_items_count = false,
-  max_height = 6,
+  max_height = 8,
   active_view = nil,
   line = nil,
   col = nil,
@@ -72,7 +76,7 @@ local settings = {
   last_col = nil,
   callback = nil,
   is_list = false,
-  has_fuzzy_search = false,
+  has_fuzzy_search = true,
   above_text = false,
 }
 
@@ -324,6 +328,7 @@ end
 ---@param is_list? boolean
 ---@param position? lsp.listbox.position
 function listbox.show(is_list, position)
+  stderr.debug("show %s", position)
   set_position(position)
 
   local active_view = get_active_view()
@@ -340,9 +345,18 @@ end
 
 ---@param text string
 ---@param position? lsp.listbox.position
+-- show hover list box
 function listbox.show_text(text, position)
+  stderr.debug("show_text %s", text)
+
   if text and type("text") == "string" then
-    local win_w = system.get_window_size(core.window) - style.padding.x * 6
+    -- local win_w = system.get_window_size(core.window) - style.padding.x * 6
+    -- limit width of hover box to width of edit area
+    local active_docview = get_active_view()
+    local active_docview_total_width = active_docview.size.x
+    local active_docview_gutter_width = active_docview:get_gutter_width()
+    local win_w = active_docview_total_width - active_docview_gutter_width - style.padding.x * 6
+    stderr.warn("win_w %f active_docview_total_width %f active_docview_gutter_width %f", win_w, active_docview_total_width, active_docview_gutter_width)
     text = util.wrap_text(text, style.font, win_w)
 
     local items = {}
@@ -359,6 +373,7 @@ end
 ---@param callback lsp.listbox.callback
 ---@param position? lsp.listbox.position
 function listbox.show_list(items, callback, position)
+  stderr.debug("show_list %s", items)
   listbox.add(items)
 
   if callback then
@@ -371,6 +386,7 @@ end
 ---@param signatures lsp.listbox.signature_list
 ---@param position? lsp.listbox.position
 function listbox.show_signatures(signatures, position)
+  stderr.debug("show_signatures %s", signatures)
   local active_parameter = nil
   local active_signature = nil
 
