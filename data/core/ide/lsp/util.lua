@@ -516,12 +516,12 @@ function util.split_string_by_max_width(str, font, max_width)
     -- get width of substring
     local width_in_pixel = font:get_width(split_candidate)
 
-    stderr.debug("index_start %d index_end %d width_in_pixel %f max_width %f", index_start, index_end, width_in_pixel, max_width)
+    -- stderr.debug("index_start %d index_end %d width_in_pixel %f max_width %f", index_start, index_end, width_in_pixel, max_width)
 
     -- check if too wide
     if width_in_pixel >= max_width or index_end == #str then
       local insert_candidate = string.sub(str, index_start, index_end - 1)
-      stderr.warn("insert_candidate %s", insert_candidate)
+      -- stderr.warn("insert_candidate %s", insert_candidate)
 
       -- go back one position and use that string
       table.insert(result, insert_candidate)
@@ -553,9 +553,9 @@ function util.wrap_text(text, font, max_width)
       -- longest_line = line_len
 
       -- -- calculate width of new line
-      -- local line_width = font:get_width(line)
+      local line_width = font:get_width(line)
 
-      -- if line_width > max_width then
+      if line_width > max_width then
         -- when line is too long, we need to split the line into words
         local words
         -- -- check if line contains spaces
@@ -583,9 +583,9 @@ function util.wrap_text(text, font, max_width)
           end
         end
         wrapped_text = wrapped_text .. "\n"
-      -- else
-      --   wrapped_text = wrapped_text .. line .. "\n"
-      -- end
+      else
+        wrapped_text = wrapped_text .. line .. "\n"
+      end
     -- else
     --   wrapped_text = wrapped_text .. line .. "\n"
     -- end

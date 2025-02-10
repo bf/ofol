@@ -350,13 +350,36 @@ function listbox.show_text(text, position)
   stderr.debug("show_text %s", text)
 
   if text and type("text") == "string" then
-    -- local win_w = system.get_window_size(core.window) - style.padding.x * 6
-    -- limit width of hover box to width of edit area
+    -- available width for listbox
+    local win_w 
+      
+    -- when document is edited, then limit width even more
     local active_docview = get_active_view()
-    local active_docview_total_width = active_docview.size.x
-    local active_docview_gutter_width = active_docview:get_gutter_width()
-    local win_w = active_docview_total_width - active_docview_gutter_width - style.padding.x * 6
-    stderr.warn("win_w %f active_docview_total_width %f active_docview_gutter_width %f", win_w, active_docview_total_width, active_docview_gutter_width)
+
+    -- check if document is being edited
+    if active_docview then
+      -- limit width of hover box to width of edit area
+      local active_docview_total_width = active_docview.size.x
+      -- get width of line numbering
+      local active_docview_gutter_width = active_docview:get_gutter_width()
+
+      -- get width of minimap
+      local minimap_width = 0
+      if active_docview.v_scrollbar ~= nil then
+        -- get minimap width from the scrollbar width
+        local _, _, scrollbar_width = active_docview.v_scrollbar:get_track_rect()
+        minimap_width = scrollbar_width
+      end
+      
+      -- calculate available width
+      win_w = active_docview_total_width - active_docview_gutter_width - minimap_width - style.padding.x * 6
+      stderr.warn("win_w %f active_docview_total_width %f active_docview_gutter_width %f minimap_width %f", win_w, active_docview_total_width, active_docview_gutter_width, minimap_width)
+    else
+      -- when no document is edited, take whole window widt
+      win_w = system.get_window_size(core.window) - style.padding.x * 6
+    end
+
+    -- wrap listbox text according to width constraints
     text = util.wrap_text(text, style.font, win_w)
 
     local items = {}
