@@ -654,7 +654,7 @@ end
 
 
 function TreeView:get_name()
-  stderr.debug("treeview.get_name has been called")
+  -- stderr.debug("treeview.get_name has been called")
   return nil
 end
 
