@@ -330,9 +330,11 @@ function Node:get_divider_overlapping_point(px, py)
   end
 end
 
-
+-- return index of tab which is hovered at (x,y)
 function Node:get_tab_overlapping_point(px, py)
-  if not self:should_show_tabs() then return nil end
+  if not self:should_show_tabs() then 
+    return nil 
+  end
 
   for view_index, _ in ipairs(self.views) do
     local x1, y1, w, h = self:get_tab_rect(view_index)
@@ -357,7 +359,7 @@ function Node:should_show_tabs()
   return false
 end
 
-
+-- return index of scroll button (forward, backward) if hovered, or nil if not hovered
 function Node:get_scroll_button_index(px, py)
   if #self.views == 1 then return end
   for i = 1, 2 do
@@ -370,16 +372,25 @@ end
 
 -- check if tab or scroll button is hovered
 function Node:tab_hovered_update(px, py)
-  -- check if tab is hovered
-  local tab_index = self:get_tab_overlapping_point(px, py)
-  self.hovered_tab = tab_index
-  self.hovered_scroll_button = 0
+  -- check if scroll button is hovered
+  self.hovered_scroll_button = self:get_scroll_button_index(px, py) or 0
 
-  if tab_index then
-    local x, y, w, h = self:get_tab_rect(tab_index)
-  else
-    self.hovered_scroll_button = self:get_scroll_button_index(px, py) or 0
+  if self.hovered_scroll_button == 0 then
+    -- check if tab is hovered
+    self.hovered_tab = self:get_tab_overlapping_point(px, py)
+  else 
+    -- if scroll button is hovered, then tab cannot be hovered
+    self.hovered_tab = 0
   end
+
+  -- self.hovered_tab = tab_index
+  -- self.hovered_scroll_button = 0
+
+  -- if tab_index then
+  --   local x, y, w, h = self:get_tab_rect(tab_index)
+  -- else
+  --   self.hovered_scroll_button = self:get_scroll_button_index(px, py) or 0
+  -- end
 end
 
 

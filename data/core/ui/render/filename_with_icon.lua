@@ -41,9 +41,9 @@ end
 -- returns width of filename text
 function FilenameWithIcon:_get_filename_width() 
   if self.filename_is_bold then
-    return style.bold_font:get_width(self.filename_text) + SPACING_BETWEEN_SUFFIX_AND_TEXT
+    return style.bold_font:get_width(self.filename_text)
   else 
-    return style.font:get_width(self.filename_text) + SPACING_BETWEEN_SUFFIX_AND_TEXT
+    return style.font:get_width(self.filename_text)
   end
 end
 
@@ -60,7 +60,7 @@ end
 -- returns width of suffix
 function FilenameWithIcon:_get_suffix_width() 
   if self:_has_suffix() then
-    return style.font:get_width(self.suffix_text) 
+    return style.font:get_width(self.suffix_text) + SPACING_BETWEEN_SUFFIX_AND_TEXT
   else
     return 0
   end
