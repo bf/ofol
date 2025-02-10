@@ -177,7 +177,7 @@ end
 ---Inserts the default commands for Lite XL into the map.
 function command.add_defaults()
   local reg = {
-    "core", "root", "commandview", "doc", "findreplace",
+    "core", "root", "commandview", "doc_singleline","doc_multiline", "findreplace",
     "files", "dialog",  "statusbar"
   }
   for _, name in ipairs(reg) do

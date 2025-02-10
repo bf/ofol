@@ -90,7 +90,7 @@ end
 
 ---@return string
 function View:get_name()
-  stderr.warn_backtrace("view getname should never be called directly")
+  -- stderr.warn_backtrace("view getname should never be called directly")
   return "---"
 end
 

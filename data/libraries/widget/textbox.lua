@@ -8,7 +8,7 @@ local translate = require "core.doc.translate"
 -- local Doc = require "core.doc"
 local View = require "core.view"
 
-local DocView = require "core.views.docview"
+-- local DocView = require "core.views.docview"
 
 local Widget = require "libraries.widget"
 
@@ -19,86 +19,112 @@ local Widget = require "libraries.widget"
 -- end
 
 
-local SingleLineDoc = require "libraries.widgets.single_line_document"
+-- local SingleLineDoc = require "libraries.widget.single_line_document"
+local SingleLineTextView = require "libraries.widget.single_line_textview"
 
-local TextView = DocView:extend()
+-- local TextView = View:extend()
 
-function TextView:new()
-  TextView.super.new(self, SingleLineDoc())
-  self.gutter_width = 0
-  self.hide_lines_gutter = true
-  self.gutter_text_brightness = 0
-  self.scrollable = true
-  self.font = "font"
-  self.name = View.get_name(self)
+-- function TextView:new()
+--   TextView.super.new(self)
+--   self.doc = SingleLineDoc()
+--   self.gutter_width = 0
+--   self.hide_lines_gutter = true
+--   self.gutter_text_brightness = 0
+--   self.scrollable = true
+--   self.font = "font"
+--   self.name = View.get_name(self)
 
-  self.size.y = 0
-  self.label = ""
-end
+--   self.cursor = "ibeam"
 
-function TextView:get_name()
-  return self.name
-end
+--   self.size.y = 0
+--   self.label = ""
 
-function TextView:get_scrollable_size()
-  return 0
-end
+--   self.ime_selection = { from = 0, size = 0 }
+--   self.ime_status = false
+-- end
 
-function TextView:get_text()
-  return self.doc:get_text(1, 1, 1, math.huge)
-end
 
-function TextView:set_text(text, select)
-  self.doc:remove(1, 1, math.huge, math.huge)
-  self.doc:text_input(text)
-  if select then
-    self.doc:set_selection(math.huge, math.huge, 1, 1)
-  end
-end
+-- function TextView:on_text_input(text)
+--   self.doc:text_input(text)
+-- end
 
-function TextView:get_gutter_width()
-  return self.gutter_width or 0
-end
+-- function TextView:on_ime_text_editing(text, start, length)
+--   self.doc:ime_text_editing(text, start, length)
+--   self.ime_status = #text > 0
+--   self.ime_selection.from = start
+--   self.ime_selection.size = length
 
-function TextView:get_line_height()
-  return math.floor(self:get_font():get_height() * 1.2)
-end
+--   -- Set the composition bounding box that the system IME
+--   -- will consider when drawing its interface
+--   local line1, col1, line2, col2 = self.doc:get_selection(true)
+--   local col = math.min(col1, col2)
+--   self:update_ime_location()
+--   self:scroll_to_make_visible(line1, col + start)
+-- end
 
-function TextView:draw_line_gutter(idx, x, y)
-  if self.hide_lines_gutter then
-    return
-  end
-  TextView.super.draw_line_gutter(self, idx, x, y)
-end
+-- function TextView:get_name()
+--   return self.name
+-- end
 
-function TextView:draw_line_highlight()
-  -- no-op function to disable this functionality
-end
+-- function TextView:get_scrollable_size()
+--   return 0
+-- end
 
--- Overwrite this function just to disable the core.push_clip_rect
-function TextView:draw()
-  self:draw_background(style.background)
-  local _, indent_size = self.doc:get_indent_info()
-  self:get_font():set_tab_size(indent_size)
+-- function TextView:get_text()
+--   return self.doc:get_text(1, 1, 1, math.huge)
+-- end
 
-  local minline, maxline = self:get_visible_line_range()
-  local lh = self:get_line_height()
+-- function TextView:set_text(text, select)
+--   self.doc:remove(1, 1, math.huge, math.huge)
+--   self.doc:text_input(text)
+--   if select then
+--     self.doc:set_selection(math.huge, math.huge, 1, 1)
+--   end
+-- end
 
-  local x, y = self:get_line_screen_position(minline)
-  for i = minline, maxline do
-    self:draw_line_gutter(i, self.position.x, y)
-    y = y + lh
-  end
+-- function TextView:get_gutter_width()
+--   return self.gutter_width or 0
+-- end
 
-  x, y = self:get_line_screen_position(minline)
-  for i = minline, maxline do
-    self:draw_line_body(i, x, y)
-    y = y + lh
-  end
-  self:draw_overlay()
+-- function TextView:get_line_height()
+--   return math.floor(self:get_font():get_height() * 1.2)
+-- end
 
-  self:draw_scrollbar()
-end
+-- function TextView:draw_line_gutter(idx, x, y)
+--   if self.hide_lines_gutter then
+--     return
+--   end
+--   TextView.super.draw_line_gutter(self, idx, x, y)
+-- end
+
+-- function TextView:draw_line_highlight()
+--   -- no-op function to disable this functionality
+-- end
+
+-- -- Overwrite this function just to disable the core.push_clip_rect
+-- function TextView:draw()
+--   self:draw_background(style.background)
+--   local _, indent_size = self.doc:get_indent_info()
+--   self:get_font():set_tab_size(indent_size)
+
+--   local minline, maxline = self:get_visible_line_range()
+--   local lh = self:get_line_height()
+
+--   local x, y = self:get_line_screen_position(minline)
+--   for i = minline, maxline do
+--     self:draw_line_gutter(i, self.position.x, y)
+--     y = y + lh
+--   end
+
+--   x, y = self:get_line_screen_position(minline)
+--   for i = minline, maxline do
+--     self:draw_line_body(i, x, y)
+--     y = y + lh
+--   end
+--   self:draw_overlay()
+
+--   self:draw_scrollbar()
+-- end
 
 ---@class widget.textbox : widget
 ---@overload fun(parent?:widget, text?:string, placeholder?:string):widget.textbox
@@ -110,7 +136,7 @@ local TextBox = Widget:extend()
 function TextBox:new(parent, text, placeholder)
   TextBox.super.new(self, parent)
   self.type_name = "widget.textbox"
-  self.textview = TextView()
+  self.textview = SingleLineTextView()
   self.textview.name = parent.name
   self.size.x = 200 + (style.padding.x * 2)
   self.textview.size.x = self.size.x

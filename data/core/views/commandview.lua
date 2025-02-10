@@ -5,7 +5,7 @@ local style = require "core.style"
 -- local Doc = require "core.doc"
 local View = require "core.view"
 
-local DocView = require "core.views.docview"
+-- local DocView = require "core.views.docview"
 
 local stderr = require "libraries.stderr"
 
@@ -19,11 +19,11 @@ local stderr = require "libraries.stderr"
 -- end
 
 
-local SingleLineDoc = require "libraries.widgets.single_line_document"
+local SingleLineTextview = require "libraries.widget.single_line_textview"
 
 ---@class core.commandview : core.docview
 ---@field super core.docview
-local CommandView = DocView:extend()
+local CommandView = SingleLineTextview:extend()
 
 CommandView.context = "application"
 
@@ -53,7 +53,8 @@ local default_state = {
 
 
 function CommandView:new()
-  CommandView.super.new(self, SingleLineDoc())
+  -- CommandView.super.new(self, SingleLineDoc())
+  CommandView.super.new(self)
   self.suggestion_idx = 1
   self.suggestions_offset = 1
   self.suggestions = {}
