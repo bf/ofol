@@ -543,7 +543,6 @@ function BuildMessageView:draw()
 end
 
 
-
 local BuildBarView = ToolbarView:extend()
 
 function BuildBarView:new()

@@ -153,7 +153,7 @@ function OpenFilesStore.get_filename_differentiator(absolute_path)
   for _, _ in pairs(_store_number_of_files_with_same_file_basename[basename]) do
     if counter > 1 then
       -- early exit
-      return true
+      break
     end
     counter = counter + 1
   end
