@@ -2,7 +2,7 @@ local core = require "core"
 local common = require "core.common"
 local config = require "core.config"
 local style = require "core.style"
-local Doc = require "core.doc"
+-- local Doc = require "core.doc"
 local View = require "core.view"
 
 local DocView = require "core.views.docview"
@@ -10,13 +10,16 @@ local DocView = require "core.views.docview"
 local stderr = require "libraries.stderr"
 
 
----@class core.commandview.input : core.doc
----@field super core.doc
-local SingleLineDoc = Doc:extend()
+-- ---@class core.commandview.input : core.doc
+-- ---@field super core.doc
+-- local SingleLineDoc = Doc:extend()
 
-function SingleLineDoc:insert(line, col, text)
-  SingleLineDoc.super.insert(self, line, col, text:gsub("\n", ""))
-end
+-- function SingleLineDoc:insert(line, col, text)
+--   SingleLineDoc.super.insert(self, line, col, text:gsub("\n", ""))
+-- end
+
+
+local SingleLineDoc = require "libraries.widgets.single_line_document"
 
 ---@class core.commandview : core.docview
 ---@field super core.docview

@@ -661,9 +661,17 @@ function Node:get_tab_title_text_for_special_non_file_views(view)
   local filename_text = ""
   local icon_symbol = nil
 
-  -- fetch name for view
+  -- fetch name for view via get_name()
   if view["get_name"] ~= nil then
     filename_text = view:get_name()
+  end
+
+  -- fallback
+  if filename_text == nil then
+    -- check for type_name
+    if view["type_name"] ~= nil then
+      filename_text = view["type_name"]
+    end
   end
 
   -- if no name was found

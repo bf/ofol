@@ -5,18 +5,21 @@
 local core = require "core"
 local style = require "core.style"
 local translate = require "core.doc.translate"
-local Doc = require "core.doc"
+-- local Doc = require "core.doc"
 local View = require "core.view"
 
 local DocView = require "core.views.docview"
 
 local Widget = require "libraries.widget"
 
-local SingleLineDoc = Doc:extend()
+-- local SingleLineDoc = Doc:extend()
 
-function SingleLineDoc:insert(line, col, text)
-  SingleLineDoc.super.insert(self, line, col, text:gsub("\n", ""))
-end
+-- function SingleLineDoc:insert(line, col, text)
+--   SingleLineDoc.super.insert(self, line, col, text:gsub("\n", ""))
+-- end
+
+
+local SingleLineDoc = require "libraries.widgets.single_line_document"
 
 local TextView = DocView:extend()
 
