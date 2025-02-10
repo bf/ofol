@@ -898,7 +898,7 @@ function Node:draw_tabs()
   local xrb, yrb, wrb, hrb = self:get_scroll_button_rect(1)
 
   -- draw backgroudn for scroll button
-  renderer.draw_rect(xrb + pad, yrb, wrb * 2, hrb, style.background2)
+  renderer.draw_rect(xrb, yrb, wrb * 2, hrb, style.background2)
 
   -- draw left scroll button text
   common.draw_text(style.icon_font, left_button_style, ICON_SCROLL_BUTTON_LEFT, scroll_button_text_align, xrb, yrb, wrb, h)
