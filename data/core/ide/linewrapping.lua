@@ -10,6 +10,8 @@ local translate = require "core.doc.translate"
 
 local DocView = require "core.views.docview"
 
+local stderr = require "libraries.stderr"
+
 config.plugins.linewrapping = common.merge({
 	-- The type of wrapping to perform. Can be "letter" or "word".
   mode = "letter",
@@ -344,8 +346,12 @@ local old_doc_update = DocView.update
 function DocView:update()
   old_doc_update(self)
 
-  if self.wrapped_settings and self.size.x > 0 then
-    LineWrapping.update_docview_breaks(self)
+  if self.is_binary_file_from_disk then
+    stderr.warn("no linewrapping for binary files")
+  else
+    if self.wrapped_settings and self.size.x > 0 then
+      LineWrapping.update_docview_breaks(self)
+    end
   end
 end
 
@@ -358,7 +364,9 @@ end
 
 local old_get_h_scrollable_size = DocView.get_h_scrollable_size
 function DocView:get_h_scrollable_size(...)
-  if self.wrapping_enabled then return 0 end
+  if self.wrapping_enabled then 
+    return 0 
+  end
   return old_get_h_scrollable_size(self, ...)
 end
 
@@ -367,24 +375,36 @@ function DocView:new(doc)
   old_new(self, doc)
   if not open_files[doc] then open_files[doc] = {} end
   table.insert(open_files[doc], self)
-  if config.plugins.linewrapping.enable_by_default then
-    self.wrapping_enabled = true
-    LineWrapping.update_docview_breaks(self)
+
+  if doc.is_binary_file_from_disk then
+    stderr.warn("no linewrapping for binary files from disk")
   else
-    self.wrapping_enabled = false
+    if config.plugins.linewrapping.enable_by_default then
+      self.wrapping_enabled = true
+      LineWrapping.update_docview_breaks(self)
+    else
+      self.wrapping_enabled = false
+    end
   end
 end
 
 local old_scroll_to_line = DocView.scroll_to_line
 function DocView:scroll_to_line(...)
-  if self.wrapping_enabled then LineWrapping.update_docview_breaks(self) end
+  if self.wrapping_enabled then 
+    LineWrapping.update_docview_breaks(self) 
+  end
+
   old_scroll_to_line(self, ...)
 end
 
 local old_scroll_to_make_visible = DocView.scroll_to_make_visible
 function DocView:scroll_to_make_visible(line, col)
-  if self.wrapping_enabled then LineWrapping.update_docview_breaks(self) end
+  if self.wrapping_enabled then 
+    LineWrapping.update_docview_breaks(self) 
+  end
+
   old_scroll_to_make_visible(self, line, col)
+
   if self.wrapped_settings then self.scroll.to.x = 0 end
 end
 
@@ -576,14 +596,22 @@ end
 command.add(nil, {
   ["line-wrapping:enable"] = function()
     if core.active_view and core.active_view.doc then
-      core.active_view.wrapping_enabled = true
-      LineWrapping.update_docview_breaks(core.active_view)
+      if core.active_view.doc.is_binary_file_from_disk then
+        stderr.warn("no linewrapping for binary files from disk")
+      else
+        core.active_view.wrapping_enabled = true
+        LineWrapping.update_docview_breaks(core.active_view)
+      end
     end
   end,
   ["line-wrapping:disable"] = function()
     if core.active_view and core.active_view.doc then
-      core.active_view.wrapping_enabled = false
-      LineWrapping.reconstruct_breaks(core.active_view, core.active_view:get_font(), math.huge)
+      if core.active_view.doc.is_binary_file_from_disk then
+        stderr.warn("no linewrapping for binary files from disk")
+      else
+        core.active_view.wrapping_enabled = false
+        LineWrapping.reconstruct_breaks(core.active_view, core.active_view:get_font(), math.huge)
+      end
     end
   end,
   ["line-wrapping:toggle"] = function()

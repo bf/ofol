@@ -40,6 +40,7 @@ end
 
 function Doc:reset()
   self.lines = { "\n" }
+  self.is_binary_file_from_disk = false
   self.selections = { 1, 1, 1, 1 }
   self.last_selection = 1
   self.undo_stack = { idx = 1 }
@@ -82,6 +83,17 @@ function Doc:try_close()
   end
 end
 
+-- return true if string is binary
+local function string_is_binary(str) 
+  local is_valid_utf8 = pcall(function()
+        for _ in utf8.codes(str) do
+        end
+        return true
+    end)
+
+  return not is_valid_utf8
+end
+
 function Doc:load(filename)
   local fp = assert(io.open(filename, "rb"))
   self:reset()
@@ -92,6 +104,16 @@ function Doc:load(filename)
       line = line:sub(1, -2)
       self.crlf = true
     end
+
+    -- check if file is binary
+    if not self.is_binary_file_from_disk then
+      local is_binary = string_is_binary(line)
+      if is_binary then 
+        stderr.warn("this is a binary file from disk")
+        self.is_binary_file_from_disk = true
+      end
+    end
+
     table.insert(self.lines, line .. "\n")
     self.highlighter.lines[i] = false
     i = i + 1

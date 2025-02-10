@@ -179,18 +179,23 @@ core.add_thread(function()
 
     -- lift all symbols from all docs
     for _, doc in ipairs(core.docs) do
-      -- update the cache if the doc has changed since the last iteration
-      if not cache_is_valid(doc) then
-        cache[doc] = {
-          last_change_id = doc:get_change_id(),
-          symbols = get_symbols(doc)
-        }
+      -- do not process symbols from binary files
+      if doc.is_binary_file_from_disk then
+        stderr.warn("doc is binary file from disk, skipping")
+      else
+        -- update the cache if the doc has changed since the last iteration
+        if not cache_is_valid(doc) then
+          cache[doc] = {
+            last_change_id = doc:get_change_id(),
+            symbols = get_symbols(doc)
+          }
+        end
+        -- update symbol set with doc's symbol set
+        for sym in pairs(cache[doc].symbols) do
+          symbols[sym] = true
+        end
+        coroutine.yield()
       end
-      -- update symbol set with doc's symbol set
-      for sym in pairs(cache[doc].symbols) do
-        symbols[sym] = true
-      end
-      coroutine.yield()
     end
 
     -- update symbols list
