@@ -361,7 +361,7 @@ end
 
 -- return index of scroll button (forward, backward) if hovered, or nil if not hovered
 function Node:get_scroll_button_index(px, py)
-  if #self.views == 1 then return end
+  -- if #self.views == 1 then return end
   for i = 1, 2 do
     local x, y, w, h = self:get_scroll_button_rect(i)
     if px >= x and px < x + w and py >= y and py < y + h then
@@ -627,7 +627,9 @@ function Node:update()
       view:update()
     end
 
-    self:tab_hovered_update(core.root_view.mouse.x, core.root_view.mouse.y)
+    if self:should_show_tabs() then
+      self:tab_hovered_update(core.root_view.mouse.x, core.root_view.mouse.y)
+    end
   else
     self.a:update()
     self.b:update()
@@ -687,7 +689,7 @@ end
 
 -- get width of a tab based on the tab view's file name length
 function Node:get_tab_width_by_view(view) 
-  stderr.debug("view %s", view)
+  -- stderr.debug("view %s", view)
 
   local filename_for_rendering
 
