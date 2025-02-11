@@ -5,10 +5,10 @@
 --
 
 local style = require "core.style"
-local Button = require "libraries.widget.button"
-local Dialog = require "libraries.widget.dialog"
-local Label = require "libraries.widget.label"
-local TextBox = require "libraries.widget.textbox"
+local Button = require "lib.widget.button"
+local Dialog = require "lib.widget.dialog"
+local Label = require "lib.widget.label"
+local TextBox = require "lib.widget.textbox"
 
 ---@class widget.inputdialog : widget.dialog
 ---@overload fun(title?:string, message?:string, text?:string):widget.inputdialog

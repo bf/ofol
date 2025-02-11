@@ -8,8 +8,8 @@
 local core = require "core"
 local style = require "core.style"
 local common = require "core.common"
-local Widget = require "libraries.widget"
-local TextBox = require "libraries.widget.textbox"
+local Widget = require "lib.widget"
+local TextBox = require "lib.widget.textbox"
 
 ---@alias widget.colorpicker.colorrange renderer.color[]
 

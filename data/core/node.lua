@@ -4,7 +4,7 @@ local config = require "core.config"
 local style = require "core.style"
 local Object = require "core.object"
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 local EmptyView = require "core.views.emptyview"
 local View = require "core.view"

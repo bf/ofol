@@ -4,14 +4,14 @@
 
 local core = require "core"
 local command = require "core.command"
-local Widget = require "libraries.widget"
-local Button = require "libraries.widget.button"
-local CheckBox = require "libraries.widget.checkbox"
-local Line = require "libraries.widget.line"
-local Label = require "libraries.widget.label"
-local TextBox = require "libraries.widget.textbox"
-local MessageBox = require "libraries.widget.messagebox"
-local SelectBox = require "libraries.widget.selectbox"
+local Widget = require "lib.widget"
+local Button = require "lib.widget.button"
+local CheckBox = require "lib.widget.checkbox"
+local Line = require "lib.widget.line"
+local Label = require "lib.widget.label"
+local TextBox = require "lib.widget.textbox"
+local MessageBox = require "lib.widget.messagebox"
+local SelectBox = require "lib.widget.selectbox"
 
 local function on_button_click(self)
   MessageBox.info("Clicked:", self.label)

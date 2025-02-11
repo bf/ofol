@@ -5,7 +5,7 @@
 --
 
 local style = require "core.style"
-local Widget = require "libraries.widget"
+local Widget = require "lib.widget"
 
 ---@class widget.checkbox : widget
 ---@overload fun(parent?:widget, label?:string):widget.checkbox

@@ -41,11 +41,11 @@ local liteipc = require "core.ide.lintplus.liteipc"
 
 local renderutil = require "core.ide.lintplus.renderutil"
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 
 local lint = {}
-lint.fs = require "libraries.fsutils"
+lint.fs = require "lib.fsutils"
 lint.ipc = liteipc
 
 

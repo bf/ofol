@@ -4,15 +4,15 @@ local config = require "core.config"
 local style = require "core.style"
 local keymap = require "core.keymap"
 -- local translate = require "core.doc.translate"
-local translate  = require "libraries.widget.single_line_document_translate"
+local translate  = require "lib.widget.single_line_document_translate"
 
 local ime = require "core.ime"
 local View = require "core.view"
 -- local FilenameInUI = require "core.ui.filename_in_ui"
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
-local SingleLineDoc = require "libraries.widget.single_line_document"
+local SingleLineDoc = require "lib.widget.single_line_document"
 
 local SingleLineDocView = View:extend()
 

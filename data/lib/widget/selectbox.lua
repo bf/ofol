@@ -7,8 +7,8 @@
 local core = require "core"
 local common = require "core.common"
 local style = require "core.style"
-local Widget = require "libraries.widget"
-local ListBox = require "libraries.widget.listbox"
+local Widget = require "lib.widget"
+local ListBox = require "lib.widget.listbox"
 
 ---@class widget.selectbox : widget
 ---@overload fun(parent?:widget, label?:string):widget.selectbox

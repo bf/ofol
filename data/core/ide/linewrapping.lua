@@ -10,7 +10,7 @@ local translate = require "core.doc.translate"
 
 local DocView = require "core.views.docview"
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 config.plugins.linewrapping = common.merge({
 	-- The type of wrapping to perform. Can be "letter" or "word".

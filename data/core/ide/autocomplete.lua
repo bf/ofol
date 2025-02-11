@@ -8,7 +8,7 @@ local keymap = require "core.keymap"
 local translate = require "core.doc.translate"
 local Doc = require "core.doc"
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 local RootView = require "core.views.rootview"
 local DocView = require "core.views.docview"

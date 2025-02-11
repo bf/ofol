@@ -5,8 +5,8 @@ local config = require "core.config"
 
 local style = require "themes.default"
 
-local json = require "libraries.json"
-local stderr = require "libraries.stderr"
+local json = require "lib.json"
+local stderr = require "lib.stderr"
 
 local user_session
 local command

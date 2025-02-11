@@ -5,9 +5,9 @@
 --
 
 local style = require "core.style"
-local Button = require "libraries.widget.button"
-local ColorPicker = require "libraries.widget.colorpicker"
-local Dialog = require "libraries.widget.dialog"
+local Button = require "lib.widget.button"
+local ColorPicker = require "lib.widget.colorpicker"
+local Dialog = require "lib.widget.dialog"
 
 ---@class widget.colorpickerdialog : widget.dialog
 ---@overload fun(title?:string, color?:renderer.color|string):widget.colorpickerdialog

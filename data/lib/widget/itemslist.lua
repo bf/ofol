@@ -4,11 +4,11 @@
 -- @license MIT
 --
 local style = require "core.style"
-local Widget = require "libraries.widget"
-local Button = require "libraries.widget.button"
-local ListBox = require "libraries.widget.listbox"
-local InputDialog = require "libraries.widget.inputdialog"
-local MessageBox = require "libraries.widget.messagebox"
+local Widget = require "lib.widget"
+local Button = require "lib.widget.button"
+local ListBox = require "lib.widget.listbox"
+local InputDialog = require "lib.widget.inputdialog"
+local MessageBox = require "lib.widget.messagebox"
 
 ---@class widget.itemslist : widget
 ---@overload fun(parent:widget?):widget.itemslist

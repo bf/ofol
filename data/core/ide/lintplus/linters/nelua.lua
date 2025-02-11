@@ -8,7 +8,7 @@
 
 --- IMPLEMENTATION ---
 local lintplus = require 'core.ide.lintplus'
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 local mode = lintplus.config.nelua_mode or "analyze"
 

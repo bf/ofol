@@ -3,12 +3,12 @@
 --
 
 local core = require "core"
-local Widget = require "libraries.widget"
-local Button = require "libraries.widget.button"
-local CheckBox = require "libraries.widget.checkbox"
-local Line = require "libraries.widget.line"
-local Label = require "libraries.widget.label"
-local TextBox = require "libraries.widget.textbox"
+local Widget = require "lib.widget"
+local Button = require "lib.widget.button"
+local CheckBox = require "lib.widget.checkbox"
+local Line = require "lib.widget.line"
+local Label = require "lib.widget.label"
+local TextBox = require "lib.widget.textbox"
 
 local function on_button_click(self)
   system.show_fatal_error("Clicked:", self.label)

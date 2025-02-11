@@ -7,7 +7,7 @@ local style = require "core.style"
 local Object = require "core.object"
 local View = require "core.view"
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 local border_width = 1
 local divider_width = 1

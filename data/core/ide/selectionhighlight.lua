@@ -1,5 +1,5 @@
 local style = require "core.style"
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 local DocView = require "core.views.docview"
 
 -- originally written by luveti

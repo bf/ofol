@@ -1,5 +1,5 @@
 local core = require "core"
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 local ime = { }
 

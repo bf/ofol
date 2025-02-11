@@ -1,9 +1,9 @@
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 local core = require "core"
 local common = require "core.common"
 local Object = require "core.object"
-local FontInfo = require "libraries.widget.fonts.info"
+local FontInfo = require "lib.widget.fonts.info"
 
 ---@class widget.fonts.cache : core.object
 ---@overload fun():widget.fonts.cache

@@ -1,6 +1,6 @@
 ---@type core.doc
 local Doc = require "core.doc"
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 ---A readonly core.doc.
 ---@class lsp.helpdoc : core.doc

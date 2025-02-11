@@ -10,8 +10,8 @@ local style = require "core.style"
 local keymap = require "core.keymap"
 local View = require "core.view"
 
-local ScrollBar = require "libraries.widget.scrollbar"
-local stderr = require "libraries.stderr"
+local ScrollBar = require "lib.widget.scrollbar"
+local stderr = require "lib.stderr"
 
 local RootView
 

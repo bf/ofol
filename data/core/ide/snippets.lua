@@ -11,7 +11,7 @@ local keymap    = require 'core.keymap'
 
 local autocomplete = require "core.ide.autocomplete"
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 
 local M       = { }

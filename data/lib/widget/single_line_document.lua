@@ -14,9 +14,9 @@ local core = require "core"
 local syntax = require "core.syntax"
 local config = require "core.config"
 local common = require "core.common"
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
-local translate  = require "libraries.widget.single_line_document_translate"
+local translate  = require "lib.widget.single_line_document_translate"
 
 -- functions for translating a Doc position to another position these functions
 -- can be passed to Doc:move_to|select_to|delete_to()

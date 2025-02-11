@@ -11,7 +11,7 @@
 
 --- IMPLEMENTATION ---
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 local lintplus = require "core.ide.lintplus"
 
 local mode = lintplus.config.zig_mode or "ast-check"

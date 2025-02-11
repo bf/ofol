@@ -8,8 +8,8 @@ local core = require "core"
 local common = require "core.common"
 local config = require "core.config"
 
-local json = require "libraries.json"
-local stderr = require "libraries.stderr"
+local json = require "lib.json"
+local stderr = require "lib.stderr"
 
 local util = {}
 

@@ -1,5 +1,5 @@
-local json_config_file = require "libraries.json_config_file"
-local stderr = require "libraries.stderr"
+local json_config_file = require "lib.json_config_file"
+local stderr = require "lib.stderr"
 
 local user_settings = {}
 

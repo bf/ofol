@@ -3,8 +3,8 @@ local common = require "core.common"
 local command = require "core.command"
 local keymap = require "core.keymap"
 
-local json = require "libraries.json"
-local stderr = require "libraries.stderr"
+local json = require "lib.json"
+local stderr = require "lib.stderr"
 
 
 local fullscreen = false

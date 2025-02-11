@@ -1,11 +1,11 @@
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 local core = require "core"
 local common = require "core.common"
 local style = require "core.style"
-local Widget = require "libraries.widget"
-local Button = require "libraries.widget.button"
-local Label = require "libraries.widget.label"
+local Widget = require "lib.widget"
+local Button = require "lib.widget.button"
+local Label = require "lib.widget.label"
 
 ---@class widget.filepicker : widget
 ---@overload fun(parent?:widget, path?:string):widget.filepicker

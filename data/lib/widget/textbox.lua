@@ -10,7 +10,7 @@ local View = require "core.view"
 
 -- local DocView = require "core.views.docview"
 
-local Widget = require "libraries.widget"
+local Widget = require "lib.widget"
 
 -- local SingleLineDoc = Doc:extend()
 
@@ -19,8 +19,8 @@ local Widget = require "libraries.widget"
 -- end
 
 
--- local SingleLineDoc = require "libraries.widget.single_line_document"
-local SingleLineTextView = require "libraries.widget.single_line_textview"
+-- local SingleLineDoc = require "lib.widget.single_line_document"
+local SingleLineTextView = require "lib.widget.single_line_textview"
 
 -- local TextView = View:extend()
 

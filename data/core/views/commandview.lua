@@ -7,7 +7,7 @@ local View = require "core.view"
 
 -- local DocView = require "core.views.docview"
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 
 -- ---@class core.commandview.input : core.doc
@@ -19,7 +19,7 @@ local stderr = require "libraries.stderr"
 -- end
 
 
-local SingleLineTextview = require "libraries.widget.single_line_textview"
+local SingleLineTextview = require "lib.widget.single_line_textview"
 
 ---@class core.commandview : core.docview
 ---@field super core.docview

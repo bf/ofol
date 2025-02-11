@@ -16,7 +16,7 @@ it into your lite-xl configs directory. For example:
 ```sh
 cd ~/.config/lite-xl/
 git clone https://github.com/lite-xl/lite-xl-lsp plugins/lsp
-git clone https://github.com/lite-xl/lite-xl-widgets libraries/widget
+git clone https://github.com/lite-xl/lite-xl-widgets lib.widget
 git clone https://github.com/liquidev/lintplus plugins/lintplus
 wget https://raw.githubusercontent.com/vqns/lite-xl-snippets/main/snippets.lua \
   -O plugins/snippets.lua
@@ -26,7 +26,7 @@ wget https://raw.githubusercontent.com/vqns/lite-xl-snippets/main/lsp_snippets.l
 
 The lite-xl configs directory should have:
 
-* ~/.config/lite-xl/libraries/widget/
+* ~/.config/lite-xl/lib.widget/
 * ~/.config/lite-xl/plugins/lsp/
 * ~/.config/lite-xl/plugins/lintplus/
 * ~/.config/lite-xl/plugins/snippets.lua

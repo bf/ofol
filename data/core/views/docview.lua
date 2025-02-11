@@ -8,7 +8,7 @@ local ime = require "core.ime"
 local View = require "core.view"
 local FilenameComponentFactory = require "components.factories.filename_component_factory"
 
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 local DocView = View:extend()
 

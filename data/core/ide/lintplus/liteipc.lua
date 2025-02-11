@@ -1,5 +1,5 @@
 -- liteipc - async IPC for lite
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 local liteipc = {}
 

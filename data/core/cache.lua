@@ -1,6 +1,6 @@
 -- simple key-value cache
 local Object = require "core.object"
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 local Cache = Object:extend()
 

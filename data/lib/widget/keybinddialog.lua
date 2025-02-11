@@ -6,12 +6,12 @@
 
 local keymap = require "core.keymap"
 local style = require "core.style"
-local Button = require "libraries.widget.button"
-local Dialog = require "libraries.widget.dialog"
-local Label = require "libraries.widget.label"
-local Line = require "libraries.widget.line"
-local ListBox = require "libraries.widget.listbox"
-local MessageBox = require "libraries.widget.messagebox"
+local Button = require "lib.widget.button"
+local Dialog = require "lib.widget.dialog"
+local Label = require "lib.widget.label"
+local Line = require "lib.widget.line"
+local ListBox = require "lib.widget.listbox"
+local MessageBox = require "lib.widget.messagebox"
 
 ---@type widget.keybinddialog
 local current_dialog = nil

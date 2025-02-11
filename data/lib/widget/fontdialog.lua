@@ -6,15 +6,15 @@
 
 local core = require "core"
 local style = require "core.style"
-local Button = require "libraries.widget.button"
-local CheckBox = require "libraries.widget.checkbox"
-local NumberBox = require "libraries.widget.numberbox"
-local Dialog = require "libraries.widget.dialog"
-local Label = require "libraries.widget.label"
-local Line = require "libraries.widget.line"
-local SelectBox = require "libraries.widget.selectbox"
-local MessageBox = require "libraries.widget.messagebox"
-local Fonts = require "libraries.widget.fonts"
+local Button = require "lib.widget.button"
+local CheckBox = require "lib.widget.checkbox"
+local NumberBox = require "lib.widget.numberbox"
+local Dialog = require "lib.widget.dialog"
+local Label = require "lib.widget.label"
+local Line = require "lib.widget.line"
+local SelectBox = require "lib.widget.selectbox"
+local MessageBox = require "lib.widget.messagebox"
+local Fonts = require "lib.widget.fonts"
 
 ---@class widget.fontdialog.fontoptions : renderer.fontoptions
 ---@field size number

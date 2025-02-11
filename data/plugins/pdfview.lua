@@ -2,7 +2,7 @@
 local core = require "core"
 local command = require "core.command"
 local keymap = require "core.keymap"
-local stderr = require "libraries.stderr"
+local stderr = require "lib.stderr"
 
 command.add("core.views.docview!", {
   ["pdfview:show-preview"] = function(av)

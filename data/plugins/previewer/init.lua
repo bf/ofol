@@ -6,7 +6,7 @@
 -- local Doc = require "core.doc"
 -- local CommandView = require "core.commandview"
 -- local EmptyView = require "core.emptyview"
--- local stderr = require "libraries.stderr"
+-- local stderr = require "lib.stderr"
 
 -- local PreviewView = require "plugins.previewer.PreviewView"
 -- local PreviewDoc = require "plugins.previewer.PreviewDoc"

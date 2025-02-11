@@ -5,9 +5,9 @@
 --
 
 local core = require "core"
-local Widget = require "libraries.widget"
-local Button = require "libraries.widget.button"
-local TextBox = require "libraries.widget.textbox"
+local Widget = require "lib.widget"
+local Button = require "lib.widget.button"
+local TextBox = require "lib.widget.textbox"
 
 ---@class widget.numberbox : widget
 ---@overload fun(parent?:widget, value:number, min?:number, max?:number, step?:number):widget.numberbox
