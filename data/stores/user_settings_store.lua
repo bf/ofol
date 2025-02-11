@@ -1,5 +1,4 @@
 local json_config_file = require "lib.json_config_file"
-local stderr = require "lib.stderr"
 
 local UserSettingsStore = {}
 

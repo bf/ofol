@@ -17,7 +17,6 @@ local ToolbarView = require "core.views.toolbarview"
 local FilenameComponentFactory = require "components.factories.filename_component_factory"
 
 
-local stderr = require "lib.stderr"
 local fsutils = require "lib.fsutils"
 
 local ICON_FOR_TEXT_SPACING = "f"

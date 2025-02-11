@@ -3,7 +3,6 @@
 
 local Object = require "core.object"
 local style = require "core.style"
-local stderr = require "lib.stderr"
 
 -- constants for padding between icon/suffix and text
 local SPACING_BETWEEN_ICON_AND_TEXT = style.font:get_width(" ")

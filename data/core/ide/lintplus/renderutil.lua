@@ -1,7 +1,6 @@
 -- rendering utilities
 
 local common = require "core.common"
-local stderr = require "lib.stderr"
 
 local renderutil = {}
 

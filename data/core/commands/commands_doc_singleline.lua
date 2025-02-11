@@ -9,7 +9,6 @@ local tokenizer = require "core.tokenizer"
 local DocView = require "core.views.docview"
 local SingleLineTextView = require "lib.widget.single_line_textview"
 
-local stderr = require "lib.stderr"
 
 
 local function doc()

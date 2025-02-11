@@ -1,5 +1,4 @@
 local json = require("lib.json")
-local stderr = require "lib.stderr"
 
 local json_config_file = {}
 

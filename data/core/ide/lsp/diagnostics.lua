@@ -12,7 +12,6 @@ local lintplus = require "core.ide.lintplus"
 
 local FileMetadataStore = require "stores.file_metadata_store"
 
-local stderr = require "lib.stderr"
 
 ---@class lsp.diagnostics
 local diagnostics = {}

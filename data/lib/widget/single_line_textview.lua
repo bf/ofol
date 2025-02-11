@@ -10,7 +10,6 @@ local ime = require "core.ime"
 local View = require "core.view"
 -- local FilenameInUI = require "core.ui.filename_in_ui"
 
-local stderr = require "lib.stderr"
 
 local SingleLineDoc = require "lib.widget.single_line_document"
 

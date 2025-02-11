@@ -41,7 +41,6 @@ local liteipc = require "core.ide.lintplus.liteipc"
 
 local renderutil = require "core.ide.lintplus.renderutil"
 
-local stderr = require "lib.stderr"
 
 
 local lint = {}

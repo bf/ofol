@@ -1,7 +1,6 @@
 local common = require "core.common"
 local style = {}
 
-local stderr = require("lib.stderr")
 
 style.DEFAULT_FONT_SIZE = common.round(16 * SCALE)
 

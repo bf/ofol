@@ -1,4 +1,3 @@
-local stderr = require "lib.stderr"
 
 local fsutils = {}
 -- file system utilities

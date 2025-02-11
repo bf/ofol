@@ -12,7 +12,6 @@ local Doc      = require 'core.doc'
 
 
 local json 		 = require 'lib.json'
-local stderr = require "lib.stderr"
 
 local snippets = require 'core.ide.snippets'
 

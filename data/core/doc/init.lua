@@ -8,7 +8,6 @@ local common = require "core.common"
 
 local OpenFilesStore = require "stores.open_files_store"
 
-local stderr = require "lib.stderr"
 
 
 ---@class core.doc : core.object

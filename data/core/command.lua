@@ -1,5 +1,4 @@
 local core = require "core"
-local stderr = require "lib.stderr"
 local command = {}
 
 ---A predicate function accepts arguments from `command.perform()` and evaluates to a boolean. </br>

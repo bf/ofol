@@ -6,7 +6,6 @@ local style = require "core.style"
 local View = require "core.view"
 local Object = require "core.object"
 
-local stderr = require "lib.stderr"
 
 local DocView = require "core.views.docview"
 local CommandView = require "core.views.commandview"

@@ -1,5 +1,4 @@
 local style = require "core.style"
-local stderr = require "lib.stderr"
 
 local FileMetadataStore = require "stores.file_metadata_store"
 local OpenFilesStore = require "stores.open_files_store"

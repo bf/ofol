@@ -5,7 +5,6 @@ local config = require "core.config"
 local common = require "core.common"
 local style = require "core.style"
 local View = require "core.view"
-local stderr = require "lib.stderr"
 
 local DocView = require "core.views.docview"
 local StatusView = require "core.views.statusview"

@@ -8,7 +8,6 @@ local DocView = require "core.views.docview"
 
 local OpenFilesStore = require "stores.open_files_store"
 
-local stderr = require "lib.stderr"
 
 -- minimum distance in px after which tab dragging event will be triggered/recognized
 local DRAGGING_MINIMUM_DISTANCE = (170 * SCALE * 0.05)

@@ -1,5 +1,4 @@
 
-local stderr = require "lib.stderr"
 local core = require "core"
 local common = require "core.common"
 local Object = require "core.object"

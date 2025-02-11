@@ -12,7 +12,6 @@
 local Object = require "core.object"
 
 local json = require "lib.json"
-local stderr = require "lib.stderr"
 
 local util = require "core.ide.lsp.util"
 local diagnostics = require "core.ide.lsp.diagnostics"

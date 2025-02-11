@@ -1,7 +1,6 @@
 local core = require "core"
 local Object = require "core.object"
 
-local stderr = require "lib.stderr"
 
 ---@alias plugins.scm.backend.filestatus
 ---| "added"

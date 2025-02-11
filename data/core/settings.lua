@@ -10,7 +10,6 @@ local View = require "core.view"
 local DocView = require "core.views.docview"
 
 local json_config_file = require "lib.json_config_file"
-local stderr = require "lib.stderr"
 
 
 local Widget = require "lib.widget"

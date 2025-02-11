@@ -2,7 +2,6 @@
 -- metadata used for file titles
 
 local common = require "core.common"
-local stderr = require "lib.stderr"
 
 local OpenFilesStore = {}
 

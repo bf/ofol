@@ -1,5 +1,4 @@
 local DocView = require "core.views.docview"
-local stderr = require "lib.stderr"
 
 local PreviewView = DocView:extend()
 

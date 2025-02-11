@@ -1,4 +1,3 @@
-local stderr = require "lib.stderr"
 
 local strict = {}
 strict.defined = {}

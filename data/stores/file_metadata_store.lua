@@ -1,7 +1,6 @@
 -- stores metadata for each file by absolute path
 -- metadata used for file titles
 
-local stderr = require "lib.stderr"
 
 local FileMetadataStore = {}
 

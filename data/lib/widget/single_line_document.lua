@@ -14,7 +14,6 @@ local core = require "core"
 local syntax = require "core.syntax"
 local config = require "core.config"
 local common = require "core.common"
-local stderr = require "lib.stderr"
 
 local translate  = require "lib.widget.single_line_document_translate"
 

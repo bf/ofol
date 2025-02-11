@@ -3,7 +3,6 @@ local command = require "core.command"
 local config = require "core.config"
 local ime = require "core.ime"
 
-local stderr = require "lib.stderr"
 
 local keymap = {}
 

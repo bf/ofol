@@ -4,7 +4,6 @@ local common = require "core.common"
 local Object = require "core.object"
 local Scrollbar = require "core.scrollbar"
 
-local stderr = require "lib.stderr"
 
 ---@class core.view.position
 ---@field x number
