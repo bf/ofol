@@ -8,7 +8,7 @@ local style = require "themes.default"
 local json = require "lib.json"
 local stderr = require "lib.stderr"
 
-local user_session
+local UserSessionStore
 local command
 local keymap
 local dirwatch
@@ -489,7 +489,7 @@ function core.init()
   keymap = require "core.keymap"
   dirwatch = require "core.dirwatch"
   ime = require "core.ime" 
-  user_session = require "core.user_session"
+  UserSessionStore = require "stores.user_session_store"
 
   RootView = require "core.views.rootview"
   StatusView = require "core.views.statusview"
@@ -513,7 +513,7 @@ function core.init()
   end
   do
     -- load last session
-    local stored_session_data = user_session.load_user_session()
+    local stored_session_data = UserSessionStore.load_user_session()
     stderr.debug("loaded stored_session_data %s", stored_session_data)
 
     -- apply stored settings to window
