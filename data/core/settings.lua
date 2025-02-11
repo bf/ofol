@@ -684,7 +684,7 @@ local function get_installed_colors()
   local files, ordered = {}, {}
 
   for _, root_dir in ipairs {DATADIR, USERDIR} do
-    local dir = root_dir .. "/colors"
+    local dir = root_dir .. "/themes"
     for _, filename in ipairs(system.list_dir(dir) or {}) do
       local file_info = system.get_file_info(dir .. "/" .. filename)
       if
@@ -960,7 +960,7 @@ function Settings:new()
   self.notebook.border.width = 0
 
   self.core = self.notebook:add_pane("core", "Core")
-  self.colors = self.notebook:add_pane("colors", "Colors")
+  self.colors = self.notebook:add_pane("colors", "Themes")
   self.plugins = self.notebook:add_pane("plugins", "Plugins")
   self.keybinds = self.notebook:add_pane("keybindings", "Keybindings")
   self.about = self.notebook:add_pane("about", "About")
@@ -1281,7 +1281,7 @@ function Settings:load_color_settings()
   end
 
   function listbox:on_row_click(idx, data)
-    core.reload_module("colors." .. data.name)
+    core.reload_module("themes." .. data.name)
     settings.config.theme = data.name
     user_settings.save_user_settings(settings.config)
   end
@@ -1765,7 +1765,7 @@ function core.run()
   -- apply user chosen color theme
   if settings.config.theme and settings.config.theme ~= "default" then
     core.try(function()
-      core.reload_module("colors." .. settings.config.theme)
+      core.reload_module("themes." .. settings.config.theme)
     end)
   end
 

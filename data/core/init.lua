@@ -3,7 +3,7 @@ require "core.regex"
 local common = require "core.common"
 local config = require "core.config"
 
-local style = require "colors.default"
+local style = require "themes.default"
 
 local json = require "libraries.json"
 local stderr = require "libraries.stderr"
