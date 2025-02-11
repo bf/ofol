@@ -59,7 +59,7 @@ package.searchers = {
 table.pack = table.pack or pack or function(...) return {...} end
 table.unpack = table.unpack or unpack
 
-local stderr = require("libraries.stderr")
+local stderr = require "libraries.stderr"
 
 local lua_require = require
 local require_stack = { "" }
@@ -116,11 +116,16 @@ function require(modname, ...)
     stderr.error("[start.lua] require called without modname?")
   end
 
-
+  -- increase require stack
   table.insert(require_stack, modname)
+
+  -- try to load required module
   local ok, result, loaderdata = pcall(lua_require, modname, ...)
+
+  -- decrease require stack
   table.remove(require_stack)
 
+  -- handle module loading error
   if not ok then
     stderr.error(string.format("[start.lua] require(%s): %s", modname, result))
     return error(result)
