@@ -9,6 +9,7 @@ local config = {}
 ---
 ---Defaults to 60.
 ---@type number
+-- TODO: refactor
 config.fps = 60
 
 config.log_to_stderr = true
