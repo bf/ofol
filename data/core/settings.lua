@@ -687,9 +687,9 @@ local function get_installed_colors()
     for _, filename in ipairs(system.list_dir(dir) or {}) do
       local file_info = system.get_file_info(dir .. "/" .. filename)
       if
-        file_info and file_info.type == "file"
-        and
-        filename:match("%.lua$")
+        file_info 
+        and file_info.type == "file"
+        and filename:match("%.lua$")
       then
         -- read colors
         local contents = io.open(dir .. "/" .. filename):read("*a")
