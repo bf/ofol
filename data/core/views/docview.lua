@@ -6,7 +6,7 @@ local keymap = require "core.keymap"
 local translate = require "core.doc.translate"
 local ime = require "core.ime"
 local View = require "core.view"
-local FilenameComponentFactory = require "core.ui.components.factories.filename_component_factory"
+local FilenameComponentFactory = require "components.factories.filename_component_factory"
 
 local stderr = require "libraries.stderr"
 

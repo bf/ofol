@@ -9,11 +9,8 @@ local stderr = require "libraries.stderr"
 local EmptyView = require "core.views.emptyview"
 local View = require "core.view"
 
-local Cache = require "core.cache"
-local CachedTabTitles = Cache("tab-title")
-
-local FilenameComponent = require "core.ui.components.filename_component"
-local FilenameComponentFactory = require "core.ui.components.factories.filename_component_factory"
+local FilenameComponent = require "components.filename_component"
+local FilenameComponentFactory = require "components.factories.filename_component_factory"
 
 local SYMBOL_CLOSE_BUTTON = "C"
 local ICON_SCROLL_BUTTON_LEFT = "<"

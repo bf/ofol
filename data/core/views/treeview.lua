@@ -14,7 +14,7 @@ local CommandView = require "core.views.commandview"
 local DocView = require "core.views.docview"
 local ToolbarView = require "core.views.toolbarview"
 
-local FilenameComponentFactory = require "core.ui.components.factories.filename_component_factory"
+local FilenameComponentFactory = require "components.factories.filename_component_factory"
 
 
 local stderr = require "libraries.stderr"
