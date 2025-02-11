@@ -2433,7 +2433,7 @@ if autocomplete.add_icon then
 
   -- We add the font here to let it automatically scale by the scale plugin
   style.syntax_fonts["lsp_symbols"] = renderer.font.load(
-    DATADIR .. "/fonts/symbols.ttf",
+    DATADIR .. "/static/fonts/symbols.ttf",
     style.DEFAULT_ICON_SIZE
   )
 

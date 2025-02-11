@@ -174,7 +174,7 @@ function FontDialog:update_preview()
     end
   else
     self.preview.font = renderer.font.load(
-      DATADIR .. "/fonts/FiraSans-Regular.ttf",
+      DATADIR .. "/static/fonts/FiraSans-Regular.ttf",
       options.size * SCALE,
       options
     )

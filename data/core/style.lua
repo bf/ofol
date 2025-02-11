@@ -44,11 +44,11 @@ style.margin = {
 local FONT_SETTING_ANTIALIASING="subpixel"
 local FONT_SETTING_HINTING="slight"
 
-local FONT_DEFAULT = DATADIR .. "/fonts/FiraSans-Regular.ttf"
+local FONT_DEFAULT = DATADIR .. "/static/fonts/FiraSans-Regular.ttf"
 -- local FONT_DEFAULT = DATADIR .. "/fonts/JetBrainsMono-Regular.ttf"
-local FONT_DEFAULT_BOLD = DATADIR .. "/fonts/FiraSans-Medium.ttf"
-local FONT_ICONS = DATADIR .. "/fonts/icons.ttf"
-local FONT_MONOSPACE = DATADIR .. "/fonts/JetBrainsMonoNerdFontPropo-Regular.ttf"
+local FONT_DEFAULT_BOLD = DATADIR .. "/static/fonts/FiraSans-Medium.ttf"
+local FONT_ICONS = DATADIR .. "/static/fonts/icons.ttf"
+local FONT_MONOSPACE = DATADIR .. "/static/fonts/JetBrainsMonoNerdFontPropo-Regular.ttf"
 
 -- On High DPI monitor or non RGB monitor you may consider using antialiasing grayscale instead.
 -- The antialiasing grayscale with full hinting is interesting for crisp font rendering.

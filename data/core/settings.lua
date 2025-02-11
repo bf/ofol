@@ -48,7 +48,7 @@ settings.default_keybindings = {}
 
 
 local DEFAULT_FONT_NAME = "JetBrains Mono Regular"
-local DEFAULT_FONT_PATH = DATADIR .. "/fonts/JetBrainsMono-Regular.ttf"
+local DEFAULT_FONT_PATH = DATADIR .. "/static/fonts/JetBrainsMono-Regular.ttf"
 
 ---Enumeration for the different types of settings.
 ---@type table<string, integer>
