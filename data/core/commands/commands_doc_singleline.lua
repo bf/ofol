@@ -735,5 +735,5 @@ commands["doc:move-to-next-char"] = function(dv)
   dv.doc:merge_cursors()
 end
 
-command.add("core.views.docview", commands)
-command.add("core.views.commandview", commands)
+command.add(false, commands)
+-- command.add("core.views.commandview", commands)

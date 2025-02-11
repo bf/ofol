@@ -14,7 +14,7 @@ local CommandView = require "core.views.commandview"
 local DocView = require "core.views.docview"
 local ToolbarView = require "core.views.toolbarview"
 
-local FilenameInUI = require "core.ui.filename_in_ui"
+local FilenameComponentFactory = require "core.ui.components.factories.filename_component_factory"
 
 
 local stderr = require "libraries.stderr"
@@ -1104,7 +1104,7 @@ function TreeView:draw_item(item, active, hovered, x, y, w, h)
   if item.type == "dir" then
     self:draw_item_body(item, active, hovered, x, y, w, h)
   else
-    local filename_for_rendering = FilenameInUI.get_filename_for_tree_view(item.abs_filename, active, hovered)
+    local filename_for_rendering = FilenameComponentFactory.get_filename_for_tree_view(item.abs_filename, active, hovered)
     filename_for_rendering:draw(x, y + style.padding.y/2)
   end
   

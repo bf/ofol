@@ -12,8 +12,8 @@ local View = require "core.view"
 local Cache = require "core.cache"
 local CachedTabTitles = Cache("tab-title")
 
-local FilenameWithIcon = require "core.ui.render.filename_with_icon"
-local FilenameInUI = require "core.ui.filename_in_ui"
+local FilenameComponent = require "core.ui.components.filename_component"
+local FilenameComponentFactory = require "core.ui.components.factories.filename_component_factory"
 
 local SYMBOL_CLOSE_BUTTON = "C"
 local ICON_SCROLL_BUTTON_LEFT = "<"
@@ -692,7 +692,7 @@ function Node:get_tab_title_text_for_special_non_file_views(view)
   end
 
   -- create ui object
-  return FilenameWithIcon(filename_text, filename_color, filename_is_bold, icon_symbol, icon_color, suffix_text, suffix_color) 
+  return FilenameComponent(filename_text, filename_color, filename_is_bold, icon_symbol, icon_color, suffix_text, suffix_color) 
 end
 
 -- get width of a tab based on the tab view's file name length
@@ -707,7 +707,7 @@ function Node:get_tab_width_by_view(view)
     local absolute_path = view:get_abs_filename()
 
     -- figure out how to display this file
-    filename_for_rendering = FilenameInUI.get_filename_for_tab_title(absolute_path, false, false)
+    filename_for_rendering = FilenameComponentFactory.get_filename_for_tab_title(absolute_path, false, false)
   else
     -- if view is not a proper file (e.g. settings dialog)
     -- then we need to construct our own ui object for rendering
@@ -738,7 +738,7 @@ function Node:draw_tab_title(view, font, is_active, is_hovered, x, y, w, h)
     local absolute_path = view:get_abs_filename()
 
     -- get filename object for rendering
-    filename_for_rendering = FilenameInUI.get_filename_for_tab_title(absolute_path, is_active, is_hovered)
+    filename_for_rendering = FilenameComponentFactory.get_filename_for_tab_title(absolute_path, is_active, is_hovered)
   else
     -- for special non-file tabs we need to fetch the name in another way
     -- this is used e.g. for settings page

@@ -6,7 +6,7 @@ local keymap = require "core.keymap"
 local translate = require "core.doc.translate"
 local ime = require "core.ime"
 local View = require "core.view"
-local FilenameInUI = require "core.ui.filename_in_ui"
+local FilenameComponentFactory = require "core.ui.components.factories.filename_component_factory"
 
 local stderr = require "libraries.stderr"
 
@@ -85,7 +85,7 @@ end
 -- render doc name for window title
 function DocView:get_name()
   -- stderr.debug("docview get name")
-  return FilenameInUI.get_filename_for_window_title(self.doc.abs_filename)
+  return FilenameComponentFactory.get_filename_for_window_title(self.doc.abs_filename)
 end
 
 -- return absolute filename
