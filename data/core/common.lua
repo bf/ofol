@@ -55,7 +55,9 @@ end
 ---@param n number
 ---@return number
 function common.round(n)
-  return n >= 0 and math.floor(n + 0.5) or math.ceil(n - 0.5)
+  stderr.warn_backtrace("common.round used instead of math.round")
+  return math.round(n)
+  -- return n >= 0 and math.floor(n + 0.5) or math.ceil(n - 0.5)
 end
 
 
@@ -358,7 +360,7 @@ function common.draw_text(font, color, text, align, x,y,w,h)
   elseif align == "right" then
     x = x + (w - tw)
   end
-  y = common.round(y + (h - th) / 2)
+  y = math.round(y + (h - th) / 2)
   return renderer.draw_text(font, text, x, y, color), y + th
 end
 

@@ -452,11 +452,11 @@ end
 -- inject rendering routines
 
 local function rail_width(dv)
-  return dv:get_line_height() / 3 -- common.round(style.padding.x / 2)
+  return dv:get_line_height() / 3 -- math.round(style.padding.x / 2)
 end
 
 local function rail_spacing(dv)
-  return common.round(rail_width(dv) / 4)
+  return math.round(rail_width(dv) / 4)
 end
 
 local DocView_get_gutter_width = DocView.get_gutter_width

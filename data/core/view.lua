@@ -276,8 +276,8 @@ end
 ---@return number x
 ---@return number y
 function View:get_content_offset()
-  local x = common.round(self.position.x - self.scroll.x)
-  local y = common.round(self.position.y - self.scroll.y)
+  local x = math.round(self.position.x - self.scroll.x)
+  local y = math.round(self.position.y - self.scroll.y)
   return x, y
 end
 

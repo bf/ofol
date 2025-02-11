@@ -1,30 +1,29 @@
-local common = require "core.common"
 local style = {}
 
 
-style.DEFAULT_FONT_SIZE = common.round(16 * SCALE)
+style.DEFAULT_FONT_SIZE = math.round(16 * SCALE)
 
 -- stderr.error("DEFAULT_FONT_SIZE %s %f %f", style.DEFAULT_FONT_SIZE, style.DEFAULT_FONT_SIZE, SCALE)
 
--- style.DEFAULT_ICON_SIZE = math.abs(common.round(17 * SCALE))
+-- style.DEFAULT_ICON_SIZE = math.abs(math.round(17 * SCALE))
 style.DEFAULT_ICON_SIZE = style.DEFAULT_FONT_SIZE
 
-style.divider_size = common.round(1 * SCALE)
-style.scrollbar_size = common.round(4 * SCALE)
-style.expanded_scrollbar_size = common.round(12 * SCALE)
-style.minimum_thumb_size = common.round(20 * SCALE)
-style.contracted_scrollbar_margin = common.round(8 * SCALE)
-style.expanded_scrollbar_margin = common.round(12 * SCALE)
-style.caret_width = common.round(2 * SCALE)
+style.divider_size = math.round(1 * SCALE)
+style.scrollbar_size = math.round(4 * SCALE)
+style.expanded_scrollbar_size = math.round(12 * SCALE)
+style.minimum_thumb_size = math.round(20 * SCALE)
+style.contracted_scrollbar_margin = math.round(8 * SCALE)
+style.expanded_scrollbar_margin = math.round(12 * SCALE)
+style.caret_width = math.round(2 * SCALE)
 
 style.padding = {
-  x = common.round(14 * SCALE),
-  y = common.round(7 * SCALE),
+  x = math.round(14 * SCALE),
+  y = math.round(7 * SCALE),
 }
 
 style.margin = {
   tab = {
-    top = common.round(style.divider_size * SCALE)
+    top = math.round(style.divider_size * SCALE)
   }
 }
 
