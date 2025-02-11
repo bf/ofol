@@ -5,7 +5,7 @@
 --
 
 local core = require "core"
-local style = require "core.style"
+local style = require "themes.style"
 local Widget = require "lib.widget"
 local MessageBox = require "lib.widget.messagebox"
 

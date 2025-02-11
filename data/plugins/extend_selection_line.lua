@@ -1,6 +1,6 @@
 -- mod-version:3
 local DocView = require "core.views.docview"
-local style = require "core.style"
+local style = require "themes.style"
 
 local draw_line_body = DocView.draw_line_body
 function DocView:draw_line_body(line, x, y)

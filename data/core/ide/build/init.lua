@@ -3,7 +3,7 @@ local command = require "core.command"
 local keymap = require "core.keymap"
 local config = require "core.config"
 local common = require "core.common"
-local style = require "core.style"
+local style = require "themes.style"
 local View = require "core.view"
 
 local DocView = require "core.views.docview"

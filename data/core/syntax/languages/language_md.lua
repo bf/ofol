@@ -1,6 +1,6 @@
 -- mod-version:3
 local syntax = require "core.syntax"
-local style = require "core.style"
+local style = require "themes.style"
 local core = require "core"
 
 local in_squares_match = "^%[%]"

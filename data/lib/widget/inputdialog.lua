@@ -4,7 +4,7 @@
 -- @license MIT
 --
 
-local style = require "core.style"
+local style = require "themes.style"
 local Button = require "lib.widget.button"
 local Dialog = require "lib.widget.dialog"
 local Label = require "lib.widget.label"

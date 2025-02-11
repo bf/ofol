@@ -1,6 +1,6 @@
 local core = require "core"
 local config = require "core.config"
-local style = require "core.style"
+local style = require "themes.style"
 local command = require "core.command"
 local scm = require "core.ide.scm"
 

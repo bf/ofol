@@ -2,7 +2,7 @@
 -- Basic listbox example.
 --
 
-local style = require "core.style"
+local style = require "themes.style"
 local command = require "core.command"
 local Widget = require "lib.widget"
 local ListBox = require "lib.widget.listbox"

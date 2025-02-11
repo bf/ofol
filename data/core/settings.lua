@@ -3,7 +3,7 @@ local config = require "core.config"
 local common = require "core.common"
 local command = require "core.command"
 local keymap = require "core.keymap"
-local style = require "core.style"
+local style = require "themes.style"
 local UserSettingsStore = require "stores.user_settings_store"
 
 local View = require "core.view"
@@ -683,7 +683,7 @@ local function get_installed_colors()
   local files, ordered = {}, {}
 
   for _, root_dir in ipairs {DATADIR, USERDIR} do
-    local dir = root_dir .. "/themes"
+    local dir = root_dir .. "/themes/colors"
     for _, filename in ipairs(system.list_dir(dir) or {}) do
       local file_info = system.get_file_info(dir .. "/" .. filename)
       if
@@ -1280,7 +1280,7 @@ function Settings:load_color_settings()
   end
 
   function listbox:on_row_click(idx, data)
-    core.reload_module("themes." .. data.name)
+    core.reload_module("themes.colors." .. data.name)
     settings.config.theme = data.name
     UserSettingsStore.save_user_settings(settings.config)
   end
@@ -1764,7 +1764,7 @@ function core.run()
   -- apply user chosen color theme
   if settings.config.theme and settings.config.theme ~= "default" then
     core.try(function()
-      core.reload_module("themes." .. settings.config.theme)
+      core.reload_module("themes.colors." .. settings.config.theme)
     end)
   end
 

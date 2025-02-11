@@ -41,7 +41,7 @@ syntax.add {
 
       ["type"] field:
       Set the style that should be used, this is defined on the "style" file from
-      the lite-xl's source, at "data/core/style.lua".
+      the lite-xl's source, at "data/themes.style.lua".
     ]]
     {
       pattern = {"##%[=*%[", "%]=*%]"},

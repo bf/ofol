@@ -5,7 +5,7 @@ local b40 = '#ADADAD'       local teal    = '#4D9999'
 local b20 = '#CECECE'       local blue    = '#1A66B3'
 local b00 = '#E6E6E6'       local magenta = '#994D99'
 --------------------------=--------------------------
-local style               =     require  'core.style'
+local style               =     require  'themes.style'
 local common              =     require 'core.common'
 --------------------------=--------------------------
 style.line_highlight      =     { common.color(b20) }

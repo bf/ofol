@@ -1,5 +1,5 @@
 -- local core = require "core"
-local style = require "core.style"
+local style = require "themes.style"
 -- local keymap = require "core.keymap"
 local View = require "core.view"
 

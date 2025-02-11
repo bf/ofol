@@ -1,7 +1,7 @@
 local core = require "core"
 local common = require "core.common"
 local config = require "core.config"
-local style = require "core.style"
+local style = require "themes.style"
 local keymap = require "core.keymap"
 local translate = require "core.doc.translate"
 local ime = require "core.ime"

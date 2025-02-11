@@ -1,4 +1,4 @@
-local style = require "core.style"
+local style = require "themes.style"
 local common = require "core.common"
 
 style.background = { common.color "#343233" }

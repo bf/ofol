@@ -1,4 +1,4 @@
-local style = require "core.style"
+local style = require "themes.style"
 local DocView = require "core.views.docview"
 
 -- originally written by luveti

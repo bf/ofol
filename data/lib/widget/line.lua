@@ -4,7 +4,7 @@
 -- @license MIT
 --
 
-local style = require "core.style"
+local style = require "themes.style"
 local Widget = require "lib.widget"
 
 ---@class widget.line : widget

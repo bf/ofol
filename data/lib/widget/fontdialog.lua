@@ -5,7 +5,7 @@
 --
 
 local core = require "core"
-local style = require "core.style"
+local style = require "themes.style"
 local Button = require "lib.widget.button"
 local CheckBox = require "lib.widget.checkbox"
 local NumberBox = require "lib.widget.numberbox"

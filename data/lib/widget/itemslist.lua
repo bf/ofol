@@ -3,7 +3,7 @@
 -- @copyright Jefferson Gonzalez
 -- @license MIT
 --
-local style = require "core.style"
+local style = require "themes.style"
 local Widget = require "lib.widget"
 local Button = require "lib.widget.button"
 local ListBox = require "lib.widget.listbox"

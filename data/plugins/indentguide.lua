@@ -1,4 +1,4 @@
-local style = require "core.style"
+local style = require "themes.style"
 local config = require "core.config"
 local common = require "core.common"
 

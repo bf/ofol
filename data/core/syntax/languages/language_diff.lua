@@ -1,6 +1,6 @@
 -- mod-version:3
 local syntax = require "core.syntax"
-local style = require "core.style"
+local style = require "themes.style"
 local common = require "core.common"
 
 -- we need these symbol types to have uniform colors

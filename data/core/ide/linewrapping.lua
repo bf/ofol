@@ -2,7 +2,7 @@
 local core = require "core"
 local common = require "core.common"
 local Doc = require "core.doc"
-local style = require "core.style"
+local style = require "themes.style"
 local config = require "core.config"
 local command = require "core.command"
 local keymap = require "core.keymap"

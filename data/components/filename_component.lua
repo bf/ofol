@@ -2,7 +2,7 @@
 -- metadata used for file titles
 
 local Object = require "core.object"
-local style = require "core.style"
+local style = require "themes.style"
 
 -- constants for padding between icon/suffix and text
 local SPACING_BETWEEN_ICON_AND_TEXT = style.font:get_width(" ")

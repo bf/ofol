@@ -3,7 +3,9 @@ require "core.regex"
 local common = require "core.common"
 local config = require "core.config"
 
-local style = require "themes.default"
+-- even though $style variable is not used in this file, 
+-- if we remove this then the loading of style in views does not work
+local style = require "themes.colors.default"
 
 local json = require "lib.json"
 

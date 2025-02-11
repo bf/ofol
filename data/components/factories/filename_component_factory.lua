@@ -1,4 +1,4 @@
-local style = require "core.style"
+local style = require "themes.style"
 
 local FileMetadataStore = require "stores.file_metadata_store"
 local OpenFilesStore = require "stores.open_files_store"

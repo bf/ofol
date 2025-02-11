@@ -143,7 +143,7 @@ Example:
 
 ```lua
 local common = require "core.common"
-local style = require "core.style"
+local style = require "themes.style"
 style.lint = {
   info = style.syntax["keyword2"],
   hint = style.syntax["function"],

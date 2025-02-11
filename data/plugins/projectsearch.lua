@@ -3,7 +3,7 @@ local core = require "core"
 local common = require "core.common"
 local keymap = require "core.keymap"
 local command = require "core.command"
-local style = require "core.style"
+local style = require "themes.style"
 local View = require "core.view"
 
 ---@class plugins.projectsearch.resultsview : core.view

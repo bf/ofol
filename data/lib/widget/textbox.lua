@@ -3,7 +3,7 @@
 --
 
 local core = require "core"
-local style = require "core.style"
+local style = require "themes.style"
 local translate = require "core.doc.translate"
 -- local Doc = require "core.doc"
 local View = require "core.view"

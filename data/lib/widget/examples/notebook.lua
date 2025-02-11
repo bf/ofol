@@ -5,7 +5,7 @@
 local core = require "core"
 local keymap = require "core.keymap"
 local command = require "core.command"
-local style = require "core.style"
+local style = require "themes.style"
 local NoteBook = require "lib.widget.notebook"
 local Button = require "lib.widget.button"
 local TextBox = require "lib.widget.textbox"

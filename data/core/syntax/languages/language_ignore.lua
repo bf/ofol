@@ -4,7 +4,7 @@
 -- https://github.com/anthonyaxenov/lite-xl-ignore-syntax/
 
 local syntax = require "core.syntax"
-local style = require "core.style"
+local style = require "themes.style"
 local common = require "core.common"
 
 style.syntax["ignore"] = { common.color "#72B886" }
