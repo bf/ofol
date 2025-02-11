@@ -6,7 +6,7 @@ local config = require "core.config"
 local style = require "themes.default"
 
 local json = require "lib.json"
-local stderr = require "lib.stderr"
+-- local stderr = require "lib.stderr"
 
 local UserSessionStore
 local command

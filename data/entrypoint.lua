@@ -68,7 +68,7 @@ package.searchers = {
 table.pack = table.pack or pack or function(...) return {...} end
 table.unpack = table.unpack or unpack
 
-local stderr = require("lib.stderr")
+stderr = require("lib.stderr")
 
 local lua_require = require
 local require_stack = { "" }
