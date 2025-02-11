@@ -51,14 +51,14 @@ function common.merge(a, b)
 end
 
 
----Returns the value of a number rounded to the nearest integer.
----@param n number
----@return number
-function common.round(n)
-  stderr.warn_backtrace("common.round used instead of math.round")
-  return math.round(n)
-  -- return n >= 0 and math.floor(n + 0.5) or math.ceil(n - 0.5)
-end
+-- ---Returns the value of a number rounded to the nearest integer.
+-- ---@param n number
+-- ---@return number
+-- function common.round(n)
+--   stderr.warn_backtrace("common.round used instead of math.round")
+--   return math.round(n)
+--   -- return n >= 0 and math.floor(n + 0.5) or math.ceil(n - 0.5)
+-- end
 
 
 ---Returns the first index where a subtable in tbl has prop set.
