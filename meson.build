@@ -284,18 +284,27 @@ else
 endif
 
 install_data('licenses' / 'licenses.md', install_dir : lite_docdir)
-
 install_subdir('docs' / 'api' , install_dir : lite_datadir, strip_directory: true)
-install_subdir('data' / 'core' , install_dir : lite_datadir, exclude_files : 'start.lua')
-foreach data_module : ['fonts', 'plugins', 'colors', 'libraries']
-    install_subdir(join_paths('data', data_module), install_dir : lite_datadir)
-endforeach
+
+# copy directories with lua scripts
+install_subdir('data' / 'core' , install_dir : lite_datadir)
+install_subdir('data' / 'components' , install_dir : lite_datadir)
+install_subdir('data' / 'libraries' , install_dir : lite_datadir)
+install_subdir('data' / 'plugins' , install_dir : lite_datadir)
+install_subdir('data' / 'static' , install_dir : lite_datadir)
+install_subdir('data' / 'stores' , install_dir : lite_datadir)
+install_subdir('data' / 'themes' , install_dir : lite_datadir)
+
+# foreach data_module : ['components' 'static', 'plugins', 'themes', 'libraries']
+#     install_subdir(join_paths('data', data_module), install_dir : lite_datadir)
+# endforeach
 
 configure_file(
-    input : 'data' / 'core' / 'start.lua',
-    output : 'start.lua',
+    input : 'data' / 'entrypoint.lua',
+    output : 'entrypoint.lua',
     configuration : conf_data,
-    install_dir : join_paths(lite_datadir, 'core'),
+    # install_dir : join_paths(lite_datadir, 'core'),
+    install_dir : lite_datadir,
 )
 
 if not get_option('source-only')

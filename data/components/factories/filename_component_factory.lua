@@ -1,8 +1,8 @@
 local style = require "core.style"
 local stderr = require "libraries.stderr"
 
-local FileMetadataStore = require "core.stores.file_metadata_store"
-local OpenFilesStore = require "core.stores.open_files_store"
+local FileMetadataStore = require "stores.file_metadata_store"
+local OpenFilesStore = require "stores.open_files_store"
 local common = require "core.common"
 
 local FilenameComponent = require "...filename_component"

@@ -10,7 +10,7 @@ local Timer = require "core.ide.lsp.timer"
 
 local lintplus = require "core.ide.lintplus"
 
-local FileMetadataStore = require "core.stores.file_metadata_store"
+local FileMetadataStore = require "stores.file_metadata_store"
 
 local stderr = require "libraries.stderr"
 

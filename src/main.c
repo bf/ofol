@@ -221,7 +221,7 @@ init_lua:
     "  HOME = os.getenv('" LITE_OS_HOME "')\n"
     "  local exedir = match(EXEFILE, '^(.*)" LITE_PATHSEP_PATTERN LITE_NONPATHSEP_PATTERN "$')\n"
     "  local prefix = os.getenv('LITE_PREFIX') or match(exedir, '^(.*)" LITE_PATHSEP_PATTERN "bin$')\n"
-    "  dofile((MACOS_RESOURCES or (prefix and prefix .. '/share/" MY_PROJECT_NAME "' or exedir .. '/data')) .. '/core/start.lua')\n"
+    "  dofile((MACOS_RESOURCES or (prefix and prefix .. '/share/" MY_PROJECT_NAME "' or exedir .. '/data')) .. '/entrypoint.lua')\n"
     "  core = require(os.getenv('LITE_XL_RUNTIME') or 'core')\n"
     "  core.init()\n"
     "  core.run()\n"

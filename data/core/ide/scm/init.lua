@@ -29,7 +29,7 @@ local Fossil = require ".backend.fossil"
 local stderr = require "libraries.stderr"
 local MessageBox = require "libraries.widget.messagebox"
 
-local FileMetadataStore = require "core.stores.file_metadata_store"
+local FileMetadataStore = require "stores.file_metadata_store"
 
 
 

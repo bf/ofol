@@ -6,7 +6,7 @@ local syntax = require "core.syntax"
 local config = require "core.config"
 local common = require "core.common"
 
-local OpenFilesStore = require "core.stores.open_files_store"
+local OpenFilesStore = require "stores.open_files_store"
 
 local stderr = require "libraries.stderr"
 

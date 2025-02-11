@@ -6,7 +6,7 @@ local View = require "core.view"
 
 local DocView = require "core.views.docview"
 
-local OpenFilesStore = require "core.stores.open_files_store"
+local OpenFilesStore = require "stores.open_files_store"
 
 local stderr = require "libraries.stderr"
 
