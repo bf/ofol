@@ -17,7 +17,7 @@ local build = require "core.ide.build"
 -- { name = string, cc = "gcc", cxx = "g++", ar = "ar", binary = path, ignored_files = { "src/api.c" }, cflags = string, ldflags = string, files = {}, obj = path, src = "." }
 
 if not config.plugins.build.internal then config.plugins.build.internal = {} end
-local internal = common.merge({
+local internal = table.merge({
   threads = build.threads,
   running_programs = nil,
   remaining_programs = {},

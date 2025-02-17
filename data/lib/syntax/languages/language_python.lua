@@ -1,13 +1,13 @@
 -- mod-version:3
 local syntax = require "lib.syntax"
 
-local function table_merge(a, b)
-    local t = {}
-    for _, v in pairs(a) do table.insert(t, v) end
-    for _, v in pairs(b) do table.insert(t, v) end
+-- local function table.merge(a, b)
+--     local t = {}
+--     for _, v in pairs(a) do table.insert(t, v) end
+--     for _, v in pairs(b) do table.insert(t, v) end
 
-    return t
-end
+--     return t
+-- end
 
 
 local python_symbols = {
@@ -132,7 +132,7 @@ table.insert(python_fstring.patterns,  1, { pattern = { "{",  "}"  }, syntax = n
 
 local python_func = {
 
-  patterns = table_merge({
+  patterns = table.merge({
 
     { pattern = { "->",   "%f[:]"        }, type = "operator", syntax = python_type  },
     { pattern = { ":%s*", "%f[^%[%]%w_]" },                    syntax = python_type  },
@@ -153,7 +153,7 @@ syntax.add {
   comment = "#",
   block_comment = { '"""', '"""' },
 
-  patterns = table_merge({
+  patterns = table.merge({
 
     { pattern = "#.*",                         type = "comment"                                         },
     { pattern = { '^%s*"""', '"""' },          type = "comment"                                         },

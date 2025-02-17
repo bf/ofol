@@ -8,7 +8,7 @@ local keymap = require "core.keymap"
 
 local DocView = require "core.views.docview"
 
-config.plugins.autoinsert = common.merge({ map = {
+config.plugins.autoinsert = table.merge({ map = {
   ["["] = "]",
   ["{"] = "}",
   ["("] = ")",

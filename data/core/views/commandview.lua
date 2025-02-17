@@ -223,7 +223,7 @@ function CommandView:enter(label, ...)
     options.show_suggestions = self.state.show_suggestions
   end
 
-  self.state = common.merge(default_state, options)
+  self.state = table.merge(default_state, options)
 
   -- We need to keep the text entered with CommandView:set_text to
   -- maintain compatibility with deprecated usage, but still allow

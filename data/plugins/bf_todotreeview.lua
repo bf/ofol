@@ -19,7 +19,7 @@ local SCOPES = {
   FOCUSED = "focused",
 }
 
-config.plugins.bf_todotreeview = common.merge({
+config.plugins.bf_todotreeview = table.merge({
   todo_tags = {"TODO", "BUG", "FIX", "FIXME", "IMPROVEMENT"},
   tag_colors = {
     TODO        = {tag=style.text, tag_hover=style.accent, text=style.text, text_hover=style.accent},

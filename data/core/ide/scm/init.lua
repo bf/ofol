@@ -35,7 +35,7 @@ local FileMetadataStore = require "stores.file_metadata_store"
 ---@class config.plugins.smc
 ---@field highlighter boolean
 ---@field highlighter_alignment "right" | "left"
-config.plugins.smc = common.merge({
+config.plugins.smc = table.merge({
   highlighter = true,
   highlighter_alignment = "right",
   config_spec = {

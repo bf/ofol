@@ -8,7 +8,7 @@ local tokenizer = require "core.doc.tokenizer"
 local Highlighter = require "core.doc.highlighter"
 local color_from_css_string = require "themes.color_from_css_string"
 
-config.plugins.rainbowparen = common.merge({
+config.plugins.rainbowparen = table.merge({
   enabled = true,
   parens = 5
 }, config.plugins.rainbowparen)

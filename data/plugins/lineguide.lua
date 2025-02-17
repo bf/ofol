@@ -7,7 +7,7 @@ local style = require "themes.style"
 local DocView = require "core.views.docview"
 local CommandView = require "core.views.commandview"
 
-config.plugins.lineguide = common.merge({
+config.plugins.lineguide = table.merge({
   enabled = false,
   width = 2,
   rulers = {

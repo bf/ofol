@@ -26,7 +26,7 @@ local ICON_DIR_CLOSED = "d"
 local ICON_TREE_OPEN = "-"
 local ICON_TREE_CLOSED = "+"
 
-config.plugins.treeview = common.merge({
+config.plugins.treeview = table.merge({
   -- Default treeview width
   size = 400 * SCALE,
   highlight_focused_file = true,

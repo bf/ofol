@@ -10,7 +10,7 @@
 -- local looping = false
 -- local on_text_change = Doc.on_text_change
 
--- config.plugins.autosave = common.merge({
+-- config.plugins.autosave = table.merge({
 --   enabled = true,
 --   -- the approximate amount of time, in seconds, that it takes to trigger an autosave
 --   timeout = 1,

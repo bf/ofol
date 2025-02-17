@@ -12,7 +12,7 @@ local Doc = require "core.doc"
 local RootView = require "core.views.rootview"
 local DocView = require "core.views.docview"
 
-config.plugins.autocomplete = common.merge({
+config.plugins.autocomplete = table.merge({
   -- Amount of characters that need to be written for autocomplete
   min_len = 3,
   -- The max amount of visible items

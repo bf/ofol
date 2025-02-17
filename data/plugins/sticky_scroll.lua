@@ -28,7 +28,7 @@ local filetype_overrides = {
   ["Plain Text"] = false
 }
 
-config.plugins.sticky_scroll = common.merge({
+config.plugins.sticky_scroll = table.merge({
   enabled = true,
   max_sticky_lines = 3,
   -- Override the function to get the level of a line.
@@ -62,7 +62,7 @@ config.plugins.sticky_scroll = common.merge({
 }, config.plugins.sticky_scroll)
 
 -- Merge user changes with the default overrides
-config.plugins.sticky_scroll.filetype_overrides = common.merge(filetype_overrides, config.plugins.sticky_scroll.filetype_overrides)
+config.plugins.sticky_scroll.filetype_overrides = table.merge(filetype_overrides, config.plugins.sticky_scroll.filetype_overrides)
 
 
 -- Automatically remove docview (keys) when not needed anymore

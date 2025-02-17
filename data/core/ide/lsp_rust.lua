@@ -5,7 +5,7 @@ local common = require "core.common"
 local config = require "core.config"
 
 lspconfig.rust_analyzer.setup(
-  common.merge({
+  table.merge({
   command = { "rust-analyzer" }
 }, config.plugins.lsp_rust or {}))
 

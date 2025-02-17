@@ -24,7 +24,7 @@ local DocView = require "core.views.docview"
 -- config.plugins.bf_minimap.gutter_width = 0
 
 -- General plugin settings
-config.plugins.bf_minimap = common.merge({
+config.plugins.bf_minimap = table.merge({
   enabled = true,
   always_visible = true,
   width = 100,

@@ -211,7 +211,7 @@ local plugins_config = {}
 ---
 ---This is a metatable that automaticaly creates a minimal
 ---configuration when a plugin is initially configured.
----Each plugins will then call `common.merge()` to get the finalized
+---Each plugins will then call `table.merge()` to get the finalized
 ---plugin config.
 ---Do not use raw operations on this table.
 ---@type table
@@ -243,7 +243,7 @@ setmetatable(config.plugins, {
       plugins_config[k].enabled = false
     elseif type(v) == "table" then
       plugins_config[k].enabled = true
-      plugins_config[k].config = common.merge(plugins_config[k].config, v)
+      plugins_config[k].config = table.merge(plugins_config[k].config, v)
     end
   end,
   __pairs = function()

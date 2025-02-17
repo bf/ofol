@@ -14,7 +14,7 @@ local DocView = require "core.views.docview"
 --   background color = `style.bracketmatch_block_color`
 --   frame color      = `style.bracketmatch_frame_color`
 
-config.plugins.bracketmatch = common.merge({
+config.plugins.bracketmatch = table.merge({
   -- highlight the current bracket too
   highlight_both = true,
   -- can be "underline", "block", "frame", "none"

@@ -12,7 +12,7 @@ local StatusView = require "core.views.statusview"
 -- local TreeView = require "core.views.treeview"
 local ToolbarView = require "core.views.toolbarview"
 
-local build = common.merge({
+local build = table.merge({
   targets = { },
   current_target = 1,
   thread = nil,

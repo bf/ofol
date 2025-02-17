@@ -5,7 +5,7 @@ local common = require "core.common"
 local config = require "core.config"
 local keymap = require "core.keymap"
 
-config.plugins.lfautoinsert = common.merge({ map = {
+config.plugins.lfautoinsert = table.merge({ map = {
   ["{%s*\n"] = "}",
   ["%(%s*\n"] = ")",
   ["%f[[]%[%s*\n"] = "]",

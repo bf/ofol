@@ -6,7 +6,7 @@ local DocView = require "core.views.docview"
 local color_from_css_string = require "themes.color_from_css_string"
 
 
-config.plugins.colorpreview = common.merge({
+config.plugins.colorpreview = table.merge({
   enabled = true,
   -- The config specification used by the settings gui
   config_spec = {

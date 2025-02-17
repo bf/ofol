@@ -13,7 +13,7 @@
 -- local Previewer = {}
 -- Previewer.active = false
 
--- config.plugins.previewer = common.merge({
+-- config.plugins.previewer = table.merge({
 --   simplified = true,
 --   max_size = 1000000, -- ~1MB
 --   only_opened = false,

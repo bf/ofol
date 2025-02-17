@@ -6,7 +6,7 @@ local Node = require "core.node"
 local common = require "core.common"
 local dirwatch = require "core.dirwatch"
 
-config.plugins.autoreload = common.merge({
+config.plugins.autoreload = table.merge({
   always_show_nagview = false,
   config_spec = {
     name = "Autoreload",

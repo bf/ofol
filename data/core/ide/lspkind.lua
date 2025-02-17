@@ -84,8 +84,8 @@ local M = {}
 --- Setup Lspkind icons
 --- @param opts table
 function M.setup(opts)
-	opts = common.merge(defaultOpts, opts)
-	local symbols = common.merge(kindPresets.default, opts.symbols)
+	opts = table.merge(defaultOpts, opts)
+	local symbols = table.merge(kindPresets.default, opts.symbols)
 
 	-- set style.kind_font in style.lua
 	-- if opts.font_raw then

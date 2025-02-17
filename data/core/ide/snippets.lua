@@ -31,7 +31,7 @@ local AUTOCOMPLETE_KEY = { }
 
 -- config
 
-config.plugins.snippets = common.merge({
+config.plugins.snippets = table.merge({
 	autoexit = true,
 
 	config_spec = {
@@ -64,10 +64,10 @@ local function deep_copy(x)
 end
 
 local function copy_snippet(_s)
-	local s = common.merge(_s)
+	local s = table.merge(_s)
 	local nodes = { }
 	for _, n in ipairs(_s.nodes) do
-		table.insert(nodes, common.merge(n))
+		table.insert(nodes, table.merge(n))
 	end
 	s.nodes = nodes
 	return s
@@ -120,7 +120,7 @@ local function get_raw(raw)
 			end
 			local _p = parser(raw.template, raw.p_args)
 			if not _p or not _p.nodes then return end
-			_s = { nodes = common.merge(_p.nodes) }
+			_s = { nodes = table.merge(_p.nodes) }
 			for _, v in ipairs(SNIPPET_FIELDS) do
 				_s[v] = _p[v]
 			end
@@ -128,13 +128,13 @@ local function get_raw(raw)
 			cache[fmt][raw.template] = deep_copy(_s)
 		end
 	elseif raw.nodes then
-		_s = { nodes = common.merge(raw.nodes) }
+		_s = { nodes = table.merge(raw.nodes) }
 	end
 
 	if not _s then return end
 
 	for _, v in ipairs(SNIPPET_FIELDS) do
-		_s[v] = common.merge(_s[v], raw[v])
+		_s[v] = table.merge(_s[v], raw[v])
 	end
 	if not _s.matches.normalized then
 		_s.matches = normalize_match_patterns(_s.matches)
@@ -237,7 +237,7 @@ end
 local function resolve_default(default, ctx, into)
 	local v = unmask(default, ctx) or ''
 	if type(v) ~= 'table' then return v end
-	local inline_into = common.merge(into, { nodes = { }, buf = { } })
+	local inline_into = table.merge(into, { nodes = { }, buf = { } })
 	resolve_one(v, ctx, inline_into)
 	concat_buf(inline_into)
 	return { inline = true, nodes = inline_into.nodes }
@@ -249,7 +249,7 @@ function resolve_user(n, ctx, into)
 		error(string.format('node id must be a positive number: %s', id), 0)
 	end
 
-	n = common.merge(n)
+	n = table.merge(n)
 	concat_buf(into)
 	table.insert(into.nodes, n)
 
@@ -1178,11 +1178,11 @@ end
 
 local function _ok(snippet)
 	return {
-		nodes      = common.merge(snippet.nodes),
-		choices    = common.merge(snippet.choices),
-		defaults   = common.merge(snippet.defaults),
-		matches    = common.merge(snippet.matches),
-		transforms = common.merge(snippet.transforms)
+		nodes      = table.merge(snippet.nodes),
+		choices    = table.merge(snippet.choices),
+		defaults   = table.merge(snippet.defaults),
+		matches    = table.merge(snippet.matches),
+		transforms = table.merge(snippet.transforms)
 	}
 end
 

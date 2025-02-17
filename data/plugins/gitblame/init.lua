@@ -8,7 +8,7 @@ local gitblame = require "plugins.gitblame.gitblame"
 local DocView = require "core.views.docview"
 local color_from_css_string = require "themes.color_from_css_string"
 
-config.plugins.gitblame = common.merge({
+config.plugins.gitblame = table.merge({
 
   text_color = { color_from_css_string "#b7b7b7" },
 

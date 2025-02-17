@@ -36,18 +36,19 @@ end
 ---@param a table|nil
 ---@param b table?
 ---@return table
-function common.merge(a, b)
-  a = type(a) == "table" and a or {}
-  local t = {}
-  for k, v in pairs(a) do
-    t[k] = v
-  end
-  if b and type(b) == "table" then
-    for k, v in pairs(b) do
-      t[k] = v
-    end
-  end
-  return t
+function table.merge(a, b)
+  stderr.deprecated("use table.merge instead")
+  -- a = type(a) == "table" and a or {}
+  -- local t = {}
+  -- for k, v in pairs(a) do
+  --   t[k] = v
+  -- end
+  -- if b and type(b) == "table" then
+  --   for k, v in pairs(b) do
+  --     t[k] = v
+  --   end
+  -- end
+  -- return t
 end
 
 

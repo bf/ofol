@@ -1,8 +1,4 @@
 -- mod-version:3
-
-local style = require "themes.style"
-local common = require "core.common"
-
 local syntax = require "lib.syntax"
 
 syntax.add {

@@ -8,7 +8,7 @@ local style = require "themes.style"
 
 local CommandView = require "core.views.commandview"
 
-config.plugins.scale = common.merge({
+config.plugins.scale = table.merge({
   -- The method used to apply the scaling: "code", "ui"
   mode = "code",
   -- Default scale applied at startup.

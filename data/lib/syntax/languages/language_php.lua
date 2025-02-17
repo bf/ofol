@@ -5,7 +5,6 @@
   version: 20220614_1
 --]]
 local syntax = require "lib.syntax"
-local common = require "core.common"
 local config = require "core.config"
 
 -- load syntax dependencies to add additional rules
@@ -15,7 +14,7 @@ require "lib.syntax.languages.language_js"
 local psql_found = pcall(require, "lib.syntax.languages.language_psql")
 local sql_strings = {}
 
-config.plugins.language_php = common.merge({
+config.plugins.language_php = table.merge({
   sql_strings = true,
   -- The config specification used by the settings gui
   config_spec = {

@@ -7,7 +7,7 @@ local Highlighter = require "core.doc.highlighter"
 
 local DocView = require "core.views.docview"
 
-config.plugins.drawwhitespace = common.merge({
+config.plugins.drawwhitespace = table.merge({
   enabled = false,
   show_leading = true,
   show_trailing = true,

@@ -72,7 +72,7 @@ local LineWrapping = require "core.ide.linewrapping"
 ---Yield when reading from LSP which may give you better UI responsiveness
 ---when receiving large responses, but will affect LSP performance.
 ---@field more_yielding boolean
-config.plugins.lsp = common.merge({
+config.plugins.lsp = table.merge({
   mouse_hover = true,
   mouse_hover_delay = 300,
   show_diagnostics = true,

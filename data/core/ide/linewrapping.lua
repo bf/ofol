@@ -11,7 +11,7 @@ local translate = require "core.doc.translate"
 local DocView = require "core.views.docview"
 
 
-config.plugins.linewrapping = common.merge({
+config.plugins.linewrapping = table.merge({
 	-- The type of wrapping to perform. Can be "letter" or "word".
   mode = "letter",
 	-- If nil, uses the DocView's size, otherwise, uses this exact width. Can be a function.

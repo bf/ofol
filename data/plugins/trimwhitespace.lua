@@ -7,7 +7,7 @@ local Doc = require "core.doc"
 ---@class config.plugins.trimwhitespace
 ---@field enabled boolean
 ---@field trim_empty_end_lines boolean
-config.plugins.trimwhitespace = common.merge({
+config.plugins.trimwhitespace = table.merge({
   enabled = false,
   trim_empty_end_lines = false,
   config_spec = {

@@ -4,7 +4,7 @@ local common = require "core.common"
 
 local DocView = require "core.views.docview"
 
-config.plugins.indentguide = common.merge({
+config.plugins.indentguide = table.merge({
   enabled = true,
   highlight = true,
   -- The config specification used by the settings gui
