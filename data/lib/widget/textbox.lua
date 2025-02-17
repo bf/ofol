@@ -215,10 +215,12 @@ function TextBox:on_mouse_pressed(button, x, y, clicks)
     self.drag_select = { line = line, col = col }
     self.textview.doc:set_selection(line, col, line, col)
     if clicks == 2 then
+      -- select whole word on double click
       local line1, col1 = translate.start_of_word(self.textview.doc, line, col)
       local line2, col2 = translate.end_of_word(self.textview.doc, line1, col1)
       self.textview.doc:set_selection(line2, col2, line1, col1)
     elseif clicks == 3 then
+      -- select whole line on triple click
       self.textview.doc:set_selection(1, 1, 1, math.huge)
     end
     if core.active_view ~= self.textview then

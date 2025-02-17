@@ -633,7 +633,7 @@ function RootView:draw_drag_overlay(ov)
   end
 end
 
-
+-- draw root view
 function RootView:draw()
   self.root_node:draw()
 
@@ -647,8 +647,15 @@ function RootView:draw()
   if self.dragged_node and self.dragged_node.dragging then
     self:draw_grabbed_tab()
   end
+
+  -- cursor change has been requested
   if core.cursor_change_req then
+    stderr.debug("cursor_change_req %s", core.cursor_change_req)
+
+    -- set new cursor
     system.set_cursor(core.cursor_change_req)
+
+    -- remove change request
     core.cursor_change_req = nil
   end
 end

@@ -609,27 +609,27 @@ local function get_all_docviews(node, t)
 end
 
 
-command.add(nil, {
-  ["minimap:toggle-visibility"] = function()
-    config.plugins.bf_minimap.enabled = not config.plugins.bf_minimap.enabled
-    for i,v in ipairs(get_all_docviews(core.root_view.root_node)) do
-      v.v_scrollbar.enabled = nil
-    end
-  end,
-  ["minimap:toggle-syntax-highlighting"] = function()
-    config.plugins.bf_minimap.syntax_highlight = not config.plugins.bf_minimap.syntax_highlight
-  end
-})
+-- command.add(nil, {
+--   ["minimap:toggle-visibility"] = function()
+--     config.plugins.bf_minimap.enabled = not config.plugins.bf_minimap.enabled
+--     for i,v in ipairs(get_all_docviews(core.root_view.root_node)) do
+--       v.v_scrollbar.enabled = nil
+--     end
+--   end,
+--   ["minimap:toggle-syntax-highlighting"] = function()
+--     config.plugins.bf_minimap.syntax_highlight = not config.plugins.bf_minimap.syntax_highlight
+--   end
+-- })
 
-command.add("core.views.docview!", {
-  ["minimap:toggle-visibility-for-current-view"] = function(dv)
-    local sb = dv.v_scrollbar
-    if sb.enabled ~= nil then
-      sb.enabled = not sb.enabled
-    else
-      sb.enabled = not config.plugins.bf_minimap.enabled
-    end
-  end
-})
+-- command.add("core.views.docview!", {
+--   ["minimap:toggle-visibility-for-current-view"] = function(dv)
+--     local sb = dv.v_scrollbar
+--     if sb.enabled ~= nil then
+--       sb.enabled = not sb.enabled
+--     else
+--       sb.enabled = not config.plugins.bf_minimap.enabled
+--     end
+--   end
+-- })
 
 return MiniMap

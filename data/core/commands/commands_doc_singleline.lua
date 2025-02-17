@@ -4,7 +4,7 @@ local common = require "core.common"
 local config = require "core.config"
 local translate = require "core.doc.translate"
 local style = require "themes.style"
-local tokenizer = require "core.tokenizer"
+-- local tokenizer = require "core.tokenizer"
 
 local DocView = require "core.views.docview"
 local SingleLineTextView = require "lib.widget.single_line_textview"
@@ -173,39 +173,39 @@ local function line_comment(comment, line1, col1, line2, col2)
   return line1, col1, line2, col2
 end
 
-local function block_comment(comment, line1, col1, line2, col2)
-  -- automatically skip spaces
-  local word_start = doc():get_text(line1, col1, line1, math.huge):find("%S")
-  local word_end = doc():get_text(line2, 1, line2, col2):find("%s*$")
-  col1 = col1 + (word_start and (word_start - 1) or 0)
-  col2 = word_end and word_end or col2
+-- local function block_comment(comment, line1, col1, line2, col2)
+--   -- automatically skip spaces
+--   local word_start = doc():get_text(line1, col1, line1, math.huge):find("%S")
+--   local word_end = doc():get_text(line2, 1, line2, col2):find("%s*$")
+--   col1 = col1 + (word_start and (word_start - 1) or 0)
+--   col2 = word_end and word_end or col2
 
-  local block_start = doc():get_text(line1, col1, line1, col1 + #comment[1])
-  local block_end = doc():get_text(line2, col2 - #comment[2], line2, col2)
+--   local block_start = doc():get_text(line1, col1, line1, col1 + #comment[1])
+--   local block_end = doc():get_text(line2, col2 - #comment[2], line2, col2)
 
-  if block_start == comment[1] and block_end == comment[2] then
-    -- remove up to 1 whitespace after the comment
-    local start_len, stop_len = #comment[1], #comment[2]
-    if doc():get_text(line1, col1 + #comment[1], line1, col1 + #comment[1] + 1):find("%s$") then
-      start_len = start_len + 1
-    end
-    if doc():get_text(line2, col2 - #comment[2] - 1, line2, col2):find("^%s") then
-      stop_len = stop_len + 1
-    end
+--   if block_start == comment[1] and block_end == comment[2] then
+--     -- remove up to 1 whitespace after the comment
+--     local start_len, stop_len = #comment[1], #comment[2]
+--     if doc():get_text(line1, col1 + #comment[1], line1, col1 + #comment[1] + 1):find("%s$") then
+--       start_len = start_len + 1
+--     end
+--     if doc():get_text(line2, col2 - #comment[2] - 1, line2, col2):find("^%s") then
+--       stop_len = stop_len + 1
+--     end
 
-    doc():remove(line1, col1, line1, col1 + start_len)
-    col2 = col2 - (line1 == line2 and start_len or 0)
-    doc():remove(line2, col2 - stop_len, line2, col2)
+--     doc():remove(line1, col1, line1, col1 + start_len)
+--     col2 = col2 - (line1 == line2 and start_len or 0)
+--     doc():remove(line2, col2 - stop_len, line2, col2)
 
-    return line1, col1, line2, col2 - stop_len
-  else
-    doc():insert(line1, col1, comment[1] .. " ")
-    col2 = col2 + (line1 == line2 and (#comment[1] + 1) or 0)
-    doc():insert(line2, col2, " " .. comment[2])
+--     return line1, col1, line2, col2 - stop_len
+--   else
+--     doc():insert(line1, col1, comment[1] .. " ")
+--     col2 = col2 + (line1 == line2 and (#comment[1] + 1) or 0)
+--     doc():insert(line2, col2, " " .. comment[2])
 
-    return line1, col1, line2, col2 + #comment[2] + 1
-  end
-end
+--     return line1, col1, line2, col2 + #comment[2] + 1
+--   end
+-- end
 
 local function insert_paste(doc, value, whole_line, idx)
   if whole_line then
