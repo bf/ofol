@@ -1072,13 +1072,6 @@ local function get_title_filename(view)
   return ""
 end
 
--- title for window
-function core.compose_window_title(title)
-  local window_title = (title == "" or title == nil) and "OFOL" or title
-  stderr.debug("compose_window_title", window_title)
-  return window_title
-end
-
 -- main stepping loop for event handling
 function core.step()
   -- handle events
@@ -1136,7 +1129,12 @@ function core.step()
   -- update window title
   local current_title = get_title_filename(core.active_view)
   if current_title ~= nil and current_title ~= core.window_title then
-    system.set_window_title(core.window, core.compose_window_title(current_title))
+    -- generate new window title    
+    local new_window_title = (current_title == "" or current_title == nil) and "OFOL" or current_title
+    stderr.debug("new_window_title", new_window_title)
+
+    -- set new window title
+    system.set_window_title(core.window, new_window_title)
     core.window_title = current_title
   end
 
