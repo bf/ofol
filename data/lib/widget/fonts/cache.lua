@@ -3,6 +3,7 @@ local core = require "core"
 local common = require "core.common"
 local Object = require "lib.object"
 local FontInfo = require "lib.widget.fonts.info"
+local serialize = require "lib.serialize"
 
 ---@class widget.fonts.cache : core.object
 ---@overload fun():widget.fonts.cache
@@ -220,7 +221,7 @@ function FontCache:save_cache()
       .. "found_monospaced = "..tostring(self.found_monospaced)..",\n"
       .. "monospaced = "..tostring(self.monospaced)..",\n"
       .. "[\"fonts\"] = "
-      .. common.serialize(
+      .. serialize(
         self.fonts,
         { pretty = true, escape = true, sort = true, initial_indent = 1 }
       ):gsub("^%s+", "")

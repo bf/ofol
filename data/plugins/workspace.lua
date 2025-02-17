@@ -3,7 +3,7 @@ local core = require "core"
 local common = require "core.common"
 
 local DocView = require "core.views.docview"
-
+local serialize = require "lib.serialize"
 
 local function workspace_files_for(project_dir)
   local basename = common.basename(project_dir)
@@ -199,8 +199,8 @@ local function save_workspace()
   local workspace_filename = get_workspace_filename(core.project_dir)
   local fp = io.open(workspace_filename, "w")
   if fp then
-    local node_text = common.serialize(save_node(root))
-    local dir_text = common.serialize(save_directories())
+    local node_text = serialize(save_node(root))
+    local dir_text = serialize(save_directories())
     fp:write(string.format("return { path = %q, documents = %s, directories = %s }\n", core.project_dir, node_text, dir_text))
     fp:close()
   end

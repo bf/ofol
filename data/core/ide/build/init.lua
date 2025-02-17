@@ -6,6 +6,8 @@ local common = require "core.common"
 local style = require "themes.style"
 local View = require "core.view"
 
+local serialize = require "lib.serialize"
+
 local DocView = require "core.views.docview"
 local StatusView = require "core.views.statusview"
 
@@ -92,7 +94,7 @@ if system.get_file_info(DATADIR .. PATHSEP .. "core" .. PATHSEP .. "ide" .. PATH
     end
   end
   save_state = function()
-    io.open(filename, "wb"):write("return " .. common.serialize(build.state)):flush()
+    io.open(filename, "wb"):write("return " .. serialize(build.state)):flush()
   end
 end
 
