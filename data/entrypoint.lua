@@ -68,6 +68,9 @@ package.searchers = {
 table.pack = table.pack or pack or function(...) return {...} end
 table.unpack = table.unpack or unpack
 
+-- global include of fsutils
+fsutils = require("lib.fsutils")
+
 -- global include of stderr logging
 stderr = require("lib.stderr")
 

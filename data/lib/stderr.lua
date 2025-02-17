@@ -1,4 +1,3 @@
-local common = require("core.common")
 
 local EXIT_ON_ERROR = true
 local HIDE_DEBUG_MESSAGES = false
@@ -113,7 +112,7 @@ function stderr.print_with_tag(tag, fmt, ...)
   local at
   if #BASE_PATH > 0 and #info.source > 2 then
      -- figure out relative path if possible
-    local relative_path = common.relative_path(BASE_PATH, string.sub(info.source, 2))
+    local relative_path = fsutils.relative_path(BASE_PATH, string.sub(info.source, 2))
     at = string.format("%s:%d", relative_path, info.currentline)
   else 
      -- use absolute path as fallback
@@ -121,7 +120,7 @@ function stderr.print_with_tag(tag, fmt, ...)
   end
 
   -- from https://stackoverflow.com/a/64271511
-  -- local relative_path = string.format("%s:%d", common.relative_path(DATADIR, info.source), info.currentline)
+  -- local relative_path = string.format("%s:%d", fsutils.relative_path(DATADIR, info.source), info.currentline)
   -- stderr.print_with_tag(item.level, string.format("%s [%s] %s(): %s", os.date("%Y-%m-%d %M:%H"), item.at, info.name, item.text))
   local text_with_func_details = string.format("[%s] %s(): %s", at, info.name, text)
 
