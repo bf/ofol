@@ -11,7 +11,7 @@
 
 local Object = require "lib.object"
 local core = require "core"
-local syntax = require "core.syntax"
+local syntax = require "lib.syntax"
 local config = require "core.config"
 local common = require "core.common"
 

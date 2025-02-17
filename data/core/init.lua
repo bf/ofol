@@ -641,7 +641,7 @@ function core.init()
   local settings = require "core.settings"
 
   -- load syntax highlighting
-  local syntax = require "core.syntax"
+  local syntax = require "lib.syntax"
   syntax.load_languages()
 
   -- load scale

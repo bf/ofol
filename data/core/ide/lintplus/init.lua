@@ -30,7 +30,7 @@ local common = require "core.common"
 local config = require "core.config"
 local style = require "themes.style"
 local keymap = require "core.keymap"
-local syntax = require "core.syntax"
+local syntax = require "lib.syntax"
 
 local Doc = require "core.doc"
 
