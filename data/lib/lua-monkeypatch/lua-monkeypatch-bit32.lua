@@ -1,6 +1,7 @@
-
 -- from core/bit.lua
-local bit = {}
+
+-- define global bit32
+bit32 = {}
 
 local LUA_NBITS = 32
 local ALLONES = (~(((~0) << (LUA_NBITS - 1)) << 1))
@@ -20,14 +21,14 @@ local function check_args(field, width)
          "trying to access non-existent bits")
 end
 
-function bit.extract(n, field, width)
+function bit32.extract(n, field, width)
   local w = width or 1
   check_args(field, w)
   local m = trim(n)
   return m >> field & mask(w)
 end
 
-function bit.replace(n, v, field, width)
+function bit32.replace(n, v, field, width)
   local w = width or 1
   check_args(field, w)
   local m = trim(n)
@@ -35,4 +36,4 @@ function bit.replace(n, v, field, width)
   return m & ~(mask(w) << field) | (x << field)
 end
 
-bit32 = bit32 or bit
+-- global("bit32", bit32)
