@@ -353,7 +353,7 @@ local function find_files_rec(root, path)
       info.filename = common.strip_leading_path(file)
       if info.type == "file" then
         coroutine.yield(root, info)
-      elseif not common.match_pattern(common.basename(info.filename), config.ignore_files) then
+      elseif not string.match_pattern(common.basename(info.filename), config.ignore_files) then
         find_files_rec(root, PATHSEP .. info.filename)
       end
     end

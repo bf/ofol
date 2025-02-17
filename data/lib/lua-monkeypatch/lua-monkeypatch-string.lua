@@ -53,3 +53,24 @@ end
 string.utf8_chars = function(text)
   return text:gmatch("[\0-\x7f\xc2-\xf4][\x80-\xbf]*")
 end
+
+
+---Matches a string against a list of patterns.
+---
+---If a match was found, its start and end index is returned.
+---Otherwise, false is returned.
+---@param text string
+---@param pattern string|string[]
+---@param ... any Other options for string.find().
+---@return number|boolean start_index
+---@return number|nil end_index
+string.match_pattern = function(text, pattern, ...)
+  if type(pattern) == "string" then
+    return text:find(pattern, ...)
+  end
+  for _, p in ipairs(pattern) do
+    local s, e = string.match_pattern(text, p, ...)
+    if s then return s, e end
+  end
+  return false
+end

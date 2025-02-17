@@ -248,7 +248,7 @@ local function update_suggestions()
   -- get all relevant suggestions for given filename
   local items = {}
   for _, v in pairs(map) do
-    if common.match_pattern(filename, v.files) then
+    if string.match_pattern(filename, v.files) then
       for _, item in pairs(v.items) do
         table.insert(items, item)
       end

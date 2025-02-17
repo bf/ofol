@@ -255,7 +255,7 @@ local function filter(self, list)
   if #self.filters > 0 then
     local new_list = {}
     for _, value in ipairs(list) do
-      if common.match_pattern(value, self.filters) then
+      if string.match_pattern(value, self.filters) then
         table.insert(new_list, value)
       elseif
         self.pick_mode == FilePicker.mode.FILE
@@ -300,7 +300,7 @@ local function show_file_picker(self)
       )
     end,
     validate = function(text)
-      if #self.filters > 0 and text ~= "" and not common.match_pattern(text, self.filters) then
+      if #self.filters > 0 and text ~= "" and not string.match_pattern(text, self.filters) then
         stderr.error(
           "File does not match the filters: %s",
           table.concat(self.filters, ", ")
@@ -345,7 +345,7 @@ local function show_dir_picker(self)
       return filter(self, suggest_directory(text))
     end,
     validate = function(text)
-      if #self.filters > 0 and text ~= "" and not common.match_pattern(text, self.filters) then
+      if #self.filters > 0 and text ~= "" and not string.match_pattern(text, self.filters) then
         stderr.error(
           "Directory does not match the filters: %s",
           table.concat(self.filters, ", ")

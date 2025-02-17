@@ -628,7 +628,7 @@ end
 function lsp.get_active_servers(filename, initialized)
   local servers = {}
   for name, server in pairs(lsp.servers) do
-    if common.match_pattern(filename, server.file_patterns) then
+    if string.match_pattern(filename, server.file_patterns) then
       if lsp.servers_running[name] then
         local add_server = true
         if
@@ -741,7 +741,7 @@ function lsp.start_server(filename, project_directory)
   local server_registered = false
   local servers_not_found = {}
   for name, server in pairs(lsp.servers) do
-    if common.match_pattern(filename, server.file_patterns) then
+    if string.match_pattern(filename, server.file_patterns) then
       server_registered = true
       if lsp.servers_running[name] then
         server_started = true
@@ -957,7 +957,7 @@ function lsp.start_server(filename, project_directory)
           -- Send open document request if needed
           for _, docu in ipairs(core.docs) do
             if docu.filename then
-              if common.match_pattern(docu.filename, server.file_patterns) then
+              if string.match_pattern(docu.filename, server.file_patterns) then
                 lsp.open_document(docu)
               end
             end
@@ -2189,7 +2189,7 @@ function Doc:on_close()
     local doc_found = false
     for _, docu in ipairs(core.docs) do
       if docu.filename then
-        if common.match_pattern(docu.filename, server.file_patterns) then
+        if string.match_pattern(docu.filename, server.file_patterns) then
           doc_found = true
           break
         end

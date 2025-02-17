@@ -99,26 +99,6 @@ function common.dir_list_suggest(text, dir_list)
 end
 
 
----Matches a string against a list of patterns.
----
----If a match was found, its start and end index is returned.
----Otherwise, false is returned.
----@param text string
----@param pattern string|string[]
----@param ... any Other options for string.find().
----@return number|boolean start_index
----@return number|nil end_index
-function common.match_pattern(text, pattern, ...)
-  if type(pattern) == "string" then
-    return text:find(pattern, ...)
-  end
-  for _, p in ipairs(pattern) do
-    local s, e = common.match_pattern(text, p, ...)
-    if s then return s, e end
-  end
-  return false
-end
-
 
 
 ---Returns the last portion of a path.

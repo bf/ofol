@@ -41,10 +41,10 @@ local liteipc = require "core.ide.lintplus.liteipc"
 
 local renderutil = require "core.ide.lintplus.renderutil"
 
-
+local fsutils = require "lib.fsutils"
 
 local lint = {}
-lint.fs = require "lib.fsutils"
+
 lint.ipc = liteipc
 
 
@@ -111,7 +111,7 @@ function lint.get_linter_for_doc(doc)
 
   local file = core.project_absolute_path(doc.filename)
   for name, linter in pairs(lint.index) do
-    if common.match_pattern(file, linter.filename) then
+    if string.match_pattern(file, linter.filename) then
       -- stderr.debug("get_linter_for_doc FOUND (1): %s for %s", linter, name)
       return linter, name
     end
@@ -261,7 +261,7 @@ function lint.check(doc)
 
   local cmd, cwd = linter.procedure.command(filename), nil
   if cmd.set_cwd then
-    cwd = lint.fs.parent_directory(filename)
+    cwd = fsutils.parent_directory(filename)
   end
   local process = liteipc.start_process(cmd, cwd)
   core.add_thread(function ()
