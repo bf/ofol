@@ -1065,13 +1065,6 @@ function core.on_event(type, ...)
   return did_keymap
 end
 
--- filename
-local function get_title_filename(view)
-  local doc_filename = view.get_filename and view:get_filename() or view:get_name()
-  if doc_filename ~= "---" then return doc_filename end
-  return ""
-end
-
 -- main stepping loop for event handling
 function core.step()
   -- handle events
@@ -1127,15 +1120,42 @@ function core.step()
   end
 
   -- update window title
-  local current_title = get_title_filename(core.active_view)
-  if current_title ~= nil and current_title ~= core.window_title then
+  local window_title_from_filename
+
+  -- when we have active view then take window title from view
+  if core.active_view ~= nil then
+    -- try to use get_filename() function for window title
+    if core.active_view.get_filename  ~= nil and core.active_view:get_filename() then
+      window_title_from_filename = core.active_view:get_filename()
+    else 
+      -- fallback use view:get_name() function
+      window_title_from_filename = core.active_view:get_name()
+    end
+
+    -- handle case when view returns *default* name of "---"
+    if window_title_from_filename == "---" then
+      window_title_from_filename = ""
+    end
+  end
+
+  -- check if window title should be changed
+  if window_title_from_filename ~= nil and window_title_from_filename ~= core.window_title then
     -- generate new window title    
-    local new_window_title = (current_title == "" or current_title == nil) and "OFOL" or current_title
+    local new_window_title
+
+    if window_title_from_filename == "" or window_title_from_filename == nil then
+      -- use default window title
+      new_window_title = "OFOL"
+    else
+      -- use filename in windows title
+      new_window_title = window_title_from_filename
+    end
+
     stderr.debug("new_window_title", new_window_title)
 
     -- set new window title
     system.set_window_title(core.window, new_window_title)
-    core.window_title = current_title
+    core.window_title = new_window_title
   end
 
   -- draw
