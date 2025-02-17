@@ -1,5 +1,3 @@
-local common = require "core.common"
-
 local syntax = {}
 syntax.items = {}
 
@@ -29,12 +27,24 @@ function syntax.add(t)
 end
 
 
+local function match_pattern(text, pattern, ...)
+  if type(pattern) == "string" then
+    return text:find(pattern, ...)
+  end
+  for _, p in ipairs(pattern) do
+    local s, e = match_pattern(text, p, ...)
+    if s then return s, e end
+  end
+  return false
+end
+
+
 local function find(string, field)
   local best_match = 0
   local best_syntax
   for i = #syntax.items, 1, -1 do
     local t = syntax.items[i]
-    local s, e = common.match_pattern(string, t[field] or {})
+    local s, e = match_pattern(string, t[field] or {})
     if s and e - s > best_match then
       best_match = e - s
       best_syntax = t
