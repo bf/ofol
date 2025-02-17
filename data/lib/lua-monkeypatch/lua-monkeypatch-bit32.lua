@@ -35,5 +35,3 @@ function bit32.replace(n, v, field, width)
   local x = v & mask(width);
   return m & ~(mask(w) << field) | (x << field)
 end
-
--- global("bit32", bit32)
