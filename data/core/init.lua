@@ -1137,14 +1137,12 @@ function core.step()
     if window_title_from_filename == "---" then
       window_title_from_filename = ""
     end
-  end
 
-  -- check if window title should be changed
-  if window_title_from_filename ~= nil and window_title_from_filename ~= core.window_title then
     -- generate new window title    
     local new_window_title
 
-    if window_title_from_filename == "" or window_title_from_filename == nil then
+    -- check if default window title should be sed
+    if window_title_from_filename ~= nil  then
       -- use default window title
       new_window_title = "OFOL"
     else
@@ -1152,11 +1150,14 @@ function core.step()
       new_window_title = window_title_from_filename
     end
 
-    stderr.debug("new_window_title", new_window_title)
+    -- check if title needs to be changed
+    if new_window_title and new_window_title ~= core.window_title then
+      stderr.debug("new_window_title", new_window_title)
 
-    -- set new window title
-    system.set_window_title(core.window, new_window_title)
-    core.window_title = new_window_title
+      -- set new window title
+      system.set_window_title(core.window, new_window_title)
+      core.window_title = new_window_title
+    end
   end
 
   -- draw
