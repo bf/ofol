@@ -449,6 +449,9 @@ static const int cursor_enums[] = {
   SDL_SYSTEM_CURSOR_POINTER
 };
 
+// remember last cursor set
+int current_cursor = -1;
+
 static int f_set_cursor(lua_State *L) {
   int opt = luaL_checkoption(L, 1, "arrow", cursor_opts);
   int n = cursor_enums[opt];
@@ -456,8 +459,18 @@ static int f_set_cursor(lua_State *L) {
   if (!cursor) {
     cursor = SDL_CreateSystemCursor(n);
     cursor_cache[n] = cursor;
+  } 
+
+  // check if cursor has actually been changed
+  if (n != current_cursor) {
+    // if yes, then call change function
+    SDL_SetCursor(cursor);
+    current_cursor = n;
+  } else {
+    // if cursor has not been changed, just log
+    SDL_Log("will not call SDL_SetCursor() because cursor has not been changed\n");
   }
-  SDL_SetCursor(cursor);
+
   return 0;
 }
 

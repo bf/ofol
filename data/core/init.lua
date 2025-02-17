@@ -1273,8 +1273,20 @@ function core.blink_reset()
 end
 
 
+-- change cursor for the window
 function core.request_cursor(value)
-  core.cursor_change_req = value
+  -- check if requested cursor is same as current cursor
+  -- if yes, then ignore request
+  if core.cursor_change_req_previous ~= nil and core.cursor_change_req_previous == value then
+    -- ignore cursor change request
+    -- stderr.warn("ignoring cursor change request because new cursor is same as old cursor")
+  else
+    -- dispatch change request for handling by rootview
+    core.cursor_change_req = value
+
+    -- remember last cursor change request
+    core.cursor_change_req_previous = value
+  end
 end
 
 
