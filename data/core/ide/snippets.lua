@@ -603,7 +603,7 @@ local function selection_for_watch(sels, w, end_only)
 		end
 		i = i + 4
 	end
-	common.splice(
+	table.splice(
 		sels, i, 0,
 		{ w[3], w[4], end_only and w[3] or w[1], end_only and w[4] or w[2] }
 	)

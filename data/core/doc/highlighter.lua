@@ -87,12 +87,12 @@ function Highlighter:insert_notify(line, n)
   for i = 1, n do
     blanks[i] = false
   end
-  common.splice(self.lines, line, 0, blanks)
+  table.splice(self.lines, line, 0, blanks)
 end
 
 function Highlighter:remove_notify(line, n)
   self:invalidate(line)
-  common.splice(self.lines, line, n)
+  table.splice(self.lines, line, n)
 end
 
 function Highlighter:update_notify(line, n)

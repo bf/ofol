@@ -139,7 +139,7 @@ function SearchReplaceList:expand(position, count_results)
         end
       end
     end
-    common.splice(self.items, insert_pos, 0, items)
+    table.splice(self.items, insert_pos, 0, items)
     parent.file.expanded = true
   end
 end
@@ -160,7 +160,7 @@ function SearchReplaceList:contract(position)
         end_pos = end_pos + 1
       end
     end
-    common.splice(self.items, start_pos, end_pos)
+    table.splice(self.items, start_pos, end_pos)
     parent.file.expanded = false
   end
 end

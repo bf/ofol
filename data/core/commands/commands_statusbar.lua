@@ -29,7 +29,7 @@ end
 
 local function status_view_get_items(text)
   local names = status_view_item_names()
-  local results = common.fuzzy_match(names, text)
+  local results = table.fuzzy_match(names, text)
   results = status_view_items_data(results)
   return results
 end

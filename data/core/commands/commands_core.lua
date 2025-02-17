@@ -51,7 +51,7 @@ command.add(nil, {
         for name in pairs(package.loaded) do
           table.insert(items, name)
         end
-        return common.fuzzy_match(items, text)
+        return table.fuzzy_match(items, text)
       end
     })
   end,
@@ -65,7 +65,7 @@ command.add(nil, {
         end
       end,
       suggest = function(text)
-        local res = common.fuzzy_match(commands, text)
+        local res = table.fuzzy_match(commands, text)
         for i, name in ipairs(res) do
           res[i] = {
             text = command.prettify_name(name),
@@ -95,7 +95,7 @@ command.add(nil, {
         core.root_view:open_doc(core.open_doc(common.home_expand(text)))
       end,
       suggest = function(text)
-        return common.fuzzy_match_with_recents(files, core.visited_files, text)
+        return table.fuzzy_match_with_recents(files, core.visited_files, text)
       end
     })
   end,

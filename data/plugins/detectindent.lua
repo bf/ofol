@@ -333,7 +333,7 @@ local function set_indent_type_command(dv)
       set_indent_type(doc, value == "tabs" and "hard" or "soft")
     end,
     suggest = function(text)
-      return common.fuzzy_match({"tabs", "spaces"}, text)
+      return table.fuzzy_match({"tabs", "spaces"}, text)
     end,
     validate = function(text)
       local t = text:lower()

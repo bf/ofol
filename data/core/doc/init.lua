@@ -277,7 +277,7 @@ function Doc:set_selections(idx, line1, col1, line2, col2, swap, rm)
   if swap then line1, col1, line2, col2 = line2, col2, line1, col1 end
   line1, col1 = self:sanitize_position(line1, col1)
   line2, col2 = self:sanitize_position(line2 or line1, col2 or col1)
-  common.splice(self.selections, (idx - 1) * 4 + 1, rm == nil and 4 or rm, { line1, col1, line2, col2 })
+  table.splice(self.selections, (idx - 1) * 4 + 1, rm == nil and 4 or rm, { line1, col1, line2, col2 })
 end
 
 -- text selection: add ??
@@ -300,7 +300,7 @@ function Doc:remove_selection(idx)
   if self.last_selection >= idx then
     self.last_selection = self.last_selection - 1
   end
-  common.splice(self.selections, (idx - 1) * 4 + 1, 4)
+  table.splice(self.selections, (idx - 1) * 4 + 1, 4)
 end
 
 -- text selection: set ??
@@ -317,7 +317,7 @@ function Doc:merge_cursors(idx)
     for j = 1, i - 4, 4 do
       if self.selections[i] == self.selections[j] and
           self.selections[i + 1] == self.selections[j + 1] then
-        common.splice(self.selections, i, 4)
+        table.splice(self.selections, i, 4)
         if self.last_selection >= (i + 3) / 4 then
           self.last_selection = self.last_selection - 1
         end
@@ -480,7 +480,7 @@ function Doc:raw_insert(line, col, text, undo_stack, time)
   lines[#lines] = lines[#lines] .. after
 
   -- splice lines into line array
-  common.splice(self.lines, line, 1, lines)
+  table.splice(self.lines, line, 1, lines)
 
   -- keep cursors where they should be
   for idx, cline1, ccol1, cline2, ccol2 in self:get_selections(true, true) do
@@ -515,7 +515,7 @@ function Doc:raw_remove(line1, col1, line2, col2, undo_stack, time)
   local col_removal = col2 - col1
 
   -- splice line into line array
-  common.splice(self.lines, line1, line_removal + 1, { before .. after })
+  table.splice(self.lines, line1, line_removal + 1, { before .. after })
 
   local merge = false
 

@@ -256,7 +256,7 @@ local function update_suggestions()
   end
 
   -- fuzzy match, remove duplicates and store
-  items = common.fuzzy_match(items, partial)
+  items = table.fuzzy_match(items, partial)
   local j = 1
   for i = 1, config.plugins.autocomplete.max_suggestions do
     suggestions[i] = items[j]

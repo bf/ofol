@@ -199,7 +199,7 @@
 --           core.root_view:open_doc(core.open_doc(common.home_expand(text)))
 --         end,
 --         suggest = function(text)
---           return common.fuzzy_match_with_recents(files, core.visited_files, text)
+--           return table.fuzzy_match_with_recents(files, core.visited_files, text)
 --         end,
 --         preview = Previewer.file_previewer,
 --       })

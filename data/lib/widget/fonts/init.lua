@@ -121,7 +121,7 @@ function Fonts.show_picker(callback, monospaced)
       if fontcache.building or (monospaced and fontcache.searching_monospaced) then
         generate_fonts(monospaced)
       end
-      local res = common.fuzzy_match(fonts, text)
+      local res = table.fuzzy_match(fonts, text)
       matching_fonts = #res
       for i, name in ipairs(res) do
         local font_info = split(name, "||")
@@ -151,7 +151,7 @@ function Fonts.show_picker_ask_monospace(callback)
       Fonts.show_picker(callback, item.mono)
     end,
     suggest = function(text)
-      local res = common.fuzzy_match({"Yes", "No"}, text)
+      local res = table.fuzzy_match({"Yes", "No"}, text)
       for i, name in ipairs(res) do
         res[i] = {
           text = name,

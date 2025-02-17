@@ -203,14 +203,14 @@ function ResultsView:draw()
     text = string.format("Found %d matches for %q",
       #self.results, self.query)
   end
-  local color = common.lerp(style.text, style.accent, self.brightness / 100)
+  local color = math.lerp(style.text, style.accent, self.brightness / 100)
   renderer.draw_text(style.font, text, x, y, color)
 
   -- horizontal line
   local x = ox + style.padding.x
   local w = self.size.x - style.padding.x * 2
   local h = style.divider_size
-  local color = common.lerp(style.dim, style.text, self.brightness / 100)
+  local color = math.lerp(style.dim, style.text, self.brightness / 100)
   renderer.draw_rect(x, oy + yoffset - style.padding.y, w, h, color)
   if self.searching then
     renderer.draw_rect(x, oy + yoffset - style.padding.y, w * per, h, style.text)
@@ -319,9 +319,9 @@ function projectsearch.search_fuzzy(text, path, insensitive)
   if insensitive then text = text:lower() end
   return begin_search(path, text, function(line_text)
     if insensitive then
-      return common.fuzzy_match(line_text:lower(), text) and 1
+      return table.fuzzy_match(line_text:lower(), text) and 1
     else
-      return common.fuzzy_match(line_text, text) and 1
+      return table.fuzzy_match(line_text, text) and 1
     end
   end)
 end

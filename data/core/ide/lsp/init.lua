@@ -1663,7 +1663,7 @@ function lsp.request_references(doc, line, col)
                 end
               end,
               suggest = function(text)
-                local res = common.fuzzy_match(reference_names, text)
+                local res = table.fuzzy_match(reference_names, text)
                 for i, name in ipairs(res) do
                   local reference_info = util.split(name, "||")
                   res[i] = {
@@ -1826,7 +1826,7 @@ function lsp.request_document_symbols(doc)
                 end
               end,
               suggest = function(text)
-                local res = common.fuzzy_match(symbol_names, text)
+                local res = table.fuzzy_match(symbol_names, text)
                 for i, name in ipairs(res) do
                   res[i] = {
                     text = util.split(name, "||")[1],
@@ -1948,7 +1948,7 @@ function lsp.view_document_diagnostics(doc)
       end
     end,
     suggest = function(text)
-      local res = common.fuzzy_match(captions, text)
+      local res = table.fuzzy_match(captions, text)
       for i, name in ipairs(res) do
         local diagnostic = diagnostic_messages[indexes[name]]
         local line1, col1 = util.toselection(diagnostic.range)
@@ -1991,7 +1991,7 @@ function lsp.view_all_diagnostics()
       end
     end,
     suggest = function(text)
-      local res = common.fuzzy_match(captions, text, true)
+      local res = table.fuzzy_match(captions, text, true)
       for i, name in ipairs(res) do
         local diagnostics_count = diagnostics.get_messages_count(
           core.project_absolute_path(name)

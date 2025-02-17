@@ -22,35 +22,35 @@ local common = {}
 -- end
 
 
----Clamps the number n between lo and hi.
----@param n number
----@param lo number
----@param hi number
----@return number
-function common.clamp(n, lo, hi)
-  stderr.deprecated("use math.clamp instead")
-  -- return math.max(math.min(n, hi), lo)
-end
+-- ---Clamps the number n between lo and hi.
+-- ---@param n number
+-- ---@param lo number
+-- ---@param hi number
+-- ---@return number
+-- function common.clamp(n, lo, hi)
+--   stderr.deprecated("use math.clamp instead")
+--   -- return math.max(math.min(n, hi), lo)
+-- end
 
 
----Returns a new table containing the contents of b merged into a.
----@param a table|nil
----@param b table?
----@return table
-function common.merge(a, b)
-  stderr.deprecated("use table.merge instead")
-  -- a = type(a) == "table" and a or {}
-  -- local t = {}
-  -- for k, v in pairs(a) do
-  --   t[k] = v
-  -- end
-  -- if b and type(b) == "table" then
-  --   for k, v in pairs(b) do
-  --     t[k] = v
-  --   end
-  -- end
-  -- return t
-end
+-- ---Returns a new table containing the contents of b merged into a.
+-- ---@param a table|nil
+-- ---@param b table?
+-- ---@return table
+-- function common.merge(a, b)
+--   stderr.deprecated("use table.merge instead")
+--   -- a = type(a) == "table" and a or {}
+--   -- local t = {}
+--   -- for k, v in pairs(a) do
+--   --   t[k] = v
+--   -- end
+--   -- if b and type(b) == "table" then
+--   --   for k, v in pairs(b) do
+--   --     t[k] = v
+--   --   end
+--   -- end
+--   -- return t
+-- end
 
 
 -- ---Returns the value of a number rounded to the nearest integer.
@@ -63,134 +63,72 @@ end
 -- end
 
 
----Returns the first index where a subtable in tbl has prop set.
----If none is found, nil is returned.
----@param tbl table
----@param prop any
----@return number|nil
-function common.find_index(tbl, prop)
-  for i, o in ipairs(tbl) do
-    if o[prop] then return i end
-  end
-end
+-- ---Returns the first index where a subtable in tbl has prop set.
+-- ---If none is found, nil is returned.
+-- ---@param tbl table
+-- ---@param prop any
+-- ---@return number|nil
+-- function common.find_index(tbl, prop)
+--   for i, o in ipairs(tbl) do
+--     if o[prop] then return i end
+--   end
+-- end
 
 
----Returns a value between a and b on a linear scale, based on the
----interpolation point t.
----
----If a and b are tables, a table containing the result for all the
----elements in a and b is returned.
----@param a number
----@param b number
----@param t number
----@return number
----@overload fun(a: table, b: table, t: number): table
-function common.lerp(a, b, t)
-  if type(a) ~= "table" then
-    return a + (b - a) * t
-  end
-  local res = {}
-  for k, v in pairs(b) do
-    res[k] = common.lerp(a[k], v, t)
-  end
-  return res
-end
+-- ---Returns a value between a and b on a linear scale, based on the
+-- ---interpolation point t.
+-- ---
+-- ---If a and b are tables, a table containing the result for all the
+-- ---elements in a and b is returned.
+-- ---@param a number
+-- ---@param b number
+-- ---@param t number
+-- ---@return number
+-- ---@overload fun(a: table, b: table, t: number): table
+-- function common.lerp(a, b, t)
+--   if type(a) ~= "table" then
+--     return a + (b - a) * t
+--   end
+--   local res = {}
+--   for k, v in pairs(b) do
+--     res[k] = common.lerp(a[k], v, t)
+--   end
+--   return res
+-- end
 
 
----Returns the euclidean distance between two points.
----@param x1 number
----@param y1 number
----@param x2 number
----@param y2 number
----@return number
-function common.distance(x1, y1, x2, y2)
-    return math.sqrt(((x2-x1) ^ 2)+((y2-y1) ^ 2))
-end
+-- ---Returns the euclidean distance between two points.
+-- ---@param x1 number
+-- ---@param y1 number
+-- ---@param x2 number
+-- ---@param y2 number
+-- ---@return number
+-- function common.distance(x1, y1, x2, y2)
+--     return math.sqrt(((x2-x1) ^ 2)+((y2-y1) ^ 2))
+-- end
 
 
----Parses a CSS color string.
-function common.color(str)
-  stderr.deprecated("common.color has been moved to themes/color_from_css_string.lua")
-end
+-- ---Parses a CSS color string.
+-- function common.color(str)
+--   stderr.deprecated("common.color has been moved to themes/color_from_css_string.lua")
+-- end
 
 
----Splices a numerically indexed table.
----This function mutates the original table.
----@param t any[]
----@param at number Index at which to start splicing.
----@param remove number Number of elements to remove.
----@param insert? any[] A table containing elements to insert after splicing.
-function common.splice(t, at, remove, insert)
-  assert(remove >= 0, "bad argument #3 to 'splice' (non-negative value expected)")
-  insert = insert or {}
-  local len = #insert
-  if remove ~= len then table.move(t, at + remove, #t + remove, at + len) end
-  table.move(insert, 1, len, at, t)
-end
+-- ---Splices a numerically indexed table.
+-- ---This function mutates the original table.
+-- ---@param t any[]
+-- ---@param at number Index at which to start splicing.
+-- ---@param remove number Number of elements to remove.
+-- ---@param insert? any[] A table containing elements to insert after splicing.
+-- function common.splice(t, at, remove, insert)
+--   assert(remove >= 0, "bad argument #3 to 'splice' (non-negative value expected)")
+--   insert = insert or {}
+--   local len = #insert
+--   if remove ~= len then table.move(t, at + remove, #t + remove, at + len) end
+--   table.move(insert, 1, len, at, t)
+-- end
 
 
-local function compare_score(a, b)
-  return a.score > b.score
-end
-
-local function fuzzy_match_items(items, needle, files)
-  local res = {}
-  for _, item in ipairs(items) do
-    local score = system.fuzzy_match(tostring(item), needle, files)
-    if score then
-      table.insert(res, { text = item, score = score })
-    end
-  end
-  table.sort(res, compare_score)
-  for i, item in ipairs(res) do
-    res[i] = item.text
-  end
-  return res
-end
-
-
----Performs fuzzy matching.
----
----If the haystack is a string, a score ranging from 0 to 1 is returned. </br>
----If the haystack is a table, a table containing the haystack sorted in ascending
----order of similarity is returned.
----@param haystack string
----@param needle string
----@param files boolean If true, the matching process will be performed in reverse to better match paths.
----@return number
----@overload fun(haystack: string[], needle: string, files: boolean): string[]
-function common.fuzzy_match(haystack, needle, files)
-  if type(haystack) == "table" then
-    return fuzzy_match_items(haystack, needle, files)
-  end
-  return system.fuzzy_match(haystack, needle, files)
-end
-
-
----Performs fuzzy matching and returns recently used strings if needed.
----
----If the needle is empty, then a list of recently used strings
----are added to the result, followed by strings from the haystack.
----@param haystack string[]
----@param recents string[]
----@param needle string
----@return string[]
-function common.fuzzy_match_with_recents(haystack, recents, needle)
-  if needle == "" then
-    local recents_ext = {}
-    for i = 2, #recents do
-      table.insert(recents_ext, recents[i])
-    end
-    table.insert(recents_ext, recents[1])
-    local others = common.fuzzy_match(haystack, "", true)
-    for i = 1, #others do
-      table.insert(recents_ext, others[i])
-    end
-    return recents_ext
-  else
-    return fuzzy_match_items(haystack, needle, true)  
-  end
-end
 
 
 ---Returns a list of paths that are relative to the input path.

@@ -715,7 +715,7 @@ end, {
         save_state()
       end,
       suggest = function(text)
-        return common.fuzzy_match(build.state.previous_arguments, text)
+        return table.fuzzy_match(build.state.previous_arguments, text)
       end,
       text = #build.state.previous_arguments > 0 and build.state.previous_arguments[#build.state.previous_arguments] or ""
     })

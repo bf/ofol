@@ -558,7 +558,7 @@ local commands = {
   --     suggest = function(text)
   --       if not text:find("^%d*$") then
   --         init_items()
-  --         return common.fuzzy_match(items, text)
+  --         return table.fuzzy_match(items, text)
   --       end
   --     end
   --   })

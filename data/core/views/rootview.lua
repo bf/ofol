@@ -380,7 +380,7 @@ function RootView:on_mouse_moved(x, y, dx, dy)
   local dn = self.dragged_node
   if dn and not dn.dragging then
     -- start dragging only after enough movement
-    dn.dragging = common.distance(x, y, dn.drag_start_x, dn.drag_start_y) > DRAGGING_MINIMUM_DISTANCE
+    dn.dragging = math.distance(x, y, dn.drag_start_x, dn.drag_start_y) > DRAGGING_MINIMUM_DISTANCE
     if dn.dragging then
       core.request_cursor("hand")
     end
@@ -499,7 +499,7 @@ function RootView:on_touch_moved(x, y, dx, dy, ...)
   local dn = self.dragged_node
   if dn and not dn.dragging then
     -- start dragging only after enough movement
-    dn.dragging = common.distance(x, y, dn.drag_start_x, dn.drag_start_y) > DRAGGING_MINIMUM_DISTANCE
+    dn.dragging = math.distance(x, y, dn.drag_start_x, dn.drag_start_y) > DRAGGING_MINIMUM_DISTANCE
     if dn.dragging then
       core.request_cursor("hand")
     end

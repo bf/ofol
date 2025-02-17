@@ -196,7 +196,7 @@ function SS.get_sticky_lines(doc, start_line, max_sticky_lines)
   end
 
   -- Only keep the lines we're allowed to show
-  common.splice(res, 1, math.max(0, #res - max_sticky_lines))
+  table.splice(res, 1, math.max(0, #res - max_sticky_lines))
   return res
 end
 

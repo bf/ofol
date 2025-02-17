@@ -241,7 +241,7 @@ function Highlighter:insert_notify(line, n, ...)
     for i = 1, n do
       blanks[i] = false
     end
-    common.splice(highlighter_cache[self], line, 0, blanks)
+    table.splice(highlighter_cache[self], line, 0, blanks)
   end
 end
 
@@ -253,7 +253,7 @@ function Highlighter:remove_notify(line, n, ...)
   if not highlighter_cache[self] then
     highlighter_cache[self] = {}
   else
-    common.splice(highlighter_cache[self], line, n)
+    table.splice(highlighter_cache[self], line, n)
   end
 end
 

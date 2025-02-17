@@ -351,7 +351,7 @@ end
 function CommandView:draw_line_gutter(idx, x, y)
   local yoffset = self:get_line_text_y_offset()
   local pos = self.position
-  local color = common.lerp(style.text, style.accent, self.gutter_text_brightness / 100)
+  local color = math.lerp(style.text, style.accent, self.gutter_text_brightness / 100)
   core.push_clip_rect(pos.x, pos.y, self:get_gutter_width(), self.size.y)
   x = x + style.padding.x
   renderer.draw_text(self:get_font(), self.label, x, y + yoffset, color)
