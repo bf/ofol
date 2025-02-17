@@ -343,7 +343,7 @@ end
 -- Find files and directories recursively reading from the filesystem.
 -- Filter files and yields file's directory and info table. This latter
 -- is filled to be like required by project directories "files" list.
-local function find_files_rec(root, path)
+local function find_files_recursively(root, path)
   local all = system.list_dir(root .. path) or {}
   for _, file in ipairs(all) do
     local file = path .. PATHSEP .. file
@@ -353,7 +353,7 @@ local function find_files_rec(root, path)
       if info.type == "file" then
         coroutine.yield(root, info)
       elseif not string.match_pattern(fsutils.basename(info.filename), config.ignore_files) then
-        find_files_rec(root, PATHSEP .. info.filename)
+        find_files_recursively(root, PATHSEP .. info.filename)
       end
     end
   end
@@ -390,7 +390,7 @@ local function project_files_iter(state)
   if dir.files_limit then
     -- The current project directory is files limited: create a couroutine
     -- to read files from the filesystem.
-    state.co = coroutine.create(find_files_rec)
+    state.co = coroutine.create(find_files_recursively)
     return project_files_iter(state)
   end
   return dir.name, dir.files[state.file_index]
@@ -744,26 +744,6 @@ function core.confirm_close_docs()
   return true
 end
 
-local temp_uid = math.floor(system.get_time() * 1000) % 0xffffffff
-local temp_file_prefix = string.format(".lite_temp_%08x", tonumber(temp_uid))
-local temp_file_counter = 0
-
-function core.delete_temp_files(dir)
-  dir = type(dir) == "string" and fsutils.normalize_path(dir) or USERDIR
-  for _, filename in ipairs(system.list_dir(dir) or {}) do
-    if filename:find(temp_file_prefix, 1, true) == 1 then
-      os.remove(dir .. PATHSEP .. filename)
-    end
-  end
-end
-
-function core.temp_filename(ext, dir)
-  dir = type(dir) == "string" and fsutils.normalize_path(dir) or USERDIR
-  temp_file_counter = temp_file_counter + 1
-  return dir .. PATHSEP .. temp_file_prefix
-      .. string.format("%06x", temp_file_counter) .. (ext or "")
-end
-
 -- override to perform an operation before quitting or entering the
 -- current project
 do
@@ -782,12 +762,13 @@ local function quit_with_function(quit_fn)
   stderr.debug("quit_with_function will not quit")
 end
 
+-- quit the application
 function core.quit()
   stderr.debug("core.quit() called")
   quit_with_function(function() core.quit_request = true end)
 end
 
-
+-- restart the application
 function core.restart()
   stderr.debug("core.restart() called")
   quit_with_function(function()
