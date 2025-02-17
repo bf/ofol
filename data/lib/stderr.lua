@@ -2,7 +2,7 @@ local common = require("core.common")
 
 local EXIT_ON_ERROR = true
 local HIDE_DEBUG_MESSAGES = false
-local BENCHMARK = true
+local BENCHMARK = false
 
 -- base path to show relative path of script file errors
 local BASE_PATH = DATADIR

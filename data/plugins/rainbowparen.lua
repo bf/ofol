@@ -4,7 +4,7 @@ local style = require "themes.style"
 local config = require "core.config"
 local common = require "core.common"
 local command = require "core.command"
-local tokenizer = require "core.tokenizer"
+local tokenizer = require "core.doc.tokenizer"
 local Highlighter = require "core.doc.highlighter"
 local color_from_css_string = require "themes.color_from_css_string"
 

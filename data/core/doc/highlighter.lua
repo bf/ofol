@@ -1,7 +1,7 @@
 local core = require "core"
 local common = require "core.common"
 local config = require "core.config"
-local tokenizer = require "core.tokenizer"
+local tokenizer = require "core.doc.tokenizer"
 local Object = require "lib.object"
 
 
