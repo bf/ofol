@@ -1,25 +1,25 @@
 local common = {}
 
 
----Checks if the byte at offset is a UTF-8 continuation byte.
----
----UTF-8 encodes code points in 1 to 4 bytes.
----For a multi-byte sequence, each byte following the start byte is a continuation byte.
----@param s string
----@param offset? integer The offset of the string to start searching. Defaults to 1.
----@return boolean
-function common.is_utf8_cont(s, offset)
-  local byte = s:byte(offset or 1)
-  return byte >= 0x80 and byte < 0xc0
-end
+-- ---Checks if the byte at offset is a UTF-8 continuation byte.
+-- ---
+-- ---UTF-8 encodes code points in 1 to 4 bytes.
+-- ---For a multi-byte sequence, each byte following the start byte is a continuation byte.
+-- ---@param s string
+-- ---@param offset? integer The offset of the string to start searching. Defaults to 1.
+-- ---@return boolean
+-- function string.is_utf8_cont(s, offset)
+--   local byte = s:byte(offset or 1)
+--   return byte >= 0x80 and byte < 0xc0
+-- end
 
 
----Returns an iterator that yields a UTF-8 character on each iteration.
----@param text string
----@return fun(): string
-function common.utf8_chars(text)
-  return text:gmatch("[\0-\x7f\xc2-\xf4][\x80-\xbf]*")
-end
+-- ---Returns an iterator that yields a UTF-8 character on each iteration.
+-- ---@param text string
+-- ---@return fun(): string
+-- function string.utf8_chars(text)
+--   return text:gmatch("[\0-\x7f\xc2-\xf4][\x80-\xbf]*")
+-- end
 
 
 ---Clamps the number n between lo and hi.

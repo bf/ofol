@@ -179,7 +179,7 @@ function DocView:get_col_x_offset(line, col)
         return xoffset
       end
     else
-      for char in common.utf8_chars(text) do
+      for char in string.utf8_chars(text) do
         if column >= col then
           return xoffset
         end
@@ -211,7 +211,7 @@ function DocView:get_x_offset_col(line, x)
       xoffset = xoffset + width
       i = i + #text
     else
-      for char in common.utf8_chars(text) do
+      for char in string.utf8_chars(text) do
         -- tab_offset is the actual number of pixels a tab should use from renderer.c
         local w = font:get_width(char, {tab_offset = xoffset})
         if xoffset >= x then

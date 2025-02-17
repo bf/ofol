@@ -94,7 +94,7 @@ function LineWrapping.compute_line_breaks(doc, default_font, line, width, mode)
     end
     local w = font:get_width(text)
     if xoffset + w > width then
-      for char in common.utf8_chars(text) do
+      for char in string.utf8_chars(text) do
         w = font:get_width(char)
         xoffset = xoffset + w
         if xoffset > width then
@@ -295,7 +295,7 @@ local function get_line_col_from_index_and_x(docview, idx, x)
   local default_font = docview:get_font()
   for _, type, text in doc.highlighter:each_token(line) do
     local font, w = style.syntax_fonts[type] or default_font, 0
-    for char in common.utf8_chars(text) do
+    for char in string.utf8_chars(text) do
       if i >= col then
         if xoffset >= x then
           return line, (xoffset - x > (w / 2) and last_i or i)
@@ -438,7 +438,7 @@ function DocView:get_col_x_offset(line, col, line_end)
         i = scol
       end
       local font = style.syntax_fonts[type] or default_font
-      for char in common.utf8_chars(text) do
+      for char in string.utf8_chars(text) do
         if i >= col then
           return xoffset
         end
