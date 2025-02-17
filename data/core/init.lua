@@ -894,7 +894,7 @@ end
 -- create thread
 local thread_counter = 0
 function core.add_thread(f, weak_ref, ...)
-  stderr.debug("adding thread", f)
+  stderr.debug_backtrace("adding thread")
   local key = weak_ref
   if not key then
     thread_counter = thread_counter + 1
@@ -1247,7 +1247,7 @@ function core.run()
   end
 end
 
-
+-- reset countdown timer for text edit caret blinking
 function core.blink_reset()
   core.blink_start = system.get_time()
 end
@@ -1270,6 +1270,7 @@ function core.request_cursor(value)
 end
 
 
+-- write fatal errors to file
 function core.on_error(err)
   -- write error to file
   local fp = io.open(USERDIR .. PATHSEP .. "error.txt", "wb")
@@ -1282,12 +1283,6 @@ function core.on_error(err)
       doc:save(doc.filename .. "~")
     end
   end
-end
-
-
----Show deprecation notice
-function core.deprecation_log(kind)
-  stderr.error("Used deprecated functionality [%s]. Check if your plugins are up to date.", kind)
 end
 
 

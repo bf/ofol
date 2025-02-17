@@ -46,7 +46,7 @@ end
 
 ---@deprecated
 function Node:on_mouse_moved(x, y, ...)
-  core.deprecation_log("Node:on_mouse_moved")
+  stderr.deprecated("Node:on_mouse_moved")
   if self.type == "leaf" then
     self.active_view:on_mouse_moved(x, y, ...)
   else
@@ -57,7 +57,7 @@ end
 
 ---@deprecated
 function Node:on_mouse_released(...)
-  core.deprecation_log("Node:on_mouse_released")
+  stderr.deprecated("Node:on_mouse_released")
   if self.type == "leaf" then
     self.active_view:on_mouse_released(...)
   else
@@ -79,7 +79,7 @@ end
 
 ---@deprecated
 function Node:on_touch_moved(...)
-  core.deprecation_log("Node:on_touch_moved")
+  stderr.deprecated("Node:on_touch_moved")
   if self.type == "leaf" then
     self.active_view:on_touch_moved(...)
   else
