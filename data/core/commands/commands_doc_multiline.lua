@@ -580,10 +580,10 @@ local commands = {
     core.command_view:enter("Save As", {
       text = text,
       submit = function(filename)
-        save(common.home_expand(filename))
+        save(fsutils.home_expand(filename))
       end,
       suggest = function (text)
-        return common.home_encode_list(common.path_suggest(common.home_expand(text)))
+        return fsutils.home_encode_list(fsutils.path_suggest(fsutils.home_expand(text)))
       end
     })
   end,
@@ -609,14 +609,14 @@ local commands = {
     core.command_view:enter("Rename", {
       text = old_filename,
       submit = function(filename)
-        save(common.home_expand(filename))
+        save(fsutils.home_expand(filename))
         stderr.info("Renamed \"%s\" to \"%s\"", old_filename, filename)
         if filename ~= old_filename then
           os.remove(old_filename)
         end
       end,
       suggest = function (text)
-        return common.home_encode_list(common.path_suggest(common.home_expand(text)))
+        return fsutils.home_encode_list(fsutils.path_suggest(fsutils.home_expand(text)))
       end
     })
   end,

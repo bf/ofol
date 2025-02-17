@@ -347,7 +347,7 @@ function TreeList:draw_tooltip()
     return
   end
 
-  local text = common.home_encode(self.hovered_item.tooltip)
+  local text = fsutils.home_encode(self.hovered_item.tooltip)
   local w, h = style.font:get_width(text), style.font:get_height()
 
   local tooltip_offset = style.font:get_height()

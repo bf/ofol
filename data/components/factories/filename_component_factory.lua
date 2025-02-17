@@ -17,7 +17,7 @@ function FilenameComponentFactory.get_filename_for_window_title(absolute_path)
   end
 
   -- get file basename
-  local window_title = common.basename(absolute_path)
+  local window_title = fsutils.basename(absolute_path)
 
   -- get status for unsaved docs
   local status_file_has_unsaved_changes = OpenFilesStore.get_file_has_unsaved_changes(absolute_path)
@@ -44,7 +44,7 @@ function FilenameComponentFactory.get_filename_for_tree_view(absolute_path,  is_
   assert(absolute_path ~= nil, "tree view should always render files with absolute path")
   
   -- get file basename
-  local filename_text = common.basename(absolute_path)
+  local filename_text = fsutils.basename(absolute_path)
   local filename_color = style.text
   local filename_is_bold = false
   local icon_symbol 
@@ -131,7 +131,7 @@ function FilenameComponentFactory.get_filename_for_tab_title(absolute_path,  is_
   if absolute_path == nil then
     filename_text = "untitled"
   else
-    filename_text = common.basename(absolute_path)
+    filename_text = fsutils.basename(absolute_path)
   end
 
   -- active tabs have bold text

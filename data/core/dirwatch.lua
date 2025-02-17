@@ -44,7 +44,7 @@ function dirwatch:watch(directory, bool)
         -- Get the highest level of directory that is common to this directory, and the original.
         local target = directory
         while self.single_watch_top and self.single_watch_top:find(target, 1, true) ~= 1 do
-          target = common.dirname(target)
+          target = fsutils.dirname(target)
         end
         if target ~= self.single_watch_top then
           local value = self.monitor:watch(target)
@@ -95,9 +95,9 @@ function dirwatch:check(change_callback, scan_time, wait_time)
   self.monitor:check(function(id)
     had_change = true
     if self.monitor:mode() == "single" then
-      local path = common.dirname(id)
+      local path = fsutils.dirname(id)
       if not string.match(id, "^/") and not string.match(id, "^%a:[/\\]") then
-        path = common.dirname(self.single_watch_top .. PATHSEP .. id)
+        path = fsutils.dirname(self.single_watch_top .. PATHSEP .. id)
       end
       change_callback(path)
     elseif self.reverse_watched[id] then
@@ -150,7 +150,7 @@ end
 
 local function fileinfo_pass_filter(info, ignore_compiled)
   if info.size >= config.file_size_limit * 1e6 then return false end
-  local basename = common.basename(info.filename)
+  local basename = fsutils.basename(info.filename)
   -- replace '\' with '/' for Windows where PATHSEP = '\'
   local fullname = "/" .. info.filename:gsub("\\", "/")
   for _, compiled in ipairs(ignore_compiled) do

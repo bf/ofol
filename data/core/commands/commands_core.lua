@@ -9,10 +9,10 @@ local json = require "lib.json"
 local fullscreen = false
 
 local function suggest_directory(text)
-  text = common.home_expand(text)
-  local basedir = common.dirname(core.project_dir)
-  return common.home_encode_list((basedir and text == basedir .. PATHSEP or text == "") and
-    core.recent_projects or common.dir_path_suggest(text))
+  text = fsutils.home_expand(text)
+  local basedir = fsutils.dirname(core.project_dir)
+  return fsutils.home_encode_list((basedir and text == basedir .. PATHSEP or text == "") and
+    core.recent_projects or fsutils.dir_path_suggest(text))
 end
 
 local function check_directory_path(path)
@@ -86,13 +86,13 @@ command.add(nil, {
     for dir, item in core.get_project_files() do
       if item.type == "file" then
         local path = (dir == core.project_dir and "" or dir .. PATHSEP)
-        table.insert(files, common.home_encode(path .. item.filename))
+        table.insert(files, fsutils.home_encode(path .. item.filename))
       end
     end
     core.command_view:enter("Open File From Project", {
       submit = function(text, item)
         text = item and item.text or text
-        core.root_view:open_doc(core.open_doc(common.home_expand(text)))
+        core.root_view:open_doc(core.open_doc(fsutils.home_expand(text)))
       end,
       suggest = function(text)
         return table.fuzzy_match_with_recents(files, core.visited_files, text)
@@ -121,7 +121,7 @@ command.add(nil, {
       local dirname, filename = view.doc.abs_filename:match("(.*)[/\\](.+)$")
       if dirname then
         dirname = core.normalize_to_project_dir(dirname)
-        text = dirname == core.project_dir and "" or common.home_encode(dirname) .. PATHSEP
+        text = dirname == core.project_dir and "" or fsutils.home_encode(dirname) .. PATHSEP
       end
     end
     core.command_view:enter("Open File", {
@@ -142,7 +142,7 @@ command.add(nil, {
           go_to_line_number = tonumber(go_to_line_number)
         else
           -- take whole text as filename, get absolute path
-          filename = system.absolute_path(common.home_expand(text))
+          filename = system.absolute_path(fsutils.home_expand(text))
         end
 
         core.root_view:open_doc(core.open_doc(filename), go_to_line_number)
@@ -160,19 +160,19 @@ command.add(nil, {
           stderr.debug("[open file] [suggest] return value:", message)
           return { message }
         else
-          local result = common.home_encode_list(common.path_suggest(common.home_expand(text)))
+          local result = fsutils.home_encode_list(fsutils.path_suggest(fsutils.home_expand(text)))
           stderr.debug("[open file] [suggest] result:", json.encode(result))
           return result
         end
       end,
 
       validate = function(text)
-          local filename = common.home_expand(text)
+          local filename = fsutils.home_expand(text)
           local path_stat, err = system.get_file_info(filename)
           if err then
             if err:find("No such file", 1, true) then
               -- check if the containing directory exists
-              local dirname = common.dirname(filename)
+              local dirname = fsutils.dirname(filename)
               local dir_stat = dirname and system.get_file_info(dirname)
               if not dirname or (dir_stat and dir_stat.type == 'dir') then
                 return true
@@ -194,15 +194,15 @@ command.add(nil, {
   -- end,
 
   ["core:change-project-folder"] = function()
-    local dirname = common.dirname(core.project_dir)
+    local dirname = fsutils.dirname(core.project_dir)
     local text
     if dirname then
-      text = common.home_encode(dirname) .. PATHSEP
+      text = fsutils.home_encode(dirname) .. PATHSEP
     end
     core.command_view:enter("Change Project Folder", {
       text = text,
       submit = function(text)
-        local path = common.home_expand(text)
+        local path = fsutils.home_expand(text)
         local abs_path = check_directory_path(path)
         if not abs_path then
           stderr.error("Cannot open directory %q", path)
@@ -223,15 +223,15 @@ command.add(nil, {
   end,
 
   ["core:open-project-folder"] = function()
-    local dirname = common.dirname(core.project_dir)
+    local dirname = fsutils.dirname(core.project_dir)
     local text
     if dirname then
-      text = common.home_encode(dirname) .. PATHSEP
+      text = fsutils.home_encode(dirname) .. PATHSEP
     end
     core.command_view:enter("Open Project", {
       text = text,
       submit = function(text)
-        local path = common.home_expand(text)
+        local path = fsutils.home_expand(text)
         local abs_path = check_directory_path(path)
         if not abs_path then
           stderr.error("Cannot open directory %q", path)
@@ -250,7 +250,7 @@ command.add(nil, {
   ["core:add-directory"] = function()
     core.command_view:enter("Add Directory", {
       submit = function(text)
-        text = common.home_expand(text)
+        text = fsutils.home_expand(text)
         local path_stat, err = system.get_file_info(text)
         if not path_stat then
           stderr.error("cannot open %q: %s", text, err)
@@ -273,14 +273,14 @@ command.add(nil, {
     end
     core.command_view:enter("Remove Directory", {
       submit = function(text, item)
-        text = common.home_expand(item and item.text or text)
+        text = fsutils.home_expand(item and item.text or text)
         if not core.remove_project_directory(text) then
           stderr.error("No directory %q to be removed", text)
         end
       end,
       suggest = function(text)
-        text = common.home_expand(text)
-        return common.home_encode_list(common.dir_list_suggest(text, dir_list))
+        text = fsutils.home_expand(text)
+        return fsutils.home_encode_list(fsutils.dir_list_suggest(text, dir_list))
       end
     })
   end,

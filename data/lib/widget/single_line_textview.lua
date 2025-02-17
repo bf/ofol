@@ -103,7 +103,7 @@ end
 function SingleLineDocView:get_filename()
   if self.doc.abs_filename then
     local post = self.doc:is_dirty() and "*" or ""
-    return common.home_encode(self.doc.abs_filename) .. post
+    return fsutils.home_encode(self.doc.abs_filename) .. post
   end
   return self:get_name()
 end

@@ -264,10 +264,10 @@ end
 
 local function normalize_path(path)
   if not path then return nil end
-  path = common.normalize_path(path)
+  path = fsutils.normalize_path(path)
   for i, project_dir in ipairs(core.project_directories) do
-    if common.path_belongs_to(path, project_dir.name) then
-      return project_dir.item.filename .. PATHSEP .. common.relative_path(project_dir.name, path)
+    if fsutils.path_belongs_to(path, project_dir.name) then
+      return project_dir.item.filename .. PATHSEP .. fsutils.relative_path(project_dir.name, path)
     end
   end
   return path

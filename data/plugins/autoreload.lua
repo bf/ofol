@@ -91,7 +91,7 @@ local on_check = dirwatch.check
 function dirwatch:check(change_callback, ...)
   on_check(self, function(dir)
     for _, doc in ipairs(core.docs) do
-      if doc.abs_filename and (dir == common.dirname(doc.abs_filename) or dir == doc.abs_filename) then
+      if doc.abs_filename and (dir == fsutils.dirname(doc.abs_filename) or dir == doc.abs_filename) then
         local info = system.get_file_info(doc.filename or "")
         if info and info.type == "file" and times[doc] ~= info.modified then
           if not doc:is_dirty() and not config.plugins.autoreload.always_show_nagview then

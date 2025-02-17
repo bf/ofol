@@ -286,7 +286,7 @@ function scm.is_staged(path)
       end
     end
     local staged_files
-    local path_rel = common.relative_path(project_dir, path)
+    local path_rel = fsutils.relative_path(project_dir, path)
     backend:set_blocking_mode(true)
     backend:get_staged(project_dir, function(files)
       staged_files = files
@@ -351,7 +351,7 @@ function scm.open_path_diff(path)
   local project_dir = util.get_project_dir(path)
   local backend = PROJECTS[project_dir]
   if backend then
-    local path_rel = common.relative_path(project_dir, path)
+    local path_rel = fsutils.relative_path(project_dir, path)
     backend:get_file_diff(path, project_dir, function(diff)
       if diff and diff ~= "" then
         local title = string.format("%s.diff", path_rel)
@@ -411,7 +411,7 @@ function scm.revert_file(path)
   local project_dir = util.get_project_dir(path)
   local backend = PROJECTS[project_dir]
   if project_dir and backend then
-    local path_rel = common.relative_path(project_dir, path)
+    local path_rel = fsutils.relative_path(project_dir, path)
     MessageBox.warning(
       "SCM Restore File",
       {
@@ -441,7 +441,7 @@ function scm.add_path(path)
   local project_dir = util.get_project_dir(path)
   local backend = PROJECTS[project_dir]
   if project_dir and backend then
-    local path_rel = common.relative_path(project_dir, path)
+    local path_rel = fsutils.relative_path(project_dir, path)
     backend:add_path(path, project_dir, function(success, errmsg)
       if success then
         stderr.info("SCM: file '%s' added", path_rel)
@@ -458,7 +458,7 @@ function scm.remove_path(path)
   local project_dir = util.get_project_dir(path)
   local backend = PROJECTS[project_dir]
   if project_dir and backend then
-    local path_rel = common.relative_path(project_dir, path)
+    local path_rel = fsutils.relative_path(project_dir, path)
     backend:remove_path(path, project_dir, function(success, errmsg)
       if success then
         stderr.info("SCM: file '%s' removed", path_rel)
@@ -478,12 +478,12 @@ function scm.move_path(from, to, callback)
   local backend = PROJECTS[project_dir]
   local moved = false
   if
-    backend and common.path_belongs_to(from, project_dir)
+    backend and fsutils.path_belongs_to(from, project_dir)
     and
-    common.path_belongs_to(to, project_dir)
+    fsutils.path_belongs_to(to, project_dir)
   then
-    local from_rel = common.relative_path(project_dir, from)
-    local to_rel = common.relative_path(project_dir, to)
+    local from_rel = fsutils.relative_path(project_dir, from)
+    local to_rel = fsutils.relative_path(project_dir, to)
     backend:set_blocking_mode(true)
     backend:move_path(from, to, project_dir, function(success, errmsg)
       if success then
@@ -509,7 +509,7 @@ function scm.stage_file(path)
   local project_dir = util.get_project_dir(path)
   local backend = PROJECTS[project_dir]
   if project_dir and backend and backend:has_staging() then
-    local path_rel = common.relative_path(project_dir, path)
+    local path_rel = fsutils.relative_path(project_dir, path)
     backend:stage_file(path, project_dir, function(success, errmsg)
       if success then
         stderr.info("SCM: file '%s' staged", path_rel)
@@ -526,7 +526,7 @@ function scm.unstage_file(path)
   local project_dir = util.get_project_dir(path)
   local backend = PROJECTS[project_dir]
   if project_dir and backend and backend:has_staging() then
-    local path_rel = common.relative_path(project_dir, path)
+    local path_rel = fsutils.relative_path(project_dir, path)
     backend:unstage_file(path, project_dir, function(success, errmsg)
       if success then
         stderr.info("SCM: file '%s' unstaged", path_rel)
@@ -606,19 +606,19 @@ function scm.update()
             change.color = color
             local path = ""
             if change.new_path then
-              change.text = common.basename(change.path)
+              change.text = fsutils.basename(change.path)
                 .. " -> "
-                .. common.basename(change.new_path)
+                .. fsutils.basename(change.new_path)
               changed_files[change.new_path] = change
-              path = common.dirname(change.new_path)
+              path = fsutils.dirname(change.new_path)
             else
               changed_files[change.path] = change
-              path = common.dirname(change.path)
+              path = fsutils.dirname(change.path)
             end
             while path do
               if #path < #project_dir then break end
               changed_files[path] = { color = style.modified }
-              path = common.dirname(path)
+              path = fsutils.dirname(path)
             end
 
             -- update metadata

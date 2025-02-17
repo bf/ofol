@@ -340,7 +340,7 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
       local relfilename = item.filename
       if item.dir_name ~= core.project_dir then
         -- add secondary project dirs names to the file path to show
-        relfilename = common.basename(item.dir_name) .. PATHSEP .. relfilename
+        relfilename = fsutils.basename(item.dir_name) .. PATHSEP .. relfilename
       end
       local file_info = system.get_file_info(filename)
       local file_type = file_info.type == "dir" and "Directory" or "File"
@@ -349,7 +349,7 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
         string.format("Are you sure you want to delete the %s?\n%s: %s",
           file_type:lower(), file_type, relfilename)) then
         if file_info.type == "dir" then
-          local deleted, error, path = common.rm(filename, true)
+          local deleted, error, path = fsutils.rm(filename, true)
           if not deleted then
             stderr.error("Error: %s - \"%s\" ", error, path)
             return
@@ -372,7 +372,7 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
         text = old_filename,
         submit = function(filename)
           local abs_filename = filename
-          if not common.is_absolute_path(filename) then
+          if not fsutils.is_absolute_path(filename) then
             abs_filename = item.dir_name .. PATHSEP .. filename
           end
           local res, err = os.rename(old_abs_filename, abs_filename)
@@ -390,7 +390,7 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
           end
         end,
         suggest = function(text)
-          return common.path_suggest(text, item.dir_name)
+          return fsutils.path_suggest(text, item.dir_name)
         end
       })
     end,
@@ -401,7 +401,7 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
         if item.type == "dir" then
           text = item.filename .. PATHSEP
         elseif item.type == "file" then
-          local parent_dir = common.dirname(item.filename)
+          local parent_dir = fsutils.dirname(item.filename)
           text = parent_dir and parent_dir .. PATHSEP
         end
       end
@@ -417,7 +417,7 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
           stderr.info("Created %s", doc_filename)
         end,
         suggest = function(text)
-          return common.path_suggest(text, item.dir_name)
+          return fsutils.path_suggest(text, item.dir_name)
         end
       })
     end,
@@ -428,7 +428,7 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
         if item.type == "dir" then
           text = item.filename .. PATHSEP
         elseif item.type == "file" then
-          local parent_dir = common.dirname(item.filename)
+          local parent_dir = fsutils.dirname(item.filename)
           text = parent_dir and parent_dir .. PATHSEP
         end
       end
@@ -436,11 +436,11 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
         text = text,
         submit = function(filename)
           local dir_path = item.dir_name .. PATHSEP .. filename
-          common.mkdirp(dir_path)
+          fsutils.mkdirp(dir_path)
           stderr.info("Created %s", dir_path)
         end,
         suggest = function(text)
-          return common.path_suggest(text, item.dir_name)
+          return fsutils.path_suggest(text, item.dir_name)
         end
       })
     end,
@@ -521,7 +521,7 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
 
       core.root_view:open_doc(core.open_doc(dest_filename))
       stderr.info("[treeview-extender] %s copied to %s", source_filename, dest_filename)
-    end, common.path_suggest)
+    end, fsutils.path_suggest)
   end
 
 
@@ -632,7 +632,7 @@ function TreeView:get_cached(dir, item, dirname)
   local t = dir_cache[cache_name]
   if not t or t.type ~= item.type then
     t = {}
-    local basename = common.basename(item.filename)
+    local basename = fsutils.basename(item.filename)
     if item.topdir then
       t.filename = basename
       t.expanded = true
@@ -903,7 +903,7 @@ end
 
 
 -- function TreeView:draw_tooltip()
---   local text = common.home_encode(self.hovered_item.abs_filename)
+--   local text = fsutils.home_encode(self.hovered_item.abs_filename)
 --   local w, h = style.font:get_width(text), style.font:get_height(text)
 
 --   local x, y = self.tooltip.x + tooltip_offset, self.tooltip.y + tooltip_offset
@@ -1134,7 +1134,7 @@ end
 
 
 function TreeView:get_parent(item)
-  local parent_path = common.dirname(item.abs_filename)
+  local parent_path = fsutils.dirname(item.abs_filename)
   if not parent_path then return end
   for it, _, y in self:each_item() do
     if it.abs_filename == parent_path then

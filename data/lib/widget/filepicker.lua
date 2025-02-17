@@ -31,8 +31,8 @@ FilePicker.mode = {
 
 ---@param text string
 local function suggest_directory(text)
-  text = common.home_expand(text)
-  return common.home_encode_list(common.dir_path_suggest(text))
+  text = fsutils.home_expand(text)
+  return fsutils.home_encode_list(fsutils.dir_path_suggest(text))
 end
 
 ---@param path string
@@ -165,9 +165,9 @@ end
 function FilePicker:set_path(path)
   if path then
     self.path = path or ""
-    if common.path_belongs_to(path, core.project_dir) then
+    if fsutils.path_belongs_to(path, core.project_dir) then
       self.file.label = path ~= "" and
-        common.relative_path(core.project_dir, path)
+        fsutils.relative_path(core.project_dir, path)
         or
         ""
     else
@@ -195,9 +195,9 @@ function FilePicker:get_relative_path()
   if
     self.path ~= ""
     and
-    common.path_belongs_to(self.path, core.project_dir)
+    fsutils.path_belongs_to(self.path, core.project_dir)
   then
-    return common.relative_path(core.project_dir, self.path)
+    return fsutils.relative_path(core.project_dir, self.path)
   end
   return self.path or ""
 end
@@ -205,7 +205,7 @@ end
 ---Set the filename part only.
 ---@param name string
 function FilePicker:set_filename(name)
-  local dir_part = common.dirname(self.path)
+  local dir_part = fsutils.dirname(self.path)
   if dir_part then
     self:set_path(dir_part .. PATHSEP .. name)
   else
@@ -216,7 +216,7 @@ end
 ---Get the filename part only.
 ---@return string | nil
 function FilePicker:get_filename()
-  local dir_part = common.dirname(self.path)
+  local dir_part = fsutils.dirname(self.path)
   if dir_part then
     local filename = str_replace(self.path, dir_part .. PATHSEP, "")
     return filename
@@ -241,7 +241,7 @@ end
 ---@return string | nil
 function FilePicker:get_directory()
   if self.path ~= "" then
-    local dir_part = common.dirname(self.path)
+    local dir_part = fsutils.dirname(self.path)
     if dir_part then return dir_part end
   end
   return nil
@@ -262,7 +262,7 @@ local function filter(self, list)
         or
         self.pick_mode == FilePicker.mode.FILE_EXISTS
       then
-        local path = common.home_expand(value)
+        local path = fsutils.home_expand(value)
         local abs_path = check_directory_path(path)
         if abs_path then
           table.insert(new_list, value)
@@ -281,9 +281,9 @@ local function show_file_picker(self)
     submit = function(text)
       ---@type string
       local filename = text
-      local dirname = common.dirname(common.home_expand(text))
+      local dirname = fsutils.dirname(fsutils.home_expand(text))
       if dirname then
-        filename = common.home_expand(text)
+        filename = fsutils.home_expand(text)
         filename = system.absolute_path(dirname)
           .. PATHSEP
           .. str_replace(filename, dirname .. PATHSEP, "")
@@ -296,7 +296,7 @@ local function show_file_picker(self)
     suggest = function (text)
       return filter(
         self,
-        common.home_encode_list(common.path_suggest(common.home_expand(text)))
+        fsutils.home_encode_list(fsutils.path_suggest(fsutils.home_expand(text)))
       )
     end,
     validate = function(text)
@@ -307,7 +307,7 @@ local function show_file_picker(self)
         )
         return false
       end
-      local filename = common.home_expand(text)
+      local filename = fsutils.home_expand(text)
       local path_stat, err = system.get_file_info(filename)
       if path_stat and path_stat.type == 'dir' then
         stderr.error("Cannot open %s, is a folder", text)
@@ -319,7 +319,7 @@ local function show_file_picker(self)
           return false
         end
       else
-        local dirname = common.dirname(filename)
+        local dirname = fsutils.dirname(filename)
         local dir_stat = dirname and system.get_file_info(dirname)
         if dirname and not dir_stat then
           stderr.error("Directory does not exists: %s", dirname)
@@ -336,7 +336,7 @@ local function show_dir_picker(self)
   core.command_view:enter("Choose Directory", {
     text = self:get_relative_path(),
     submit = function(text)
-      local path = common.home_expand(text)
+      local path = fsutils.home_expand(text)
       local abs_path = check_directory_path(path)
       self:set_path(abs_path or text)
       self:on_change(abs_path or (text ~= "" and text or nil))
@@ -353,7 +353,7 @@ local function show_dir_picker(self)
         return false
       end
       if self.pick_mode == FilePicker.mode.DIRECTORY_EXISTS then
-        local path = common.home_expand(text)
+        local path = fsutils.home_expand(text)
         local abs_path = check_directory_path(path)
         if not abs_path then
           stderr.error("Cannot open directory %q", path)

@@ -77,7 +77,7 @@ function OpenFilesStore.handle_open_file(doc)
   _counter_number_of_open_files_with_same_absolute_path_increase(absolute_path)
 
   -- get file basename from absolute path
-  local basename = common.basename(absolute_path)
+  local basename = fsutils.basename(absolute_path)
 
   -- increase counter of duplicate file basenames
   _counter_number_of_open_files_with_same_basename_increase(basename, absolute_path)
@@ -174,7 +174,7 @@ function OpenFilesStore.get_filename_differentiator(absolute_path)
   -- loop over each file
   for absolute_path_for_basename, _ in pairs(_store_number_of_files_with_same_file_basename[basename]) do
     -- split up into directories
-    local tmp_path_parts = common.split_on_slash(absolute_path_for_basename)
+    local tmp_path_parts = fsutils.split_on_slash(absolute_path_for_basename)
 
     -- get rid of last item, because last item is the file basename 
     table.remove(tmp_path_parts)

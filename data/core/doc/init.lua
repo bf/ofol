@@ -56,7 +56,7 @@ function Doc:reset_syntax()
   if not path and self.filename then
     path = core.project_dir .. PATHSEP .. self.filename
   end
-  if path then path = common.normalize_path(path) end
+  if path then path = fsutils.normalize_path(path) end
   local syn = syntax.get(path, header)
   if self.syntax ~= syn then
     self.syntax = syn

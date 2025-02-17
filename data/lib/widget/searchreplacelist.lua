@@ -482,7 +482,7 @@ function SearchReplaceList:draw()
 
   for i, item, x,y,w,h in self:each_visible_item() do
     if item.file then
-      file_path = common.relative_path(self.base_dir, item.file.path)
+      file_path = fsutils.relative_path(self.base_dir, item.file.path)
     end
 
     -- add left padding

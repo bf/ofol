@@ -565,7 +565,7 @@ end
 function lsp.goto_location(location)
   local doc_view = core.root_view:open_doc(
     core.open_doc(
-      common.home_expand(
+      fsutils.home_expand(
         util.tofilename(location.uri or location.targetUri)
       )
     )
@@ -785,7 +785,7 @@ function lsp.start_server(filename, project_directory)
           -- get relative filename
           local at
           if #DATADIR > 0 and #info.source > 2 then
-            at = string.format("%s:%d", common.relative_path(DATADIR, string.sub(info.source, 2)), info.currentline)
+            at = string.format("%s:%d", fsutils.relative_path(DATADIR, string.sub(info.source, 2)), info.currentline)
           else 
             at = info.source
           end
@@ -867,7 +867,7 @@ function lsp.start_server(filename, project_directory)
               local document = util.tofilename(request.params.uri)
               ---@type core.docview
               local doc_view = core.root_view:open_doc(
-                core.open_doc(common.home_expand(document))
+                core.open_doc(fsutils.home_expand(document))
               )
               if request.params.selection then
                 local line1, col1, line2, col2 = util.toselection(
@@ -1983,7 +1983,7 @@ function lsp.view_all_diagnostics()
       if item then
         core.root_view:open_doc(
           core.open_doc(
-            common.home_expand(
+            fsutils.home_expand(
               text
             )
           )

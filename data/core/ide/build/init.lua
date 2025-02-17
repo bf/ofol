@@ -103,7 +103,7 @@ local function jump_to_file(file, line, col)
   if not core.active_view or not core.active_view.doc or core.active_view.doc.abs_filename ~= file then
     -- Check to see if the file is in the project. If it is, open it, and go to the line.
     for i = 1, #core.project_directories do
-      if common.path_belongs_to(file, core.project_dir) then
+      if fsutils.path_belongs_to(file, core.project_dir) then
         local view = core.root_view:open_doc(core.open_doc(file))
         if line then
           view:scroll_to_line(math.max(1, line - 20), true)
@@ -245,13 +245,13 @@ function build.build(callback)
   build.message_view:clear_messages()
   build.message_view.visible = true
   local target = build.current_target
-  build.message_view:add_message("Building " .. (build.targets[target].binary and common.basename(build.targets[target].binary) or "target") .. "...")
+  build.message_view:add_message("Building " .. (build.targets[target].binary and fsutils.basename(build.targets[target].binary) or "target") .. "...")
   build.message_view.minimized = false
   local status, err = pcall(function()
     if not build.targets[target] then error("Can't find target " .. target) end
     if not build.targets[target].backend then error("Can't find target " .. target .. " backend.") end
     build.targets[target].backend.build(build.targets[target], function (status)
-      local line = "Completed building " .. (build.targets[target].binary and common.basename(build.targets[target].binary) or "target") .. ". " .. status .. " Errors/Warnings."
+      local line = "Completed building " .. (build.targets[target].binary and fsutils.basename(build.targets[target].binary) or "target") .. ". " .. status .. " Errors/Warnings."
       build.message_view:add_message({ status == 0 and "good" or "error", line })
       build.message_view.visible = status ~= 0 or build.on_success ~= "close"
       build.output(line)
@@ -293,7 +293,7 @@ function build.get_command(arguments)
     if PLATFORM == "Windows" then
       command = { build.shell, command, table.unpack(arguments) }
     else
-      if not common.is_absolute_path(command) then command = "./" .. command end
+      if not fsutils.is_absolute_path(command) then command = "./" .. command end
       command = { build.terminal, "-T", command, "-e", build.shell .. " 'cd " .. (build.targets[target].wd or core.project_dir) .. "; " .. command .. " " .. argument_string .. "; echo \"\nProgram exited with error code $?.\n\nPress any key to exit...\"; read'" }
     end
   end
@@ -638,7 +638,7 @@ end, {
   ["build:jump-to-hovered"] = function()
     local mv = build.message_view
     mv.active_message = mv.hovered_message
-    mv.active_file = system.absolute_path(common.home_expand(mv.messages[mv.hovered_message][2]))
+    mv.active_file = system.absolute_path(fsutils.home_expand(mv.messages[mv.hovered_message][2]))
     mv.active_line = tonumber(mv.messages[mv.hovered_message][3])
     jump_to_file(mv.active_file, tonumber(mv.messages[mv.hovered_message][3]), tonumber(mv.messages[mv.hovered_message][4]))
   end

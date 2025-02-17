@@ -9,7 +9,7 @@ function util.get_current_project()
   if core.active_view and core.active_view.doc and core.active_view.doc.abs_filename then
     local filename = core.active_view.doc.abs_filename
     for _, project in ipairs(core.project_directories) do
-      if common.path_belongs_to(filename, project.name) then
+      if fsutils.path_belongs_to(filename, project.name) then
         return project.name
       end
     end
@@ -21,7 +21,7 @@ end
 ---@return string? project_dir
 function util.get_file_project_dir(filepath)
   for _, project in ipairs(core.project_directories) do
-    if common.path_belongs_to(filepath, project.name) then
+    if fsutils.path_belongs_to(filepath, project.name) then
       return project.name
     end
   end

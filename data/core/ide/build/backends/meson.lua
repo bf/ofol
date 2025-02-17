@@ -67,7 +67,7 @@ function meson.build(target, callback)
       if v.build_by_default and v.type == "executable" and v.filename then
         target.binary = v.filename[1]
         config.target_binary = target.binary
-        target.wd = common.dirname(target.binary)
+        target.wd = fsutils.dirname(target.binary)
       end
     end
     target.checked = true
@@ -94,7 +94,7 @@ end
 
 
 function meson.clean(target, callback)
-  if system.get_file_info(get_build_directory(target)) then common.rm(get_build_directory(target), true) end
+  if system.get_file_info(get_build_directory(target)) then fsutils.rm(get_build_directory(target), true) end
   callback(0)
 end
 

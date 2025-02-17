@@ -105,8 +105,8 @@ function internal.infer_targets()
   if system.get_file_info("src") then
     srcs = { "src" }
     return {
-      { name = "debug", binary = common.basename(core.project_dir) .. "-debug" .. (PLATFORM == "Windows" and ".exe" or ""), cflags = {"-g", "-O0" }, cxxflags = { "-g", "-O0" }, srcs = srcs },
-      { name = "release", binary = common.basename(core.project_dir) .. "-release" .. (PLATFORM == "Windows" and ".exe" or ""), cflags = { "-O3" }, cxxflags = { "-O3" }, srcs = srcs },
+      { name = "debug", binary = fsutils.basename(core.project_dir) .. "-debug" .. (PLATFORM == "Windows" and ".exe" or ""), cflags = {"-g", "-O0" }, cxxflags = { "-g", "-O0" }, srcs = srcs },
+      { name = "release", binary = fsutils.basename(core.project_dir) .. "-release" .. (PLATFORM == "Windows" and ".exe" or ""), cflags = { "-O3" }, cxxflags = { "-O3" }, srcs = srcs },
     }
   end
 end
@@ -122,7 +122,7 @@ function internal.build(target, callback)
   local objects = {}
   local stats = {}
   local max_ostat = nil
-  common.mkdirp(target.obj or "obj")
+  fsutils.mkdirp(target.obj or "obj")
   for i, v in ipairs(files) do
     local handle = (target.name .. v):gsub("[/\\]+", "_")
     dependencies[i] = (target.obj or "obj") .. PATHSEP .. handle .. ".d"
@@ -167,8 +167,8 @@ function internal.build(target, callback)
       local binary = get_binary(target)
       local binary_stat = system.get_file_info(binary)
       if not binary_stat or #compile_jobs > 0 or (max_ostat and binary_stat.modified < max_ostat) then
-        local binary_folder = common.dirname(binary)
-        if binary_folder then common.mkdirp(binary_folder) end
+        local binary_folder = fsutils.dirname(binary)
+        if binary_folder then fsutils.mkdirp(binary_folder) end
         if not type or type == "executable" then
           link_job = table_concat(compiler, { "-o", binary })
         elseif type == "static" then

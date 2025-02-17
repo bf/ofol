@@ -37,7 +37,7 @@ local variables = {
 	TM_FILENAME              = function(ctx) return ctx.doc.filename:match('[^/%\\]*$') or '' end,
 	TM_FILENAME_BASE         = function(ctx) return ctx.doc.filename:match('([^/%\\]*)%.%w*$') or ctx.doc.filename end,
 	TM_DIRECTORY             = function(ctx) return ctx.doc.filename:match('([^/%\\]*)[/%\\].*$') or '' end,
-	TM_FILEPATH              = function(ctx) return common.dirname(ctx.doc.abs_filename) or '' end,
+	TM_FILEPATH              = function(ctx) return fsutils.dirname(ctx.doc.abs_filename) or '' end,
 	-- VSCode
 	RELATIVE_FILEPATH        = function(ctx) return core.normalize_to_project_dir(ctx.doc.filename) end,
 	CLIPBOARD                = function()    return system.get_clipboard() end,
@@ -647,7 +647,7 @@ function M.add_paths(paths)
 
 	for _, p in ipairs(paths) do
 		-- non absolute paths are treated as relative from USERDIR
-		p = not common.is_absolute_path(p) and (USERDIR .. PATHSEP .. p) or p
+		p = not fsutils.is_absolute_path(p) and (USERDIR .. PATHSEP .. p) or p
 		local finfo = system.get_file_info(p)
 
 		-- if path of a directory, add every file it contains and directories

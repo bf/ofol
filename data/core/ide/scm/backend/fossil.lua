@@ -106,7 +106,7 @@ function Fossil:get_file_diff(file, directory, callback)
     local diff = self:get_process_output(proc, "stdout")
     self:add_to_cache("get_file_diff", diff, directory, 1)
     callback(diff)
-  end, directory, "diff", common.relative_path(directory, file))
+  end, directory, "diff", fsutils.relative_path(directory, file))
 end
 
 ---@param file string
@@ -142,7 +142,7 @@ function Fossil:get_file_status(file, directory, callback)
     end
     self:add_to_cache("get_file_status", status, file, 1)
     callback(status)
-  end, directory, "finfo", "-s", common.relative_path(directory, file))
+  end, directory, "finfo", "-s", fsutils.relative_path(directory, file))
 
 end
 
@@ -227,7 +227,7 @@ function Fossil:revert_file(file, directory, callback)
       end
     end
     callback(success, errmsg)
-  end, directory, "revert", common.relative_path(directory, file))
+  end, directory, "revert", fsutils.relative_path(directory, file))
 end
 
 ---@param path string Absolute path to file
@@ -249,7 +249,7 @@ function Fossil:add_path(path, directory, callback)
       end
     end
     callback(success, errmsg)
-  end, directory, "add", common.relative_path(directory, path))
+  end, directory, "add", fsutils.relative_path(directory, path))
 end
 
 ---@param path string Absolute path to file
@@ -271,7 +271,7 @@ function Fossil:remove_path(path, directory, callback)
       end
     end
     callback(success, errmsg)
-  end, directory, "rm", common.relative_path(directory, path))
+  end, directory, "rm", fsutils.relative_path(directory, path))
 end
 
 ---@param from string Path to move
@@ -297,8 +297,8 @@ function Fossil:move_path(from, to, directory, callback)
       callback(success, errmsg)
     end,
     directory, "mv",
-    common.relative_path(directory, from),
-    common.relative_path(directory, to)
+    fsutils.relative_path(directory, from),
+    fsutils.relative_path(directory, to)
   )
 end
 

@@ -215,7 +215,7 @@ function StatusView:register_docview_items()
         -- -- separator
         -- style.dim, style.font, self.separator2, 
         -- -- file name
-        -- style.text, dv.doc.filename and style.text or style.dim, common.home_encode(dv.doc:get_name())
+        -- style.text, dv.doc.filename and style.text or style.dim, fsutils.home_encode(dv.doc:get_name())
       }
     end
   })

@@ -190,13 +190,13 @@
 --       for dir, item in core.get_project_files() do
 --         if item.type == "file" then
 --           local path = (dir == core.project_dir and "" or dir .. PATHSEP)
---           table.insert(files, common.home_encode(path .. item.filename))
+--           table.insert(files, fsutils.home_encode(path .. item.filename))
 --         end
 --       end
 --       core.command_view:enter_with_preview("Open File From Project", {
 --         submit = function(text, item)
 --           text = item and item.text or text
---           core.root_view:open_doc(core.open_doc(common.home_expand(text)))
+--           core.root_view:open_doc(core.open_doc(fsutils.home_expand(text)))
 --         end,
 --         suggest = function(text)
 --           return table.fuzzy_match_with_recents(files, core.visited_files, text)
@@ -211,25 +211,25 @@
 --         local dirname, filename = view.doc.abs_filename:match("(.*)[/\\](.+)$")
 --         if dirname then
 --           dirname = core.normalize_to_project_dir(dirname)
---           text = dirname == core.project_dir and "" or common.home_encode(dirname) .. PATHSEP
+--           text = dirname == core.project_dir and "" or fsutils.home_encode(dirname) .. PATHSEP
 --         end
 --       end
 --       core.command_view:enter_with_preview("Open File", {
 --         text = text,
 --         submit = function(text)
---           local filename = system.absolute_path(common.home_expand(text))
+--           local filename = system.absolute_path(fsutils.home_expand(text))
 --           core.root_view:open_doc(core.open_doc(filename))
 --         end,
 --         suggest = function(text)
---           return common.home_encode_list(common.path_suggest(common.home_expand(text)))
+--           return fsutils.home_encode_list(fsutils.path_suggest(fsutils.home_expand(text)))
 --         end,
 --         validate = function(text)
---           local filename = common.home_expand(text)
+--           local filename = fsutils.home_expand(text)
 --           local path_stat, err = system.get_file_info(filename)
 --           if err then
 --             if err:find("No such file", 1, true) then
 --               -- check if the containing directory exists
---               local dirname = common.dirname(filename)
+--               local dirname = fsutils.dirname(filename)
 --               local dir_stat = dirname and system.get_file_info(dirname)
 --               if not dirname or (dir_stat and dir_stat.type == 'dir') then
 --                 return true

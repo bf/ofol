@@ -88,7 +88,7 @@ function fsutils.copy_file(source_abs_filename, dest_abs_filename)
 end
 
 
---- from old common.lua
+--- from old fsutils.lua
 ---Returns a list of paths that are relative to the input path.
 ---
 ---If a root directory is specified, the function returns paths

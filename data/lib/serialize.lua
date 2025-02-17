@@ -44,7 +44,7 @@ local function serialize(val, pretty, indent_str, escape, sort, limit, level)
 end
 
 
----@class common.serializeoptions
+---@class fsutils.serializeoptions
 ---@field pretty boolean Enables pretty printing.
 ---@field indent_str string The indentation character to use. Defaults to `"  "`.
 ---@field escape boolean Uses normal escape characters ("\n") instead of decimal escape sequences ("\10").
@@ -63,7 +63,7 @@ end
 ---* table
 ---
 ---@param val any
----@param opts? common.serializeoptions
+---@param opts? fsutils.serializeoptions
 ---@return string
 function serialize_public(val, opts)
   opts = opts or {}

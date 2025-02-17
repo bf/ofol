@@ -25,7 +25,7 @@ local Doc
 local core = {}
 -- TODO: refactor
 local function update_recents_project(action, dir_path_abs)
-  local dirname = common.normalize_volume(dir_path_abs)
+  local dirname = fsutils.normalize_volume(dir_path_abs)
   if not dirname then return end
   local recents = core.recent_projects
   local n = #recents
@@ -46,7 +46,7 @@ function core.set_project_dir(new_dir, change_project_fn)
   local chdir_ok = pcall(system.chdir, new_dir)
   if chdir_ok then
     if change_project_fn then change_project_fn() end
-    core.project_dir = common.normalize_volume(new_dir)
+    core.project_dir = fsutils.normalize_volume(new_dir)
     core.project_directories = {}
   end
   return chdir_ok
@@ -122,7 +122,7 @@ local function project_subdir_bounds(dir, filename, start_index)
   end
   if found then
     local end_index = file_bisect(dir.files, function(file)
-      return not common.path_belongs_to(file.filename, filename)
+      return not fsutils.path_belongs_to(file.filename, filename)
     end, start_index + 1)
     return start_index, end_index - start_index, dir.files[start_index]
   end
@@ -206,10 +206,10 @@ function core.add_project_directory(path)
   -- top directories has a file-like "item" but the item.filename
   -- will be simply the name of the directory, without its path.
   -- The field item.topdir will identify it as a top level directory.
-  path = common.normalize_volume(path)
+  path = fsutils.normalize_volume(path)
   local topdir = {
     name = path,
-    item = {filename = common.basename(path), type = "dir", topdir = true},
+    item = {filename = fsutils.basename(path), type = "dir", topdir = true},
     files_limit = false,
     is_dirty = true,
     shown_subdir = {},
@@ -350,10 +350,10 @@ local function find_files_rec(root, path)
     local file = path .. PATHSEP .. file
     local info = system.get_file_info(root .. file)
     if info then
-      info.filename = common.strip_leading_path(file)
+      info.filename = fsutils.strip_leading_path(file)
       if info.type == "file" then
         coroutine.yield(root, info)
-      elseif not string.match_pattern(common.basename(info.filename), config.ignore_files) then
+      elseif not string.match_pattern(fsutils.basename(info.filename), config.ignore_files) then
         find_files_rec(root, PATHSEP .. info.filename)
       end
     end
@@ -417,7 +417,7 @@ end
 -- create a directory using mkdir but may need to create the parent
 -- directories as well.
 local function create_user_directory()
-  local success, err = common.mkdirp(USERDIR)
+  local success, err = fsutils.mkdirp(USERDIR)
   if not success then
     error("cannot create user directory \"" .. USERDIR .. "\": " .. err)
   end
@@ -469,13 +469,13 @@ end
 -- to be in core.project_dir.
 -- Please note that .. or . in the filename are not taken into account.
 -- This function should get only filenames normalized using
--- common.normalize_path function.
+-- fsutils.normalize_path function.
 function core.project_absolute_path(filename)
-  if common.is_absolute_path(filename) then
-    return common.normalize_path(filename)
+  if fsutils.is_absolute_path(filename) then
+    return fsutils.normalize_path(filename)
   elseif not core.project_dir then
     local cwd = system.absolute_path(".")
-    return cwd .. PATHSEP .. common.normalize_path(filename)
+    return cwd .. PATHSEP .. fsutils.normalize_path(filename)
   else
     return core.project_dir .. PATHSEP .. filename
   end
@@ -503,9 +503,9 @@ function core.init()
   Doc = require "core.doc"
 
   if PATHSEP == '\\' then
-    USERDIR = common.normalize_volume(USERDIR)
-    DATADIR = common.normalize_volume(DATADIR)
-    EXEDIR  = common.normalize_volume(EXEDIR)
+    USERDIR = fsutils.normalize_volume(USERDIR)
+    DATADIR = fsutils.normalize_volume(DATADIR)
+    EXEDIR  = fsutils.normalize_volume(EXEDIR)
   end
 
   core.window = renwindow._restore()
@@ -542,7 +542,7 @@ function core.init()
   local project_dir_explicit = false
   local files = {}
   for i = 2, #ARGS do
-    local arg_filename = common.strip_trailing_slash(ARGS[i])
+    local arg_filename = fsutils.strip_trailing_slash(ARGS[i])
     local info = system.get_file_info(arg_filename) or {}
     if info.type == "dir" then
       project_dir = arg_filename
@@ -712,7 +712,7 @@ function core.init()
   --       for _, p in pairs(entry.plugins) do
   --         table.insert(msg_list, string.format("%s", p.file))
   --       end
-  --       msg[#msg + 1] = string.format("Plugins from directory \"%s\":\n%s", common.home_encode(entry.dir), table.concat(msg_list, "\n"))
+  --       msg[#msg + 1] = string.format("Plugins from directory \"%s\":\n%s", fsutils.home_encode(entry.dir), table.concat(msg_list, "\n"))
   --     end
   --   end
   --   local errorMessage = string.format(
@@ -750,7 +750,7 @@ local temp_file_prefix = string.format(".lite_temp_%08x", tonumber(temp_uid))
 local temp_file_counter = 0
 
 function core.delete_temp_files(dir)
-  dir = type(dir) == "string" and common.normalize_path(dir) or USERDIR
+  dir = type(dir) == "string" and fsutils.normalize_path(dir) or USERDIR
   for _, filename in ipairs(system.list_dir(dir) or {}) do
     if filename:find(temp_file_prefix, 1, true) == 1 then
       os.remove(dir .. PATHSEP .. filename)
@@ -759,7 +759,7 @@ function core.delete_temp_files(dir)
 end
 
 function core.temp_filename(ext, dir)
-  dir = type(dir) == "string" and common.normalize_path(dir) or USERDIR
+  dir = type(dir) == "string" and fsutils.normalize_path(dir) or USERDIR
   temp_file_counter = temp_file_counter + 1
   return dir .. PATHSEP .. temp_file_prefix
       .. string.format("%06x", temp_file_counter) .. (ext or "")
@@ -947,9 +947,9 @@ end
 
 
 function core.normalize_to_project_dir(filename)
-  filename = common.normalize_path(filename)
-  if common.path_belongs_to(filename, core.project_dir) then
-    filename = common.relative_path(core.project_dir, filename)
+  filename = fsutils.normalize_path(filename)
+  if fsutils.path_belongs_to(filename, core.project_dir) then
+    filename = fsutils.relative_path(core.project_dir, filename)
   end
   return filename
 end
