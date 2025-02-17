@@ -3,7 +3,7 @@
 ---@param a table|nil
 ---@param b table?
 ---@return table
-function table.merge(a, b)
+table.merge = function (a, b)
   a = type(a) == "table" and a or {}
   local t = {}
   for k, v in pairs(a) do

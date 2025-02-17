@@ -311,7 +311,7 @@ function ColorPicker.color_in_between(from_color, to_color, percent)
     if from_color[i] == to_color[i] then
       color[i] = from_color[i]
     else
-      color[i] = common.clamp(
+      color[i] = math.clamp(
         from_color[i] + math.floor((to_color[i] - from_color[i]) * percent),
         0,
         255
@@ -441,7 +441,7 @@ end
 ---Set the transparency level, the lower the given alpha the more transparent.
 ---@param alpha number A value from 0 to 255
 function ColorPicker:set_alpha(alpha)
-  self.alpha = common.clamp(alpha, 0, 255)
+  self.alpha = math.clamp(alpha, 0, 255)
 end
 
 ---Draw a hue color bar at given location and size.
@@ -587,7 +587,7 @@ function ColorPicker:on_mouse_pressed(button, x, y, clicks)
     y >= self.selector.y and y <= self.selector.y + self.selector.h
   then
     local sx, sw = self.selector.x, self.selector.w
-    self.hue_pos = common.clamp(x, sx, sx + sw)
+    self.hue_pos = math.clamp(x, sx, sx + sw)
     self.hue_pos = ((self.hue_pos - self.selector.x) / self.selector.w) * 100
     self.hue_color = self:get_hue_color()
     self.saturation_color = self:get_saturation_color()
@@ -600,7 +600,7 @@ function ColorPicker:on_mouse_pressed(button, x, y, clicks)
     y <= self.selector.y + style.padding.y + (self.selector.h * 2)
   then
     local sx, sw = self.selector.x, self.selector.w
-    self.saturation_pos = common.clamp(x, sx, sx + sw)
+    self.saturation_pos = math.clamp(x, sx, sx + sw)
     self.saturation_pos = ((self.saturation_pos - self.selector.x) / self.selector.w) * 100
     self.saturation_color = self:get_saturation_color()
     self.brightness_color = self:get_brightness_color()
@@ -613,7 +613,7 @@ function ColorPicker:on_mouse_pressed(button, x, y, clicks)
     y <= self.selector.y + style.padding.y * 2 + (self.selector.h * 4)
   then
     local sx, sw = self.selector.x, self.selector.w
-    self.brightness_pos = common.clamp(x, sx, sx + sw)
+    self.brightness_pos = math.clamp(x, sx, sx + sw)
     self.brightness_pos = ((self.brightness_pos - self.selector.x) / self.selector.w) * 100
     self.brightness_color = self:get_brightness_color()
     self.brightness_mouse_down = true
@@ -644,20 +644,20 @@ end
 function ColorPicker:on_mouse_moved(x, y, dx, dy)
   if self.hue_mouse_down then
     local sx, sw = self.selector.x, self.selector.w
-    self.hue_pos = common.clamp(x, sx, sx + sw)
+    self.hue_pos = math.clamp(x, sx, sx + sw)
     self.hue_pos = ((self.hue_pos - self.selector.x) / self.selector.w) * 100
     self.hue_color = self:get_hue_color()
     self.saturation_color = self:get_saturation_color()
     self.brightness_color = self:get_brightness_color()
   elseif self.saturation_mouse_down then
     local sx, sw = self.selector.x, self.selector.w
-    self.saturation_pos = common.clamp(x, sx, sx + sw)
+    self.saturation_pos = math.clamp(x, sx, sx + sw)
     self.saturation_pos = ((self.saturation_pos - self.selector.x) / self.selector.w) * 100
     self.saturation_color = self:get_saturation_color()
     self.brightness_color = self:get_brightness_color()
   elseif self.brightness_mouse_down then
     local sx, sw = self.selector.x, self.selector.w
-    self.brightness_pos = common.clamp(x, sx, sx + sw)
+    self.brightness_pos = math.clamp(x, sx, sx + sw)
     self.brightness_pos = ((self.brightness_pos - self.selector.x) / self.selector.w) * 100
     self.brightness_color = self:get_brightness_color()
   end

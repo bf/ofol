@@ -261,7 +261,7 @@ function SearchReplaceList:select_next()
   if items_count <= 0 then return nil end
   local selected = self.selected+1
   if selected > items_count then selected = 1 end
-  self.selected = common.clamp(selected, 1, items_count)
+  self.selected = math.clamp(selected, 1, items_count)
   self:scroll_to_selected()
   return self.items[self.selected]
 end
@@ -273,7 +273,7 @@ function SearchReplaceList:select_prev()
   if items_count <= 0 then return nil end
   local selected = self.selected-1
   if selected < 1 then selected = items_count end
-  self.selected = common.clamp(selected, 1, items_count)
+  self.selected = math.clamp(selected, 1, items_count)
   self:scroll_to_selected()
   return self.items[self.selected]
 end

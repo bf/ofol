@@ -23,7 +23,7 @@ local current_scale = SCALE
 local default_scale = SCALE
 
 local function set_scale(scale)
-  scale = common.clamp(scale, 0.2, 10)
+  scale = math.clamp(scale, 0.2, 10)
 
   -- save scroll positions
   local v_scrolls = {}

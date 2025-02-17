@@ -147,7 +147,7 @@ function SS.get_sticky_lines(doc, start_line, max_sticky_lines)
   local res = {}
   local last_level
   local original_start_line = start_line
-  start_line = common.clamp(start_line, 1, #doc.lines)
+  start_line = math.clamp(start_line, 1, #doc.lines)
 
   local get_level = SS.get_level_getter(doc)
   if not get_level then return res end

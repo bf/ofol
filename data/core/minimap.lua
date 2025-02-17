@@ -370,7 +370,7 @@ function MiniMap:_on_mouse_pressed_normal(button, x, y, clicks)
     local _, y = self.dv:get_line_screen_position(line)
     local _, oy = self.dv:get_content_offset()
     local nr = self.normal_rect
-    percent = common.clamp((y - oy - (self.dv.size.y) / 2) / (nr.scrollable - self.dv.size.y), 0, 1)
+    percent = math.clamp((y - oy - (self.dv.size.y) / 2) / (nr.scrollable - self.dv.size.y), 0, 1)
   end
   return percent
 end
@@ -396,7 +396,7 @@ function MiniMap:get_minimap_lines()
   if lines_start <= 1 and nlines >= #self.dv.doc.lines then
     offset = 0
   end
-  return common.clamp(lines_start, 1, #self.dv.doc.lines), common.clamp(nlines, 1, #self.dv.doc.lines), offset * line_spacing
+  return math.clamp(lines_start, 1, #self.dv.doc.lines), math.clamp(nlines, 1, #self.dv.doc.lines), offset * line_spacing
 end
 
 

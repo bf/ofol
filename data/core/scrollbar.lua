@@ -201,7 +201,7 @@ function Scrollbar:_on_mouse_pressed_normal(button, x, y, clicks)
     elseif overlaps == "track" then
       local nr = self.normal_rect
       self.drag_start_offset = - along_size / 2
-      return common.clamp((y - nr.along - along_size / 2) / (nr.along_size - along_size), 0, 1)
+      return math.clamp((y - nr.along - along_size / 2) / (nr.along_size - along_size), 0, 1)
     end
   end
 end
@@ -249,7 +249,7 @@ function Scrollbar:_on_mouse_moved_normal(x, y, dx, dy)
   if self.dragging then
     local nr = self.normal_rect
     local _, _, _, along_size = self:_get_thumb_rect_normal()
-    return common.clamp((y - nr.along + self.drag_start_offset) / (nr.along_size - along_size), 0, 1)
+    return math.clamp((y - nr.along + self.drag_start_offset) / (nr.along_size - along_size), 0, 1)
   end
   return self:_update_hover_status_normal(x, y)
 end

@@ -34,7 +34,7 @@ function renderutil.draw_quarter_circle(x, y, r, color, flipy)
         yy = r - 1 - dy
       end
       local t = math.abs(math.sqrt(xx*xx + yy*yy) - r + 1)
-      t = common.clamp(1 - t, 0, 1)
+      t = math.clamp(1 - t, 0, 1)
       if t > 0 then
         color[4] = a * t
         plot(x + dx, y + dy, color)

@@ -27,8 +27,9 @@ end
 ---@param lo number
 ---@param hi number
 ---@return number
-function common.clamp(n, lo, hi)
-  return math.max(math.min(n, hi), lo)
+function math.clamp(n, lo, hi)
+  stderr.deprecated("use math.clamp instead")
+  -- return math.max(math.min(n, hi), lo)
 end
 
 

@@ -130,7 +130,7 @@ function CommandView:move_suggestion_idx(dir)
     if self.state.wrap then
       return (n - 1) % count + 1
     else
-      return common.clamp(n, 1, count)
+      return math.clamp(n, 1, count)
     end
   end
 

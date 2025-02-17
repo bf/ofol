@@ -161,7 +161,7 @@ function TreeList:set_selection(selection, selection_y, center, instant)
     end
     local _, y = self:get_content_offset()
     self.scroll.to.y = selection_y - y
-    self.scroll.to.y = common.clamp(
+    self.scroll.to.y = math.clamp(
       self.scroll.to.y, 0, self:get_scrollable_size() - self.size.y
     )
     if instant then

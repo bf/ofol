@@ -264,7 +264,7 @@ end
 -- If line end, gives the end of an index line, rather than the first character of the next line.
 local function get_line_idx_col_count(docview, line, col, line_end, ndoc)
   local doc = docview.doc
-  if not docview.wrapped_settings then return common.clamp(line, 1, #doc.lines), col, 1, 1 end
+  if not docview.wrapped_settings then return math.clamp(line, 1, #doc.lines), col, 1, 1 end
   if line > #doc.lines then return get_line_idx_col_count(docview, #doc.lines, #doc.lines[#doc.lines] + 1) end
   line = math.max(line, 1)
   local idx = docview.wrapped_line_to_idx[line] or 1
@@ -466,7 +466,7 @@ local old_resolve_screen_position = DocView.resolve_screen_position
 function DocView:resolve_screen_position(x, y)
   if not self.wrapped_settings then return old_resolve_screen_position(self, x, y) end
   local ox, oy = self:get_line_screen_position(1)
-  local idx = common.clamp(math.floor((y - oy) / self:get_line_height()) + 1, 1, get_total_wrapped_lines(self))
+  local idx = math.clamp(math.floor((y - oy) / self:get_line_height()) + 1, 1, get_total_wrapped_lines(self))
   return get_line_col_from_index_and_x(self, idx, x - ox)
 end
 

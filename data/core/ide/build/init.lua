@@ -220,7 +220,7 @@ function build.is_running() return build.thread ~= nil end
 function build.output(line) stderr.info(line) end
 
 function build.set_target(target)
-  target = common.clamp(target, 1, #build.targets)
+  target = math.clamp(target, 1, #build.targets)
   build.current_target = target
   config.target_binary = build.targets[target].binary
   build.state.target = target

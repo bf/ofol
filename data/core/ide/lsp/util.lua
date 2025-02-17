@@ -38,7 +38,7 @@ function util.doc_utf8_to_utf16(doc, line, column)
   local ltext = doc.lines[line]
   local ltext_len = ltext and #ltext or 0
   local ltext_ulen = ltext and utf8extra.len(ltext) or 0
-  column = common.clamp(column, 1, ltext_len > 0 and ltext_len or 1)
+  column = math.clamp(column, 1, ltext_len > 0 and ltext_len or 1)
   -- no need for conversion so return column as is
   if ltext_len == ltext_ulen then return column end
   if column > 1 then
@@ -68,7 +68,7 @@ function util.doc_utf16_to_utf8(doc, line, column)
   local ltext = doc.lines[line]
   local ltext_len = ltext and #ltext or 0
   local ltext_ulen = ltext and utf8extra.len(ltext) or 0
-  column = common.clamp(column, 1, ltext_len > 0 and ltext_len or 1)
+  column = math.clamp(column, 1, ltext_len > 0 and ltext_len or 1)
   -- no need for conversion so return column as is
   if ltext_len == ltext_ulen then return column end
   if column > 1 then

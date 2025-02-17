@@ -284,10 +284,10 @@ end
 
 function View:clamp_scroll_position()
   local max = self:get_scrollable_size() - self.size.y
-  self.scroll.to.y = common.clamp(self.scroll.to.y, 0, max)
+  self.scroll.to.y = math.clamp(self.scroll.to.y, 0, max)
 
   max = self:get_h_scrollable_size() - self.size.x
-  self.scroll.to.x = common.clamp(self.scroll.to.x, 0, max)
+  self.scroll.to.x = math.clamp(self.scroll.to.x, 0, max)
 end
 
 

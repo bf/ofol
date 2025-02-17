@@ -231,7 +231,7 @@ end
 function DocView:resolve_screen_position(x, y)
   local ox, oy = self:get_line_screen_position(1)
   local line = math.floor((y - oy) / self:get_line_height()) + 1
-  line = common.clamp(line, 1, #self.doc.lines)
+  line = math.clamp(line, 1, #self.doc.lines)
   local col = self:get_x_offset_col(line, x - ox)
   return line, col
 end
@@ -262,7 +262,7 @@ function DocView:scroll_to_make_visible(line, col)
   local lh = self:get_line_height()
   local _, _, _, scroll_h = self.h_scrollbar:get_track_rect()
   local overscroll = math.min(lh * 2, self.size.y) -- always show the previous / next line when possible
-  self.scroll.to.y = common.clamp(self.scroll.to.y, ly - oy - self.size.y + scroll_h + overscroll, ly - oy - lh)
+  self.scroll.to.y = math.clamp(self.scroll.to.y, ly - oy - self.size.y + scroll_h + overscroll, ly - oy - lh)
   local gw = self:get_gutter_width()
   local xoffset = self:get_col_x_offset(line, col)
   local xmargin = 3 * self:get_font():get_width(' ')

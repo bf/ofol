@@ -188,7 +188,7 @@ function ResultsView:draw()
 
   local x, y = ox + style.padding.x, oy + style.padding.y
   local files_number = core.project_files_number()
-  local per = common.clamp(files_number and self.last_file_idx / files_number or 1, 0, 1)
+  local per = math.clamp(files_number and self.last_file_idx / files_number or 1, 0, 1)
   local text
   if self.searching then
     if files_number then

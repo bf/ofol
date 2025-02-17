@@ -367,13 +367,13 @@ function RootView:on_mouse_moved(x, y, dx, dy)
   if self.dragged_divider then
     local node = self.dragged_divider
     if node.type == "hsplit" then
-      x = common.clamp(x - node.position.x, 0, self.root_node.size.x * 0.95)
+      x = math.clamp(x - node.position.x, 0, self.root_node.size.x * 0.95)
       resize_child_node(node, "x", x, dx)
     elseif node.type == "vsplit" then
-      y = common.clamp(y - node.position.y, 0, self.root_node.size.y * 0.95)
+      y = math.clamp(y - node.position.y, 0, self.root_node.size.y * 0.95)
       resize_child_node(node, "y", y, dy)
     end
-    node.divider = common.clamp(node.divider, 0.01, 0.99)
+    node.divider = math.clamp(node.divider, 0.01, 0.99)
     return
   end
 
@@ -486,13 +486,13 @@ function RootView:on_touch_moved(x, y, dx, dy, ...)
   if self.dragged_divider then
     local node = self.dragged_divider
     if node.type == "hsplit" then
-      x = common.clamp(x - node.position.x, 0, self.root_node.size.x * 0.95)
+      x = math.clamp(x - node.position.x, 0, self.root_node.size.x * 0.95)
       resize_child_node(node, "x", x, dx)
     elseif node.type == "vsplit" then
-      y = common.clamp(y - node.position.y, 0, self.root_node.size.y * 0.95)
+      y = math.clamp(y - node.position.y, 0, self.root_node.size.y * 0.95)
       resize_child_node(node, "y", y, dy)
     end
-    node.divider = common.clamp(node.divider, 0.01, 0.99)
+    node.divider = math.clamp(node.divider, 0.01, 0.99)
     return
   end
 

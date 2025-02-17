@@ -244,7 +244,7 @@ function SingleLineDoc:sanitize_position(line, col)
   elseif line < 1 then
     return 1, 1
   end
-  return line, common.clamp(col, 1, #self.lines[line])
+  return line, math.clamp(col, 1, #self.lines[line])
 end
 
 local function position_offset_func(self, line, col, fn, ...)
