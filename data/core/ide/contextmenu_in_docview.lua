@@ -2,7 +2,7 @@
 local core = require "core"
 local command = require "core.command"
 local keymap = require "core.keymap"
-local ContextMenu = require "core.contextmenu"
+local ContextMenu = require "components.contextmenu_component"
 local config = require "core.config"
 
 local RootView = require "core.views.rootview"

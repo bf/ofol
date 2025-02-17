@@ -5,7 +5,7 @@ local config = require "core.config"
 local keymap = require "core.keymap"
 local style = require "themes.style"
 local View = require "core.view"
-local ContextMenu = require "core.contextmenu"
+local ContextMenu = require "components.contextmenu_component"
 
 
 local RootView = require "core.views.rootview"
