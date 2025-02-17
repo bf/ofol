@@ -678,9 +678,9 @@ function TodoTreeView:draw()
     x = x + (item_depth - root_depth) * style.padding.x + style.padding.x
     if item.type == "file" then
       local icon1 = item.expanded and "-" or "+"
-      common.draw_text(style.icon_font, file_color, icon1, nil, x, y, 0, h)
+      renderer.draw_text_aligned_in_box(style.icon_font, file_color, icon1, nil, x, y, 0, h)
       x = x + style.padding.x
-      -- common.draw_text(style.icon_font, file_color, "f", nil, x, y, 0, h)
+      -- renderer.draw_text_aligned_in_box(style.icon_font, file_color, "f", nil, x, y, 0, h)
       -- x = x + icon_width
     elseif item.type == "group" then
       if config.plugins.bf_todotreeview.todo_mode == "file_tag" then
@@ -688,9 +688,9 @@ function TodoTreeView:draw()
       end
 
       if item.expanded then
-        common.draw_text(style.icon_font, tag_color, "-", nil, x, y, 0, h)
+        renderer.draw_text_aligned_in_box(style.icon_font, tag_color, "-", nil, x, y, 0, h)
       else
-        common.draw_text(icon_small_font, tag_color, ">", nil, x, y, 0, h)
+        renderer.draw_text_aligned_in_box(icon_small_font, tag_color, ">", nil, x, y, 0, h)
       end
       x = x + icon_width / 2
     else
@@ -699,23 +699,23 @@ function TodoTreeView:draw()
       else
         x = x + style.padding.x * 1.5
       end
-      -- common.draw_text(style.icon_font, text_color, "i", nil, x, y, 0, h)
+      -- renderer.draw_text_aligned_in_box(style.icon_font, text_color, "i", nil, x, y, 0, h)
       -- x = x + icon_width
     end
 
     -- text
     x = x + spacing
     if item.type == "file" then
-      common.draw_text(style.font, file_color, item.filename, nil, x, y, 0, h)
+      renderer.draw_text_aligned_in_box(style.font, file_color, item.filename, nil, x, y, 0, h)
     elseif item.type == "group" then
-      common.draw_text(style.font, tag_color, item.tag, nil, x, y, 0, h)
+      renderer.draw_text_aligned_in_box(style.font, tag_color, item.tag, nil, x, y, 0, h)
     else
       if config.plugins.bf_todotreeview.todo_mode == "file" then
-        common.draw_text(style.font, tag_color, item.tag, nil, x, y, 0, h)
+        renderer.draw_text_aligned_in_box(style.font, tag_color, item.tag, nil, x, y, 0, h)
         x = x + style.font:get_width(item.tag)
-        common.draw_text(style.font, text_color, config.plugins.bf_todotreeview.todo_separator..item.text, nil, x, y, 0, h)
+        renderer.draw_text_aligned_in_box(style.font, text_color, config.plugins.bf_todotreeview.todo_separator..item.text, nil, x, y, 0, h)
       else
-        common.draw_text(style.font, text_color, item.text, nil, x, y, 0, h)
+        renderer.draw_text_aligned_in_box(style.font, text_color, item.text, nil, x, y, 0, h)
       end
     end
   end

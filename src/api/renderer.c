@@ -362,6 +362,7 @@ static int f_draw_rect(lua_State *L) {
   return 0;
 }
 
+// draw text at certain position
 static int f_draw_text(lua_State *L) {
   RenFont* fonts[FONT_FALLBACK_MAX];
   font_retrieve(L, fonts, 1);

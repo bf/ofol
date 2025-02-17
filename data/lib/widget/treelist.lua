@@ -367,7 +367,7 @@ function TreeList:draw_tooltip()
   renderer.draw_rect(
     x, y, w, h, replace_alpha(style.background2, self.tooltip.alpha)
   )
-  common.draw_text(
+  renderer.draw_text_aligned_in_box(
     style.font,
     replace_alpha(style.text, self.tooltip.alpha),
     text, "center", x, y, w, h
@@ -409,7 +409,7 @@ end
 ---@param h number
 function TreeList:draw_item_text(item, active, hovered, x, y, w, h)
   local item_text, item_font, item_color = self:get_item_text(item, active, hovered)
-  return common.draw_text(item_font, item_color, item_text, "left", x, y, 0, h)
+  return renderer.draw_text_aligned_in_box(item_font, item_color, item_text, "left", x, y, 0, h)
 end
 
 ---@param item widget.treelist.item
@@ -422,7 +422,7 @@ end
 function TreeList:draw_item_icon(item, active, hovered, x, y, w, h)
   local icon_char, icon_font, icon_color = self:get_item_icon(item, active, hovered)
   if not icon_char then return 0 end
-  common.draw_text(icon_font, icon_color, icon_char, "left", x, y, 0, h)
+  renderer.draw_text_aligned_in_box(icon_font, icon_color, icon_char, "left", x, y, 0, h)
   return self.item_icon_width + self.item_text_spacing
 end
 
@@ -449,7 +449,7 @@ function TreeList:draw_item_chevron(item, active, hovered, x, y, w, h)
   if item.childs and #item.childs > 0 then
     local chevron_icon = item.expanded and "-" or "+"
     local chevron_color = hovered and style.accent or style.text
-    common.draw_text(style.icon_font, chevron_color, chevron_icon, "left", x, y, 0, h)
+    renderer.draw_text_aligned_in_box(style.icon_font, chevron_color, chevron_icon, "left", x, y, 0, h)
   end
   return style.padding.x
 end

@@ -258,7 +258,7 @@ function SelectBox:draw()
   local text = self:text_overflow(item_text, max_width, font)
 
   -- draw label or selected item
-  common.draw_text(
+  renderer.draw_text_aligned_in_box(
     font,
     self.hover_text or self.foreground_color or style.text,
     text,
@@ -270,7 +270,7 @@ function SelectBox:draw()
   )
 
   -- draw arrow down icon
-  common.draw_text(
+  renderer.draw_text_aligned_in_box(
     style.icon_font,
     self.hover_text or self.foreground_color or style.text,
     "-",

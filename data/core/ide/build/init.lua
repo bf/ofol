@@ -506,9 +506,9 @@ function BuildMessageView:draw()
     warning = build.warning_color,
     good = build.good_color
   }
-  local x = common.draw_text(style.code_font, style.accent, title, "left", ox + style.padding.x, self.position.y + style.padding.y, 0, h)
+  local x = renderer.draw_text_aligned_in_box(style.code_font, style.accent, title, "left", ox + style.padding.x, self.position.y + style.padding.y, 0, h)
   if subtitle and #subtitle == 2 then
-    common.draw_text(style.code_font, colors[subtitle[1]] or style.accent, subtitle[2], "left", x + style.padding.x, self.position.y + style.padding.y, 0, h)
+    renderer.draw_text_aligned_in_box(style.code_font, colors[subtitle[1]] or style.accent, subtitle[2], "left", x + style.padding.x, self.position.y + style.padding.y, 0, h)
   end
   core.push_clip_rect(self.position.x, self.position.y + h + style.padding.y * 2, self.size.x, self.size.y - h - style.padding.y * 2)
   local default_color = style.text
@@ -519,9 +519,9 @@ function BuildMessageView:draw()
     end
     if type(v) == "table" then
       if #v > 2 then
-        common.draw_text(style.code_font, colors[v[1]] or style.text, v[2] .. ":" .. v[3] .. " [" .. v[1] .. "]: " .. v[5], "left", ox + style.padding.x, oy + yoffset, 0, h)
+        renderer.draw_text_aligned_in_box(style.code_font, colors[v[1]] or style.text, v[2] .. ":" .. v[3] .. " [" .. v[1] .. "]: " .. v[5], "left", ox + style.padding.x, oy + yoffset, 0, h)
       else
-        common.draw_text(style.code_font, colors[v[1]] or style.text, v[2], "left", ox + style.padding.x, oy + yoffset, 0, h)
+        renderer.draw_text_aligned_in_box(style.code_font, colors[v[1]] or style.text, v[2], "left", ox + style.padding.x, oy + yoffset, 0, h)
       end
     else
       if v:find("\x1b") then
@@ -530,12 +530,12 @@ function BuildMessageView:draw()
           local s,e,color = v:find("\x1b%[%d+;(%d+)m")
           default_color = ansi_colors[tonumber(color)] or style.text
           local line = v:sub(1, s and (s-1) or #v):gsub("\x1b%[[^a-zA-Z]*%a", "")
-          x = common.draw_text(style.code_font, default_color, line, "left", x, oy + yoffset, 0, h)
+          x = renderer.draw_text_aligned_in_box(style.code_font, default_color, line, "left", x, oy + yoffset, 0, h)
           if not e then break end
           v = v:sub(e + 1)
         end
       else
-        common.draw_text(style.code_font, default_color, v, "left", ox + style.padding.x, oy + yoffset, 0, h)
+        renderer.draw_text_aligned_in_box(style.code_font, default_color, v, "left", ox + style.padding.x, oy + yoffset, 0, h)
       end
     end
   end

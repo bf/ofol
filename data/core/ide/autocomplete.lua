@@ -428,7 +428,7 @@ local function draw_description_box(text, av, sx, sy, sw, sh)
 
   -- draw text
   for _, line in pairs(lines) do
-    common.draw_text(
+    renderer.draw_text_aligned_in_box(
       font, style.text, line, "left",
       x + style.padding.x, y, width, lh
     )
@@ -460,10 +460,10 @@ local function draw_suggestions_box(av)
     end
     local s = suggestions[i]
     local color = (i == suggestions_idx) and style.accent or style.text
-    common.draw_text(font, color, s.text, "left", rx + style.padding.x, y, rw, lh)
+    renderer.draw_text_aligned_in_box(font, color, s.text, "left", rx + style.padding.x, y, rw, lh)
     if s.info then
       color = (i == suggestions_idx) and style.text or style.dim
-      common.draw_text(style.kind_font, color, s.info, "right", rx, y, rw - style.padding.x, lh)
+      renderer.draw_text_aligned_in_box(style.kind_font, color, s.info, "right", rx, y, rw - style.padding.x, lh)
     end
     y = y + lh
     if suggestions_idx == i then
@@ -479,14 +479,14 @@ local function draw_suggestions_box(av)
 
   renderer.draw_rect(rx, y, rw, 2, style.caret)
   renderer.draw_rect(rx, y+2, rw, lh, style.background)
-  common.draw_text(
+  renderer.draw_text_aligned_in_box(
     style.font,
     style.accent,
     "Items",
     "left",
     rx + style.padding.x, y, rw, lh
   )
-  common.draw_text(
+  renderer.draw_text_aligned_in_box(
     style.font,
     style.accent,
     tostring(suggestions_idx) .. "/" .. tostring(#suggestions),

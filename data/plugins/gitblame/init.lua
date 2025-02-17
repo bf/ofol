@@ -106,7 +106,7 @@ local function draw_blame_info_box(text, sx, sy)
 
   -- draw text
   for _, line in pairs(lines) do
-    common.draw_text(
+    renderer.draw_text_aligned_in_box(
       font,
       style.text,
       line,

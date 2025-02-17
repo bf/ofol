@@ -161,6 +161,7 @@ require "lib.lua-monkeypatch.lua-monkeypatch-math"
 require "lib.lua-monkeypatch.lua-monkeypatch-regex"
 require "lib.lua-monkeypatch.lua-monkeypatch-process"
 require "lib.lua-monkeypatch.lua-monkeypatch-table"
+require "lib.lua-monkeypatch.lua-monkeypatch-renderer"
 
 
 

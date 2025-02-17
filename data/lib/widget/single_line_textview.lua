@@ -534,7 +534,7 @@ function SingleLineDocView:draw_line_gutter(line, x, y, width)
   end
   x = x + style.padding.x
   local lh = self:get_line_height()
-  common.draw_text(self:get_font(), color, line, "right", x, y, width, lh)
+  renderer.draw_text_aligned_in_box(self:get_font(), color, line, "right", x, y, width, lh)
   return lh
 end
 

@@ -676,10 +676,10 @@ function StatusView:draw_items(items, right_align, xoffset, yoffset)
   if right_align then
     local w = draw_items(self, items, 0, 0, text_width)
     x = x + self.size.x - w - style.padding.x
-    draw_items(self, items, x, y, common.draw_text)
+    draw_items(self, items, x, y, renderer.draw_text_aligned_in_box)
   else
     x = x + style.padding.x
-    draw_items(self, items, x, y, common.draw_text)
+    draw_items(self, items, x, y, renderer.draw_text_aligned_in_box)
   end
 end
 

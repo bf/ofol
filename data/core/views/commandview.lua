@@ -385,11 +385,11 @@ local function draw_suggestions_box(self)
     local item = self.suggestions[i]
     local color = (i == self.suggestion_idx) and style.accent or style.text
     local y = self.position.y + (i + first - 1) * lh + dh
-    common.draw_text(self:get_font(), color, item.text, nil, x, y, 0, lh)
+    renderer.draw_text_aligned_in_box(self:get_font(), color, item.text, nil, x, y, 0, lh)
 
     if item.info then
       local w = self.size.x - x - style.padding.x
-      common.draw_text(self:get_font(), style.text, item.info, "right", x, y, w, lh)
+      renderer.draw_text_aligned_in_box(self:get_font(), style.text, item.info, "right", x, y, w, lh)
     end
   end
   core.pop_clip_rect()

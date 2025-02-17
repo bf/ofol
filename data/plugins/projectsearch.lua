@@ -228,8 +228,8 @@ function ResultsView:draw()
     end
     x = x + style.padding.x
     local text = string.format("%s at line %d (col %d): ", item.file, item.line, item.col)
-    x = common.draw_text(style.font, style.dim, text, "left", x, y, w, h)
-    x = common.draw_text(style.code_font, color, item.text, "left", x, y, w, h)
+    x = renderer.draw_text_aligned_in_box(style.font, style.dim, text, "left", x, y, w, h)
+    x = renderer.draw_text_aligned_in_box(style.code_font, color, item.text, "left", x, y, w, h)
     self.max_h_scroll = math.max(self.max_h_scroll, x)
   end
   core.pop_clip_rect()

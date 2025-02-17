@@ -237,7 +237,7 @@ local function draw_listbox(av)
       local color = (i == settings.selected_item_idx and settings.is_list) and
         style.accent or style.text
 
-      common.draw_text(
+      renderer.draw_text_aligned_in_box(
         font, color, item.text, "left",
         rx + padding_x, y, rw, line_height
       )
@@ -246,7 +246,7 @@ local function draw_listbox(av)
         color = (i == settings.selected_item_idx and settings.is_list) and
           style.text or style.dim
 
-        common.draw_text(
+        renderer.draw_text_aligned_in_box(
           style.font, color, item.info, "right",
           rx, y, rw - padding_x, line_height
         )
@@ -258,14 +258,14 @@ local function draw_listbox(av)
   if settings.show_items_count then
     renderer.draw_rect(rx, y, rw, 2, style.caret)
     renderer.draw_rect(rx, y+2, rw, line_height, style.background)
-    common.draw_text(
+    renderer.draw_text_aligned_in_box(
       style.font,
       style.accent,
       "Items",
       "left",
       rx + padding_x, y, rw, line_height
     )
-    common.draw_text(
+    renderer.draw_text_aligned_in_box(
       style.font,
       style.accent,
       tostring(settings.selected_item_idx) .. "/" .. tostring(#settings.shown_items),

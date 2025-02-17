@@ -499,7 +499,7 @@ function SearchReplaceList:draw()
 
     -- draw collapse/contract symbol
     if item.file then
-      common.draw_text(
+      renderer.draw_text_aligned_in_box(
         style.icon_font,
         (self.hovered == i and self.hovered_expander) and style.accent or style.text,
         item.file.expanded and "-" or "+",
@@ -546,7 +546,7 @@ function SearchReplaceList:draw()
         if start_pos ~= 1 then prefix = "..." end
         if end_pos ~= #text then postfix = "..." end
       end
-      x = common.draw_text(
+      x = renderer.draw_text_aligned_in_box(
         font,
         style.syntax["number"],
         tostring(item.line.line) .. ": ",
@@ -564,7 +564,7 @@ function SearchReplaceList:draw()
       local found_text = text:sub(item.position.col1, item.position.col2)
       local found_width = style.font:get_width(found_text)
       if start_text ~= "" then
-        x = common.draw_text(
+        x = renderer.draw_text_aligned_in_box(
           font,
           text_color,
           start_text,
@@ -575,13 +575,13 @@ function SearchReplaceList:draw()
       local found_color = not replacement and style.dim or DIFF.DEL
       local found_text_color = not replacement and text_color or DIFF.TEXT
       renderer.draw_rect(x, y, found_width, h, found_color)
-      x = common.draw_text(font, found_text_color, found_text, "left", x, y, w, h)
+      x = renderer.draw_text_aligned_in_box(font, found_text_color, found_text, "left", x, y, w, h)
       if replacement then
         renderer.draw_rect(x, y, replacement_width, h, DIFF.ADD)
-        x = common.draw_text(font, DIFF.TEXT, replacement, "left", x, y, w, h)
+        x = renderer.draw_text_aligned_in_box(font, DIFF.TEXT, replacement, "left", x, y, w, h)
       end
       if end_text ~= "" then
-        x = common.draw_text(
+        x = renderer.draw_text_aligned_in_box(
           font,
           text_color,
           end_text,
@@ -591,7 +591,7 @@ function SearchReplaceList:draw()
       end
       all_text = item.line.line .. ": " .. start_text .. found_text .. end_text
     else
-      x = common.draw_text(font, text_color, text, "left", x, y, w, h)
+      x = renderer.draw_text_aligned_in_box(font, text_color, text, "left", x, y, w, h)
       all_text = file_path
     end
 

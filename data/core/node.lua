@@ -907,13 +907,13 @@ function Node:draw_tabs()
   renderer.draw_rect(xrb, yrb, wrb * 2, hrb, style.background2)
 
   -- draw left scroll button text
-  common.draw_text(style.icon_font, left_button_style, ICON_SCROLL_BUTTON_LEFT, scroll_button_text_align, xrb, yrb, wrb, h)
+  renderer.draw_text_aligned_in_box(style.icon_font, left_button_style, ICON_SCROLL_BUTTON_LEFT, scroll_button_text_align, xrb, yrb, wrb, h)
 
   -- second scroll button
   xrb, yrb, wrb = self:get_scroll_button_rect(2)
 
   -- draw right scroll button text
-  common.draw_text(style.icon_font, right_button_style, ICON_SCROLL_BUTTON_RIGHT, scroll_button_text_align, xrb, yrb, wrb, h)
+  renderer.draw_text_aligned_in_box(style.icon_font, right_button_style, ICON_SCROLL_BUTTON_RIGHT, scroll_button_text_align, xrb, yrb, wrb, h)
 
   core.pop_clip_rect()
 end
