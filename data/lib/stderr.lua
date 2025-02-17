@@ -165,8 +165,9 @@ function stderr.info_backtrace(...)
 end
 
 function stderr.deprecated(...)
-  stderr.warn("DEPRECATED CODE")
-  stderr.backtrace()
+  stderr.error("DEPRECATED CODE", ...)
+  -- stderr.warn("DEPRECATED CODE", ...)
+  -- stderr.backtrace()
 end
 
 function stderr.error(...)

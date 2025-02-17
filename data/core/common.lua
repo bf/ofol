@@ -27,7 +27,7 @@ end
 ---@param lo number
 ---@param hi number
 ---@return number
-function math.clamp(n, lo, hi)
+function common.clamp(n, lo, hi)
   stderr.deprecated("use math.clamp instead")
   -- return math.max(math.min(n, hi), lo)
 end
@@ -37,7 +37,7 @@ end
 ---@param a table|nil
 ---@param b table?
 ---@return table
-function table.merge(a, b)
+function common.merge(a, b)
   stderr.deprecated("use table.merge instead")
   -- a = type(a) == "table" and a or {}
   -- local t = {}
