@@ -3,7 +3,7 @@
 --
 
 ---@type core.scrollbar
-local CoreScrollBar = require "core.scrollbar"
+local CoreScrollBar = require "components.scrollbar_component"
 
 ---@class widget.scrollbar : core.scrollbar
 ---@overload fun(parent?:widget, options?:table):widget.scrollbar

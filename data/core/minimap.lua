@@ -5,7 +5,7 @@ local config = require "core.config"
 local style = require "themes.style"
 local Highlighter = require "core.doc.highlighter"
 local Object = require "lib.object"
-local Scrollbar = require "core.scrollbar"
+local Scrollbar = require "components.scrollbar_component"
 
 local DocView = require "core.views.docview"
 

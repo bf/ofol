@@ -1,7 +1,7 @@
 local core = require "core"
 local config = require "core.config"
 local Object = require "lib.object"
-local Scrollbar = require "core.scrollbar"
+local Scrollbar = require "components.scrollbar_component"
 
 
 ---@class core.view.position
