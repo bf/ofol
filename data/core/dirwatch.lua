@@ -1,4 +1,3 @@
-local common = require "core.common"
 local config = require "core.config"
 local dirwatch = {}
 

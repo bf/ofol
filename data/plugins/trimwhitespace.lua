@@ -1,5 +1,4 @@
 -- mod-version:3
-local common = require "core.common"
 local config = require "core.config"
 local command = require "core.command"
 local Doc = require "core.doc"

@@ -1,6 +1,5 @@
 -- mod-version:3
 local core = require "core"
-local common = require "core.common"
 
 local DocView = require "core.views.docview"
 local serialize = require "lib.serialize"

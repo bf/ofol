@@ -1,6 +1,5 @@
 local core = require "core"
 local style = require "themes.style"
-local common = require "core.common"
 local config = require "core.config"
 local command = require "core.command"
 local gitblame = require "plugins.gitblame.gitblame"

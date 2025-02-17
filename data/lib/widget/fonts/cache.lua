@@ -1,6 +1,5 @@
 
 local core = require "core"
-local common = require "core.common"
 local Object = require "lib.object"
 local FontInfo = require "lib.widget.fonts.info"
 local serialize = require "lib.serialize"

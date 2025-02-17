@@ -1,5 +1,4 @@
 local core = require "core"
-local common = require "core.common"
 local style = require "themes.style"
 local FontCache = require "lib.widget.fonts.cache"
 

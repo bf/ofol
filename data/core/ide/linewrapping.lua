@@ -1,6 +1,5 @@
 -- mod-version:3 --priority:10
 local core = require "core"
-local common = require "core.common"
 local Doc = require "core.doc"
 local style = require "themes.style"
 local config = require "core.config"

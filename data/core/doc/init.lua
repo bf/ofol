@@ -4,7 +4,6 @@ local translate = require ".translate"
 local core = require "core"
 local syntax = require "lib.syntax"
 local config = require "core.config"
-local common = require "core.common"
 
 local OpenFilesStore = require "stores.open_files_store"
 

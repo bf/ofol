@@ -1,6 +1,5 @@
 local core = require "core"
 local config = require "core.config"
-local common = require "core.common"
 local command = require "core.command"
 local keymap = require "core.keymap"
 local style = require "themes.style"

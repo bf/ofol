@@ -1,6 +1,5 @@
 local core = require "core"
 local config = require "core.config"
-local common = require "core.common"
 local Object = require "lib.object"
 local Scrollbar = require "core.scrollbar"
 

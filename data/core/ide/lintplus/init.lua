@@ -26,7 +26,6 @@ local default_kind_pretty_names = {
 
 local core = require "core"
 local command = require "core.command"
-local common = require "core.common"
 local config = require "core.config"
 local style = require "themes.style"
 local keymap = require "core.keymap"

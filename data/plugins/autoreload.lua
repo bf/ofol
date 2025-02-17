@@ -3,7 +3,6 @@ local core = require "core"
 local config = require "core.config"
 local Doc = require "core.doc"
 local Node = require "core.node"
-local common = require "core.common"
 local dirwatch = require "core.dirwatch"
 
 config.plugins.autoreload = table.merge({

@@ -13,7 +13,6 @@ local Object = require "lib.object"
 local core = require "core"
 local syntax = require "lib.syntax"
 local config = require "core.config"
-local common = require "core.common"
 
 local translate  = require "lib.widget.single_line_document_translate"
 

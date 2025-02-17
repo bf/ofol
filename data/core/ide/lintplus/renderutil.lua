@@ -1,6 +1,5 @@
 -- rendering utilities
 
-local common = require "core.common"
 
 local renderutil = {}
 

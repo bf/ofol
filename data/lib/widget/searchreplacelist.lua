@@ -5,7 +5,6 @@
 --
 
 local core = require "core"
-local common = require "core.common"
 local style = require "themes.style"
 local color_from_css_string = require "themes.color_from_css_string"
 local Widget = require "widget"

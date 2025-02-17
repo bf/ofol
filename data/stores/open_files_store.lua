@@ -1,7 +1,6 @@
 -- stores metadata for each file by absolute path
 -- metadata used for file titles
 
-local common = require "core.common"
 
 local OpenFilesStore = {}
 

@@ -5,7 +5,6 @@
 -- @license MIT
 
 local core = require "core"
-local common = require "core.common"
 local config = require "core.config"
 
 local json = require "lib.json"

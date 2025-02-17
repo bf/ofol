@@ -1,4 +1,3 @@
-local common = require "core.common"
 local config = require "core.config"
 
 -- functions for translating a Doc position to another position these functions

@@ -3,7 +3,6 @@
 
 local core      = require 'core'
 local command   = require 'core.command'
-local common    = require 'core.common'
 local config    = require 'core.config'
 local Doc       = require 'core.doc'
 local translate = require 'core.doc.translate'

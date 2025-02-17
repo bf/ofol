@@ -1,6 +1,5 @@
 -- mod-version:3
 local core = require "core"
-local common = require "core.common"
 local keymap = require "core.keymap"
 local command = require "core.command"
 local style = require "themes.style"

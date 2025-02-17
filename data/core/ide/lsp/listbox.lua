@@ -8,7 +8,6 @@
 -- used for "show symbol info"
 
 local core = require "core"
-local common = require "core.common"
 local command = require "core.command"
 local style = require "themes.style"
 local keymap = require "core.keymap"

@@ -1,6 +1,5 @@
 -- require "core.strict"
 -- require "core.regex"
-local common = require "core.common"
 local config = require "core.config"
 
 -- even though $style variable is not used in this file, 

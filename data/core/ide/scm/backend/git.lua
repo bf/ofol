@@ -1,7 +1,6 @@
 -- Backend implementation for Git.
 -- More details at: https://git-scm.com/
 
-local common = require "core.common"
 local Backend = require "core.ide.scm.backend"
 
 ---@class plugins.scm.backend.git : plugins.scm.backend

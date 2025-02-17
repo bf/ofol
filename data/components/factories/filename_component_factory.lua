@@ -2,7 +2,6 @@ local style = require "themes.style"
 
 local FileMetadataStore = require "stores.file_metadata_store"
 local OpenFilesStore = require "stores.open_files_store"
-local common = require "core.common"
 
 local FilenameComponent = require "...filename_component"
 

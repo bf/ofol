@@ -3,7 +3,6 @@
 -- local config = require "core.config"
 -- local Doc = require "core.doc"
 -- local command = require "core.command"
--- local common = require "core.common"
 -- -- this is used to detect the wait time
 -- local last_keypress = os.time()
 -- -- this exists so that we don't end up with multiple copies of the loop running at once

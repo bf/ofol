@@ -1,6 +1,5 @@
 local core = require "core"
 local command = require "core.command"
-local common = require "core.common"
 
 -- command.add("core.views.nagview", {
 --   ["dialog:previous-entry"] = function(v)

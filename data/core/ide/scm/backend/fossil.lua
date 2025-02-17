@@ -1,7 +1,6 @@
 -- Backend implementation for Fossil.
 -- More details at: https://www.fossil-scm.org/
 
-local common = require "core.common"
 local Backend = require "core.ide.scm.backend"
 
 ---@class plugins.scm.backend.fossil : plugins.scm.backend

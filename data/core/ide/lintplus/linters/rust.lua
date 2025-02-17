@@ -4,7 +4,6 @@
 --- IMPLEMENTATION ---
 
 
-local common = require "core.common"
 
 local json = require "lib.json"
 local lintplus = require "core.ide.lintplus"

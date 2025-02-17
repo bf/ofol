@@ -1,5 +1,4 @@
 local command = require "core.command"
-local common = require "core.common"
 
 command.add(nil, {
   ["files:create-directory"] = function()

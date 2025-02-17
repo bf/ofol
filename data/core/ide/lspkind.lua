@@ -1,6 +1,5 @@
 -- mod-version:3
 local style = require 'themes.style'
-local common = require 'core.common'
 local util = require 'core.ide.lsp.util'
 local Server = require 'core.ide.lsp.server'
 

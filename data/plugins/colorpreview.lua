@@ -1,6 +1,5 @@
 -- mod-version:3
 local config = require "core.config"
-local common = require "core.common"
 
 local DocView = require "core.views.docview"
 local color_from_css_string = require "themes.color_from_css_string"

@@ -1,7 +1,6 @@
 -- mod-version:3
 local core = require "core"
 local command = require "core.command"
-local common = require "core.common"
 local config = require "core.config"
 local style = require "themes.style"
 local Highlighter = require "core.doc.highlighter"

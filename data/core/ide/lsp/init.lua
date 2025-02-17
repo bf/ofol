@@ -14,7 +14,6 @@
 --   for the current document filetype may do.
 
 local core = require "core"
-local common = require "core.common"
 local config = require "core.config"
 local command = require "core.command"
 local style = require "themes.style"

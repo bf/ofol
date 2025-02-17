@@ -2,7 +2,6 @@
 local core = require "core"
 local style = require "themes.style"
 local config = require "core.config"
-local common = require "core.common"
 local command = require "core.command"
 local tokenizer = require "core.doc.tokenizer"
 local Highlighter = require "core.doc.highlighter"

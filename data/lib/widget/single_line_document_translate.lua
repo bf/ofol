@@ -1,6 +1,5 @@
 
 local config = require "core.config"
-local common = require "core.common"
 local translate = {}
 
 

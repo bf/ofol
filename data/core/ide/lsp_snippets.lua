@@ -7,7 +7,6 @@
 local regex    = require 'regex'
 
 local core     = require 'core'
-local common   = require 'core.common'
 local Doc      = require 'core.doc'
 
 

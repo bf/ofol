@@ -1,6 +1,5 @@
 local style = require "themes.style"
 local config = require "core.config"
-local common = require "core.common"
 
 local DocView = require "core.views.docview"
 
