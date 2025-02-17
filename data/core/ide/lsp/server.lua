@@ -9,7 +9,7 @@
 -- LSP Documentation:
 -- https://microsoft.github.io/language-server-protocol/specifications/specification-3-17
 
-local Object = require "core.object"
+local Object = require "lib.object"
 
 local json = require "lib.json"
 

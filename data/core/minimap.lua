@@ -5,7 +5,7 @@ local common = require "core.common"
 local config = require "core.config"
 local style = require "themes.style"
 local Highlighter = require "core.doc.highlighter"
-local Object = require "core.object"
+local Object = require "lib.object"
 local Scrollbar = require "core.scrollbar"
 
 local DocView = require "core.views.docview"

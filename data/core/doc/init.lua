@@ -1,4 +1,4 @@
-local Object = require "core.object"
+local Object = require "lib.object"
 local Highlighter = require ".highlighter"
 local translate = require ".translate"
 local core = require "core"

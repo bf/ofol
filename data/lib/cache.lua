@@ -1,5 +1,5 @@
 -- simple key-value cache
-local Object = require "core.object"
+local Object = require "lib.object"
 
 local Cache = Object:extend()
 

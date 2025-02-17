@@ -2,7 +2,7 @@ local core = require "core"
 local common = require "core.common"
 local config = require "core.config"
 local style = require "themes.style"
-local Object = require "core.object"
+local Object = require "lib.object"
 
 ---Scrollbar
 ---Use Scrollbar:set_size to set the bounding box of the view the scrollbar belongs to.

@@ -9,7 +9,7 @@
 --   SingleLineSingleLineDoc.super.insert(self, line, col, text:gsub("\n", ""))
 -- end
 
-local Object = require "core.object"
+local Object = require "lib.object"
 local core = require "core"
 local syntax = require "core.syntax"
 local config = require "core.config"

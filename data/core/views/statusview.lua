@@ -4,7 +4,7 @@ local command = require "core.command"
 local config = require "core.config"
 local style = require "themes.style"
 local View = require "core.view"
-local Object = require "core.object"
+local Object = require "lib.object"
 
 
 local DocView = require "core.views.docview"

@@ -1,5 +1,5 @@
 local core = require "core"
-local Object = require "core.object"
+local Object = require "lib.object"
 
 ---Timer class
 ---@class lsp.timer : core.object

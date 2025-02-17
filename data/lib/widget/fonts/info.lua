@@ -1,7 +1,7 @@
 -- Based on the code from:
 -- https://gist.github.com/zr-tex8r/1969061a025fa4fc5486c9c28460f48e
 
-local Object = require "core.object"
+local Object = require "lib.object"
 
 --------------------------------------------------------------------------------
 -- Class Declarations
