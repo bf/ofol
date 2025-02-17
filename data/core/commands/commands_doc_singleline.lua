@@ -350,6 +350,10 @@ local commands = {
   end,
 
   ["doc:backspace"] = function(dv)
+    if dv == nil then
+      stderr.debug("doc:backspace does not work with dv = nil")
+      return
+    end
     local _, indent_size = dv.doc:get_indent_info()
     for idx, line1, col1, line2, col2 in dv.doc:get_selections(true, true) do
       if line1 == line2 and col1 == col2 then

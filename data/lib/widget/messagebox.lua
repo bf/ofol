@@ -5,7 +5,8 @@
 --
 
 local core = require "core"
-local common = require "core.common"
+
+local color_from_css_string = require "themes.color_from_css_string"
 local style = require "themes.style"
 local Widget = require "lib.widget"
 local Button = require "lib.widget.button"
@@ -78,9 +79,9 @@ function MessageBox:set_icon(icon, color)
   if not color then
     color = style.text
     if icon == MessageBox.ICON_WARNING then
-      color = { common.color "#c7763e" }
+      color = { color_from_css_string("#c7763e") }
     elseif icon == MessageBox.ICON_ERROR then
-      color = { common.color "#c73e3e" }
+      color = { color_from_css_string("#c73e3e") }
     end
   end
   self.icon:set_label({ MessageBox.icon_huge_font, color, icon })

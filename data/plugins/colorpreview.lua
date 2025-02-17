@@ -3,6 +3,7 @@ local config = require "core.config"
 local common = require "core.common"
 
 local DocView = require "core.views.docview"
+local color_from_css_string = require "themes.color_from_css_string"
 
 
 config.plugins.colorpreview = common.merge({
@@ -20,8 +21,8 @@ config.plugins.colorpreview = common.merge({
   }
 }, config.plugins.colorpreview)
 
-local white = { common.color "#ffffff" }
-local black = { common.color "#000000" }
+local white = { color_from_css_string "#ffffff" }
+local black = { color_from_css_string "#000000" }
 local tmp = {}
 
 

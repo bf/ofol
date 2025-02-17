@@ -553,6 +553,7 @@ local function calc_split_sizes(self, x, y, x1, x2, y1, y2)
 end
 
 
+
 function Node:update_layout()
   if self.type == "leaf" then
     local av = self.active_view
@@ -617,6 +618,7 @@ end
 
 -- update node
 function Node:update()
+  -- fixme: when tabs are overflowing x axis, the scrolling between last tab and first tab gives graphics bug
   if self.type == "leaf" then
     -- if leaf mode then update all views
     for view_index, view in ipairs(self.views) do

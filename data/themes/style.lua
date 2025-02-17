@@ -1,3 +1,5 @@
+local color_from_css_string = require "themes.color_from_css_string"
+
 local style = {}
 
 
@@ -69,6 +71,14 @@ style.code_font = renderer.font.load(FONT_MONOSPACE, style.DEFAULT_FONT_SIZE, {a
 style.kind_font = style.code_font
 
 style.syntax = {}
+
+
+-- we need these symbol types to have uniform colors
+style.syntax["diff_add"] = { color_from_css_string("#72b886") }
+style.syntax["diff_del"] = { color_from_css_string("#F36161") }
+style.syntax["ignore"] = { color_from_css_string("#72B886") }
+style.syntax["exclude"] = { color_from_css_string("#F36161") }
+
 
 -- This can be used to override fonts per syntax group.
 -- The syntax highlighter will take existing values from this table and

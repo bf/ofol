@@ -6,10 +6,11 @@ local command = require "core.command"
 local gitblame = require "plugins.gitblame.gitblame"
 
 local DocView = require "core.views.docview"
+local color_from_css_string = require "themes.color_from_css_string"
 
 config.plugins.gitblame = common.merge({
 
-  text_color = { common.color "#b7b7b7" },
+  text_color = { color_from_css_string "#b7b7b7" },
 
   font_size = 14,
 

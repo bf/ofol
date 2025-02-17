@@ -7,7 +7,10 @@
 local core = require "core"
 local common = require "core.common"
 local style = require "themes.style"
+local color_from_css_string = require "themes.color_from_css_string"
 local Widget = require "widget"
+
+
 
 ---@class widget.searchreplacelist.lineposition
 ---@field col1 integer
@@ -44,9 +47,9 @@ local SearchReplaceList = Widget:extend()
 
 ---Colors to use when performing a replacement.
 local DIFF = {
-  ADD = { common.color "#72b886" },
-  DEL = { common.color "#F36161" },
-  TEXT = { common.color "#000000" }
+  ADD = { color_from_css_string "#72b886" },
+  DEL = { color_from_css_string "#F36161" },
+  TEXT = { color_from_css_string "#000000" }
 }
 
 ---Constructor

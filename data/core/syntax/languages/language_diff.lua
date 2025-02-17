@@ -1,11 +1,7 @@
 -- mod-version:3
 local syntax = require "core.syntax"
 local style = require "themes.style"
-local common = require "core.common"
 
--- we need these symbol types to have uniform colors
-style.syntax["diff_add"] = { common.color "#72b886" }
-style.syntax["diff_del"] = { common.color "#F36161" }
 
 syntax.add {
   name = "Diff",

@@ -6,18 +6,19 @@ local common = require "core.common"
 local command = require "core.command"
 local tokenizer = require "core.tokenizer"
 local Highlighter = require "core.doc.highlighter"
+local color_from_css_string = require "themes.color_from_css_string"
 
 config.plugins.rainbowparen = common.merge({
   enabled = true,
   parens = 5
 }, config.plugins.rainbowparen)
 
-style.syntax.paren_unbalanced = style.syntax.paren_unbalanced or { common.color "#DC0408" }
-style.syntax.paren1  =  style.syntax.paren1 or { common.color "#FC6F71"}
-style.syntax.paren2  =  style.syntax.paren2 or { common.color "#fcb053"}
-style.syntax.paren3  =  style.syntax.paren3 or { common.color "#fcd476"}
-style.syntax.paren4  =  style.syntax.paren4 or { common.color "#52dab2"}
-style.syntax.paren5  =  style.syntax.paren5 or { common.color "#5a98cf"}
+style.syntax.paren_unbalanced = style.syntax.paren_unbalanced or { color_from_css_string "#DC0408" }
+style.syntax.paren1  =  style.syntax.paren1 or { color_from_css_string "#FC6F71"}
+style.syntax.paren2  =  style.syntax.paren2 or { color_from_css_string "#fcb053"}
+style.syntax.paren3  =  style.syntax.paren3 or { color_from_css_string "#fcd476"}
+style.syntax.paren4  =  style.syntax.paren4 or { color_from_css_string "#52dab2"}
+style.syntax.paren5  =  style.syntax.paren5 or { color_from_css_string "#5a98cf"}
 
 local tokenize = tokenizer.tokenize
 local extract_subsyntaxes = tokenizer.extract_subsyntaxes
