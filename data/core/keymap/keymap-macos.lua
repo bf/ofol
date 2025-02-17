@@ -1,4 +1,6 @@
 local function keymap_macos(keymap)
+  stderr.debug("loading MacOS keymap")
+  
   keymap.add_direct {
     ["cmd+shift+p"] = "core:find-command",
     ["cmd+p"] = "core:find-file",

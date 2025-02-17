@@ -218,7 +218,7 @@ end
 
 -- Same declarations as in core.keymap because modkey_map is not public
 local macos = PLATFORM == "Mac OS X"
-local modkeys_os = require("core.modkeys-" .. (macos and "macos" or "generic"))
+local modkeys_os = require("core.keymap.modkeys-" .. (macos and "macos" or "generic"))
 local modkey_map = modkeys_os.map
 local modkeys = modkeys_os.keys
 

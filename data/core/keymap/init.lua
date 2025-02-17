@@ -28,7 +28,7 @@ keymap.reverse_map = {}
 local macos = PLATFORM == "Mac OS X"
 
 -- Thanks to mathewmariani, taken from his lite-macos github repository.
-local modkeys_os = require("core.modkeys-" .. (macos and "macos" or "generic"))
+local modkeys_os = require("core.keymap.modkeys-" .. (macos and "macos" or "generic"))
 
 ---@type table<keymap.modkey, keymap.modkey>
 local modkey_map = modkeys_os.map
@@ -285,137 +285,11 @@ end
 -- Register default bindings
 --------------------------------------------------------------------------------
 if macos then
-  local keymap_macos = require("core.keymap-macos")
+  local keymap_macos = require(".keymap-macos")
   keymap_macos(keymap)
   return keymap
+else 
+  local keymap_generic = require(".keymap-generic")
+  keymap_generic(keymap)
+  return keymap
 end
-
-keymap.add_direct {
-  ["ctrl+shift+p"] = "core:find-command",
-  ["ctrl+p"] = "core:find-file",
-  ["ctrl+o"] = "core:open-file",
-  ["ctrl+q"] = "core:quit",
-  ["ctrl+n"] = "core:new-doc",
-  ["ctrl+t"] = "core:new-doc",
-  ["ctrl+shift+c"] = "core:change-project-folder",
-  ["ctrl+shift+o"] = "core:open-project-folder",
-  ["ctrl+alt+r"] = "core:restart",
-  ["alt+return"] = "core:toggle-fullscreen",
-  ["f11"] = "core:toggle-fullscreen",
-
-  ["alt+shift+j"] = "root:split-left",
-  ["alt+shift+l"] = "root:split-right",
-  ["alt+shift+i"] = "root:split-up",
-  ["alt+shift+k"] = "root:split-down",
-  ["alt+j"] = "root:switch-to-left",
-  ["alt+l"] = "root:switch-to-right",
-  ["alt+i"] = "root:switch-to-up",
-  ["alt+k"] = "root:switch-to-down",
-
-  ["ctrl+w"] = "root:close",
-  ["ctrl+tab"] = "root:switch-to-next-tab",
-  ["ctrl+shift+tab"] = "root:switch-to-previous-tab",
-  ["ctrl+pageup"] = "root:move-tab-left",
-  ["ctrl+pagedown"] = "root:move-tab-right",
-  ["alt+1"] = "root:switch-to-tab-1",
-  ["alt+2"] = "root:switch-to-tab-2",
-  ["alt+3"] = "root:switch-to-tab-3",
-  ["alt+4"] = "root:switch-to-tab-4",
-  ["alt+5"] = "root:switch-to-tab-5",
-  ["alt+6"] = "root:switch-to-tab-6",
-  ["alt+7"] = "root:switch-to-tab-7",
-  ["alt+8"] = "root:switch-to-tab-8",
-  ["alt+9"] = "root:switch-to-tab-9",
-  ["wheel"] = "root:scroll",
-  ["hwheel"] = "root:horizontal-scroll",
-  ["shift+wheel"] = "root:horizontal-scroll",
-  ["wheelup"] = "root:scroll-hovered-tabs-backward",
-  ["wheeldown"] = "root:scroll-hovered-tabs-forward",
-
-  ["ctrl+f"] = "find-replace:find",
-  ["ctrl+r"] = "find-replace:replace",
-  ["f3"] = "find-replace:repeat-find",
-  ["shift+f3"] = "find-replace:previous-find",
-  ["ctrl+i"] = "find-replace:toggle-sensitivity",
-  ["ctrl+shift+i"] = "find-replace:toggle-regex",
-  ["ctrl+g"] = "doc:go-to-line",
-  ["ctrl+s"] = "doc:save",
-  ["ctrl+shift+s"] = "doc:save-as",
-
-  ["ctrl+z"] = "doc:undo",
-  ["ctrl+y"] = "doc:redo",
-  ["ctrl+x"] = "doc:cut",
-  ["ctrl+c"] = "doc:copy",
-  ["ctrl+v"] = "doc:paste",
-  ["insert"] = "doc:toggle-overwrite",
-  ["ctrl+insert"] = "doc:copy",
-  ["shift+insert"] = "doc:paste",
-  ["escape"] = { "command:escape", "doc:select-none", "dialog:select-no" },
-  ["tab"] = { "command:complete", "doc:indent" },
-  ["shift+tab"] = "doc:unindent",
-  ["backspace"] = "doc:backspace",
-  ["shift+backspace"] = "doc:backspace",
-  ["ctrl+backspace"] = "doc:delete-to-previous-word-start",
-  ["ctrl+shift+backspace"] = "doc:delete-to-previous-word-start",
-  ["delete"] = "doc:delete",
-  ["shift+delete"] = "doc:delete",
-  ["ctrl+delete"] = "doc:delete-to-next-word-end",
-  ["ctrl+shift+delete"] = "doc:delete-to-next-word-end",
-  ["return"] = { "command:submit", "doc:newline", "dialog:select" },
-  ["keypad enter"] = { "command:submit", "doc:newline", "dialog:select" },
-  ["ctrl+return"] = "doc:newline-below",
-  ["ctrl+shift+return"] = "doc:newline-above",
-  ["ctrl+j"] = "doc:join-lines",
-  ["ctrl+a"] = "doc:select-all",
-  ["ctrl+d"] = { "find-replace:select-add-next", "doc:select-word" },
-  ["ctrl+f3"] = "find-replace:select-next",
-  ["ctrl+shift+f3"] = "find-replace:select-previous",
-  ["ctrl+l"] = "doc:select-lines",
-  ["ctrl+shift+l"] = { "find-replace:select-add-all", "doc:select-word" },
-  ["ctrl+/"] = "doc:toggle-line-comments",
-  ["ctrl+shift+/"] = "doc:toggle-block-comments",
-  ["ctrl+up"] = "doc:move-lines-up",
-  ["ctrl+down"] = "doc:move-lines-down",
-  ["ctrl+shift+d"] = "doc:duplicate-lines",
-  ["ctrl+shift+k"] = "doc:delete-lines",
-
-  ["left"] = { "doc:move-to-previous-char", "dialog:previous-entry" },
-  ["right"] = { "doc:move-to-next-char", "dialog:next-entry"},
-  ["up"] = { "command:select-previous", "doc:move-to-previous-line" },
-  ["down"] = { "command:select-next", "doc:move-to-next-line" },
-  ["ctrl+left"] = "doc:move-to-previous-word-start",
-  ["ctrl+right"] = "doc:move-to-next-word-end",
-  ["ctrl+["] = "doc:move-to-previous-block-start",
-  ["ctrl+]"] = "doc:move-to-next-block-end",
-  ["home"] = "doc:move-to-start-of-indentation",
-  ["end"] = "doc:move-to-end-of-line",
-  ["ctrl+home"] = "doc:move-to-start-of-doc",
-  ["ctrl+end"] = "doc:move-to-end-of-doc",
-  ["pageup"] = "doc:move-to-previous-page",
-  ["pagedown"] = "doc:move-to-next-page",
-
-  ["shift+1lclick"] = "doc:select-to-cursor",
-  ["ctrl+1lclick"] = "doc:split-cursor",
-  ["1lclick"] = "doc:set-cursor",
-  ["2lclick"] = { "doc:set-cursor-word", "emptyview:new-doc", "tabbar:new-doc" },
-  ["3lclick"] = "doc:set-cursor-line",
-  ["mclick"] = "doc:paste-primary-selection",
-  ["shift+left"] = "doc:select-to-previous-char",
-  ["shift+right"] = "doc:select-to-next-char",
-  ["shift+up"] = "doc:select-to-previous-line",
-  ["shift+down"] = "doc:select-to-next-line",
-  ["ctrl+shift+left"] = "doc:select-to-previous-word-start",
-  ["ctrl+shift+right"] = "doc:select-to-next-word-end",
-  ["ctrl+shift+["] = "doc:select-to-previous-block-start",
-  ["ctrl+shift+]"] = "doc:select-to-next-block-end",
-  ["shift+home"] = "doc:select-to-start-of-indentation",
-  ["shift+end"] = "doc:select-to-end-of-line",
-  ["ctrl+shift+home"] = "doc:select-to-start-of-doc",
-  ["ctrl+shift+end"] = "doc:select-to-end-of-doc",
-  ["shift+pageup"] = "doc:select-to-previous-page",
-  ["shift+pagedown"] = "doc:select-to-next-page",
-  ["ctrl+shift+up"] = "doc:create-cursor-previous-line",
-  ["ctrl+shift+down"] = "doc:create-cursor-next-line"
-}
-
-return keymap
