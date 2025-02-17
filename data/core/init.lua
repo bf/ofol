@@ -1,5 +1,5 @@
-require "core.strict"
-require "core.regex"
+-- require "core.strict"
+-- require "core.regex"
 local common = require "core.common"
 local config = require "core.config"
 
@@ -911,9 +911,10 @@ function core.set_active_view(view)
 end
 
 
-
+-- create thread
 local thread_counter = 0
 function core.add_thread(f, weak_ref, ...)
+  stderr.debug("adding thread", f)
   local key = weak_ref
   if not key then
     thread_counter = thread_counter + 1
