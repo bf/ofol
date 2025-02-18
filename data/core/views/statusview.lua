@@ -8,7 +8,7 @@ local Object = require "lib.object"
 
 local DocView = require "core.views.docview"
 local CommandView = require "core.views.commandview"
-local scale = require "core.scale"
+local scale = require "core.ide.editor_text_scaling"
 
 ---@alias core.statusview.styledtext table<integer, renderer.font|renderer.color|string>
 ---@alias core.statusview.position '"left"' | '"right"'

@@ -7,6 +7,13 @@
 -- lintplus.setup.lint_on_doc_load()
 -- lintplus.setup.lint_on_doc_save()
 
+
+-- load text scaling plugin
+local scale = require ".editor_text_scaling"
+
+-- load minimap plugin
+local minimap = require ".editor_minimap"
+
 -- load scm plugin
 local scm = require "core.ide.scm"
 -- load scm context menu for treeview

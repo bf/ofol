@@ -643,12 +643,6 @@ function core.init()
   local syntax = require "lib.syntax"
   syntax.load_languages()
 
-  -- load scale
-  local scale = require "core.scale"
-
-  -- load minimap
-  local minimap = require "core.minimap"
-
   -- load ide features
   local ide = require "core.ide"
 
