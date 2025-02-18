@@ -642,40 +642,6 @@ local function set_config_value(conf, path, value)
   element[sections[sections_count]] = value
 end
 
----Get a list of system and user installed plugins.
----@return table<integer, string>
-local function get_installed_plugins()
-  local files, ordered = {}, {}
-
-  -- load plugins
-  for _, root_dir in ipairs {DATADIR, USERDIR} do
-    local plugin_dir = root_dir .. "/plugins"
-    for _, filename in ipairs(system.list_dir(plugin_dir) or {}) do
-      local valid = false
-      local file_info = system.get_file_info(plugin_dir .. "/" .. filename)
-      if file_info then
-        -- simple case for files: must have .lua extension
-        if file_info.type == "file" and filename:match("%.lua$") then
-          valid = true
-          filename = filename:gsub("%.lua$", "")
-        
-        -- special case for directory: directory must have init.lua file
-        elseif file_info.type == "dir" and system.get_file_info(plugin_dir .. "/" .. filename .. "/init.lua") then
-          valid = true
-        end
-      end
-      if valid then
-        if not files[filename] then table.insert(ordered, filename) end
-        files[filename] = true
-      end
-    end
-  end
-
-  table.sort(ordered)
-
-  return ordered
-end
-
 
 ---Load the saved fonts into the config path or fonts_list table.
 ---@param option settings.option
