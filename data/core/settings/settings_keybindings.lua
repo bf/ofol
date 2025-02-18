@@ -8,6 +8,8 @@ local TextBox = require "lib.widget.textbox"
 local ListBox = require "lib.widget.listbox"
 local KeybindingDialog = require "lib.widget.keybinddialog"
 
+local SettingsTabComponent = require("components.settings_tab_component")
+
 local config = UserSettingsStore.load_user_settings()
 
 local default_keybindings = {}
@@ -217,4 +219,4 @@ local function load_keymap_settings(self_keybinds)
 end
 
 
-return load_keymap_settings;
+return SettingsTabComponent("keybindings", "Keybindings", "M", load_keymap_settings);

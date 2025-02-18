@@ -891,16 +891,19 @@ function Settings:new()
   -- self.colors = settings_colors(self.colors, settings.config.theme, function_set_color_theme)
   self.colors = settings_colors:add_to_notebook_widget(self.notebook)
 
+  -- load key binding settings page
+  self.keybinds = settings_keybindings:add_to_notebook_widget(self.notebook)
+
   self.core = self.notebook:add_pane("core", "Core")
   -- self.colors = self.notebook:add_pane("colors", "Themes")
   self.plugins = self.notebook:add_pane("plugins", "Plugins")
-  self.keybinds = self.notebook:add_pane("keybindings", "Keybindings")
+  -- self.keybinds = self.notebook:add_pane("keybindings", "Keybindings")
   -- self.about = self.notebook:add_pane("about", "About")
 
   self.notebook:set_pane_icon("core", "P")
   -- self.notebook:set_pane_icon("colors", "W")
   self.notebook:set_pane_icon("plugins", "B")
-  self.notebook:set_pane_icon("keybindings", "M")
+  -- self.notebook:set_pane_icon("keybindings", "M")
   -- self.notebook:set_pane_icon("about", "i")
 
   self.core_sections = FoldingBook(self.core)
@@ -916,9 +919,6 @@ function Settings:new()
 
   -- load plugin page
   self.plugins = settings_plugins(self.plugins)
-
-  -- load key binding settings
-  self.keybinds = settings_keybindings(self.keybinds)
 
 end
 
@@ -964,6 +964,8 @@ function Settings:update()
     end
   end
 
+
+
   if self.keybinds:is_visible() then
     self.keybinds:update_positions()
   end
@@ -971,6 +973,24 @@ function Settings:update()
   if self.about:is_visible() then
     self.about:update_positions()
   end
+
+  -- -- update table positions if needed
+  -- if self.notebook ~= nil then
+  --   -- check if notebook has any panes
+  --   if #self.notebook.panes > 0 then
+  --     -- loop over all panes in the notebook
+  --     for pos, pane in pairs(self.notebook.panes) do
+  --       -- check if pane is visible
+  --       if pane.is_visible ~= nil and pane:is_visible() then
+  --         -- check if custom update_positions() exists
+  --         if pane.update_positions ~= nil then
+  --           -- call function to update table size / positions
+  --           pane:update_positions()
+  --         end
+  --       end
+  --     end
+  --   end
+  -- end
 end
 
 --------------------------------------------------------------------------------
