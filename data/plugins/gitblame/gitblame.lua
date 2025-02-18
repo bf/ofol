@@ -39,20 +39,20 @@ local function log_data(var_name, var_value)
   if config.plugins.gitblame.debug then
     if var_value ~= nil then
       if type(var_value) == 'table' then
-        core.try(function (var)
+        try_catch(function (var)
             local data = table.concat(var, " ")
             stderr.info("[GITBLAME] " .. var_name .. " : " .. data)
           end, var_value
         )
       else
-        core.try(
+        try_catch(
           function (name, value)
             stderr.info("[GITBLAME] " .. name .. " : " .. value)
           end, var_name, var_value
         )
       end
     else
-      core.try(
+      try_catch(
         function (name)
           stderr.info("[GITBLAME] " .. name .. " : nil")
         end, var_name

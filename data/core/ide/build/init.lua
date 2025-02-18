@@ -79,7 +79,7 @@ end
 
 build.state = { previous_arguments = {}, target = 1 }
 local save_state = function() end
-if system.get_file_info(DATADIR .. PATHSEP .. "core" .. PATHSEP .. "ide" .. PATHSEP .. "build") or core.try(system.mkdir, USERDIR .. PATHSEP .. "build") then
+if system.get_file_info(DATADIR .. PATHSEP .. "core" .. PATHSEP .. "ide" .. PATHSEP .. "build") or try_catch(system.mkdir, USERDIR .. PATHSEP .. "build") then
   local filename = USERDIR .. PATHSEP .. "build" .. PATHSEP .. system.absolute_path("."):gsub("[\\/]", "-")
   if system.get_file_info(filename) then
     local state_func, err = loadfile(filename)

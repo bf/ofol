@@ -77,6 +77,9 @@ stderr = require("lib.stderr")
 -- modify module loading behavior when require() is called
 require("lib.lua-monkeypatch.lua-monkeypatch-require-modules")
 
+-- add try/catch functionality 
+require("lib.lua-monkeypatch.lua-monkeypatch-try-catch")
+
 -- add strict variable checking, e.g. error when undefined variable is set/get
 require("lib.lua-monkeypatch.lua-monkeypatch-strict-variable-checking")
 

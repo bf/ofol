@@ -597,7 +597,7 @@ function TodoTreeView:goto_hovered_item()
     return
   end
 
-  core.try(function()
+  try_catch(function()
     local i = self.hovered_item
     local dv = core.root_view:open_doc(core.open_doc(i.filename))
     core.root_view.root_node:update_layout()

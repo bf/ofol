@@ -168,7 +168,7 @@ end
 ---@return boolean # true if the command is performed successfully.
 function command.perform(name, ...)
   stderr.debug("command: %s", name)
-  local ok, res = core.try(perform, name, ...)
+  local ok, res = try_catch(perform, name, ...)
   return not ok or res
 end
 

@@ -434,7 +434,7 @@ end
 -- user directory
 function core.load_user_directory()  
   stderr.debug("loading user diretory")
-  return core.try(function()
+  return try_catch(function()
     local stat_dir = system.get_file_info(USERDIR)
     if not stat_dir then
       create_user_directory()
@@ -811,7 +811,7 @@ end
 --     stderr.debug(string.format("[core] [plugin] [%s] loading from %s", plugin.name, plugin.dir))
 --     if config.plugins[plugin.name] ~= false then
 --       local start = system.get_time()
---       local ok, loaded_plugin = core.try(require, "plugins." .. plugin.name)
+--       local ok, loaded_plugin = try_catch(require, "plugins." .. plugin.name)
 --       if ok then
 --         stderr.debug(string.format("[core] [plugin] [%s] loaded", plugin.name))
 --         stderr.debug(
@@ -824,7 +824,7 @@ end
 --       if not ok then
 --         no_errors = false
 --       elseif config.plugins[plugin.name].onload then
---         core.try(config.plugins[plugin.name].onload, loaded_plugin)
+--         try_catch(config.plugins[plugin.name].onload, loaded_plugin)
 --       end
 --     else
 --       stderr.warn(string.format("[core] [plugin] [%s] skipped, NOT(config.plugins[plugin.name] ~= false) for %s", plugin.name, config.plugins[plugin.name]))
@@ -896,7 +896,7 @@ function core.add_thread(f, weak_ref, ...)
   end
   assert(core.threads[key] == nil, "Duplicate thread reference")
   local args = {...}
-  local fn = function() return core.try(f, table.unpack(args)) end
+  local fn = function() return try_catch(f, table.unpack(args)) end
   core.threads[key] = { cr = coroutine.create(fn), wake = 0 }
   return key
 end
@@ -973,7 +973,7 @@ function core.get_views_referencing_doc(doc)
 end
 
 
-function core.try(fn, ...)
+function try_catch(fn, ...)
   local err
   local ok, res = xpcall(fn, function(msg)
     local item = stderr.error("%s", msg)
@@ -1058,7 +1058,7 @@ function core.step()
       core.redraw = true
       core.window_is_being_resized = false
     elseif type == "mousemoved" then
-      core.try(core.on_event, type, a, b, c, d)
+      try_catch(core.on_event, type, a, b, c, d)
       core.redraw = true
       core.window_is_being_resized = false
     elseif type == "enteringforeground" then
@@ -1069,7 +1069,7 @@ function core.step()
       break
     else
       -- handle all other cases
-      local _, res = core.try(core.on_event, type, a, b, c, d)
+      local _, res = try_catch(core.on_event, type, a, b, c, d)
       did_keymap = res or did_keymap
       
       core.redraw = true

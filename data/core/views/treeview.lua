@@ -256,7 +256,7 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
       if item.type == "dir" then
         view:toggle_expand()
       else
-        core.try(function()
+        try_catch(function()
           if core.last_active_view and core.active_view == view then
             core.set_active_view(core.last_active_view)
           end

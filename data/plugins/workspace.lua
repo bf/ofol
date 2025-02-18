@@ -225,18 +225,18 @@ local run = core.run
 
 function core.run(...)
   if #core.docs == 0 then
-    core.try(load_workspace)
+    try_catch(load_workspace)
 
     local on_quit_project = core.on_quit_project
     function core.on_quit_project()
-      core.try(save_workspace)
+      try_catch(save_workspace)
       on_quit_project()
     end
 
     local on_enter_project = core.on_enter_project
     function core.on_enter_project(new_dir)
       on_enter_project(new_dir)
-      core.try(load_workspace)
+      try_catch(load_workspace)
     end
   end
 

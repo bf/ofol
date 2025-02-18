@@ -445,7 +445,7 @@ function RootView:on_file_dropped(filename, x, y)
       self.first_dnd_processed = true
     end
   else
-    local ok, doc = core.try(core.open_doc, filename)
+    local ok, doc = try_catch(core.open_doc, filename)
     if ok then
       local node = core.root_view.root_node:get_child_overlapping_point(x, y)
       node:set_active_view(node.active_view)

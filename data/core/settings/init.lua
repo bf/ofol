@@ -695,7 +695,7 @@ local function merge_font_settings(option, path, saved_value)
   local font_loaded = true
   for _, font in ipairs(saved_value.fonts) do
     local font_data = nil
-    font_loaded = core.try(function()
+    font_loaded = try_catch(function()
       font_data = renderer.font.load(
         font.path, font_options.size * SCALE, font_options
       )
@@ -1277,7 +1277,7 @@ function core.run()
 
   -- apply user chosen color theme
   if settings.config.theme and settings.config.theme ~= "default" then
-    core.try(function()
+    try_catch(function()
       reload_module("themes.colors." .. settings.config.theme)
     end)
   end

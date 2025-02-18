@@ -219,7 +219,7 @@ function keymap.on_key_pressed(k, ...)
     if commands then
       for _, cmd in ipairs(commands) do
         if type(cmd) == "function" then
-          local ok, res = core.try(cmd, ...)
+          local ok, res = try_catch(cmd, ...)
           if ok then
             performed = not (res == false)
           else

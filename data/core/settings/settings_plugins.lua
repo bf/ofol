@@ -258,7 +258,7 @@ end
 --   local font_loaded = true
 --   for _, font in ipairs(saved_value.fonts) do
 --     local font_data = nil
---     font_loaded = core.try(function()
+--     font_loaded = try_catch(function()
 --       font_data = renderer.font.load(
 --         font.path, font_options.size * SCALE, font_options
 --       )
