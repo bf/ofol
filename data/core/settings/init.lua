@@ -845,13 +845,6 @@ local function store_default_keybindings()
   end
 end
 
--- SET COLOR THEME from color settings
-local function function_set_color_theme(new_theme) 
-  stderr.debug("new color theme", new_theme)
-  if settings.config then
-    settings.config.theme = new_theme
-  end
-end
 
 
 
@@ -888,7 +881,6 @@ function Settings:new()
   self.about = settings_about:add_to_notebook_widget(self.notebook)
 
   -- load color settings page
-  -- self.colors = settings_colors(self.colors, settings.config.theme, function_set_color_theme)
   self.colors = settings_colors:add_to_notebook_widget(self.notebook)
 
   -- load key binding settings page

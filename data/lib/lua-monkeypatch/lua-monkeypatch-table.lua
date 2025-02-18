@@ -30,6 +30,16 @@ table.find_index = function (tbl, prop)
   end
 end
 
+-- returns true if table contains certain value
+table.contains = function (tbl, value)
+  for _, v in pairs(tbl) do
+      if v == value then
+          return true
+      end
+  end
+  return false
+end
+
 
 ---Splices a numerically indexed table.
 ---This function mutates the original table.

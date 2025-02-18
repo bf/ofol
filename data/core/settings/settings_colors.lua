@@ -1,9 +1,11 @@
 local core = require "core"
 local style = require "themes.style"
-local UserSettingsStore = require "stores.user_settings_store"
+local SettingsStore = require "stores.settings_store"
 local ListBox = require "lib.widget.listbox"
 local SettingsTabComponent = require("components.settings_tab_component")
 
+-- config keys
+SettingsStore.initialize_configuration_option("theme", SettingsStore.TYPES.STRING, "default")
 
 ---Get a list of system and user installed colors.
 ---@return table<integer, table>
@@ -110,14 +112,11 @@ local function load_color_settings(self_colors, current_theme, function_set_them
 
   function listbox:on_row_click(idx, data)
     reload_module("themes.colors." .. data.name)
-    -- settings.config.theme = data.name
-    function_set_theme(data.name)
-    UserSettingsStore.save_user_settings(settings.config)
+
+    SettingsStore.set("theme", data.name)
   end
 
   return self_colors
 end
-
-
 
 return SettingsTabComponent("colors", "Themes", "W", load_color_settings)

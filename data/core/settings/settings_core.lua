@@ -31,10 +31,6 @@ local core_sections = {}
 local settings = {}
 settings.config = {}
 
-
-local DEFAULT_FONT_NAME = "JetBrains Mono Regular"
-local DEFAULT_FONT_PATH = DATADIR .. "/static/fonts/JetBrainsMono-Regular.ttf"
-
 ---Enumeration for the different types of settings.
 ---@type table<string, integer>
 CONST_SETTINGS_TYPES = {
@@ -123,58 +119,6 @@ end
 settings_add("General",
   {
     {
-      label = "Clear Fonts Cache",
-      description = "Delete current font cache and regenerate a fresh one.",
-      type = CONST_SETTINGS_TYPES.BUTTON,
-      icon = "C",
-      on_click = function()
-        if Fonts.cache_is_building() then
-          MessageBox.warning(
-            "Clear Fonts Cache",
-            { "The font cache is already been built,\n"
-              .. "status will be logged on the stderr.info."
-            }
-          )
-        else
-          MessageBox.info(
-            "Clear Fonts Cache",
-            { "Re-building the font cache can take some time,\n"
-              .. "it is needed when you have installed new fonts\n"
-              .. "which are not listed on the font picker tool.\n\n"
-              .. "Do you want to continue?"
-            },
-            function(_, button_id, _)
-              if button_id == 1 then
-                Fonts.clean_cache()
-              end
-            end,
-            MessageBox.BUTTONS_YES_NO
-          )
-        end
-      end
-    },
-    -- {
-    --   label = "Maximum Project Files",
-    --   description = "The maximum amount of project files to register.",
-    --   path = "max_project_files",
-    --   type = CONST_SETTINGS_TYPES.NUMBER,
-    --   default = 2000,
-    --   min = 1,
-    --   max = 100000,
-    --   on_apply = function()
-    --     core.rescan_project_directories()
-    --   end
-    -- },
-    -- {
-    --   label = "File Size Limit",
-    --   description = "The maximum file size in megabytes allowed for editing.",
-    --   path = "file_size_limit",
-    --   type = CONST_SETTINGS_TYPES.NUMBER,
-    --   default = 10,
-    --   min = 1,
-    --   max = 50
-    -- },
-    {
       label = "Ignore Files",
       description = "List of lua patterns matching files to be ignored by the editor.",
       path = "ignore_files",
@@ -205,66 +149,8 @@ settings_add("General",
   }
 )
 
--- settings_add("Graphics",
---   {
---   }
--- )
-
 settings_add("User Interface",
   {
-    {
-      label = "Font",
-      description = "The font and fallbacks used on non code text.",
-      path = "font",
-      type = CONST_SETTINGS_TYPES.FONT,
-      fonts_list = style,
-      default = {
-        fonts = {
-          {
-            name = DEFAULT_FONT_NAME,
-            path = DEFAULT_FONT_PATH
-          }
-        },
-        options = {
-          size = 18,
-          antialiasing = "subpixel",
-          hinting = "slight"
-        }
-      }
-    },
-    -- {
-    --   label = "Borderless",
-    --   description = "Use built-in window decorations.",
-    --   path = "borderless",
-    --   type = CONST_SETTINGS_TYPES.TOGGLE,
-    --   default = false,
-    --   on_apply = function()
-    --     core.configure_borderless_window()
-    --   end
-    -- },
-    -- {
-    --   label = "Always Show Tabs",
-    --   description = "Shows tabs even if a single document is opened.",
-    --   path = "always_show_tabs",
-    --   type = CONST_SETTINGS_TYPES.TOGGLE,
-    --   default = true
-    -- },
-    -- {
-    --   label = "Maximum Tabs",
-    --   description = "The maximum amount of visible document tabs.",
-    --   path = "max_tabs",
-    --   type = CONST_SETTINGS_TYPES.NUMBER,
-    --   default = 8,
-    --   min = 1,
-    --   max = 100
-    -- },
-    -- {
-    --   label = "Close Button on Tabs",
-    --   description = "Display the close button on tabs.",
-    --   path = "tab_close_button",
-    --   type = CONST_SETTINGS_TYPES.TOGGLE,
-    --   default = true
-    -- },
     {
       label = "Mouse wheel scroll rate",
       description = "The amount to scroll when using the mouse wheel.",
@@ -352,28 +238,6 @@ settings_add("User Interface",
 
 settings_add("Editor",
   {
-    {
-      label = "Code Font",
-      description = "The font and fallbacks used on the code editor.",
-      path = "code_font",
-      type = CONST_SETTINGS_TYPES.FONT,
-      fonts_list = style,
-      default = {
-        fonts = {
-          {
-            -- name = "JetBrains Mono Regular",
-            -- path = DATADIR .. "/fonts/JetBrainsMono-Regular.ttf"
-            name = DEFAULT_FONT_NAME,
-            path = DEFAULT_FONT_PATH
-          }
-        },
-        options = {
-          size = 22,
-          antialiasing = "subpixel",
-          hinting = "slight"
-        }
-      }
-    },
     {
       label = "Indentation Type",
       description = "The character inserted when pressing the tab key.",
@@ -484,26 +348,6 @@ settings_add("Editor",
   }
 )
 
-settings_add("Development",
-  {
-    {
-      label = "Core Log",
-      description = "Open the list of logged messages.",
-      type = CONST_SETTINGS_TYPES.BUTTON,
-      icon = "f",
-      on_click = "core:open-log"
-    },
-    {
-      label = "Log Items",
-      description = "The maximum amount of entries to keep on the log UI.",
-      path = "max_log_items",
-      type = CONST_SETTINGS_TYPES.NUMBER,
-      default = 800,
-      min = 150,
-      max = 2000
-    },
-  }
-)
 
 settings_add("Status Bar",
   {
@@ -603,47 +447,6 @@ local function set_config_value(conf, path, value)
   element[sections[sections_count]] = value
 end
 
-
----Load the saved fonts into the config path or fonts_list table.
----@param option settings.option
----@param path string
----@param saved_value any
-local function merge_font_settings(option, path, saved_value)
-  local font_options = saved_value.options or {
-    size = style.DEFAULT_FONT_SIZE,
-    antialiasing = "supixel",
-    hinting = "slight"
-  }
-  font_options.size = font_options.size or style.DEFAULT_FONT_SIZE
-  font_options.antialiasing = font_options.antialiasing or "subpixel"
-  font_options.hinting = font_options.hinting or "slight"
-
-  local fonts = {}
-  local font_loaded = true
-  for _, font in ipairs(saved_value.fonts) do
-    local font_data = nil
-    font_loaded = try_catch(function()
-      font_data = renderer.font.load(
-        font.path, font_options.size * SCALE, font_options
-      )
-    end)
-    if font_loaded then
-      table.insert(fonts, font_data)
-    else
-      option.font_error = true
-      stderr.error("Settings: could not load %s\n'%s - %s'", path, font.name, font.path)
-      break
-    end
-  end
-
-  if font_loaded then
-    if option.fonts_list then
-      set_config_value(option.fonts_list, option.path, renderer.font.group(fonts))
-    else
-      set_config_value(config, path, renderer.font.group(fonts))
-    end
-  end
-end
 
 
 
