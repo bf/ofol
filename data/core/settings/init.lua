@@ -886,15 +886,19 @@ function Settings:new()
 
   -- load about page
   self.about = settings_about:add_to_notebook_widget(self.notebook)
-  
+
+  -- load color settings page
+  -- self.colors = settings_colors(self.colors, settings.config.theme, function_set_color_theme)
+  self.colors = settings_colors:add_to_notebook_widget(self.notebook)
+
   self.core = self.notebook:add_pane("core", "Core")
-  self.colors = self.notebook:add_pane("colors", "Themes")
+  -- self.colors = self.notebook:add_pane("colors", "Themes")
   self.plugins = self.notebook:add_pane("plugins", "Plugins")
   self.keybinds = self.notebook:add_pane("keybindings", "Keybindings")
   -- self.about = self.notebook:add_pane("about", "About")
 
   self.notebook:set_pane_icon("core", "P")
-  self.notebook:set_pane_icon("colors", "W")
+  -- self.notebook:set_pane_icon("colors", "W")
   self.notebook:set_pane_icon("plugins", "B")
   self.notebook:set_pane_icon("keybindings", "M")
   -- self.notebook:set_pane_icon("about", "i")
@@ -915,9 +919,6 @@ function Settings:new()
 
   -- load key binding settings
   self.keybinds = settings_keybindings(self.keybinds)
-
-  -- load color settings page
-  self.colors = settings_colors(self.colors, settings.config.theme, function_set_color_theme)
 
 end
 

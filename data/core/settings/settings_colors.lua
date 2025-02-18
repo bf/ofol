@@ -2,6 +2,7 @@ local core = require "core"
 local style = require "themes.style"
 local UserSettingsStore = require "stores.user_settings_store"
 local ListBox = require "lib.widget.listbox"
+local SettingsTabComponent = require("components.settings_tab_component")
 
 
 ---Get a list of system and user installed colors.
@@ -119,4 +120,4 @@ end
 
 
 
-return load_color_settings;
+return SettingsTabComponent("colors", "Themes", "W", load_color_settings)
