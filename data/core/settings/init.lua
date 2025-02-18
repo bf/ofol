@@ -33,6 +33,7 @@ local MessageBox = require "lib.widget.messagebox"
 
 local settings_about = require("core.settings.settings_about")
 local settings_plugins = require("core.settings.settings_plugins")
+local settings_colors = require("core.settings.settings_colors")
 
 
 
@@ -930,6 +931,16 @@ local function store_default_keybindings()
   end
 end
 
+
+-- SET COLOR THEME from color settings
+local function function_set_color_theme(new_theme) 
+  stderr.debug("new color theme", new_theme)
+  if settings.config then
+    settings.config.theme = new_theme
+  end
+end
+
+
 ---@class settings.ui : widget
 ---@field private notebook widget.notebook
 ---@field private core widget
@@ -980,11 +991,17 @@ function Settings:new()
   self.plugin_sections.scrollable = false
 
   self:load_core_settings()
-  self:load_color_settings()
+  -- self:load_color_settings()
   -- self:load_plugin_settings()
   self:load_keymap_settings()
 
+  -- load color settings page
+  self.colors = settings_colors(self.colors, settings.config.theme, function_set_color_theme)
+
+  -- load plugin page
   self.plugins = settings_plugins(self.plugins)
+
+  -- load about page
   self.about = settings_about(self.about)
 end
 
@@ -1256,38 +1273,6 @@ local function on_color_draw(self, row, x, y, font, color, only_calc)
   end
 
   return w, h
-end
-
----Generate the list of all available colors with preview
-function Settings:load_color_settings()
-  self.colors.scrollable = false
-
-  local colors = get_installed_colors()
-
-  ---@type widget.listbox
-  local listbox = ListBox(self.colors)
-
-  listbox.border.width = 0
-  listbox:enable_expand(true)
-
-  listbox:add_column("Theme")
-  listbox:add_column("Colors")
-
-  for idx, details in ipairs(colors) do
-    local name = details.name
-    if settings.config.theme and settings.config.theme == name then
-      listbox:set_selected(idx)
-    end
-    listbox:add_row({
-      style.text, name, ListBox.COLEND, on_color_draw
-    }, {name = name, colors = details.colors})
-  end
-
-  function listbox:on_row_click(idx, data)
-    core.reload_module("themes.colors." .. data.name)
-    settings.config.theme = data.name
-    UserSettingsStore.save_user_settings(settings.config)
-  end
 end
 
 
