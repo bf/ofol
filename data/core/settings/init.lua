@@ -32,6 +32,7 @@ local ColorPicker = require "lib.widget.colorpicker"
 local MessageBox = require "lib.widget.messagebox"
 
 local settings_about = require("core.settings.settings_about")
+local settings_plugins = require("core.settings.settings_plugins")
 
 
 
@@ -980,9 +981,10 @@ function Settings:new()
 
   self:load_core_settings()
   self:load_color_settings()
-  self:load_plugin_settings()
+  -- self:load_plugin_settings()
   self:load_keymap_settings()
 
+  self.plugins = settings_plugins(self.plugins)
   self.about = settings_about(self.about)
 end
 
@@ -1288,171 +1290,7 @@ function Settings:load_color_settings()
   end
 end
 
----Unload a plugin settings from plugins section.
----@param plugin string
-function Settings:disable_plugin(plugin)
-  stderr.debug("disable_plugin %s", plugin)
-  for _, section in ipairs(settings.plugin_sections) do
-    local plugins = settings.plugins[section]
 
-    for plugin_name, options in pairs(plugins) do
-      if plugin_name == plugin then
-        self.plugin_sections:delete_pane(section)
-      end
-    end
-  end
-
-  if
-    type(settings.config.enabled_plugins) == "table"
-    and
-    settings.config.enabled_plugins[plugin]
-  then
-    settings.config.enabled_plugins[plugin] = nil
-  end
-  if type(settings.config.disabled_plugins) ~= "table" then
-    settings.config.disabled_plugins = {}
-  end
-
-  settings.config.disabled_plugins[plugin] = true
-  UserSettingsStore.save_user_settings(settings.config)
-end
-
----Load plugin and append its settings to the plugins section.
----@param plugin string
-function Settings:enable_plugin(plugin)
-  stderr.debug("enable_plugin %s", plugin)
-  local loaded = false
-  local config_type = type(config.plugins[plugin])
-  if config_type == "boolean" or config_type == "nil" then
-    config.plugins[plugin] = {}
-    loaded = true
-  end
-
-  require("plugins." .. plugin)
-
-  if config.plugins[plugin] and config.plugins[plugin].config_spec then
-    local conf = config.plugins[plugin].config_spec
-    settings.add(conf.name, conf, plugin, true)
-  end
-
-  for _, section in ipairs(settings.plugin_sections) do
-    local plugins = settings.plugins[section]
-
-    for plugin_name, options in pairs(plugins) do
-      if plugin_name == plugin then
-        ---@type widget|widget.foldingbook.pane|nil
-        local pane = self.plugin_sections:get_pane(section)
-        if not pane then
-          pane = self.plugin_sections:add_pane(section, section)
-        else
-          pane = pane.container
-        end
-
-        merge_plugin_settings(plugin, options)
-
-        for _, opt in ipairs(options) do
-          ---@type settings.option
-          local option = opt
-          add_control(pane, option, plugin_name)
-        end
-      end
-    end
-  end
-
-  if
-    type(settings.config.disabled_plugins) == "table"
-    and
-    settings.config.disabled_plugins[plugin]
-  then
-    settings.config.disabled_plugins[plugin] = nil
-  end
-  if type(settings.config.enabled_plugins) ~= "table" then
-    settings.config.enabled_plugins = {}
-  end
-
-  settings.config.enabled_plugins[plugin] = true
-  UserSettingsStore.save_user_settings(settings.config)
-
-  if loaded then
-    stderr.info("Loaded '%s' plugin", plugin)
-  end
-end
-
----Generate all the widgets for plugin settings.
-function Settings:load_plugin_settings()
-  ---@type widget|widget.foldingbook.pane|nil
-  local pane = self.plugin_sections:get_pane("settings_plugins_enable_disable")
-  if not pane then
-    pane = self.plugin_sections:add_pane("settings_plugins_enable_disable", "Installed")
-  else
-    pane = pane.container
-  end
-
-  -- requires earlier access to startup process
-  Label(
-    pane,
-    "Notice: disabling plugins will not take effect until next restart"
-  )
-
-  Line(pane, 2, 10)
-
-  local plugins = get_installed_plugins()
-  for _, plugin in ipairs(plugins) do
-    if plugin ~= "settings" then
-      local enabled = false
-
-      if
-        -- (
-        --   type(config.plugins[plugin]) ~= "nil"
-        --   and
-        --   config.plugins[plugin] ~= false
-        -- )
-        -- or
-        (
-          settings.config.enabled_plugins
-          and
-          settings.config.enabled_plugins[plugin]
-        )
-      then
-        enabled = true
-      end
-
-      local this = self
-
-      ---@type widget.toggle
-      local toggle = Toggle(pane, plugin, enabled)
-      function toggle:on_change(value)
-        if value then
-          this:enable_plugin(plugin)
-        else
-          this:disable_plugin(plugin)
-        end
-      end
-    end
-  end
-
-  table.sort(settings.plugin_sections)
-
-  for _, section in ipairs(settings.plugin_sections) do
-    local plugins = settings.plugins[section]
-
-    for plugin_name, options in pairs(plugins) do
-      ---@type widget|widget.foldingbook.pane|nil
-      local pane = self.plugin_sections:get_pane(section)
-      if not pane then
-        pane = self.plugin_sections:add_pane(section, section)
-      else
-        pane = pane.container
-      end
-
-      for _, opt in ipairs(options) do
-        ---@type settings.option
-        local option = opt
-        add_control(pane, option, plugin_name)
-      end
-    end
-  end
-end
 
 ---@type widget.keybinddialog
 local keymap_dialog = KeybindingDialog()
