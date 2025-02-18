@@ -42,7 +42,7 @@ command.add(nil, {
     core.command_view:enter("Reload Module", {
       submit = function(text, item)
         local text = item and item.text or text
-        core.reload_module(text)
+        reload_module(text)
         stderr.info("Reloaded module %q", text)
       end,
       suggest = function(text)

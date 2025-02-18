@@ -838,15 +838,15 @@ end
 -- end
 
 
-function core.reload_module(name)
-  local old = package.loaded[name]
-  package.loaded[name] = nil
-  local new = require(name)
-  if type(old) == "table" then
-    for k, v in pairs(new) do old[k] = v end
-    package.loaded[name] = old
-  end
-end
+-- function core.reload_module(name)
+--   local old = package.loaded[name]
+--   package.loaded[name] = nil
+--   local new = require(name)
+--   if type(old) == "table" then
+--     for k, v in pairs(new) do old[k] = v end
+--     package.loaded[name] = old
+--   end
+-- end
 
 
 function core.set_visited(filename)

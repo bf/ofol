@@ -148,6 +148,19 @@ function require(modname, ...)
 end
 
 
+-- reload a lua module at runtime
+-- previously core.reload_module()
+function reload_module(name)
+  stderr.warn_backtrace("reloading module %s", name)
+  local old = package.loaded[name]
+  package.loaded[name] = nil
+  local new = require(name)
+  if type(old) == "table" then
+    for k, v in pairs(new) do old[k] = v end
+    package.loaded[name] = old
+  end
+end
+
 
 ---Returns the current `require` path.
 ---@see require for details and caveats
