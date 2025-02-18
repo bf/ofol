@@ -169,6 +169,11 @@ function stderr.deprecated(...)
   -- stderr.backtrace()
 end
 
+function stderr.deprecated_soon(...)
+  stderr.warn("DEPRECATED SOON", ...)
+  stderr.backtrace()
+end
+
 function stderr.error(...)
   stderr.print_with_tag("ERROR", ...)
   stderr.backtrace()

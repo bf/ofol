@@ -1,6 +1,6 @@
 -- add try/catch functionality
 function try_catch(fn, ...)
-  stderr.debug("trying function call")
+  -- stderr.debug("trying function call")
 
   local err
   local ok, res = xpcall(fn, function(msg)

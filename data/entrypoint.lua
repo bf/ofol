@@ -74,22 +74,24 @@ fsutils = require("lib.fsutils")
 -- global include of stderr logging
 stderr = require("lib.stderr")
 
--- modify module loading behavior when require() is called
+-- global modification of module loading behavior when require() is called
 require("lib.lua-monkeypatch.lua-monkeypatch-require-modules")
 
--- add try/catch functionality 
+-- global try/catch functionality 
 require("lib.lua-monkeypatch.lua-monkeypatch-try-catch")
 
--- add strict variable checking, e.g. error when undefined variable is set/get
+-- global strict variable checking, e.g. error when undefined variable is set/get
 require("lib.lua-monkeypatch.lua-monkeypatch-strict-variable-checking")
 
--- monkeypatch lua standard modules / types
+-- global monkeypatches for lua standard types and modules
 require("lib.lua-monkeypatch.lua-monkeypatch-bit32")
 require("lib.lua-monkeypatch.lua-monkeypatch-string")
 require("lib.lua-monkeypatch.lua-monkeypatch-math")
 require("lib.lua-monkeypatch.lua-monkeypatch-regex")
 require("lib.lua-monkeypatch.lua-monkeypatch-process")
 require("lib.lua-monkeypatch.lua-monkeypatch-table")
+
+-- global monkeypatch for SDL3 C API
 require("lib.lua-monkeypatch.lua-monkeypatch-renderer")
 
 

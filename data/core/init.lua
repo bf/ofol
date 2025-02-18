@@ -888,7 +888,7 @@ end
 -- create thread
 local thread_counter = 0
 function core.add_thread(f, weak_ref, ...)
-  stderr.debug_backtrace("adding thread")
+  -- stderr.debug_backtrace("adding thread")
   local key = weak_ref
   if not key then
     thread_counter = thread_counter + 1
@@ -970,20 +970,6 @@ function core.get_views_referencing_doc(doc)
     if view.doc == doc then table.insert(res, view) end
   end
   return res
-end
-
-
-function try_catch(fn, ...)
-  local err
-  local ok, res = xpcall(fn, function(msg)
-    local item = stderr.error("%s", msg)
-    item.info = debug.traceback("", 2):gsub("\t", "")
-    err = msg
-  end, ...)
-  if ok then
-    return true, res
-  end
-  return false, err
 end
 
 function core.on_event(type, ...)

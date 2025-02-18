@@ -15,6 +15,8 @@
 ---@return number x_advance
 ---@return number y_advance
 renderer.draw_text_aligned_in_box = function (font, color, text, align, x,y,w,h)
+  stderr.deprecated_soon("renderer.draw_text() should be directly called instead")
+
   local tw, th = font:get_width(text), font:get_height()
   if align == "center" then
     x = x + (w - tw) / 2
