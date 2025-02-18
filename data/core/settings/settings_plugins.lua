@@ -1,21 +1,10 @@
-local core = require "core"
 local config = require "core.config"
 local command = require "core.command"
-local keymap = require "core.keymap"
 local style = require "themes.style"
 local UserSettingsStore = require "stores.user_settings_store"
 
-local View = require "core.view"
-local DocView = require "core.views.docview"
-
-local json_config_file = require "lib.json_config_file"
-
-
-local Widget = require "lib.widget"
-
 local Label = require "lib.widget.label"
 local Line = require "lib.widget.line"
-local NoteBook = require "lib.widget.notebook"
 local Button = require "lib.widget.button"
 local TextBox = require "lib.widget.textbox"
 local SelectBox = require "lib.widget.selectbox"
@@ -25,11 +14,9 @@ local ListBox = require "lib.widget.listbox"
 local FoldingBook = require "lib.widget.foldingbook"
 local FontsList = require "lib.widget.fontslist"
 local ItemsList = require "lib.widget.itemslist"
-local KeybindingDialog = require "lib.widget.keybinddialog"
 local Fonts = require "lib.widget.fonts"
 local FilePicker = require "lib.widget.filepicker"
 local ColorPicker = require "lib.widget.colorpicker"
-local MessageBox = require "lib.widget.messagebox"
 
 
 

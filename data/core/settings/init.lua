@@ -8,9 +8,6 @@ local UserSettingsStore = require "stores.user_settings_store"
 local View = require "core.view"
 local DocView = require "core.views.docview"
 
-local json_config_file = require "lib.json_config_file"
-
-
 local Widget = require "lib.widget"
 
 local Label = require "lib.widget.label"
