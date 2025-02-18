@@ -3,6 +3,8 @@ local Label = require "lib.widget.label"
 local Button = require "lib.widget.button"
 local ListBox = require "lib.widget.listbox"
 
+local SettingsTabComponent = require("components.settings_tab_component")
+
 
 local function setup_about (about)
   ---@type widget.label
@@ -119,4 +121,4 @@ local function setup_about (about)
   return about
 end
 
-return setup_about;
+return SettingsTabComponent("about", "About", "i", setup_about);

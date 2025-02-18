@@ -32,6 +32,7 @@ local settings_plugins = require("core.settings.settings_plugins")
 local settings_colors = require("core.settings.settings_colors")
 local settings_keybindings = require("core.settings.settings_keybindings")
 
+local SettingsTabComponent = require("components.settings_tab_component")
 
 
 ---@class plugins.settings
@@ -853,6 +854,7 @@ local function function_set_color_theme(new_theme)
 end
 
 
+
 ---@class settings.ui : widget
 ---@field private notebook widget.notebook
 ---@field private core widget
@@ -882,24 +884,27 @@ function Settings:new()
   self.notebook.size.y = 300
   self.notebook.border.width = 0
 
+  -- load about page
+  self.about = settings_about:add_to_notebook_widget(self.notebook)
+  
   self.core = self.notebook:add_pane("core", "Core")
   self.colors = self.notebook:add_pane("colors", "Themes")
   self.plugins = self.notebook:add_pane("plugins", "Plugins")
   self.keybinds = self.notebook:add_pane("keybindings", "Keybindings")
-  self.about = self.notebook:add_pane("about", "About")
+  -- self.about = self.notebook:add_pane("about", "About")
 
   self.notebook:set_pane_icon("core", "P")
   self.notebook:set_pane_icon("colors", "W")
   self.notebook:set_pane_icon("plugins", "B")
   self.notebook:set_pane_icon("keybindings", "M")
-  self.notebook:set_pane_icon("about", "i")
+  -- self.notebook:set_pane_icon("about", "i")
 
-  -- self.core_sections = FoldingBook(self.core)
-  -- self.core_sections.border.width = 0
-  -- self.core_sections.scrollable = false
+  self.core_sections = FoldingBook(self.core)
+  self.core_sections.border.width = 0
+  self.core_sections.scrollable = false
 
   -- self:load_core_settings()
-  self.core_sections = settings_core(self.core)
+  self.core = settings_core(self.core)
 
   self.plugin_sections = FoldingBook(self.plugins)
   self.plugin_sections.border.width = 0
@@ -914,8 +919,6 @@ function Settings:new()
   -- load color settings page
   self.colors = settings_colors(self.colors, settings.config.theme, function_set_color_theme)
 
-  -- load about page
-  self.about = settings_about(self.about)
 end
 
 
