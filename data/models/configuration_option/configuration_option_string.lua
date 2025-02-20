@@ -18,6 +18,13 @@ end
 function ConfigurationOptionString:render_only_modification_ui_in_widget_pane(pane)
   -- add number input box
   local widget = TextBox(pane, self:get_current_value())
+
+  -- handle new value
+  function widget.on_change(this, value)
+    self:set(value)
+  end
+  
+  return widget
 end
 
 return ConfigurationOptionString

@@ -36,6 +36,8 @@ function setup_general_settings(pane)
     -- add to widget
     myConfigurationOption:render_in_widget_pane(pane)
   end
+
+  return pane
 end
 
 

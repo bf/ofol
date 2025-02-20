@@ -86,40 +86,40 @@ local function setup_about (about)
 
   ---@param self widget
   function about:update_positions()
-    local center = self:get_width() / 2
+    -- local center = self:get_width() / 2
 
-    title:set_label("Lite XL")
-    title:set_position(
-      center - (title:get_width() / 2),
-      style.padding.y
-    )
+    -- title:set_label("Lite XL")
+    -- title:set_position(
+    --   center - (title:get_width() / 2),
+    --   style.padding.y
+    -- )
 
-    version:set_position(
-      center - (version:get_width() / 2),
-      title:get_bottom() + (style.padding.y / 2)
-    )
+    -- version:set_position(
+    --   center - (version:get_width() / 2),
+    --   title:get_bottom() + (style.padding.y / 2)
+    -- )
 
-    description:set_position(
-      center - (description:get_width() / 2),
-      version:get_bottom() + (style.padding.y / 2)
-    )
+    -- description:set_position(
+    --   center - (description:get_width() / 2),
+    --   version:get_bottom() + (style.padding.y / 2)
+    -- )
 
-    button:set_position(
-      center - (button:get_width() / 2),
-      description:get_bottom() + style.padding.y
-    )
+    -- button:set_position(
+    --   center - (button:get_width() / 2),
+    --   description:get_bottom() + style.padding.y
+    -- )
 
-    contributors:set_position(
-      style.padding.x,
-      button:get_bottom() + style.padding.y
-    )
+    -- contributors:set_position(
+    --   style.padding.x,
+    --   button:get_bottom() + style.padding.y
+    -- )
 
-    contributors:set_size(
-      self:get_width() - (style.padding.x * 2),
-      self:get_height() - (button:get_bottom() + (style.padding.y * 2))
-    )
+    -- contributors:set_size(
+    --   self:get_width() - (style.padding.x * 2),
+    --   self:get_height() - (button:get_bottom() + (style.padding.y * 2))
+    -- )
 
-    contributors:set_visible_rows()
+    -- contributors:set_visible_rows()
   end
 
   return about

@@ -3,6 +3,7 @@
 -- and ui component rendering
 
 local Label = require("lib.widget.label")
+local FoldingBook = require("lib.widget.foldingbook")
 
 local ConfigurationOption = Object:extend()
 
@@ -95,7 +96,7 @@ end
 -- render short description text
 function ConfigurationOption:render_only_label_in_widget_pane(pane)
   -- add label with short description text
-  Label(pane, self._description_text_short .. ":")
+  return Label(pane, self._description_text_short .. ":")
 end
 
 -- render long description text
@@ -103,22 +104,36 @@ function ConfigurationOption:render_only_description_in_widget_pane(pane)
   -- add description label
   local description = Label(pane, self._description_text_long .. " " .. string.format("(default: %s)", self._default_value))
   description.desc = true
+  return description
 end
 
 -- render widget, this needs to be overwritten by implementation
-function ConfigurationOption:render_in_widget_pane(pane)
-  if not pane then
-    stderr.error("no pane object provided")
+function ConfigurationOption:render_in_widget_pane(container)
+  if not container then
+    stderr.error("no widget provided")
   end
 
+  -- -- -- add_pane(section, section)
+  -- -- local section = FoldingBook(container)
+  -- -- section.border.width = 0
+  -- -- section.scrollable = false
+
+  local VERTICAL_SPACE = 10
+
+  -- local pane = container:add_child()
+  local initial_y = container:get_real_height() + VERTICAL_SPACE
+
   -- render label on top of input
-  self:render_only_label_in_widget_pane(pane)
+  local widget_label = self:render_only_label_in_widget_pane(container)
+  widget_label:set_position(10, initial_y)
 
   -- render input ui element to change the configuration value
-  self:render_only_modification_ui_in_widget_pane(pane)
+  local widget_modify = self:render_only_modification_ui_in_widget_pane(container)
+  widget_modify:set_position(10, initial_y + widget_label:get_real_height() + VERTICAL_SPACE)
 
   -- render description and default value after the input
-  self:render_only_description_in_widget_pane(pane)
+  local widget_description = self:render_only_description_in_widget_pane(container)
+  widget_description:set_position(10, initial_y + widget_label:get_real_height() + VERTICAL_SPACE + widget_modify:get_real_height() + VERTICAL_SPACE)
 end
 
 -- return value of this configuration option
