@@ -1,5 +1,6 @@
-local ConfigurationOption = require("models.configuration_option")
+local ItemsList = require("lib.widget.itemslist")
 
+local ConfigurationOption = require("models.configuration_option")
 local ConfigurationOptionStringList = ConfigurationOption:extend()
 
 -- List of Strings
@@ -13,5 +14,15 @@ function ConfigurationOptionStringList:is_valid(val)
   return Validator.is_list_of_strings(val)
 end
 
+-- create UI element
+function ConfigurationOptionStringList:render_only_modification_ui_in_widget_pane(pane)
+  local widget = ItemsList(pane)
+  -- if Validator.is_table(self:get_current_value()) then
+    for _, item in ipairs(self:get_current_value()) do
+      widget:add_item(item)
+    end
+  -- end
+
+end
 
 return ConfigurationOptionStringList

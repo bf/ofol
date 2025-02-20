@@ -22,37 +22,13 @@ local ColorPicker = require "lib.widget.colorpicker"
 local MessageBox = require "lib.widget.messagebox"
 
 
-local SettingsChangeComponent = Object:extend()
-
--- create new component for specific setting
-function SettingsChangeComponent:new(setting_key, setting_datatype, setting_default_value)
-  -- ensure setting key is provided
-  if not setting_key then
-    stderr.error("setting_key is required")
-  end
-  
-  -- validate datatype
-  SettingsStore.check_if_datatype_is_valid(setting_datatype)
-
-  -- ensure default value is provided
-  if not setting_default_value then
-    stderr.error("setting_key %s requires a default value", setting_key)
-  end
-
-  -- ensure default value fits the datatype
-  SettingsStore.check_if_value_is_valid_for_datatype(setting_key, setting_value)
-
-  -- store member variables
-  self.setting_key = setting_key
-  self.setting_datatype = setting_datatype
-  self.setting_default_value = setting_default_value
-end
+local ConfigurationOptionComponentFactory = Object:extend()
 
 
 -- create UI element for user to modify a specific setting
 -- widget will be chosen depending on datatype of the setting
 -- once value is changed by user in the UI, update SettingStore
-function SettingsChangeComponent:add_settings_change_widget_to_pane(pane, option)
+function ConfigurationOptionComponentFactory.add_modification_widget_to_widget_pane(pane, option)
   -- use member variables
   local setting_key = self.setting_key
   local setting_datatype = self.setting_datatype
@@ -205,4 +181,4 @@ function SettingsChangeComponent:add_settings_change_widget_to_pane(pane, option
   end
 end
 
-return SettingsChangeComponent
+return ConfigurationOptionComponentFactory

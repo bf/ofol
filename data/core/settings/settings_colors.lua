@@ -6,7 +6,11 @@ local SettingsTabComponent = require("components.settings_tab_component")
 local ConfigurationOptionString = require("models.configuration_option.configuration_option_string")
 
 -- config keys
-local configurationOptionForTheme = ConfigurationOptionString("theme", "Color Scheme", "Name of color scheme", "default")
+local configurationOptionForTheme = ConfigurationOptionString("theme", "Color Scheme", "Name of color scheme", "default", { 
+  on_change = function (new_value)
+    reload_module("themes.colors." .. new_value)
+  end
+})
 
 
 ---Get a list of system and user installed colors.
@@ -117,8 +121,6 @@ local function load_color_settings(add_to_this_pane)
   end
 
   function listbox:on_row_click(idx, data)
-    reload_module("themes.colors." .. data.name)
-
     -- set new theme
     configurationOptionForTheme:set(data.name)
   end

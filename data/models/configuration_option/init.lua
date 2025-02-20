@@ -2,9 +2,11 @@
 -- this handles persistence while the extensions of this class handle type-specific validation
 -- and ui component rendering
 
+local Label = require("lib.widget.label")
+
 local ConfigurationOption = Object:extend()
 
-function ConfigurationOption:new(key, description_text_short, description_text_long, default_value, optional_on_change_function)
+function ConfigurationOption:new(key, description_text_short, description_text_long, default_value, options)
   -- ensure key is provided
   if not key or not Validator.is_string(key) then
     stderr.error("key is required")
@@ -27,14 +29,14 @@ function ConfigurationOption:new(key, description_text_short, description_text_l
 
   -- on_change_function() is optional
   -- it will be called when value has changed
-  if optional_on_change_function ~= nil then
+  if options ~= nil and options.on_change ~= nil then
     -- ensure we have received a function
-    if not Validator.is_function(optional_on_change_function) then
-      stderr.error("optional_on_change_function must be a function")
+    if not Validator.is_function(options.on_change) then
+      stderr.error("on_change must be a function")
     end
 
     -- store function
-    self._optional_on_change_function = optional_on_change_function
+    self._optional_on_change_function = options.on_change
   end
 
   -- ensure that default value is valid
@@ -85,9 +87,38 @@ function ConfigurationOption:run_on_change_function_if_exists()
   end
 end
 
--- render widget, this needs to be overwritten by implementation
-function ConfigurationOption:add_to_widget()
+-- render input form only
+function ConfigurationOption:render_only_modification_ui_in_widget_pane(pane)
   stderr.error("must not be called directly - it should be implemented in child class")
+end
+
+-- render short description text
+function ConfigurationOption:render_only_label_in_widget_pane(pane)
+  -- add label with short description text
+  Label(pane, self._description_text_short .. ":")
+end
+
+-- render long description text
+function ConfigurationOption:render_only_description_in_widget_pane(pane)
+  -- add description label
+  local description = Label(pane, self._description_text_long .. " " .. string.format("(default: %s)", self._default_value))
+  description.desc = true
+end
+
+-- render widget, this needs to be overwritten by implementation
+function ConfigurationOption:render_in_widget_pane(pane)
+  if not pane then
+    stderr.error("no pane object provided")
+  end
+
+  -- render label on top of input
+  self:render_only_label_in_widget_pane(pane)
+
+  -- render input ui element to change the configuration value
+  self:render_only_modification_ui_in_widget_pane(pane)
+
+  -- render description and default value after the input
+  self:render_only_description_in_widget_pane(pane)
 end
 
 -- return value of this configuration option
