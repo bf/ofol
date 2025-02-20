@@ -1,6 +1,5 @@
 -- stores settings page with tab title
 
-local Object = require "lib.object"
 local style = require "themes.style"
 
 -- singleton object

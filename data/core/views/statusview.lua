@@ -3,7 +3,6 @@ local command = require "core.command"
 local config = require "core.config"
 local style = require "themes.style"
 local View = require "core.view"
-local Object = require "lib.object"
 
 
 local DocView = require "core.views.docview"
@@ -51,7 +50,6 @@ StatusView.separator2 = "   |   "
 ---@alias core.statusview.item.get_item fun(self: core.statusview.item):core.statusview.styledtext?,core.statusview.styledtext?
 ---@alias core.statusview.item.ondraw fun(x, y, h, hovered: boolean, calc_only?: boolean):number
 
----@class core.statusview.item : core.object
 ---@field name string
 ---@field predicate core.statusview.item.predicate
 ---@field alignment core.statusview.item.alignment

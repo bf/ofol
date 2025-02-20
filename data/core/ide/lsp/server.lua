@@ -9,7 +9,6 @@
 -- LSP Documentation:
 -- https://microsoft.github.io/language-server-protocol/specifications/specification-3-17
 
-local Object = require "lib.object"
 
 local json = require "lib.json"
 
@@ -43,7 +42,6 @@ local diagnostics = require "core.ide.lsp.diagnostics"
 ---@field times_sent integer
 
 ---LSP Server communication library.
----@class lsp.server : core.object
 ---@field public name string
 ---@field public language string | lsp.server.languagematch[]
 ---@field public file_patterns table

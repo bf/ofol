@@ -2,7 +2,7 @@ local core = require "core"
 local config = require "core.config"
 local command = require "core.command"
 local style = require "themes.style"
-local UserSettingsStore = require "stores.user_settings_store"
+-- local UserSettingsStore = require "stores.user_settings_store"
 
 local DocView = require "core.views.docview"
 
@@ -647,7 +647,7 @@ local function add_control(pane, option)
       end
 
       set_config_value(settings.config, path, value)
-      UserSettingsStore.save_user_settings(settings.config)
+      -- UserSettingsStore.save_user_settings(settings.config)
       if option.on_apply then
         option.on_apply(value)
       end

@@ -9,7 +9,6 @@
 --   SingleLineSingleLineDoc.super.insert(self, line, col, text:gsub("\n", ""))
 -- end
 
-local Object = require "lib.object"
 local core = require "core"
 local syntax = require "lib.syntax"
 local config = require "core.config"
@@ -22,7 +21,6 @@ local translate  = require "lib.widget.single_line_document_translate"
 
 
 
----@class core.doc : core.object
 local SingleLineDoc = Object:extend()
 
 

@@ -1,12 +1,9 @@
----@class core.object
----@field super core.object
 local Object = {}
 Object.__index = Object
 
 ---Can be overrided by child objects to implement a constructor.
 function Object:new() end
 
----@return core.object
 function Object:extend()
   local cls = {}
   for k, v in pairs(self) do
@@ -71,7 +68,6 @@ function Object:__tostring()
 end
 
 ---Metamethod to allow using the object call as a constructor.
----@return core.object
 function Object:__call(...)
   local obj = setmetatable({}, self)
   obj:new(...)

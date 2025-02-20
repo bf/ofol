@@ -1,5 +1,4 @@
 local core = require "core"
-local Object = require "lib.object"
 
 
 ---@alias plugins.scm.backend.filestatus
@@ -37,7 +36,6 @@ local Object = require "lib.object"
 ---@alias plugins.scm.backend.onexecstatus fun(success:boolean, errmsg?:string)
 
 ---Base functionality to implement a SCM backend with async support.
----@class plugins.scm.backend : core.object
 ---@field name string
 ---@field blocking boolean
 ---@field command string

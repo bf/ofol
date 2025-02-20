@@ -94,8 +94,15 @@ require("lib.lua-monkeypatch.lua-monkeypatch-table")
 -- global monkeypatch for SDL3 C API
 require("lib.lua-monkeypatch.lua-monkeypatch-renderer")
 
+-- global include for base object 
+Object = require("lib.object")
 
+-- global include of validator
+Validator = require("lib.validator")
 
+-- global include for user configuration
+PersistentUserConfiguration = require("persistence.persistent_user_configuration")
+ConfigurationStore = require("stores.configuration_store")
 
 -- Because AppImages change the working directory before running the executable,
 -- we need to change it back to the original one.

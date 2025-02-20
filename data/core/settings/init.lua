@@ -3,7 +3,8 @@ local config = require "core.config"
 local command = require "core.command"
 local keymap = require "core.keymap"
 local style = require "themes.style"
-local UserSettingsStore = require "stores.user_settings_store"
+-- local UserSettingsStore = require "stores.user_settings_store"
+-- local SettingsStore = require "stores.settings_store"
 
 local View = require "core.view"
 local DocView = require "core.views.docview"
@@ -27,6 +28,7 @@ local ColorPicker = require "lib.widget.colorpicker"
 local MessageBox = require "lib.widget.messagebox"
 
 local settings_core = require("core.settings.settings_core")
+local settings_general = require("core.settings.settings_general")
 local settings_about = require("core.settings.settings_about")
 local settings_plugins = require("core.settings.settings_plugins")
 local settings_colors = require("core.settings.settings_colors")
@@ -159,96 +161,6 @@ end
 --------------------------------------------------------------------------------
 -- Add Core Settings
 --------------------------------------------------------------------------------
-
-settings.add("General",
-  {
-    {
-      label = "Clear Fonts Cache",
-      description = "Delete current font cache and regenerate a fresh one.",
-      type = settings.type.BUTTON,
-      icon = "C",
-      on_click = function()
-        if Fonts.cache_is_building() then
-          MessageBox.warning(
-            "Clear Fonts Cache",
-            { "The font cache is already been built,\n"
-              .. "status will be logged on the stderr.info."
-            }
-          )
-        else
-          MessageBox.info(
-            "Clear Fonts Cache",
-            { "Re-building the font cache can take some time,\n"
-              .. "it is needed when you have installed new fonts\n"
-              .. "which are not listed on the font picker tool.\n\n"
-              .. "Do you want to continue?"
-            },
-            function(_, button_id, _)
-              if button_id == 1 then
-                Fonts.clean_cache()
-              end
-            end,
-            MessageBox.BUTTONS_YES_NO
-          )
-        end
-      end
-    },
-    -- {
-    --   label = "Maximum Project Files",
-    --   description = "The maximum amount of project files to register.",
-    --   path = "max_project_files",
-    --   type = settings.type.NUMBER,
-    --   default = 2000,
-    --   min = 1,
-    --   max = 100000,
-    --   on_apply = function()
-    --     core.rescan_project_directories()
-    --   end
-    -- },
-    -- {
-    --   label = "File Size Limit",
-    --   description = "The maximum file size in megabytes allowed for editing.",
-    --   path = "file_size_limit",
-    --   type = settings.type.NUMBER,
-    --   default = 10,
-    --   min = 1,
-    --   max = 50
-    -- },
-    {
-      label = "Ignore Files",
-      description = "List of lua patterns matching files to be ignored by the editor.",
-      path = "ignore_files",
-      type = settings.type.LIST_STRINGS,
-      default = {
-        -- folders
-        "^%.svn/",        "^%.git/",   "^%.hg/",        "^CVS/", "^%.Trash/", "^%.Trash%-.*/",
-        "^node_modules/", "^%.cache/", "^__pycache__/",
-        -- files
-        "%.pyc$",         "%.pyo$",       "%.exe$",        "%.dll$",   "%.obj$", "%.o$",
-        "%.a$",           "%.lib$",       "%.so$",         "%.dylib$", "%.ncb$", "%.sdf$",
-        "%.suo$",         "%.pdb$",       "%.idb$",        "%.class$", "%.psd$", "%.db$",
-        "^desktop%.ini$", "^%.DS_Store$", "^%.directory$",
-      },
-      on_apply = function()
-        core.rescan_project_directories()
-      end
-    },
-    {
-      label = "Maximum Clicks",
-      description = "The maximum amount of consecutive clicks that are registered by the editor.",
-      path = "max_clicks",
-      type = settings.type.NUMBER,
-      default = 3,
-      min = 1,
-      max = 10
-    },
-  }
-)
-
--- settings.add("Graphics",
---   {
---   }
--- )
 
 settings.add("User Interface",
   {
@@ -767,7 +679,7 @@ local function apply_keybinding(cmd, bindings, skip_save)
   end
 
   if changed then
-    UserSettingsStore.save_user_settings(config)
+    -- UserSettingsStore.save_user_settings(config)
   end
 
   if not row_value then
@@ -779,61 +691,61 @@ local function apply_keybinding(cmd, bindings, skip_save)
   return row_value
 end
 
----Merge previously saved settings without destroying the config table.
-local function merge_settings()
-  stderr.debug("merging previously saved settings with new ones")
-  if type(settings.config) ~= "table" then return end
+-- ---Merge previously saved settings without destroying the config table.
+-- local function merge_settings()
+--   stderr.debug("merging previously saved settings with new ones")
+--   if type(settings.config) ~= "table" then return end
 
-  -- merge core settings
-  for _, section in ipairs(settings.sections) do
-    local options = settings.core[section]
-    for _, option in ipairs(options) do
-      if type(option.path) == "string" then
-        local saved_value = get_config_value(settings.config, option.path)
-        if type(saved_value) ~= "nil" then
-          if option.type == settings.type.FONT or option.type == "font" then
-            merge_font_settings(option, option.path, saved_value)
-          else
-            set_config_value(config, option.path, saved_value)
-          end
-          if option.on_apply then
-            option.on_apply(saved_value)
-          end
-        end
-      end
-    end
-  end
+--   -- merge core settings
+--   for _, section in ipairs(settings.sections) do
+--     local options = settings.core[section]
+--     for _, option in ipairs(options) do
+--       if type(option.path) == "string" then
+--         local saved_value = get_config_value(settings.config, option.path)
+--         if type(saved_value) ~= "nil" then
+--           if option.type == settings.type.FONT or option.type == "font" then
+--             merge_font_settings(option, option.path, saved_value)
+--           else
+--             set_config_value(config, option.path, saved_value)
+--           end
+--           if option.on_apply then
+--             option.on_apply(saved_value)
+--           end
+--         end
+--       end
+--     end
+--   end
 
-  -- merge plugin settings
-  table.sort(settings.plugin_sections)
-  for _, section in ipairs(settings.plugin_sections) do
-    local plugins = settings.plugins[section]
-    for plugin_name, options in pairs(plugins) do
-      merge_plugin_settings(plugin_name, options)
-    end
-  end
+--   -- merge plugin settings
+--   table.sort(settings.plugin_sections)
+--   for _, section in ipairs(settings.plugin_sections) do
+--     local plugins = settings.plugins[section]
+--     for plugin_name, options in pairs(plugins) do
+--       merge_plugin_settings(plugin_name, options)
+--     end
+--   end
 
-  -- apply custom keybindings
-  if settings.config.custom_keybindings then
-    for cmd, bindings in pairs(settings.config.custom_keybindings) do
-      apply_keybinding(cmd, bindings, true)
-    end
-  end
-end
+--   -- apply custom keybindings
+--   if settings.config.custom_keybindings then
+--     for cmd, bindings in pairs(settings.config.custom_keybindings) do
+--       apply_keybinding(cmd, bindings, true)
+--     end
+--   end
+-- end
 
----Scan all plugins to check if they define a config_spec and load it.
-local function scan_plugins_spec()
-  for plugin, conf in pairs(config.plugins) do
-    if type(conf) == "table" and conf.config_spec then
-      settings.add(
-        -- conf.config_spec.name,
-        plugin,
-        conf.config_spec,
-        plugin
-      )
-    end
-  end
-end
+-- ---Scan all plugins to check if they define a config_spec and load it.
+-- local function scan_plugins_spec()
+--   for plugin, conf in pairs(config.plugins) do
+--     if type(conf) == "table" and conf.config_spec then
+--       settings.add(
+--         -- conf.config_spec.name,
+--         plugin,
+--         conf.config_spec,
+--         plugin
+--       )
+--     end
+--   end
+-- end
 
 ---Called at core first run to store the default keybindings.
 local function store_default_keybindings()
@@ -885,6 +797,9 @@ function Settings:new()
 
   -- load key binding settings page
   self.keybinds = settings_keybindings:add_to_notebook_widget(self.notebook)
+
+  -- load general settings page
+  self.general = settings_general:add_to_notebook_widget(self.notebook)
 
   self.core = self.notebook:add_pane("core", "Core")
   -- self.colors = self.notebook:add_pane("colors", "Themes")
@@ -985,6 +900,7 @@ function Settings:update()
   -- end
 end
 
+
 --------------------------------------------------------------------------------
 -- overwrite core run to inject previously saved settings
 --------------------------------------------------------------------------------
@@ -993,21 +909,22 @@ function core.run()
   stderr.debug("overwritten core.run() in settings.lua")
   store_default_keybindings()
 
-  -- load plugins disabled by default and enabled by user
-  if settings.config.enabled_plugins then
-    for name, _ in pairs(settings.config.enabled_plugins) do
-      if not config.plugins[name] then
-        stderr.debug("loading plugin from settings.config.enabled_plugins: %s", name)
-        require("plugins." .. name)
-      end
-    end
-  end
+  -- -- load plugins disabled by default and enabled by user
+  -- local enabled_plugins = SettingsStore.get("enabled_plugins")
+  -- if enabled_plugins then
+  --   for name, _ in pairs(enabled_plugins) do
+  --     if not config.plugins[name] then
+  --       stderr.debug("loading plugin from settings.config.enabled_plugins: %s", name)
+  --       require("plugins." .. name)
+  --     end
+  --   end
+  -- end
 
-  -- append all settings defined in the plugins spec
-  scan_plugins_spec()
+  -- -- append all settings defined in the plugins spec
+  -- scan_plugins_spec()
 
-  -- merge custom settings into config
-  merge_settings()
+  -- -- merge custom settings into config
+  -- merge_settings()
 
   ---@type settings.ui
   settings.ui = Settings()
@@ -1022,23 +939,23 @@ function core.run()
   core_run()
 end
 
---------------------------------------------------------------------------------
--- Disable plugins at startup, only works if this file is the first
--- required on user module, or priority tag is obeyed by lite-xl.
---------------------------------------------------------------------------------
--- load custom user settings that include list of disabled plugins
-settings.config = UserSettingsStore.load_user_settings()
+-- --------------------------------------------------------------------------------
+-- -- Disable plugins at startup, only works if this file is the first
+-- -- required on user module, or priority tag is obeyed by lite-xl.
+-- --------------------------------------------------------------------------------
+-- -- load custom user settings that include list of disabled plugins
+-- settings.config = UserSettingsStore.load_user_settings()
 
--- only disable non already loaded plugins
-if settings.config.disabled_plugins then
-  for name, _ in pairs(settings.config.disabled_plugins) do
-    stderr.debug("settings.config.disabled_plugins: disabling plugin %s", name)
-    if not package.loaded[name] then
-      stderr.debug("settings.config.disabled_plugins: plugin %s was not in package.loaded[], setting to false", name)
-      config.plugins[name] = false
-    end
-  end
-end
+-- -- only disable non already loaded plugins
+-- if settings.config.disabled_plugins then
+--   for name, _ in pairs(settings.config.disabled_plugins) do
+--     stderr.debug("settings.config.disabled_plugins: disabling plugin %s", name)
+--     if not package.loaded[name] then
+--       stderr.debug("settings.config.disabled_plugins: plugin %s was not in package.loaded[], setting to false", name)
+--       config.plugins[name] = false
+--     end
+--   end
+-- end
 
 --------------------------------------------------------------------------------
 -- Add command and keymap to load settings view

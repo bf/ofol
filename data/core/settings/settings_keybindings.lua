@@ -1,7 +1,7 @@
 local command = require "core.command"
 local keymap = require "core.keymap"
 local style = require "themes.style"
-local UserSettingsStore = require "stores.user_settings_store"
+-- local UserSettingsStore = require "stores.user_settings_store"
 
 local Button = require "lib.widget.button"
 local TextBox = require "lib.widget.textbox"
@@ -10,7 +10,8 @@ local KeybindingDialog = require "lib.widget.keybinddialog"
 
 local SettingsTabComponent = require("components.settings_tab_component")
 
-local config = UserSettingsStore.load_user_settings()
+-- local config = UserSettingsStore.load_user_settings()
+local config ={}
 
 local default_keybindings = {}
 
@@ -73,7 +74,7 @@ local function apply_keybinding(cmd, bindings, skip_save)
   end
 
   if changed then
-    UserSettingsStore.save_user_settings(config)
+    -- UserSettingsStore.save_user_settings(config)
   end
 
   if not row_value then
@@ -144,7 +145,7 @@ function keymap_dialog:on_reset()
     config.custom_keybindings[self.command]
   then
     config.custom_keybindings[self.command] = nil
-    UserSettingsStore.save_user_settings(config)
+    -- UserSettingsStore.save_user_settings(config)
   end
 end
 

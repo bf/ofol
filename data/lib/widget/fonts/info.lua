@@ -1,19 +1,16 @@
 -- Based on the code from:
 -- https://gist.github.com/zr-tex8r/1969061a025fa4fc5486c9c28460f48e
 
-local Object = require "lib.object"
 
 --------------------------------------------------------------------------------
 -- Class Declarations
 --------------------------------------------------------------------------------
 
----@class widget.fonts.cdata : core.object
 ---@overload fun(data:string):widget.fonts.cdata
 ---@field private data string
 ---@field private position integer
 local FontCDATA = Object:extend()
 
----@class  widget.fonts.reader : core.object
 ---@overload fun(font_path?:string):widget.fonts.reader
 ---@field private file file*
 ---@field private path string
@@ -37,7 +34,6 @@ local FontReader = Object:extend()
 ---@field public wwssubfamily string
 ---@field public monospace boolean
 
----@class widget.fonts.info : core.object
 ---@overload fun(font_path?:string):widget.fonts.info
 ---@field private reader widget.fonts.reader
 ---@field public path string @Path of the font file

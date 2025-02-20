@@ -1,6 +1,5 @@
 local core = require "core"
 local config = require "core.config"
-local Object = require "lib.object"
 local Scrollbar = require "components.scrollbar_component"
 
 
@@ -35,9 +34,7 @@ local Scrollbar = require "components.scrollbar_component"
 ---@alias core.view.context "'application'" | "'session'"
 
 ---Base view.
----@class core.view : core.object
 ---@field context core.view.context
----@field super core.object
 ---@field position core.view.position
 ---@field size core.view.position
 ---@field scroll core.view.scroll

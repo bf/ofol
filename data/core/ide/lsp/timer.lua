@@ -1,8 +1,6 @@
 local core = require "core"
-local Object = require "lib.object"
 
 ---Timer class
----@class lsp.timer : core.object
 ---@field public interval integer
 ---@field public single_shot boolean
 ---@field private started boolean

@@ -1,7 +1,6 @@
 local core = require "core"
 local config = require "core.config"
 local style = require "themes.style"
-local Object = require "lib.object"
 
 
 local EmptyView = require "core.views.emptyview"
@@ -14,7 +13,6 @@ local SYMBOL_CLOSE_BUTTON = "C"
 local ICON_SCROLL_BUTTON_LEFT = "<"
 local ICON_SCROLL_BUTTON_RIGHT = ">"
 
----@class core.node : core.object
 local Node = Object:extend()
 
 function Node:new(type)

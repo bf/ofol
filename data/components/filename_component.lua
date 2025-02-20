@@ -1,7 +1,6 @@
 -- stores filename with optional icon and suffix text
 -- metadata used for file titles
 
-local Object = require "lib.object"
 local style = require "themes.style"
 
 -- constants for padding between icon/suffix and text

@@ -120,3 +120,15 @@ table.fuzzy_match_with_recents = function (haystack, recents, needle)
     return fuzzy_match_items(haystack, needle, true)  
   end
 end
+
+-- add tostring function which uses json
+-- fixme: this might not be working
+function table.__tostring(self)
+   local ok, json_string = pcall(json.encode, self)
+  if not ok then
+    stderr.error("could not convert %s to json: %s", self, json_string)
+    error(json_string)
+  end
+
+  return json_string
+end

@@ -22,7 +22,6 @@ local command = {}
 ---
 ---If the predicate is a function, it must behave like a predicate function.
 ---@see core.command.predicate_function
----@alias core.command.predicate string|core.object|core.command.predicate_function
 
 ---A command is identified by a command name.
 ---The command name contains a category and the name itself, separated by a colon (':').

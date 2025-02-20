@@ -3,7 +3,6 @@ local command = require "core.command"
 local config = require "core.config"
 local keymap = require "core.keymap"
 local style = require "themes.style"
-local Object = require "lib.object"
 local View = require "core.view"
 
 
@@ -25,7 +24,6 @@ local DIVIDER = {}
 ---@field items core.contextmenu.item[]
 
 ---A context menu.
----@class core.contextmenu : core.object
 ---@field itemset core.contextmenu.itemset[]
 ---@field show_context_menu boolean
 ---@field selected number

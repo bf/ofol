@@ -18,22 +18,24 @@ local function setup_about (about)
     "A lightweight text editor written in Lua, adapted from lite."
   )
 
-  local function open_link(link)
-    local platform_filelauncher
-    if PLATFORM == "Windows" then
-      platform_filelauncher = "start"
-    elseif PLATFORM == "Mac OS X" then
-      platform_filelauncher = "open"
-    else
-      platform_filelauncher = "xdg-open"
-    end
-    system.exec(platform_filelauncher .. " " .. link)
-  end
+  -- local function open_link(link)
+  --   local platform_filelauncher
+  --   if PLATFORM == "Windows" then
+  --     platform_filelauncher = "start"
+  --   elseif PLATFORM == "Mac OS X" then
+  --     platform_filelauncher = "open"
+  --   else
+  --     platform_filelauncher = "xdg-open"
+  --   end
+  --   system.exec(platform_filelauncher .. " " .. link)
+  -- end
 
   ---@type widget.button
   local button = Button(about, "Visit Website")
   button:set_tooltip("Open https://lite-xl.com/")
-  function button:on_click() open_link("https://lite-xl.com/") end
+  function button:on_click() 
+    -- open_link("https://lite-xl.com/") 
+  end
 
   ---@type widget.listbox
   local contributors = ListBox(about)
@@ -41,7 +43,9 @@ local function setup_about (about)
   contributors:add_column("Contributors")
   contributors:add_column("")
   contributors:add_column("Website")
-  function contributors:on_row_click(_, data) open_link(data) end
+  function contributors:on_row_click(_, data) 
+    -- open_link(data) 
+  end
 
   local contributors_list = {
     { "Rxi", "Lite Founder", "https://github.com/rxi" },

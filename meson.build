@@ -293,6 +293,8 @@ install_subdir('data' / 'lib' , install_dir : lite_datadir)
 install_subdir('data' / 'plugins' , install_dir : lite_datadir)
 install_subdir('data' / 'static' , install_dir : lite_datadir)
 install_subdir('data' / 'stores' , install_dir : lite_datadir)
+install_subdir('data' / 'models' , install_dir : lite_datadir)
+install_subdir('data' / 'persistence' , install_dir : lite_datadir)
 install_subdir('data' / 'themes' , install_dir : lite_datadir)
 
 # foreach data_module : ['components' 'static', 'plugins', 'themes', 'libraries']

@@ -1,7 +1,6 @@
 local core = require "core"
 local config = require "core.config"
 local style = require "themes.style"
-local Object = require "lib.object"
 
 ---Scrollbar
 ---Use Scrollbar:set_size to set the bounding box of the view the scrollbar belongs to.
@@ -15,7 +14,6 @@ local Object = require "lib.object"
 ---To manage all the orientations, the scrollbar changes the coordinates system
 ---accordingly. The "normal" coordinate system adapts the scrollbar coordinates
 ---as if it's always a vertical scrollbar, positioned at the end of the bounding box.
----@class core.scrollbar : core.object
 local Scrollbar = Object:extend()
 
 ---@class ScrollbarOptions

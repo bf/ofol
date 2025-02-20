@@ -1,11 +1,13 @@
 local core = require "core"
 local style = require "themes.style"
-local SettingsStore = require "stores.settings_store"
 local ListBox = require "lib.widget.listbox"
 local SettingsTabComponent = require("components.settings_tab_component")
 
+local ConfigurationOptionString = require("models.configuration_option.configuration_option_string")
+
 -- config keys
-SettingsStore.initialize_configuration_option("theme", SettingsStore.TYPES.STRING, "default")
+local configurationOptionForTheme = ConfigurationOptionString("theme", "Color Scheme", "Name of color scheme", "default")
+
 
 ---Get a list of system and user installed colors.
 ---@return table<integer, table>
@@ -86,13 +88,17 @@ local function on_color_draw(self, row, x, y, font, color, only_calc)
 end
 
 ---Generate the list of all available colors with preview
-local function load_color_settings(self_colors, current_theme, function_set_theme)
-  self_colors.scrollable = false
+local function load_color_settings(add_to_this_pane)
+  add_to_this_pane.scrollable = false
 
+  -- load installed themes
   local installed_colors = get_installed_colors()
 
+  -- get current theme
+  local current_theme = configurationOptionForTheme:get_current_value()
+
   ---@type widget.listbox
-  local listbox = ListBox(self_colors)
+  local listbox = ListBox(add_to_this_pane)
 
   listbox.border.width = 0
   listbox:enable_expand(true)
@@ -113,10 +119,11 @@ local function load_color_settings(self_colors, current_theme, function_set_them
   function listbox:on_row_click(idx, data)
     reload_module("themes.colors." .. data.name)
 
-    SettingsStore.set("theme", data.name)
+    -- set new theme
+    configurationOptionForTheme:set(data.name)
   end
 
-  return self_colors
+  return add_to_this_pane
 end
 
 return SettingsTabComponent("colors", "Themes", "W", load_color_settings)

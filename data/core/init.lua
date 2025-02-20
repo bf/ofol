@@ -8,7 +8,7 @@ local style = require "themes.colors.default"
 
 local json = require "lib.json"
 
-local UserSessionStore
+local PersistentUserSession
 local command
 local keymap
 local dirwatch
@@ -489,7 +489,7 @@ function core.init()
   keymap = require "core.keymap"
   dirwatch = require "core.dirwatch"
   ime = require "core.ime" 
-  UserSessionStore = require "stores.user_session_store"
+  PersistentUserSession = require "persistence.persistent_user_session"
 
   RootView = require "core.views.rootview"
   StatusView = require "core.views.statusview"
@@ -513,7 +513,7 @@ function core.init()
   end
   do
     -- load last session
-    local stored_session_data = UserSessionStore.load_user_session()
+    local stored_session_data = PersistentUserSession.load_user_session()
     stderr.debug("loaded stored_session_data %s", stored_session_data)
 
     -- apply stored settings to window

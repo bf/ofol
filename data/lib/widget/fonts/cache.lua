@@ -1,10 +1,8 @@
 
 local core = require "core"
-local Object = require "lib.object"
 local FontInfo = require "lib.widget.fonts.info"
 local serialize = require "lib.serialize"
 
----@class widget.fonts.cache : core.object
 ---@overload fun():widget.fonts.cache
 ---@field fontinfo widget.fonts.info
 ---@field found integer
