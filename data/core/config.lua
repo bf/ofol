@@ -2,13 +2,6 @@
 local config = {}
 
 
----The timeout, in seconds, before several consecutive actions
----are merged as a single undo step.
----
----The default is 0.3 seconds.
----@type number
-config.undo_merge_timeout = 0.3
-
 ---The maximum number of undo steps per-document.
 ---
 ---The default is 10000.

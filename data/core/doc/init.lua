@@ -454,7 +454,7 @@ local function pop_undo(self, undo_stack, redo_stack, modified)
   -- if next undo command is within the merge timeout then treat as a single
   -- command and continue to execute it
   local next = undo_stack[undo_stack.idx - 1]
-  if next and math.abs(cmd.time - next.time) < config.undo_merge_timeout then
+  if next and math.abs(cmd.time - next.time) < ConfigurationStore.get("undo_merge_timeout"):get_current_value() then
     return pop_undo(self, undo_stack, redo_stack, modified)
   end
 
