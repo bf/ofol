@@ -27,7 +27,6 @@ local StatusView = require "core.views.statusview"
 local RootView = require "core.views.rootview"
 
 
-local json = require "lib.json"
 local MessageBox = require "lib.widget.messagebox"
 
 local util = require ".util"

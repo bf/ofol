@@ -7,7 +7,6 @@
 local core = require "core"
 local config = require "core.config"
 
-local json = require "lib.json"
 
 local util = {}
 

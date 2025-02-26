@@ -110,7 +110,7 @@ function stderr.print_with_tag(tag, fmt, ...)
  
   -- get path of calling function
   local at
-  if #BASE_PATH > 0 and #info.source > 2 then
+  if #BASE_PATH > 0 and #info.source > 2 and fsutils ~= nil then
      -- figure out relative path if possible
     local relative_path = fsutils.relative_path(BASE_PATH, string.sub(info.source, 2))
     at = string.format("%s:%d", relative_path, info.currentline)
@@ -120,8 +120,6 @@ function stderr.print_with_tag(tag, fmt, ...)
   end
 
   -- from https://stackoverflow.com/a/64271511
-  -- local relative_path = string.format("%s:%d", fsutils.relative_path(DATADIR, info.source), info.currentline)
-  -- stderr.print_with_tag(item.level, string.format("%s [%s] %s(): %s", os.date("%Y-%m-%d %M:%H"), item.at, info.name, item.text))
   local text_with_func_details = string.format("[%s] %s(): %s", at, info.name, text)
 
   stderr.print(string.format("%-5s %s", tag, text_with_func_details))

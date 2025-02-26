@@ -68,11 +68,17 @@ package.searchers = {
 table.pack = table.pack or pack or function(...) return {...} end
 table.unpack = table.unpack or unpack
 
+-- global include of stderr logging
+stderr = require("lib.stderr")
+
 -- global include of fsutils
 fsutils = require("lib.fsutils")
 
--- global include of stderr logging
-stderr = require("lib.stderr")
+-- global include for json
+
+-- global include for json config file
+
+
 
 -- global modification of module loading behavior when require() is called
 require("lib.lua-monkeypatch.lua-monkeypatch-require-modules")

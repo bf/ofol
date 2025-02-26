@@ -6,7 +6,6 @@ local config = require "core.config"
 -- if we remove this then the loading of style in views does not work
 local style = require "themes.colors.default"
 
-local json = require "lib.json"
 
 local PersistentUserSession
 local command

@@ -2,7 +2,6 @@ local core = require "core"
 local command = require "core.command"
 local keymap = require "core.keymap"
 
-local json = require "lib.json"
 
 
 local fullscreen = false

@@ -99,6 +99,8 @@ end
 function ConfigurationOption:_add_label_widget_to_container(container)
   -- add label with short description text
   local my_label = Label(container, self._description_text_short .. ":")
+
+  -- use bold font for this label
   my_label.font = style.bold_font
 
   return my_label
@@ -106,10 +108,21 @@ end
 
 -- render long description text
 function ConfigurationOption:_add_description_widget_to_container(container)
-  -- add description label
-  local description = Label(container, self._description_text_long .. " " .. string.format("(default: %s)", self._default_value))
-  description.desc = true
-  return description
+  -- figure out text representation of default value
+  local default_value_text
+  if type(self._default_value) == "table" then
+    -- for table values, use json
+    default_value_text = json.encode(self._default_value)
+  else
+    -- all other types: convert to string with string.format()
+    default_value_text = string.format("%s", self._default_value)
+  end
+
+  -- create label text
+  local description_label_text = self._description_text_long .. " (default: " .. default_value_text .. ")"
+
+  -- create widget and return it
+  return Label(container, description_label_text)
 end
 
 -- render widget, this needs to be overwritten by implementation
@@ -120,131 +133,17 @@ function ConfigurationOption:add_widgets_to_container(container)
 
   -- render label on top of input
   local widget_label = self:_add_label_widget_to_container(container)
-  -- widget_label:set_size(widget_label:get_real_width(), widget_label:get_real_height())
-  -- widget_label:set_position(style.padding.x, y_start_coordinate + style.padding.y)
 
   -- render input ui element to change the configuration value
   local widget_modify_value = self:add_value_modification_widget_to_container(container)
-  -- widget_modify:set_size(widget_modify:get_real_width(), widget_modify:get_real_height())
-  -- widget_modify:set_position(style.padding.x, y_start_coordinate + widget_label:get_real_height() + 2*style.padding.y)
 
   -- render description and default value after the input
   local widget_description = self:_add_description_widget_to_container(container)
-    -- widget_description:set_size(widget_description:get_real_width(), widget_description:get_real_height())
-    -- widget_description:set_position(style.padding.x, widget_modify:get_bottom() + style.padding.y)
-  -- widget_description:set_position(style.padding.x, y_start_coordinate + widget_label:get_real_height() + widget_description:get_real_height() + 3*style.padding.y)
 
-  -- function container:is_visible()
-  --   stderr.debug("is_visible() called")
-  -- end
-
-  -- line between options
+  -- empty space between options
   local widget_line = Label(container, " ")
 
-  -- update_positions() function will be called by settings class
-  -- whenever a notebook pane is visible
-  function container:update_positions()
-    stderr.debug("update_positions() called for configuration option")
-
-      -- container:set_size(
-      --   section.parent.size.x - (style.padding.x),
-      --   section:get_real_height()
-      -- )
-    -- section:set_position(style.padding.x / 2, 0)
-    local prev_child = nil
-    for pos=#container.childs, 1, -1 do
-      local child = container.childs[pos]
-
-      -- start with basic padding
-      local x = style.padding.x
-      local y = style.padding.y
-      if prev_child then
-        y = prev_child:get_bottom() + style.padding.y
-      end
-
-      -- set with to full available container width
-      child:set_size(container:get_width() - 2*style.padding.x, child.size.y)
-
-      -- set position
-      child:set_position(x, y)
-
-      -- remember previous child
-      prev_child = child
-    end
-
-    -- -- local center = self:get_width() / 2
-
-    -- -- label on top
-    -- widget_label:set_position(style.padding.x, style.padding.y)
-    -- widget_label:set_size(container:get_width() - 2*style.padding.x, widget_label.size.y)
-
-    -- -- value modification widget underneath label
-    -- widget_modify_value:set_position(style.padding.x, widget_label:get_bottom() + style.padding.y)
-    -- widget_modify_value:set_size(container:get_width() - 2*style.padding.x, widget_modify_value.size.y)
-
-    -- -- description label at the bottom
-    -- widget_description:set_position(style.padding.x, widget_modify_value:get_bottom() + style.padding.y)
-    -- widget_description:set_size(container:get_width() - 2*style.padding.x, widget_description.size.y)
-
-
-
-
-    -- title:set_label("Lite XL")
-    -- title:set_position(
-    --   center - (title:get_width() / 2),
-    --   style.padding.y
-    -- )
-
-    -- version:set_position(
-    --   center - (version:get_width() / 2),
-    --   title:get_bottom() + (style.padding.y / 2)
-    -- )
-
-    -- description:set_position(
-    --   center - (description:get_width() / 2),
-    --   version:get_bottom() + (style.padding.y / 2)
-    -- )
-
-    -- button:set_position(
-    --   center - (button:get_width() / 2),
-    --   description:get_bottom() + style.padding.y
-    -- )
-
-    -- contributors:set_position(
-    --   style.padding.x,
-    --   button:get_bottom() + style.padding.y
-    -- )
-
-    -- contributors:set_size(
-    --   self:get_width() - (style.padding.x * 2),
-    --   self:get_height() - (button:get_bottom() + (style.padding.y * 2))
-    -- )
-
-    -- contributors:set_visible_rows()
-  end
-
-  -- function section:update()   
-  --   stderr.warn("UPDATE UPDATE ")
-  --   widget_label:set_position(style.padding.x, style.padding.y)
-  --   widget_label:set_size(widget_label:get_real_width(), widget_label:get_real_height())
-    
-  --   widget_modify:set_position(style.padding.x, widget_label:get_bottom() + style.padding.y)
-  --   widget_modify:set_size(widget_modify:get_real_width(), widget_modify:get_real_height())
-
-  --   widget_description:set_position(style.padding.x, widget_modify:get_bottom() + style.padding.y)
-  --   widget_description:set_size(widget_description:get_real_width(), widget_description:get_real_height())
-
-  -- section:set_size(section:get_real_width(),section:get_real_height())
-  -- end
-
-  -- section:set_size(section:get_real_width(),section:get_real_height())
-
-  -- section:update()
-
-  -- local height = widget_description:get_real_height() + widget_label:get_real_height() + widget_modify:get_real_height() + 4 * style.padding.y
-
   return container
-  -- return section
 end
 
 -- return value of this configuration option

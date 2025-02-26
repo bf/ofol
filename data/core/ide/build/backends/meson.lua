@@ -2,7 +2,6 @@ local core = require "core"
 local build = require "core.ide.build"
 local config = require "core.config"
 
-local json = require "lib.json"
 
 local meson = {
   -- ninja executes from inside a build folder, so all file references begin with `..`, and should be removed to reference the file.

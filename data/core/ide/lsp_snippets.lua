@@ -10,7 +10,6 @@ local core     = require 'core'
 local Doc      = require 'core.doc'
 
 
-local json 		 = require 'lib.json'
 
 local snippets = require 'core.ide.snippets'
 

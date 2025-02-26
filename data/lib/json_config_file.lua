@@ -1,4 +1,3 @@
-local json = require("lib.json")
 
 local json_config_file = {}
 

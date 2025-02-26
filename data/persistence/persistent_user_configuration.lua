@@ -1,4 +1,3 @@
-local json_config_file = require "lib.json_config_file"
 
 local PersistentUserConfiguration = {}
 

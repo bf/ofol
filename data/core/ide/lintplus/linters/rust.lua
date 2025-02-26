@@ -5,7 +5,6 @@
 
 
 
-local json = require "lib.json"
 local lintplus = require "core.ide.lintplus"
 
 

@@ -1,4 +1,3 @@
-local json_config_file = require "lib.json_config_file"
 
 local PATH_TO_SESSION_JSON_FILE = USERDIR .. PATHSEP .. "session.json"
 
