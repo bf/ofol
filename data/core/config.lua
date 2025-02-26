@@ -1,28 +1,6 @@
 
 local config = {}
 
----Default line endings for new files.
----
----Defaults to `crlf` (`\r\n`) on Windows and `lf` (`\n`) on everything else.
----@type "crlf" | "lf"
-config.line_endings = PLATFORM == "Windows" and "crlf" or "lf"
-
----Maximum number of characters per-line for the line guide.
----
----Defaults to 80.
----@type number
-config.line_limit = 80
-
----Maximum number of project files to keep track of.
----If the number of files in the project exceeds this number,
----Lite XL will not be able to keep track of them.
----They will be not be searched when searching for files or text.
----
----Defaults to 2000.
----@type number
-config.max_project_files = 20000
-
-
 ---The caret's blinking period, in seconds.
 ---
 ---Defaults to 0.8.

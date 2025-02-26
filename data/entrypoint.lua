@@ -8,6 +8,7 @@
 -- global fps variable
 CONSTANT_FRAMES_PER_SECOND = 60
 
+
 -- this file is used by lite-xl to setup the Lua environment when starting
 VERSION = "@PROJECT_VERSION@"
 PROJECT_NAME="ofol"

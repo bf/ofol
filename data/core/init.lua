@@ -68,15 +68,6 @@ function core.project_subdir_is_shown(dir, filename)
   return not dir.files_limit or dir.shown_subdir[filename]
 end
 
--- TODO: refactor
-local function show_max_files_warning(dir)
-  local message = dir.slow_filesystem and
-    "Filesystem is too slow: project files will not be indexed." or
-    "Too many files in project directory: stopped reading at "..
-    config.max_project_files.." files. For more information see "..
-    "usage.md at https://github.com/lite-xl/lite-xl."
-  stderr.warn(message)
-end
 
 -- TODO: refactor
 -- bisects the sorted file list to get to things in ln(n)
@@ -194,9 +185,8 @@ end
 -- Predicate function to inhibit directory recursion in get_directory_files
 -- based on a time limit and the number of files.
 local function timed_max_files_pred(dir, filename, entries_count, t_elapsed)
-  local n_limit = entries_count <= config.max_project_files
   local t_limit = t_elapsed < 20 / CONSTANT_FRAMES_PER_SECOND
-  return n_limit and t_limit and core.project_subdir_is_shown(dir, filename)
+  return t_limit and core.project_subdir_is_shown(dir, filename)
 end
 
 -- TODO: refactor
@@ -224,9 +214,8 @@ function core.add_project_directory(path)
 
   topdir.files = t
   if not complete then
-    topdir.slow_filesystem = not complete and (entries_count <= config.max_project_files)
+    topdir.slow_filesystem = not complete 
     topdir.files_limit = true
-    show_max_files_warning(topdir)
     refresh_directory(topdir)
   else
     for i,v in ipairs(t) do

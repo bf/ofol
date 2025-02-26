@@ -21,6 +21,10 @@ local function split_lines(text)
   return res
 end
 
+-- line endings 
+---Defaults to `crlf` (`\r\n`) on Windows and `lf` (`\n`) on everything else.
+local default_line_ending = PLATFORM == "Windows" and "crlf" or "lf"
+
 
 function Doc:new(filename, abs_filename, new_file)
   self.new_file = new_file
@@ -32,7 +36,7 @@ function Doc:new(filename, abs_filename, new_file)
     end
   end
   if new_file then
-    self.crlf = config.line_endings == "crlf"
+    self.crlf = default_line_ending == "crlf"
   end
 end
 
