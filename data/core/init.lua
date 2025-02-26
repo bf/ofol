@@ -195,7 +195,7 @@ end
 -- based on a time limit and the number of files.
 local function timed_max_files_pred(dir, filename, entries_count, t_elapsed)
   local n_limit = entries_count <= config.max_project_files
-  local t_limit = t_elapsed < 20 / config.fps
+  local t_limit = t_elapsed < 20 / CONSTANT_FRAMES_PER_SECOND
   return n_limit and t_limit and core.project_subdir_is_shown(dir, filename)
 end
 
@@ -635,8 +635,8 @@ function core.init()
     end
   end
 
-  -- load settings dialog
-  local settings = require "core.settings"
+  -- initialize settings
+  require("core.settings")
 
   -- load syntax highlighting
   local syntax = require "lib.syntax"
@@ -770,84 +770,6 @@ function core.restart()
   end)
 end
 
--- function core.load_plugins()
---   local no_errors = true
---   local refused_list = {
---     userdir = {dir = USERDIR, plugins = {}},
---     datadir = {dir = DATADIR, plugins = {}},
---   }
-
---   if config.disable_all_plugins then
---     stderr.warn("plugins are disabled with config.disable_all_plugins flag!")
---     return no_errors, refused_list
---   end
-
-
---   local files, ordered = {}, {}
---   for _, root_dir in ipairs {DATADIR, USERDIR} do
---     local plugin_dir = root_dir .. PATHSEP .. "plugins"
---     for _, filename in ipairs(system.list_dir(plugin_dir) or {}) do
---       if not files[filename] then
---         table.insert(
---           ordered, {file = filename}
---         )
---       end
---       -- user plugins will always replace system plugins
---       files[filename] = plugin_dir
---     end
---   end
-
---   for _, plugin in ipairs(ordered) do
---     local dir = files[plugin.file]
---     local name = plugin.file:match("(.-)%.lua$") or plugin.file
-
---     plugin.name = name
---     plugin.dir = dir
---   end
-
---   local load_start = system.get_time()
---   for _, plugin in ipairs(ordered) do
---     stderr.debug(string.format("[core] [plugin] [%s] loading from %s", plugin.name, plugin.dir))
---     if config.plugins[plugin.name] ~= false then
---       local start = system.get_time()
---       local ok, loaded_plugin = try_catch(require, "plugins." .. plugin.name)
---       if ok then
---         stderr.debug(string.format("[core] [plugin] [%s] loaded", plugin.name))
---         stderr.debug(
---           "Loaded plugin %q from %s in %.1fms",
---           plugin.name,
---           plugin.dir,
---           (system.get_time() - start) * 1000
---         )
---       end
---       if not ok then
---         no_errors = false
---       elseif config.plugins[plugin.name].onload then
---         try_catch(config.plugins[plugin.name].onload, loaded_plugin)
---       end
---     else
---       stderr.warn(string.format("[core] [plugin] [%s] skipped, NOT(config.plugins[plugin.name] ~= false) for %s", plugin.name, config.plugins[plugin.name]))
---     end
---   end
---   stderr.debug(
---     "Loaded all plugins in %.1fms",
---     (system.get_time() - load_start) * 1000
---   )
---   return no_errors, refused_list
--- end
-
-
--- function core.reload_module(name)
---   local old = package.loaded[name]
---   package.loaded[name] = nil
---   local new = require(name)
---   if type(old) == "table" then
---     for k, v in pairs(new) do old[k] = v end
---     package.loaded[name] = old
---   end
--- end
-
-
 function core.set_visited(filename)
   for i = 1, #core.visited_files do
     if core.visited_files[i] == filename then
@@ -857,8 +779,6 @@ function core.set_visited(filename)
   end
   table.insert(core.visited_files, 1, filename)
 end
-
-
 
 -- this is called from node.set_active_view() in order to
 -- re-focus the text input handling onto another view
@@ -1132,7 +1052,7 @@ end
 -- main threading loop which will interrupt threads to keep fps
 local run_threads = coroutine.wrap(function()
   while true do
-    local max_time = 1 / config.fps - 0.004
+    local max_time = 1 / CONSTANT_FRAMES_PER_SECOND - 0.004
     local minimal_time_to_wake = math.huge
 
     local threads = {}
@@ -1182,7 +1102,7 @@ function core.run()
     end
     local did_redraw = false
     local did_step = false
-    local force_draw = core.redraw and last_frame_time and core.frame_start - last_frame_time > (1 / config.fps)
+    local force_draw = core.redraw and last_frame_time and core.frame_start - last_frame_time > (1 / CONSTANT_FRAMES_PER_SECOND)
     if force_draw or not next_step or system.get_time() >= next_step then
       if core.step() then
         did_redraw = true
@@ -1205,7 +1125,7 @@ function core.run()
           local t = now - core.blink_start
           local h = config.blink_period / 2
           local dt = math.ceil(t / h) * h - t
-          local cursor_time_to_wake = dt + 1 / config.fps
+          local cursor_time_to_wake = dt + 1 / CONSTANT_FRAMES_PER_SECOND
           next_step = now + cursor_time_to_wake
         end
         if system.wait_event(math.min(next_step - now, time_to_wake)) then
@@ -1219,7 +1139,7 @@ function core.run()
       run_threads_full = 0
       local now = system.get_time()
       local elapsed = now - core.frame_start
-      local next_frame = math.max(0, 1 / config.fps - elapsed)
+      local next_frame = math.max(0, 1 / CONSTANT_FRAMES_PER_SECOND - elapsed)
       next_step = next_step or (now + next_frame)
       system.sleep(math.min(next_frame, time_to_wake))
     end
