@@ -29,7 +29,6 @@ local settings_general = require("core.settings.settings_general")
 local settings_user_interface = require("core.settings.settings_user_interface")
 local settings_editor = require("core.settings.settings_editor")
 local settings_about = require("core.settings.settings_about")
-local settings_plugins = require("core.settings.settings_plugins")
 local settings_colors = require("core.settings.settings_colors")
 local settings_keybindings = require("core.settings.settings_keybindings")
 

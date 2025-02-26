@@ -17,9 +17,9 @@ local generalOptions = {
     "^desktop%.ini$", "^%.DS_Store$", "^%.directory$",
   }, {
     on_change = function(new_value)
-        -- TODO: refactor
-        -- core.rescan_project_directories()
-      end
+      -- TODO: refactor
+      -- core.rescan_project_directories()
+    end
   }),
 
   ConfigurationOptionNumber("max_clicks", "Maximum Clicks", "The maximum amount of consecutive clicks that are registered by the editor.", 3, {

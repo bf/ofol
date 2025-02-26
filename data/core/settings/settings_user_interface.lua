@@ -37,7 +37,7 @@ optionForceScrollbarStatusMode = ConfigurationOptionMultipleChoice("force_scroll
 function updateScrollbarStatus () 
   local globally =  optionForceScrollbarStatusMode.get_current_value() or "global"
   local currentValueForOptionForceScrollbarStatus = optionForceScrollbarStatus.get_current_value() 
-
+  
   local views = core.root_view.root_node:get_children()
 
   for _, view in ipairs(views) do
