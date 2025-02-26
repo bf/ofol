@@ -1,35 +1,6 @@
 
 local config = {}
 
----The frame rate of Lite XL.
----Note that setting this value to the screen's refresh rate
----does not eliminate screen tearing.
----
----Defaults to 60.
----@type number
--- TODO: refactor
-CONSTANT_FRAMES_PER_SECOND = 60
-
-config.log_to_stderr = true
-
----Maximum number of log items that will be stored.
----When the number of log items exceed this value, old items will be discarded.
----
----Defaults to 800.
----@type number
-config.max_log_items = 800
-
----The timeout, in seconds, before a message dissapears from StatusView.
----
----Defaults to 5.
----@type number
-config.message_timeout = 5
-
----The number of pixels scrolled per-step.
----
----Defaults to 50 * SCALE.
----@type number
-config.mouse_wheel_scroll = 50 * SCALE
 
 ---Enables/disables scrolling past the end of a document.
 ---

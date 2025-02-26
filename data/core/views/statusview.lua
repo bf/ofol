@@ -9,6 +9,13 @@ local DocView = require "core.views.docview"
 local CommandView = require "core.views.commandview"
 local scale = require "core.ide.editor_text_scaling"
 
+
+---The timeout, in seconds, before a message dissapears from StatusView.
+---
+---Defaults to 5.
+---@type number
+local CONSTANTS_MESSAGE_TIMEOUT = 5
+
 ---@alias core.statusview.styledtext table<integer, renderer.font|renderer.color|string>
 ---@alias core.statusview.position '"left"' | '"right"'
 
@@ -601,7 +608,7 @@ function StatusView:show_message(icon, icon_color, text)
     icon_color, style.icon_font, icon,
     style.dim, style.font, StatusView.separator2, style.text, text
   }
-  self.message_timeout = system.get_time() + config.message_timeout
+  self.message_timeout = system.get_time() + CONSTANTS_MESSAGE_TIMEOUT
 end
 
 

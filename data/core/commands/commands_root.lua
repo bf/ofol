@@ -7,6 +7,9 @@ local Node = require "core.node"
 local DocView = require "core.views.docview"
 
 
+local getConfigurationOptionMouseWheelScroll = ConfigurationStore.lazy_get_current_value("mouse_wheel_scroll")
+
+
 local t = {
   ["root:close"] = function(node)
     node:close_active_view(core.root_view.root_node)
@@ -113,11 +116,12 @@ command.add(function()
   return not sx and not sy, node
 end, t)
 
+
 command.add(nil, {
   ["root:scroll"] = function(delta)
     local view = core.root_view.overlapping_view or core.active_view
     if view and view.scrollable then
-      view.scroll.to.y = view.scroll.to.y + delta * -config.mouse_wheel_scroll
+      view.scroll.to.y = view.scroll.to.y + delta * -1 * getConfigurationOptionMouseWheelScroll()
       return true
     end
     return false
@@ -125,7 +129,8 @@ command.add(nil, {
   ["root:horizontal-scroll"] = function(delta)
     local view = core.root_view.overlapping_view or core.active_view
     if view and view.scrollable then
-      view.scroll.to.x = view.scroll.to.x + delta * -config.mouse_wheel_scroll
+      local configurationOptionMouseWheelScroll = ConfigurationStore.get("mouse_wheel_scroll")
+      view.scroll.to.x = view.scroll.to.x + delta * -1 * getConfigurationOptionMouseWheelScroll()
       return true
     end
     return false

@@ -53,10 +53,10 @@ end
 
 -- initialize config options
 local userInterfaceOptions = {
-  ConfigurationOptionNumber("mouse_wheel_scroll", "Mouse wheel scroll rate", "The amount to scroll when using the mouse wheel.", 0.5, {
+  ConfigurationOptionNumber("mouse_wheel_scroll", "Mouse wheel scroll rate", "The amount to scroll when using the mouse wheel.", 5, {
     min_value = 0.1, 
-    max_value = 2.0, 
-    step = 0.05
+    max_value = 10.0, 
+    step = 0.1
   }),
 
 

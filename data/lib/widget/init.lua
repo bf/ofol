@@ -12,6 +12,9 @@ local View = require "core.view"
 
 local ScrollBar = require "lib.widget.scrollbar"
 
+local getConfigurationOptionMouseWheelScroll = ConfigurationStore.lazy_get_current_value("mouse_wheel_scroll")
+
+
 local RootView
 
 ---Represents the border of a widget.
@@ -1059,11 +1062,13 @@ function Widget:on_mouse_wheel(y, x)
       x = y
       y = 0
     end
+
+
     if y and y ~= 0 then
-      self.scroll.to.y = self.scroll.to.y + y * -config.mouse_wheel_scroll
+      self.scroll.to.y = self.scroll.to.y + y * -1 * getConfigurationOptionMouseWheelScroll()
     end
     if x and x ~= 0 then
-      self.scroll.to.x = self.scroll.to.x + x * -config.mouse_wheel_scroll
+      self.scroll.to.x = self.scroll.to.x + x * -1 * getConfigurationOptionMouseWheelScroll()
     end
     return true
   end

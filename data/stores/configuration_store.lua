@@ -60,14 +60,13 @@ function ConfigurationStore.get(configuration_key)
   return configuration_options_by_key[configuration_key]
 end
 
--- -- set new value for configuration option stored under specific key key
--- function ConfigurationStore.set_value_for_configuration_option(configuration_key, new_value_for_configuration_option) 
---   -- fetch configuration option object and fail if it does not exist
---   local configurationOption = ConfigurationStore.get(configuration_key)
+-- lazy getter function, returns function to retrieve config value
+function ConfigurationStore.lazy_get_current_value(configuration_key)
+  return function()
+    return ConfigurationStore.get(configuration_key):get_current_value()
+  end
+end
 
---   -- set new value for this configuration option
---   configurationOption.set(new_value_for_configuration_option)
--- end
 
 
 return ConfigurationStore

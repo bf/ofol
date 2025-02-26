@@ -2,11 +2,7 @@
 -- this handles persistence while the extensions of this class handle type-specific validation
 -- and ui component rendering
 
-local Widget = require("lib.widget")
-local Label = require("lib.widget.label")
-local Button = require("lib.widget.button")
-
-local style = require "themes.style"
+local style = require("themes.style")
 
 local ConfigurationOption = Object:extend()
 
@@ -106,6 +102,7 @@ end
 
 -- return value of this configuration option
 function ConfigurationOption:get_current_value()
+  stderr.debug("ConfigurationOption %s get_current_value %s", self._key, self._current_value)
   return self._current_value
 end
 
@@ -200,6 +197,7 @@ end
 -- render short description text
 function ConfigurationOption:_add_label_widget_to_container(container)
   -- add label with short description text
+  local Label = require("lib.widget.label")
   local my_label = Label(container, self._description_text_short .. ":")
 
   -- use bold font for this label
@@ -239,12 +237,14 @@ function ConfigurationOption:_add_description_widget_to_container(container)
   local description_label_text = self._description_text_long .. " (default: " .. default_value_text .. ")"
 
   -- create widget and return it
+  local Label = require("lib.widget.label")
   return Label(container, description_label_text)
 end
 
 -- render reset button for user-modified values
 function ConfigurationOption:_add_reset_button_widget_to_container(container)
   -- create reset button
+  local Button = require("lib.widget.button")
   local my_button = Button(container, "reset to default value")
 
   local outerSelf = self
@@ -275,6 +275,7 @@ function ConfigurationOption:add_widgets_to_container(container)
   local widget_button_reset_value = self:_add_reset_button_widget_to_container(container)
 
   -- empty space between options
+  local Label = require("lib.widget.label")
   local widget_line = Label(container, " ")
 
   return container

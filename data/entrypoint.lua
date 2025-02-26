@@ -5,7 +5,8 @@
 --
 --
 
-local CONSTANT_FRAMES_PER_SECOND = 60
+-- global fps variable
+CONSTANT_FRAMES_PER_SECOND = 60
 
 -- this file is used by lite-xl to setup the Lua environment when starting
 VERSION = "@PROJECT_VERSION@"
@@ -80,7 +81,6 @@ json = require("lib.json")
 -- global include for json config file
 json_config_file = require("lib.json_config_file")
 
-
 -- global modification of module loading behavior when require() is called
 require("lib.lua-monkeypatch.lua-monkeypatch-require-modules")
 
@@ -110,6 +110,7 @@ Validator = require("lib.validator")
 -- global include for user configuration
 PersistentUserConfiguration = require("persistence.persistent_user_configuration")
 ConfigurationStore = require("stores.configuration_store")
+
 
 -- Because AppImages change the working directory before running the executable,
 -- we need to change it back to the original one.
