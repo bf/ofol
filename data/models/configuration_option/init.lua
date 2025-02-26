@@ -4,7 +4,8 @@
 
 local Widget = require("lib.widget")
 local Label = require("lib.widget.label")
-local Line = require("lib.widget.line")
+local Button = require("lib.widget.button")
+
 local style = require "themes.style"
 
 local ConfigurationOption = Object:extend()
@@ -90,6 +91,78 @@ function ConfigurationOption:run_on_change_function_if_exists()
   end
 end
 
+-- return value of this configuration option
+function ConfigurationOption:get_current_value()
+  return self._current_value
+end
+
+-- return key of this configuration option
+function ConfigurationOption:get_key()
+  return self._key
+end
+
+-- set new value for this configuration option
+function ConfigurationOption:set(new_value)
+  stderr.debug("ConfigurationOption %s set to %s", self._key, new_value)
+
+  -- ensure new value is valid
+  self:validate(new_value)
+
+  -- store new value internally
+  self._current_value = new_value
+
+  -- check if new value is default value
+  if self:is_default_value() then
+    -- when it is default value, we need to remove it from the user settings
+    PersistentUserConfiguration.delete(self._key)
+  else
+    -- when it is modified by user, we need to persist it
+    PersistentUserConfiguration.set(self._key, self._current_value)
+  end
+
+  -- run on change function if it has been defined
+  self:run_on_change_function_if_exists()
+end
+
+-- reset value to default value
+function ConfigurationOption:reset_to_default_value() 
+  stderr.debug("ConfigurationOption %s reset to default value %s", self._key, self._default_value)
+  self:set(self._default_value)
+end
+
+-- return true if current value is default value
+function ConfigurationOption:is_default_value() 
+  -- if type(self._default_value) == "table" then
+  --   return json.encode(self._current_value) == json.encode(self._default_value)
+  -- else
+    return (self._current_value == self._default_value)
+  -- end
+end
+
+-- return true if current value has been modified by user
+function ConfigurationOption:is_customized_value()
+  return not self:is_default_value()
+end
+
+-- return true if value is valid
+function ConfigurationOption:is_valid(val)
+  stderr.error("must not be called directly - it should be implemented in child class")
+end
+
+-- throw error on invalid value
+function ConfigurationOption:validate(val)
+  -- use is_valid() to check if it can be used
+  if not self:is_valid(val) then
+    -- fatal error on invalid value
+    stderr.error("key %s: value %s is not valid", self._key, val)
+  end
+end
+
+
+
+
+
+
 -- render input form only
 function ConfigurationOption:add_value_modification_widget_to_container(container)
   stderr.error("must not be called directly - it should be implemented in child class")
@@ -102,6 +175,15 @@ function ConfigurationOption:_add_label_widget_to_container(container)
 
   -- use bold font for this label
   my_label.font = style.bold_font
+
+  -- set lable color
+  if self:is_default_value() then
+    -- default color for default value
+    my_label.foreground_color = style.dim
+  else
+    -- use different color if value has been modified
+    my_label.foreground_color = style.accent
+  end
 
   return my_label
 end
@@ -125,6 +207,20 @@ function ConfigurationOption:_add_description_widget_to_container(container)
   return Label(container, description_label_text)
 end
 
+-- render reset button for user-modified values
+function ConfigurationOption:_add_reset_button_widget_to_container(container)
+  -- create reset button
+  local my_button = Button(container, "reset to default value")
+
+  local outerSelf = self
+  function my_button:on_mouse_pressed(button, x, y, clicks) 
+    stderr.debug("my button on mouse pressed")
+    outerSelf:reset_to_default_value()
+  end
+
+  return my_button
+end
+
 -- render widget, this needs to be overwritten by implementation
 function ConfigurationOption:add_widgets_to_container(container)
   if not container then
@@ -137,6 +233,9 @@ function ConfigurationOption:add_widgets_to_container(container)
   -- render input ui element to change the configuration value
   local widget_modify_value = self:add_value_modification_widget_to_container(container)
 
+  -- render button to reset value
+  local widget_button_reset_value = self:_add_reset_button_widget_to_container(container)
+
   -- render description and default value after the input
   local widget_description = self:_add_description_widget_to_container(container)
 
@@ -146,59 +245,7 @@ function ConfigurationOption:add_widgets_to_container(container)
   return container
 end
 
--- return value of this configuration option
-function ConfigurationOption:get_current_value()
-  return self._current_value
-end
 
--- return key of this configuration option
-function ConfigurationOption:get_key()
-  return self._key
-end
 
--- set new value for this configuration option
-function ConfigurationOption:set(new_value)
-  -- ensure new value is valid
-  self:validate(new_value)
-
-  -- store new value internally
-  self._current_value = new_value
-
-  -- check if new value is default value
-  if self:is_default_value() then
-    -- when it is default value, we need to remove it from the user settings
-    PersistentUserConfiguration.delete(self._key)
-  else
-    -- when it is modified by user, we need to persist it
-    PersistentUserConfiguration.set(self._key, self._current_value)
-  end
-
-  -- run on change function if it has been defined
-  self:run_on_change_function_if_exists()
-end
-
--- return true if current value is default value
-function ConfigurationOption:is_default_value() 
-  return (self._current_value == self._default_value)
-end
-
--- return true if current value has been modified by user
-function ConfigurationOption:is_customized_value()
-  return not self:is_default_value()
-end
-
--- return true if value is valid
-function ConfigurationOption:is_valid(val)
-  stderr.error("must not be called directly - it should be implemented in child class")
-end
-
--- throw error on invalid value
-function ConfigurationOption:validate(val)
-  -- use is_valid() to check if it can be used
-  if not self:is_valid(val) then
-    -- fatal error on invalid value
-    stderr.error("key %s: value %s is not valid", self._key, val)
-  end
-end
 
 return ConfigurationOption
