@@ -315,7 +315,7 @@ end
 
 local function push_undo(undo_stack, time, type, ...)
   undo_stack[undo_stack.idx] = { type = type, time = time, ... }
-  undo_stack[undo_stack.idx - config.max_undos] = nil
+  undo_stack[undo_stack.idx - ConfigurationStore.get("max_undos"):get_current_value()] = nil
   undo_stack.idx = undo_stack.idx + 1
 end
 

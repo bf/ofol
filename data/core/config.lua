@@ -1,12 +1,7 @@
 
 local config = {}
 
-
----The maximum number of undo steps per-document.
----
----The default is 10000.
----@type number
-config.max_undos = 10000
+-- ConfigurationStore.get("max_undos"):get_current_value()
 
 ---The maximum number of entries shown at a time in the command palette.
 ---
