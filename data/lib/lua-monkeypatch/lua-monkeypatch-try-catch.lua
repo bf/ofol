@@ -4,7 +4,7 @@ function try_catch(fn, ...)
 
   local err
   local ok, res = xpcall(fn, function(msg)
-    local item = stderr.error("try_catch failed: %s", msg)
+    local item = stderr.warn("try_catch failed: %s", msg)
     item.info = debug.traceback("", 2):gsub("\t", "")
     err = msg
   end, ...)

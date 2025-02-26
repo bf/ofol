@@ -40,6 +40,11 @@ function validator.is_table(val)
   return type(val) == "table"
 end
 
+-- return true if val is boolean
+function validator.is_boolean(val)
+  return val == false or val == true
+end
+
 -- return true if val is a list of string-like
 function validator.is_list_of_strings(val) 
   -- must be table

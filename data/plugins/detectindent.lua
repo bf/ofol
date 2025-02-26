@@ -2,7 +2,7 @@
 local core = require "core"
 local command = require "core.command"
 local config = require "core.config"
-local "lib.syntax" = require "lib.syntax"
+local syntax = require "lib.syntax"
 local Doc = require "core.doc"
 
 local DocView = require "core.views.docview"
@@ -130,7 +130,7 @@ local function get_comment_patterns(syntax, _loop)
       end
     elseif pattern.syntax then
       local subsyntax = type(pattern.syntax) == 'table' and pattern.syntax
-        or "lib.syntax".get("file"..pattern.syntax, "")
+        or syntax.get("file"..pattern.syntax, "")
       local sub_comments = get_comment_patterns(subsyntax, _loop + 1)
       if sub_comments then
         for s=1, #sub_comments do

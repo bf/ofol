@@ -26,20 +26,19 @@ function SettingsTabComponent:add_to_notebook_widget(notebook_widget)
   -- update_positions() function will be called by settings class
   -- whenever a notebook pane is visible
   function container:update_positions()
-    stderr.debug("update_positions() called for configuration option")
-
-      -- container:set_size(
-      --   section.parent.size.x - (style.padding.x),
-      --   section:get_real_height()
-      -- )
-    -- section:set_position(style.padding.x / 2, 0)
+    -- remember previous child
     local prev_child = nil
+
+    -- iterate over all children
     for pos=#container.childs, 1, -1 do
       local child = container.childs[pos]
 
-      -- start with basic padding
+      -- start with basic padding at top
       local x = style.padding.x
       local y = style.padding.y
+
+      -- when previous child exists, position current child
+      -- underneath previous child
       if prev_child then
         y = prev_child:get_bottom() + style.padding.y
       end

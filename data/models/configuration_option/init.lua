@@ -27,9 +27,12 @@ function ConfigurationOption:new(key, description_text_short, description_text_l
   end
 
   -- ensure default value is provided
-  if not default_value then
+  if default_value == nil then
     stderr.error("default value is required")
   end
+  
+  -- ensure that default value is valid
+  self:validate(default_value)
 
   -- on_change_function() is optional
   -- it will be called when value has changed
@@ -42,9 +45,6 @@ function ConfigurationOption:new(key, description_text_short, description_text_l
     -- store function
     self._optional_on_change_function = options.on_change
   end
-
-  -- ensure that default value is valid
-  self:validate(default_value)
 
   -- initialize member variables
   self._key = key

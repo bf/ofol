@@ -3,32 +3,31 @@ local config = require "core.config"
 local command = require "core.command"
 local keymap = require "core.keymap"
 local style = require "themes.style"
--- local UserSettingsStore = require "stores.user_settings_store"
--- local SettingsStore = require "stores.settings_store"
 
-local View = require "core.view"
-local DocView = require "core.views.docview"
+local View = require("core.view")
+local DocView = require("core.views.docview")
 
-local Widget = require "lib.widget"
+local Widget = require("lib.widget")
+local Label = require("lib.widget.label")
+local Line = require("lib.widget.line")
+local NoteBook = require("lib.widget.notebook")
+local Button = require("lib.widget.button")
+local TextBox = require("lib.widget.textbox")
+local SelectBox = require("lib.widget.selectbox")
+local NumberBox = require("lib.widget.numberbox")
+local Toggle = require("lib.widget.toggle")
+local ListBox = require("lib.widget.listbox")
+local FoldingBook = require("lib.widget.foldingbook")
+local ItemsList = require("lib.widget.itemslist")
+local Fonts = require("lib.widget.fonts")
+local FilePicker = require("lib.widget.filepicker")
+local ColorPicker = require("lib.widget.colorpicker")
+local MessageBox = require("lib.widget.messagebox")
 
-local Label = require "lib.widget.label"
-local Line = require "lib.widget.line"
-local NoteBook = require "lib.widget.notebook"
-local Button = require "lib.widget.button"
-local TextBox = require "lib.widget.textbox"
-local SelectBox = require "lib.widget.selectbox"
-local NumberBox = require "lib.widget.numberbox"
-local Toggle = require "lib.widget.toggle"
-local ListBox = require "lib.widget.listbox"
-local FoldingBook = require "lib.widget.foldingbook"
-local ItemsList = require "lib.widget.itemslist"
-local Fonts = require "lib.widget.fonts"
-local FilePicker = require "lib.widget.filepicker"
-local ColorPicker = require "lib.widget.colorpicker"
-local MessageBox = require "lib.widget.messagebox"
 
 local settings_core = require("core.settings.settings_core")
 local settings_general = require("core.settings.settings_general")
+local settings_user_interface = require("core.settings.settings_user_interface")
 local settings_about = require("core.settings.settings_about")
 local settings_plugins = require("core.settings.settings_plugins")
 local settings_colors = require("core.settings.settings_colors")
@@ -801,6 +800,8 @@ function Settings:new()
   -- load general settings page
   self.general = settings_general:add_to_notebook_widget(self.notebook)
 
+  settings_user_interface:add_to_notebook_widget(self.notebook)
+
   self.core = self.notebook:add_pane("core", "Core")
   -- self.colors = self.notebook:add_pane("colors", "Themes")
   self.plugins = self.notebook:add_pane("plugins", "Plugins")
@@ -826,7 +827,6 @@ function Settings:new()
 
   -- load plugin page
   self.plugins = settings_plugins(self.plugins)
-
 end
 
 
@@ -834,7 +834,7 @@ end
 function Settings:update()
   if not Settings.super.update(self) then return end
 
-  stderr.debug("Setings:update() called")
+  -- stderr.debug("Setings:update() called")
   self.notebook:set_size(self.size.x, self.size.y)
 
   -- -- update new settings uis
@@ -924,7 +924,7 @@ function Settings:update()
     and self.notebook.active_pane.container ~= nil 
     and self.notebook.active_pane.container.update_positions ~= nil 
   then
-    stderr.debug("calling update_positions() on notebook.active_pane")  
+    -- stderr.debug("calling update_positions() on notebook.active_pane")  
     self.notebook.active_pane.container:update_positions()
   end
 end

@@ -28,6 +28,18 @@ local NumberBox = Widget:extend()
 function NumberBox:new(parent, value, min, max, step)
   NumberBox.super.new(self, parent)
 
+  if min >= max then
+    stderr.error("Numberbox min %s must not be larger than max %s", min, max)
+  end
+
+  if value > max then
+    stderr.error("Numberbox value %s must not be larger than max %s", value, max)
+  end
+
+  if value < min then
+    stderr.error("Numberbox value %s must not be smaller than min %s", value, min)
+  end
+
   self.type_name = "widget.numberbox"
 
   self:set_range(min, max)
@@ -142,19 +154,34 @@ end
 
 ---Decrease the current value.
 function NumberBox:decrease()
+  stderr.debug("decreasing value")
   self.textbox.placeholder_active = false
+  stderr.debug("self.textbox:get_text()", self.textbox:get_text())
   local value = tonumber(self.textbox:get_text()) or self.maximum
-  if (value - self.step) >= self.minimum then
-    self:set_value(value - self.step)
+  stderr.debug("value", value)
+  stderr.debug("self.step", self.step)
+  stderr.debug("self.maximum", self.minimum)
+  local new_value = (value - self.step)
+  stderr.debug("new_value", new_value)
+  if new_value >= self.minimum then
+    self:set_value(new_value)
   end
 end
 
 ---Increase the current value.
 function NumberBox:increase()
+  stderr.debug("increasing value")
   self.textbox.placeholder_active = false
+  stderr.debug("self.textbox:get_text()", self.textbox:get_text())
   local value = tonumber(self.textbox:get_text()) or self.minimum
-  if (value + self.step) <= self.maximum then
-    self:set_value(value + self.step)
+  stderr.debug("value", value)
+
+  stderr.debug("self.step", self.step)
+  stderr.debug("self.maximum", self.maximum)
+  local new_value = (value + self.step)
+  stderr.debug("new_value", new_value)
+  if new_value <= self.maximum then
+    self:set_value(new_value)
   end
 end
 

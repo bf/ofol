@@ -39,6 +39,21 @@ function ConfigurationOptionNumber:new(key, description_text_short, description_
     self._max_value = math.huge
   end
 
+  -- ensure minimum value smaller than maximum value
+  if self._min_value >= self._max_value then
+    stderr.error("min_value %s must not be larger than max_value %s", self._min_value, self._max_value)
+  end
+
+  -- ensure default value is larger than min value
+  if default_value < self._min_value then
+    stderr.error("default value %s must not be smaller than min_value %s", default_value, self._min_value)
+  end
+
+  -- ensure default value is smaller than max value
+  if default_value > self._max_value then
+    stderr.error("default value %s must not be larger than max_value %s", default_value, self._max_value)
+  end
+
   -- initialize with parent class
   self.super.new(self, key, description_text_short, description_text_long, default_value, options)
 end
@@ -51,7 +66,7 @@ end
 -- create UI element
 function ConfigurationOptionNumber:add_value_modification_widget_to_container(container)
   -- add number input box
-  local widget = NumberBox(container, self:get_current_value(), self._min_value, self._min_value, self._step)
+  local widget = NumberBox(container, self:get_current_value(), self._min_value, self._max_value, self._step)
 
   -- handle new value
   function widget.on_change(this, value)
