@@ -39,7 +39,7 @@ function ConfigurationOptionNumber:new(key, description_text_short, description_
     self._max_value = math.huge
   end
 
-  -- initialize with base class
+  -- initialize with parent class
   self.super.new(self, key, description_text_short, description_text_long, default_value, options)
 end
 
@@ -49,9 +49,9 @@ function ConfigurationOptionNumber:is_valid(val)
 end
 
 -- create UI element
-function ConfigurationOptionNumber:render_only_modification_ui_in_widget_pane(pane)
+function ConfigurationOptionNumber:add_value_modification_widget_to_container(container)
   -- add number input box
-  local widget = NumberBox(pane, self:get_current_value(), self._min_value, self._min_value, self._step)
+  local widget = NumberBox(container, self:get_current_value(), self._min_value, self._min_value, self._step)
 
   -- handle new value
   function widget.on_change(this, value)

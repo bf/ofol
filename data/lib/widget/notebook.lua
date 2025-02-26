@@ -11,13 +11,6 @@ local Button = require "lib.widget.button"
 local HSPACING = 2
 local VSPACING = 2
 
----Represents a notebook pane
----@class widget.notebook.pane
----@field public name string
----@field public tab widget.button
----@field public container widget
-local NoteBookPane = {}
-
 ---@class widget.notebook : widget
 ---@overload fun(parent?:widget):widget.notebook
 ---@field public panes widget.notebook.pane[]

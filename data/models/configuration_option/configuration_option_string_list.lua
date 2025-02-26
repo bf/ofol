@@ -15,8 +15,8 @@ function ConfigurationOptionStringList:is_valid(val)
 end
 
 -- create UI element
-function ConfigurationOptionStringList:render_only_modification_ui_in_widget_pane(pane)
-  local widget = ItemsList(pane)
+function ConfigurationOptionStringList:add_value_modification_widget_to_container(container)
+  local widget = ItemsList(container)
   for _, item in ipairs(self:get_current_value()) do
     widget:add_item(item)
   end

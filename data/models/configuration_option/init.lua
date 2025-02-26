@@ -2,8 +2,10 @@
 -- this handles persistence while the extensions of this class handle type-specific validation
 -- and ui component rendering
 
+local Widget = require("lib.widget")
 local Label = require("lib.widget.label")
 local FoldingBook = require("lib.widget.foldingbook")
+local style = require "themes.style"
 
 local ConfigurationOption = Object:extend()
 
@@ -89,51 +91,124 @@ function ConfigurationOption:run_on_change_function_if_exists()
 end
 
 -- render input form only
-function ConfigurationOption:render_only_modification_ui_in_widget_pane(pane)
+function ConfigurationOption:add_value_modification_widget_to_container(container)
   stderr.error("must not be called directly - it should be implemented in child class")
 end
 
 -- render short description text
-function ConfigurationOption:render_only_label_in_widget_pane(pane)
+function ConfigurationOption:_add_label_widget_to_container(container)
   -- add label with short description text
-  return Label(pane, self._description_text_short .. ":")
+  return Label(container, self._description_text_short .. ":")
 end
 
 -- render long description text
-function ConfigurationOption:render_only_description_in_widget_pane(pane)
+function ConfigurationOption:_add_description_widget_to_container(container)
   -- add description label
-  local description = Label(pane, self._description_text_long .. " " .. string.format("(default: %s)", self._default_value))
+  local description = Label(container, self._description_text_long .. " " .. string.format("(default: %s)", self._default_value))
   description.desc = true
   return description
 end
 
 -- render widget, this needs to be overwritten by implementation
-function ConfigurationOption:render_in_widget_pane(container)
+function ConfigurationOption:add_widgets_to_container(container)
   if not container then
     stderr.error("no widget provided")
   end
 
-  -- -- -- add_pane(section, section)
-  -- -- local section = FoldingBook(container)
-  -- -- section.border.width = 0
-  -- -- section.scrollable = false
-
-  local VERTICAL_SPACE = 10
-
-  -- local pane = container:add_child()
-  local initial_y = container:get_real_height() + VERTICAL_SPACE
-
   -- render label on top of input
-  local widget_label = self:render_only_label_in_widget_pane(container)
-  widget_label:set_position(10, initial_y)
+  local widget_label = self:_add_label_widget_to_container(container)
+  -- widget_label:set_size(widget_label:get_real_width(), widget_label:get_real_height())
+  -- widget_label:set_position(style.padding.x, y_start_coordinate + style.padding.y)
 
   -- render input ui element to change the configuration value
-  local widget_modify = self:render_only_modification_ui_in_widget_pane(container)
-  widget_modify:set_position(10, initial_y + widget_label:get_real_height() + VERTICAL_SPACE)
+  local widget_modify_value = self:add_value_modification_widget_to_container(container)
+  -- widget_modify:set_size(widget_modify:get_real_width(), widget_modify:get_real_height())
+  -- widget_modify:set_position(style.padding.x, y_start_coordinate + widget_label:get_real_height() + 2*style.padding.y)
 
   -- render description and default value after the input
-  local widget_description = self:render_only_description_in_widget_pane(container)
-  widget_description:set_position(10, initial_y + widget_label:get_real_height() + VERTICAL_SPACE + widget_modify:get_real_height() + VERTICAL_SPACE)
+  local widget_description = self:_add_description_widget_to_container(container)
+    -- widget_description:set_size(widget_description:get_real_width(), widget_description:get_real_height())
+    -- widget_description:set_position(style.padding.x, widget_modify:get_bottom() + style.padding.y)
+  -- widget_description:set_position(style.padding.x, y_start_coordinate + widget_label:get_real_height() + widget_description:get_real_height() + 3*style.padding.y)
+
+  -- function container:is_visible()
+  --   stderr.debug("is_visible() called")
+  -- end
+
+  -- update_positions() function will be called by settings class
+  -- whenever a notebook pane is visible
+  function container:update_positions()
+    stderr.debug("update_positions() called for configuration option")
+    -- local center = self:get_width() / 2
+
+    -- label on top
+    widget_label:set_position(style.padding.x, style.padding.y)
+    widget_label:set_size(container:get_width() - 2*style.padding.x, widget_label.size.y)
+
+    -- value modification widget underneath label
+    widget_modify_value:set_position(style.padding.x, widget_label:get_bottom() + style.padding.y)
+    widget_modify_value:set_size(container:get_width() - 2*style.padding.x, widget_modify_value.size.y)
+
+    -- description label at the bottom
+    widget_description:set_position(style.padding.x, widget_modify_value:get_bottom() + style.padding.y)
+    widget_description:set_size(container:get_width() - 2*style.padding.x, widget_description.size.y)
+
+    -- title:set_label("Lite XL")
+    -- title:set_position(
+    --   center - (title:get_width() / 2),
+    --   style.padding.y
+    -- )
+
+    -- version:set_position(
+    --   center - (version:get_width() / 2),
+    --   title:get_bottom() + (style.padding.y / 2)
+    -- )
+
+    -- description:set_position(
+    --   center - (description:get_width() / 2),
+    --   version:get_bottom() + (style.padding.y / 2)
+    -- )
+
+    -- button:set_position(
+    --   center - (button:get_width() / 2),
+    --   description:get_bottom() + style.padding.y
+    -- )
+
+    -- contributors:set_position(
+    --   style.padding.x,
+    --   button:get_bottom() + style.padding.y
+    -- )
+
+    -- contributors:set_size(
+    --   self:get_width() - (style.padding.x * 2),
+    --   self:get_height() - (button:get_bottom() + (style.padding.y * 2))
+    -- )
+
+    -- contributors:set_visible_rows()
+  end
+
+  -- function section:update()   
+  --   stderr.warn("UPDATE UPDATE ")
+  --   widget_label:set_position(style.padding.x, style.padding.y)
+  --   widget_label:set_size(widget_label:get_real_width(), widget_label:get_real_height())
+    
+  --   widget_modify:set_position(style.padding.x, widget_label:get_bottom() + style.padding.y)
+  --   widget_modify:set_size(widget_modify:get_real_width(), widget_modify:get_real_height())
+
+  --   widget_description:set_position(style.padding.x, widget_modify:get_bottom() + style.padding.y)
+  --   widget_description:set_size(widget_description:get_real_width(), widget_description:get_real_height())
+
+  -- section:set_size(section:get_real_width(),section:get_real_height())
+  -- end
+
+  -- section:set_size(section:get_real_width(),section:get_real_height())
+
+  -- section:update()
+
+  -- local height = widget_description:get_real_height() + widget_label:get_real_height() + widget_modify:get_real_height() + 4 * style.padding.y
+
+  return container
+  -- return section
 end
 
 -- return value of this configuration option

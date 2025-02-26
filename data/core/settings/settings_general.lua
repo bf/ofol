@@ -26,18 +26,19 @@ local generalOptions = {
     min_value = 1, 
     max_value = 10, 
     step = 1
-  })
+  }),
 }
 
 -- generate ui and add to pane
-function setup_general_settings(pane) 
+function setup_general_settings(container) 
   -- iterate over all options
-  for _, myConfigurationOption in pairs(generalOptions) do
+  for index, myConfigurationOption in pairs(generalOptions) do
     -- add to widget
-    myConfigurationOption:render_in_widget_pane(pane)
+    myConfigurationOption:add_widgets_to_container(container)
   end
 
-  return pane
+
+  return container
 end
 
 

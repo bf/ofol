@@ -834,70 +834,99 @@ end
 function Settings:update()
   if not Settings.super.update(self) then return end
 
+  stderr.debug("Setings:update() called")
   self.notebook:set_size(self.size.x, self.size.y)
 
-  for _, section in ipairs({self.core_sections, self.plugin_sections}) do
-    if section.parent:is_visible() then
-      section:set_size(
-        section.parent.size.x - (style.padding.x),
-        section:get_real_height()
-      )
-      section:set_position(style.padding.x / 2, 0)
-      for _, pane in ipairs(section.panes) do
-        local prev_child = nil
-        for pos=#pane.container.childs, 1, -1 do
-          local child = pane.container.childs[pos]
-          local x, y = 10, (10 * SCALE)
-          if prev_child then
-            if
-              (prev_child:is(Label) and not prev_child.desc)
-              or
-              (child:is(Label) and child.desc)
-            then
-              y = prev_child:get_bottom() + (10 * SCALE)
-            else
-              y = prev_child:get_bottom() + (30 * SCALE)
-            end
-          end
-          if child:is(Line) then
-            x = 0
-          elseif child:is(ItemsList) or child:is(FilePicker) or child:is(TextBox) then
-            child:set_size(pane.container:get_width() - 20, child.size.y)
-          end
-          child:set_position(x, y)
-          prev_child = child
-        end
-      end
-    end
-  end
+  -- -- update new settings uis
+  -- for _, section in ipairs({self.general}) do
+  --   if section.is_visible() then
+  --     section:set_size(
+  --       section.parent.size.x - (style.padding.x),
+  --       section:get_real_height()
+  --     )
+  --     section:set_position(style.padding.x / 2, 0)
+  --   end
+  -- end
 
 
-
-  if self.keybinds:is_visible() then
-    self.keybinds:update_positions()
-  end
-
-  if self.about:is_visible() then
-    self.about:update_positions()
-  end
-
-  -- -- update table positions if needed
-  -- if self.notebook ~= nil then
-  --   -- check if notebook has any panes
-  --   if #self.notebook.panes > 0 then
-  --     -- loop over all panes in the notebook
-  --     for pos, pane in pairs(self.notebook.panes) do
-  --       -- check if pane is visible
-  --       if pane.is_visible ~= nil and pane:is_visible() then
-  --         -- check if custom update_positions() exists
-  --         if pane.update_positions ~= nil then
-  --           -- call function to update table size / positions
-  --           pane:update_positions()
+  -- -- update plugins / core
+  -- for _, section in ipairs({self.core_sections, self.plugin_sections}) do
+  --   if section.parent:is_visible() then
+  --     section:set_size(
+  --       section.parent.size.x - (style.padding.x),
+  --       section:get_real_height()
+  --     )
+  --     section:set_position(style.padding.x / 2, 0)
+  --     for _, pane in ipairs(section.panes) do
+  --       local prev_child = nil
+  --       for pos=#pane.container.childs, 1, -1 do
+  --         local child = pane.container.childs[pos]
+  --         local x, y = 10, (10 * SCALE)
+  --         if prev_child then
+  --           if
+  --             (prev_child:is(Label) and not prev_child.desc)
+  --             or
+  --             (child:is(Label) and child.desc)
+  --           then
+  --             y = prev_child:get_bottom() + (10 * SCALE)
+  --           else
+  --             y = prev_child:get_bottom() + (30 * SCALE)
+  --           end
   --         end
+  --         if child:is(Line) then
+  --           x = 0
+  --         elseif child:is(ItemsList) or child:is(FilePicker) or child:is(TextBox) then
+  --           child:set_size(pane.container:get_width() - 20, child.size.y)
+  --         end
+  --         child:set_position(x, y)
+  --         prev_child = child
   --       end
   --     end
   --   end
   -- end
+
+
+  -- if self.keybinds:is_visible() then
+  --   self.keybinds:update_positions()
+  -- end
+
+  -- if self.about:is_visible() then
+  --   self.about:update_positions()
+  -- end
+
+  -- update table positions if needed
+  -- update notebook panes
+  -- if self.notebook ~= nil then
+  --   -- check if notebook has any panes
+  --   if #self.notebook.panes > 0 then
+      -- loop over all panes in the notebook
+      -- for pos, pane in pairs(self.notebook.panes) do
+      --   stderr.debug("checking .is_visible() on pane at pos", pos)
+      --   -- check if pane is visible
+      --   if pane.visible or (pane.is_visible ~= nil and pane:is_visible()) then
+      --     stderr.debug("trying to call .update_positions() on pane at pos", pos)
+      --     -- check if custom update_positions() exists
+      --     if pane.update_positions ~= nil then
+      --       -- call function to update table size / positions
+      --       pane:update_positions()
+      --     end
+      --   end
+
+      --   -- check 
+      -- end
+  --   end
+  -- end
+
+
+  -- update notebook pane sub-widgets
+  if self.notebook ~= nil
+    and self.notebook.active_pane ~= nil 
+    and self.notebook.active_pane.container ~= nil 
+    and self.notebook.active_pane.container.update_positions ~= nil 
+  then
+    stderr.debug("calling update_positions() on notebook.active_pane")  
+    self.notebook.active_pane.container:update_positions()
+  end
 end
 
 
@@ -929,12 +958,12 @@ function core.run()
   ---@type settings.ui
   settings.ui = Settings()
 
-  -- apply user chosen color theme
-  if settings.config.theme and settings.config.theme ~= "default" then
-    try_catch(function()
-      reload_module("themes.colors." .. settings.config.theme)
-    end)
-  end
+  -- -- apply user chosen color theme
+  -- if settings.config.theme and settings.config.theme ~= "default" then
+  --   try_catch(function()
+  --     reload_module("themes.colors." .. settings.config.theme)
+  --   end)
+  -- end
 
   core_run()
 end
