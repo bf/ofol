@@ -98,10 +98,6 @@ setmetatable(PROJECTS, {
             BRANCHES[k] = branch
             backend:get_stats(k, function(stats) STATS[k] = stats end)
           end)
-          if backend.name == "Fossil" then
-            table.insert(config.ignore_files, "%-shm$")
-            table.insert(config.ignore_files, "%-wal$")
-          end
           rawset(t, k, v)
         end
       end

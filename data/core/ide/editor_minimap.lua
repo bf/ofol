@@ -8,6 +8,9 @@ local Scrollbar = require "components.scrollbar_component"
 
 local DocView = require "core.views.docview"
 
+-- fixme: mininmap does not work with line wrapping
+
+
 -- Sample configurations:
 -- full width:
 -- config.plugins.bf_minimap.highlight_width = 100

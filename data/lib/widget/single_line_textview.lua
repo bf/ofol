@@ -67,8 +67,6 @@ function SingleLineDocView:new(doc)
   self.ime_selection = { from = 0, size = 0 }
   self.ime_status = false
   self.hovering_gutter = false
-  self.v_scrollbar:set_forced_status(config.force_scrollbar_status)
-  self.h_scrollbar:set_forced_status(config.force_scrollbar_status)
 end
 
 
@@ -109,7 +107,7 @@ end
 
 
 function SingleLineDocView:get_scrollable_size()
-  if not config.scroll_past_end then
+  if not ConfigurationStore.get("scroll_past_end"):get_current_value() then
     local _, _, _, h_scroll = self.h_scrollbar:get_track_rect()
     return self:get_line_height() * (#self.doc.lines) + style.padding.y * 2 + h_scroll
   end

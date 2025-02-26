@@ -351,7 +351,7 @@ local function find_files_recursively(root, path)
       info.filename = fsutils.strip_leading_path(file)
       if info.type == "file" then
         coroutine.yield(root, info)
-      elseif not string.match_pattern(fsutils.basename(info.filename), config.ignore_files) then
+      elseif not string.match_pattern(fsutils.basename(info.filename), ConfigurationStore.get("ignore_files"):get_current_value()) then
         find_files_recursively(root, PATHSEP .. info.filename)
       end
     end

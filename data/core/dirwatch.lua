@@ -128,7 +128,7 @@ end
 
 -- inspect config.ignore_files patterns and prepare ready to use entries.
 local function compile_ignore_files()
-  local ipatterns = config.ignore_files
+  local ipatterns = ConfigurationStore.get("ignore_files"):get_current_value()
   local compiled = {}
   -- config.ignore_files could be a simple string...
   if type(ipatterns) ~= "table" then ipatterns = {ipatterns} end
@@ -147,8 +147,10 @@ local function compile_ignore_files()
 end
 
 
+local file_size_limit = math.huge
+
 local function fileinfo_pass_filter(info, ignore_compiled)
-  if info.size >= config.file_size_limit * 1e6 then return false end
+  if info.size >= file_size_limit * 1e6 then return false end
   local basename = fsutils.basename(info.filename)
   -- replace '\' with '/' for Windows where PATHSEP = '\'
   local fullname = "/" .. info.filename:gsub("\\", "/")
