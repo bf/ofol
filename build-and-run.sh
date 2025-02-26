@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# check lua scripts first
 luacheck data/ && ./scripts/build.sh --bundle --debug-build -b tmp && ./tmp/ofol/bin/ofol ~/src/2024-better-forensics/
 
 # meson setup --buildtype=release --prefix <prefix> build
