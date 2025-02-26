@@ -20,6 +20,8 @@ local translate  = require "lib.widget.single_line_document_translate"
 
 
 
+local getConfigurationOptionIndentSize = ConfigurationStore.lazy_get_current_value("indent_size")
+local getConfigurationOptionTabType = ConfigurationStore.lazy_get_current_value("tab_type")
 
 local SingleLineDoc = Object:extend()
 
@@ -76,10 +78,13 @@ end
 
 -- get tab/spaces indentation info
 function SingleLineDoc:get_indent_info()
-  if not self.indent_info then return config.tab_type, config.indent_size, false end
-  return self.indent_info.type or config.tab_type,
-      self.indent_info.size or config.indent_size,
-      self.indent_info.confirmed
+  if not self.indent_info then 
+    return getConfigurationOptionTabType(), getConfigurationOptionIndentSize(), false 
+  else
+    return self.indent_info.type or getConfigurationOptionTabType(),
+        self.indent_info.size or getConfigurationOptionIndentSize(),
+        self.indent_info.confirmed
+  end
 end
 
 -- undo/redo: get last change id from the undo stack

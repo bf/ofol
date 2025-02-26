@@ -123,9 +123,9 @@ function SingleLineDocView:get_font()
   return style[self.font]
 end
 
-
+local CONSTANT_LINE_HEIGHT = 1.2
 function SingleLineDocView:get_line_height()
-  return math.floor(self:get_font():get_height() * config.line_height)
+  return math.floor(self:get_font():get_height() * CONSTANT_LINE_HEIGHT)
 end
 
 
@@ -482,7 +482,7 @@ end
 function SingleLineDocView:draw_line_body(line, x, y)
   -- draw highlight if any selection ends on this line
   local draw_highlight = false
-  local hcl = config.highlight_current_line
+  local hcl = ConfigurationStore.get("highlight_current_line"):get_current_value()
   if hcl ~= false then
     for lidx, line1, col1, line2, col2 in self.doc:get_selections(false) do
       if line1 == line then

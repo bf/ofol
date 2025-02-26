@@ -1,11 +1,13 @@
 -- mod-version:3
 local core = require "core"
 local command = require "core.command"
-local config = require "core.config"
 local syntax = require "lib.syntax"
 local Doc = require "core.doc"
 
 local DocView = require "core.views.docview"
+
+local getConfigurationOptionIndentSize = ConfigurationStore.lazy_get_current_value("indent_size")
+local getConfigurationOptionTabType = ConfigurationStore.lazy_get_current_value("tab_type")
 
 local cache = setmetatable({}, { __mode = "k" })
 local comments_cache = {}
@@ -258,7 +260,6 @@ local function get_non_empty_lines(syntax, lines)
   end)
 end
 
-
 local function detect_indent_stat(doc)
   local stat = {}
   local tab_count = 0
@@ -278,9 +279,9 @@ local function detect_indent_stat(doc)
   end
   local indent, score = optimal_indent_from_stat(stat)
   if tab_count > score then
-    return "hard", config.indent_size, tab_count
+    return "hard", getConfigurationOptionIndentSize(), tab_count
   else
-    return "soft", indent or config.indent_size, score or 0
+    return "soft", indent or getConfigurationOptionIndentSize(), score or 0
   end
 end
 
@@ -290,8 +291,8 @@ local function update_cache(doc)
   local score_threshold = 2
   if score < score_threshold then
     -- use default values
-    type = config.tab_type
-    size = config.indent_size
+    type = getConfigurationOptionTabType()
+    size = getConfigurationOptionIndentSize()
   end
   cache[doc] = { type = type, size = size, confirmed = (score >= score_threshold) }
   doc.indent_info = cache[doc]

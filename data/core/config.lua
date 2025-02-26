@@ -1,35 +1,6 @@
 
 local config = {}
 
----@alias config.highlightlinetype
----| true # Always highlight the current line.
----| false # Never highlight the current line.
----| "no_selection" # Highlight the current line if no text is selected.
-
----Highlights the current line.
----
----The default is true.
----@type config.highlightlinetype
-config.highlight_current_line = true
-
----The spacing between each line of text.
----
----The default is 120% of the height of the text (1.2).
----@type number
-config.line_height = 1.2
-
----The number of spaces each level of indentation represents.
----
----The default is 2.
----@type number
-config.indent_size = 2
-
----The type of indentation.
----
----The default is "soft" (spaces).
----@type "soft" | "hard"
-config.tab_type = "soft"
-
 ---Do not remove whitespaces when advancing to the next line.
 ---
 ---Defaults to false.
