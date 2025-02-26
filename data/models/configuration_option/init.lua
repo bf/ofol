@@ -4,7 +4,7 @@
 
 local Widget = require("lib.widget")
 local Label = require("lib.widget.label")
-local FoldingBook = require("lib.widget.foldingbook")
+local Line = require("lib.widget.line")
 local style = require "themes.style"
 
 local ConfigurationOption = Object:extend()
@@ -98,7 +98,10 @@ end
 -- render short description text
 function ConfigurationOption:_add_label_widget_to_container(container)
   -- add label with short description text
-  return Label(container, self._description_text_short .. ":")
+  local my_label = Label(container, self._description_text_short .. ":")
+  my_label.font = style.bold_font
+
+  return my_label
 end
 
 -- render long description text
@@ -135,23 +138,56 @@ function ConfigurationOption:add_widgets_to_container(container)
   --   stderr.debug("is_visible() called")
   -- end
 
+  -- line between options
+  local widget_line = Label(container, " ")
+
   -- update_positions() function will be called by settings class
   -- whenever a notebook pane is visible
   function container:update_positions()
     stderr.debug("update_positions() called for configuration option")
-    -- local center = self:get_width() / 2
 
-    -- label on top
-    widget_label:set_position(style.padding.x, style.padding.y)
-    widget_label:set_size(container:get_width() - 2*style.padding.x, widget_label.size.y)
+      -- container:set_size(
+      --   section.parent.size.x - (style.padding.x),
+      --   section:get_real_height()
+      -- )
+    -- section:set_position(style.padding.x / 2, 0)
+    local prev_child = nil
+    for pos=#container.childs, 1, -1 do
+      local child = container.childs[pos]
 
-    -- value modification widget underneath label
-    widget_modify_value:set_position(style.padding.x, widget_label:get_bottom() + style.padding.y)
-    widget_modify_value:set_size(container:get_width() - 2*style.padding.x, widget_modify_value.size.y)
+      -- start with basic padding
+      local x = style.padding.x
+      local y = style.padding.y
+      if prev_child then
+        y = prev_child:get_bottom() + style.padding.y
+      end
 
-    -- description label at the bottom
-    widget_description:set_position(style.padding.x, widget_modify_value:get_bottom() + style.padding.y)
-    widget_description:set_size(container:get_width() - 2*style.padding.x, widget_description.size.y)
+      -- set with to full available container width
+      child:set_size(container:get_width() - 2*style.padding.x, child.size.y)
+
+      -- set position
+      child:set_position(x, y)
+
+      -- remember previous child
+      prev_child = child
+    end
+
+    -- -- local center = self:get_width() / 2
+
+    -- -- label on top
+    -- widget_label:set_position(style.padding.x, style.padding.y)
+    -- widget_label:set_size(container:get_width() - 2*style.padding.x, widget_label.size.y)
+
+    -- -- value modification widget underneath label
+    -- widget_modify_value:set_position(style.padding.x, widget_label:get_bottom() + style.padding.y)
+    -- widget_modify_value:set_size(container:get_width() - 2*style.padding.x, widget_modify_value.size.y)
+
+    -- -- description label at the bottom
+    -- widget_description:set_position(style.padding.x, widget_modify_value:get_bottom() + style.padding.y)
+    -- widget_description:set_size(container:get_width() - 2*style.padding.x, widget_description.size.y)
+
+
+
 
     -- title:set_label("Lite XL")
     -- title:set_position(
