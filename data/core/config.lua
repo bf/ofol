@@ -1,12 +1,6 @@
 
 local config = {}
 
----The caret's blinking period, in seconds.
----
----Defaults to 0.8.
----@type number
-config.blink_period = 0.8
-
 ---Disables caret blinking.
 ---
 ---Defaults to false.

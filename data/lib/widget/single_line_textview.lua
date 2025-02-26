@@ -422,8 +422,10 @@ function SingleLineDocView:update()
 
   -- update blink timer
   if self == core.active_view and not self.mouse_selecting and not core.window_is_being_resized then
-    local T, t0 = config.blink_period, core.blink_start
-    local ta, tb = core.blink_timer, system.get_time()
+    local T = ConfigurationStore.get("blink_period"):get_current_value()
+    local t0 = core.blink_start
+    local ta = core.blink_timer
+    local tb = system.get_time()
     if ((tb - t0) % T < T / 2) ~= ((ta - t0) % T < T / 2) then
       core.redraw = true
     end
@@ -564,7 +566,7 @@ function SingleLineDocView:draw_overlay()
   if core.active_view == self then
     local minline, maxline = self:get_visible_line_range()
     -- draw caret if it overlaps this line
-    local T = config.blink_period
+    local T = ConfigurationStore.get("blink_period"):get_current_value()
     for _, line1, col1, line2, col2 in self.doc:get_selections() do
       if line1 >= minline and line1 <= maxline
       and system.window_has_focus(core.window) then

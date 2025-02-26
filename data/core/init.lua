@@ -1083,6 +1083,7 @@ function core.run()
   local next_step
   local last_frame_time
   local run_threads_full = 0
+  local HALF_BLINK_PERIOD = ConfigurationStore.get("blink_period"):get_current_value() / 2
   while true do
     core.frame_start = system.get_time()
     local time_to_wake, threads_done = run_threads()
@@ -1112,8 +1113,8 @@ function core.run()
         local now = system.get_time()
         if not next_step then -- compute the time until the next blink
           local t = now - core.blink_start
-          local h = config.blink_period / 2
-          local dt = math.ceil(t / h) * h - t
+          
+          local dt = math.ceil(t / HALF_BLINK_PERIOD) * HALF_BLINK_PERIOD - t
           local cursor_time_to_wake = dt + 1 / CONSTANT_FRAMES_PER_SECOND
           next_step = now + cursor_time_to_wake
         end
