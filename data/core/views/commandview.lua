@@ -1,23 +1,12 @@
 local core = require "core"
 local config = require "core.config"
 local style = require "themes.style"
--- local Doc = require "core.doc"
 local View = require "core.view"
-
--- local DocView = require "core.views.docview"
-
-
-
--- ---@class core.commandview.input : core.doc
--- ---@field super core.doc
--- local SingleLineDoc = Doc:extend()
-
--- function SingleLineDoc:insert(line, col, text)
---   SingleLineDoc.super.insert(self, line, col, text:gsub("\n", ""))
--- end
-
-
 local SingleLineTextview = require "lib.widget.single_line_textview"
+
+
+local getConfigurationOptionMaxVisibleCommands = ConfigurationStore.lazy_get_current_value("max_visible_commands")
+
 
 ---@class core.commandview : core.docview
 ---@field super core.docview
@@ -134,7 +123,7 @@ function CommandView:move_suggestion_idx(dir)
   end
 
   local function get_suggestions_offset()
-    local max_visible = math.min(ConfigurationStore.get("max_visible_commands"):get_current_value(), #self.suggestions)
+    local max_visible = math.min(getConfigurationOptionMaxVisibleCommands(), #self.suggestions)
     if dir > 0 then
       if self.suggestions_offset + max_visible < self.suggestion_idx + 1 then
         return self.suggestion_idx - max_visible + 1
@@ -327,7 +316,12 @@ function CommandView:update()
 
   -- update suggestions box height
   local lh = self:get_suggestion_line_height()
-  self.suggestions_height = self.state.show_suggestions and math.min(#self.suggestions, ConfigurationStore.get("max_visible_commands"):get_current_value()) * lh or 0
+
+  if self.state.show_suggestions then
+    self.suggestions_height = math.min(#self.suggestions, getConfigurationOptionMaxVisibleCommands()) * lh 
+  else
+    self.suggestions_height = 0
+  end
 
   -- update suggestion cursor offset
   self.selection_offset = (self.suggestion_idx - self.suggestions_offset + 1) * self:get_suggestion_line_height()
@@ -379,7 +373,7 @@ local function draw_suggestions_box(self)
 
   -- draw suggestion text
   local first = math.max(self.suggestions_offset, 1)
-  local last = math.min(self.suggestions_offset + config.max_visible_commands, #self.suggestions)
+  local last = math.min(self.suggestions_offset + getConfigurationOptionMaxVisibleCommands(), #self.suggestions)
   for i=first, last do
     local item = self.suggestions[i]
     local color = (i == self.suggestion_idx) and style.accent or style.text

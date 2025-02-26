@@ -21,6 +21,12 @@ local userInterfaceOptions = {
     max_value = 2.0, 
     step = 0.1
   }),
+
+
+  ConfigurationOptionNumber("max_visible_commands", "Commands Box number of suggestions", "Number of suggestions in command box.", 10, {
+    min_value = 1, 
+    max_value = 50
+  }),
 }
 
 -- generate ui and add to pane
