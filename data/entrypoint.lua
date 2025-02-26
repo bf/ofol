@@ -75,9 +75,10 @@ stderr = require("lib.stderr")
 fsutils = require("lib.fsutils")
 
 -- global include for json
+json = require("lib.json")
 
 -- global include for json config file
-
+json_config_file = require("lib.json_config_file")
 
 
 -- global modification of module loading behavior when require() is called
