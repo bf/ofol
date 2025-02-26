@@ -41,13 +41,13 @@ function ConfigurationOptionMultipleChoice:add_value_modification_widget_to_cont
     end
   end
 
-  -- -- handle new value
-  -- function widget.on_change(this, value)
-  --   -- ItemsList requires a special way to get value
-  --   local actual_value = this:get_items()
+  -- handle new value
+  function widget.on_change(this, value)
+    -- SelectBox requires a special way to get value
+    local actual_value = this:get_selected_data()
     
-  --   self:set(actual_value)
-  -- end
+    self:set_value_from_ui(actual_value)
+  end
 
   return widget
 end

@@ -30,7 +30,7 @@ function ConfigurationOption:new(key, description_text_short, description_text_l
   if default_value == nil then
     stderr.error("default value is required")
   end
-  
+
   -- ensure that default value is valid
   self:validate(default_value)
 
@@ -44,6 +44,19 @@ function ConfigurationOption:new(key, description_text_short, description_text_l
 
     -- store function
     self._optional_on_change_function = options.on_change
+  end
+
+  -- on_save_via_user_interface() is optional
+  -- it will be called when value has changed to 
+  -- convert the value before it is saved internally
+  if options ~= nil and options.on_save_via_user_interface then
+    -- ensure we have received a function
+    if not Validator.is_function(options.on_save_via_user_interface) then
+      stderr.error("on_save_via_user_interface must be a function")
+    end
+
+    -- store function
+    self._optional_on_save_via_user_interface_function = options.on_save_via_user_interface
   end
 
   -- initialize member variables
@@ -100,6 +113,22 @@ end
 function ConfigurationOption:get_key()
   return self._key
 end
+
+-- set new value (called from ui)
+function ConfigurationOption:set_value_from_ui(new_value)
+  stderr.debug("VIA UI: ConfigurationOption %s set to %s", self._key, new_value)
+
+  -- convert value from UI widget
+  if self._optional_on_save_via_user_interface_function ~= nil then
+    stderr.debug("calling self._optional_on_save_via_user_interface_function function with value", new_value)
+    new_value = self._optional_on_save_via_user_interface_function(new_value)
+    stderr.debug("new_value after self._optional_on_save_via_user_interface_function function =", new_value)
+  end
+
+  -- call internal set function
+  self:set(new_value)
+end
+
 
 -- set new value for this configuration option
 function ConfigurationOption:set(new_value)
@@ -195,6 +224,12 @@ function ConfigurationOption:_add_description_widget_to_container(container)
   if type(self._default_value) == "table" then
     -- for table values, use json
     default_value_text = json.encode(self._default_value)
+  elseif type(self._default_value == "boolean") then
+    if self._default_value == true then
+      default_value_text = "true"
+    else
+      default_value_text = "false"
+    end
   else
     -- all other types: convert to string with string.format()
     default_value_text = string.format("%s", self._default_value)
@@ -233,11 +268,11 @@ function ConfigurationOption:add_widgets_to_container(container)
   -- render input ui element to change the configuration value
   local widget_modify_value = self:add_value_modification_widget_to_container(container)
 
-  -- render button to reset value
-  local widget_button_reset_value = self:_add_reset_button_widget_to_container(container)
-
   -- render description and default value after the input
   local widget_description = self:_add_description_widget_to_container(container)
+
+  -- render button to reset value
+  local widget_button_reset_value = self:_add_reset_button_widget_to_container(container)
 
   -- empty space between options
   local widget_line = Label(container, " ")

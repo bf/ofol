@@ -11,12 +11,12 @@ end
 -- create UI element
 function ConfigurationOptionBoolean:add_value_modification_widget_to_container(pane)
   -- add number input box
-  local widget = Toggle(pane, self:get_current_value())
+  local widget = Toggle(pane, self._description_text_short, self:get_current_value())
 
-  -- -- handle new value
-  -- function widget.on_change(this, value)
-  --   self:set(value)
-  -- end
+  -- handle new value
+  function widget.on_change(this, value)
+    self:set_value_from_ui(value)
+  end
   
   return widget
 end

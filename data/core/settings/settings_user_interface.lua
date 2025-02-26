@@ -5,8 +5,6 @@ local ConfigurationOptionString = require("models.configuration_option.configura
 local ConfigurationOptionMultipleChoice = require("models.configuration_option.configuration_option_multiple_choice")
 local ConfigurationOptionBoolean = require("models.configuration_option.configuration_option_boolean")
 
-local ConfigurationStore = require("stores.configuration_store")
-
 local optionForceScrollbarStatus
 local optionForceScrollbarStatusMode
 

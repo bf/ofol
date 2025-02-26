@@ -15,13 +15,13 @@ function ConfigurationOptionString:is_valid(val)
 end
 
 -- create UI element
-function ConfigurationOptionString:render_only_modification_ui_in_widget_pane(pane)
+function ConfigurationOptionString:add_value_modification_widget_to_container(pane)
   -- add number input box
   local widget = TextBox(pane, self:get_current_value())
 
   -- handle new value
   function widget.on_change(this, value)
-    self:set(value)
+    self:set_value_from_ui(value)
   end
   
   return widget

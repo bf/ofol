@@ -26,7 +26,7 @@ function ConfigurationOptionStringList:add_value_modification_widget_to_containe
     -- ItemsList requires a special way to get value
     local actual_value = this:get_items()
     
-    self:set(actual_value)
+    self:set_value_from_ui(actual_value)
   end
 
   return widget

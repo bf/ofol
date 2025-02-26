@@ -70,7 +70,7 @@ function ConfigurationOptionNumber:add_value_modification_widget_to_container(co
 
   -- handle new value
   function widget.on_change(this, value)
-    self:set(value)
+    self:set_value_from_ui(value)
   end
 
   return widget
