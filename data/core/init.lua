@@ -651,12 +651,6 @@ function core.init()
   stderr.debug("project directory: %s", project_dir_abs)
   core.add_project_directory(project_dir_abs)
 
-  -- We assume we have just a single project directory here. Now that StatusView
-  -- is there show max files warning if needed.
-  if core.project_directories[1].files_limit then
-    show_max_files_warning(core.project_directories[1])
-  end
-
   stderr.debug("opening documents from last session")
   for _, filename in ipairs(files) do
     core.root_view:open_doc(core.open_doc(filename))

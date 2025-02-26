@@ -395,11 +395,13 @@ end
 
 
 function CommandView:draw()
-  CommandView.super.draw(self)
+  if self.state ~= default_state then
+    CommandView.super.draw(self)
 
-  if self.state.show_suggestions and #self.suggestions > 0 then
-    -- if we have suggestions, draw the suggestions box 
-    core.root_view:defer_draw(draw_suggestions_box, self)
+    if self.state.show_suggestions and #self.suggestions > 0 then
+      -- if we have suggestions, draw the suggestions box 
+      core.root_view:defer_draw(draw_suggestions_box, self)
+    end
   end
 end
 

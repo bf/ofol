@@ -62,9 +62,13 @@ end
 
 -- lazy getter function, returns function to retrieve config value
 function ConfigurationStore.lazy_get_current_value(configuration_key)
-  return function()
+  -- create function which always returns the value
+  local lazy_get_current_value_inner = function ()
     return ConfigurationStore.get(configuration_key):get_current_value()
   end
+
+  -- return function 
+  return lazy_get_current_value_inner 
 end
 
 

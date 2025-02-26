@@ -102,7 +102,7 @@ end
 
 -- return value of this configuration option
 function ConfigurationOption:get_current_value()
-  stderr.debug("ConfigurationOption %s get_current_value %s", self._key, self._current_value)
+  stderr.debug_backtrace("ConfigurationOption %s get_current_value %s", self._key, self._current_value)
   return self._current_value
 end
 

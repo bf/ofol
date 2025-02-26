@@ -588,6 +588,8 @@ function SingleLineDocView:draw_overlay()
 end
 
 function SingleLineDocView:draw()
+  if not self.visible then return end
+  
   self:draw_background(style.background)
   local _, indent_size = self.doc:get_indent_info()
   self:get_font():set_tab_size(indent_size)
