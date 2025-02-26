@@ -1,12 +1,6 @@
 
 local config = {}
 
----Do not remove whitespaces when advancing to the next line.
----
----Defaults to false.
----@type boolean
-config.keep_newline_whitespace = false
-
 ---Default line endings for new files.
 ---
 ---Defaults to `crlf` (`\r\n`) on Windows and `lf` (`\n`) on everything else.

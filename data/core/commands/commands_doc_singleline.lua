@@ -9,6 +9,7 @@ local DocView = require "core.views.docview"
 local SingleLineTextView = require "lib.widget.single_line_textview"
 
 
+local getConfigurationOptionKeepNewlineWhitespace = ConfigurationStore.lazy_get_current_value("keep_newline_whitespace")
 
 local function doc()
   return core.active_view.doc
@@ -316,7 +317,7 @@ local commands = {
         indent = indent:sub(#indent + 2 - col)
       end
       -- Remove current line if it contains only whitespace
-      if not config.keep_newline_whitespace and dv.doc.lines[line]:match("^%s+$") then
+      if not getConfigurationOptionKeepNewlineWhitespace() and dv.doc.lines[line]:match("^%s+$") then
         dv.doc:remove(line, 1, line, math.huge)
       end
       dv.doc:text_input("\n" .. indent, idx)
