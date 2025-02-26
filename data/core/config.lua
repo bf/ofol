@@ -1,34 +1,6 @@
 
 local config = {}
 
----Disables caret blinking.
----
----Defaults to false.
----@type boolean
-config.disable_blink = false
-
----Draws whitespaces as dots.
----This option is deprecated.
----Please use the drawwhitespace plugin instead.
----@deprecated
-config.draw_whitespace = false
-
--- -- disable all plugins
--- config.disable_all_plugins = true
-
----Shows/hides the close buttons on tabs.
----When hidden, users can close tabs via keyboard shortcuts or commands.
----
----Defaults to true.
----@type boolean
-config.tab_close_button = true
-
----Maximum number of clicks recognized by Lite XL.
----
----Defaults to 3.
----@type number
-config.max_clicks = 3
-
 -- holds the plugins real config table
 local plugins_config = {}
 

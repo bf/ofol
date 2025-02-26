@@ -573,7 +573,7 @@ function SingleLineDocView:draw_overlay()
         if ime.editing then
           self:draw_ime_decoration(line1, col1, line2, col2)
         else
-          if config.disable_blink or (core.blink_timer - core.blink_start) % T < T / 2 then
+          if ConfigurationStore.get("disable_blink"):get_current_value() or (core.blink_timer - core.blink_start) % T < T / 2 then
             local x, y = self:get_line_screen_position(line1, col1)
             if self.doc.overwrite then
               self:draw_overwrite_caret(x, y, self:get_font():get_width(self.doc:get_char(line1, col1)))
