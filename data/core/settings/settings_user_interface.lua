@@ -16,12 +16,13 @@ local userInterfaceOptions = {
 
   ConfigurationOptionBoolean("disable_blink", "Disable Cursor Blinking", "Disables cursor blinking on text input elements.", false),
 
+
+
   ConfigurationOptionNumber("blink_period", "Cursor Blinking Period", "Interval in seconds in which the cursor blinks.", 0.8, {
     min_value = 0.3, 
     max_value = 2.0, 
     step = 0.1
   }),
-
 
   ConfigurationOptionNumber("max_visible_commands", "Commands Box number of suggestions", "Number of suggestions in command box.", 10, {
     min_value = 1, 

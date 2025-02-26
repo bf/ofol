@@ -346,10 +346,9 @@ function Node:should_show_tabs()
   if #self.views > 1
      or (dn and dn.dragging) then -- show tabs while dragging
     return true
-  elseif config.always_show_tabs then
+  else
     return not self.views[1]:is(EmptyView)
   end
-  return false
 end
 
 -- return index of scroll button (forward, backward) if hovered, or nil if not hovered

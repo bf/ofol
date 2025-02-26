@@ -1,14 +1,6 @@
 
 local config = {}
 
--- ConfigurationStore.get("max_undos"):get_current_value()
-
----Shows/hides the tab bar when there is only one tab open.
----
----The tab bar is always shown by default.
----@type boolean
-config.always_show_tabs = true
-
 ---@alias config.highlightlinetype
 ---| true # Always highlight the current line.
 ---| false # Never highlight the current line.
