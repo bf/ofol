@@ -1,13 +1,12 @@
-local config = require "core.config"
-
 -- functions for translating a Doc position to another position these functions
 -- can be passed to Doc:move_to|select_to|delete_to()
 
 local translate = {}
 
+local getConfigurationOptionNonWordChars = ConfigurationStore.lazy_get_current_value("non_word_chars")
 
 local function is_non_word(char)
-  return config.non_word_chars:find(char, nil, true)
+  return getConfigurationOptionNonWordChars():find(char, nil, true)
 end
 
 
