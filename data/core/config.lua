@@ -3,12 +3,6 @@ local config = {}
 
 -- ConfigurationStore.get("max_undos"):get_current_value()
 
----The maximum number of entries shown at a time in the command palette.
----
----The default is 10.
----@type integer
-config.max_visible_commands = 10
-
 ---Shows/hides the tab bar when there is only one tab open.
 ---
 ---The tab bar is always shown by default.

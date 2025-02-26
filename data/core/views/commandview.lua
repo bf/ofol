@@ -134,7 +134,7 @@ function CommandView:move_suggestion_idx(dir)
   end
 
   local function get_suggestions_offset()
-    local max_visible = math.min(config.max_visible_commands, #self.suggestions)
+    local max_visible = math.min(ConfigurationStore.get("max_visible_commands"):get_current_value(), #self.suggestions)
     if dir > 0 then
       if self.suggestions_offset + max_visible < self.suggestion_idx + 1 then
         return self.suggestion_idx - max_visible + 1
@@ -327,7 +327,7 @@ function CommandView:update()
 
   -- update suggestions box height
   local lh = self:get_suggestion_line_height()
-  self.suggestions_height = self.state.show_suggestions and math.min(#self.suggestions, config.max_visible_commands) * lh or 0
+  self.suggestions_height = self.state.show_suggestions and math.min(#self.suggestions, ConfigurationStore.get("max_visible_commands"):get_current_value()) * lh or 0
 
   -- update suggestion cursor offset
   self.selection_offset = (self.suggestion_idx - self.suggestions_offset + 1) * self:get_suggestion_line_height()
