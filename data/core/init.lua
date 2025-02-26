@@ -1,6 +1,6 @@
 -- require "core.strict"
 -- require "core.regex"
-local config = require "core.config"
+-- local config = require "core.config"
 
 -- even though $style variable is not used in this file, 
 -- if we remove this then the loading of style in views does not work

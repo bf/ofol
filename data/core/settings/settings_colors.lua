@@ -128,4 +128,4 @@ local function load_color_settings(add_to_this_pane)
   return add_to_this_pane
 end
 
-return SettingsTabComponent("colors", "Themes", "W", load_color_settings)
+return SettingsTabComponent("themes", "Themes", "W", load_color_settings)

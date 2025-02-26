@@ -317,7 +317,7 @@ function CommandView:update()
   -- update suggestions box height
   local lh = self:get_suggestion_line_height()
 
-  if self.state.show_suggestions then
+  if self.state.show_suggestions and #self.suggestions > 0 then
     self.suggestions_height = math.min(#self.suggestions, getConfigurationOptionMaxVisibleCommands()) * lh 
   else
     self.suggestions_height = 0
@@ -356,6 +356,11 @@ end
 
 
 local function draw_suggestions_box(self)
+  if #self.suggestions == 0 then
+    -- only draw when there are suggestions
+    return
+  end
+
   local lh = self:get_suggestion_line_height()
   local dh = style.divider_size
   local x, _ = self:get_line_screen_position()
@@ -363,13 +368,12 @@ local function draw_suggestions_box(self)
   local rx, ry, rw, rh = self.position.x, self.position.y + lh + dh, self.size.x, h
 
   core.push_clip_rect(rx, ry, rw, rh)
+
   -- draw suggestions background
-  if #self.suggestions > 0 then
-    renderer.draw_rect(rx, ry, rw, rh, style.background3)
-    renderer.draw_rect(rx, ry + dh, rw, dh, style.divider)
-    local y = self.position.y + self.selection_offset + dh
-    renderer.draw_rect(rx, y, rw, lh, style.line_highlight)
-  end
+  renderer.draw_rect(rx, ry, rw, rh, style.background3)
+  renderer.draw_rect(rx, ry + dh, rw, dh, style.divider)
+  local y = self.position.y + self.selection_offset + dh
+  renderer.draw_rect(rx, y, rw, lh, style.line_highlight)
 
   -- draw suggestion text
   local first = math.max(self.suggestions_offset, 1)
@@ -385,13 +389,16 @@ local function draw_suggestions_box(self)
       renderer.draw_text_aligned_in_box(self:get_font(), style.text, item.info, "right", x, y, w, lh)
     end
   end
+
   core.pop_clip_rect()
 end
 
 
 function CommandView:draw()
   CommandView.super.draw(self)
-  if self.state.show_suggestions then
+
+  if self.state.show_suggestions and #self.suggestions > 0 then
+    -- if we have suggestions, draw the suggestions box 
     core.root_view:defer_draw(draw_suggestions_box, self)
   end
 end
