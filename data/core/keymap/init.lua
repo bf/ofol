@@ -1,6 +1,5 @@
 local core = require "core"
 local command = require "core.command"
-local config = require "core.config"
 local ime = require "core.ime"
 
 

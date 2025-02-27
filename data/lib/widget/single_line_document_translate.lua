@@ -1,7 +1,8 @@
 local translate = {}
 
 local function is_non_word(char)
-  return ConfigurationCache:get("non_word_chars"):find(char, nil, true)
+  local nonWordChars = ConfigurationCache:get("non_word_chars")
+  return nonWordChars:find(char, nil, true)
 end
 
 

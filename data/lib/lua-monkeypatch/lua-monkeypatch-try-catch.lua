@@ -11,6 +11,8 @@ function try_catch(fn, ...)
   
   if ok then
     return true, res
+  else
+    stderr.warn_backtrace("try_catch failed: %s", err)
   end
   
   return false, err

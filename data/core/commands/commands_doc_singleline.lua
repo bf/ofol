@@ -383,12 +383,14 @@ local commands = {
   end,
 
   ["doc:select-word"] = function(dv)
-    for idx, line1, col1 in dv.doc:get_selections(true) do
-      local line1, col1 = translate.start_of_word(dv.doc, line1, col1)
-      local line2, col2 = translate.end_of_word(dv.doc, line1, col1)
-      dv.doc:set_selections(idx, line2, col2, line1, col1)
+    if dv then
+      for idx, line1, col1 in dv.doc:get_selections(true) do
+        local line1, col1 = translate.start_of_word(dv.doc, line1, col1)
+        local line2, col2 = translate.end_of_word(dv.doc, line1, col1)
+        dv.doc:set_selections(idx, line2, col2, line1, col1)
+      end
+      set_primary_selection(dv.doc)
     end
-    set_primary_selection(dv.doc)
   end,
 
   -- ["doc:join-lines"] = function(dv)
