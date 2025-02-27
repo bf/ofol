@@ -37,10 +37,10 @@ function Settings:new()
     stderr.debug("rendering configuration group", group_name)
     
     -- add notebook pane for group
-    local container = notebook_widget:add_pane(group_object:get_group_key(), group_object:get_label_text())
+    local container = self.notebook:add_pane(group_object:get_group_key(), group_object:get_label_text())
 
     -- set notebook tab icon for group
-    notebook_widget:set_pane_icon(group_object:get_group_key(), group_object:get_icon())
+    self.notebook:set_pane_icon(group_object:get_group_key(), group_object:get_icon())
 
     -- render all options for this group in the container
     group_object:add_configuration_options_to_container(container)

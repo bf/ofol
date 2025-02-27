@@ -103,9 +103,9 @@ function ConfigurationOptionStore.get(configuration_option_key)
 end
 
 -- retrieve all groups
-function ConfigurationOptionStore.retrieve_all_groups(group_key)
+function ConfigurationOptionStore.retrieve_all_groups()
   -- ensure at least one group exists
-  if #_groups_by_key == 0 then
+  if table.count(_groups_by_key) == 0 then
     stderr.error("no group exists, this is unexpected")
   end
 

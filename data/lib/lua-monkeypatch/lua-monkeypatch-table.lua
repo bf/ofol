@@ -147,7 +147,7 @@ end
 
 -- add tostring function which uses json
 -- fixme: this might not be working
-function table.__tostring(self)
+function table:__tostring(self)
    local ok, json_string = pcall(json.encode, self)
   if not ok then
     stderr.error("could not convert %s to json: %s", self, json_string)
@@ -155,4 +155,13 @@ function table.__tostring(self)
   end
 
   return json_string
+end
+
+-- return number of items in table
+function table.count(myTable)
+  local count = 0
+  for _ in pairs(myTable) do
+      count = count + 1
+  end
+  return count
 end
