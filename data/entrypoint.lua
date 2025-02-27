@@ -105,10 +105,6 @@ require("lib.lua-monkeypatch.lua-monkeypatch-renderer")
 -- global include for base object 
 Object = require("lib.object")
 
--- caching
-Cache = require("lib.cache")
-ConfigurationCache = Cache("ConfigurationCache")
-
 -- global include of validator
 Validator = require("lib.validator")
 

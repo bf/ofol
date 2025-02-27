@@ -80,12 +80,12 @@ function ConfigurationOptionStore.initialize_configuration_option(newConfigurati
   _configuration_options_by_key[configuration_option_key] = newConfigurationOption
 
   -- define dynamic getter function
-  -- e.g. for key "editor.max_lines" -> ConfigurationStore.get_editor_max_lines()
+  -- e.g. for key "editor.max_lines" -> ConfigurationOptionStore.get_editor_max_lines()
   local _getter_function_name = "get_" ..  string.gsub(configuration_option_key, "%.", "_")
 
   -- sanity check
   if ConfigurationOptionStore[_getter_function_name] ~= nil then
-    stderr.error("_getter_function_name %s already exists, this should never happen", _getter_function_name)
+    stderr.error("_getter_function_name %s already exists, this should never happen. seen with configuration_option_key %s", _getter_function_name, configuration_option_key)
   end
 
   -- logic for dynamic getter function
@@ -93,6 +93,8 @@ function ConfigurationOptionStore.initialize_configuration_option(newConfigurati
     -- return value for configuration_option_key
     return newConfigurationOption:get_current_value()
   end
+
+  stderr.debug("initialized getter function %s()", _getter_function_name)
 end
 
 -- initialize a group of configuration options
