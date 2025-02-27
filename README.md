@@ -12,7 +12,7 @@ Goals:
 - - [ ] hex view for binary files
 - - [ ] reopen closed tab with ctrl shift t
 - - [ ] file search "tex eis" & "eis tex" should work
-- - [ ] reset zoom level with double click on zoom percentage in status bar
+- - [x] reset zoom level with double click on zoom percentage in status bar
 - - [x] click on tab label does not switch to tab
 - - [x] double click title bar maximize
 - - [x] CTRL+P :123 to go to line 123 of current file

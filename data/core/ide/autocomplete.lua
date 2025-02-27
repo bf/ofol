@@ -1,6 +1,5 @@
 -- mod-version:3
 local core = require "core"
-local config = require "core.config"
 local command = require "core.command"
 local style = require "themes.style"
 local keymap = require "core.keymap"
@@ -11,15 +10,13 @@ local Doc = require "core.doc"
 local RootView = require "core.views.rootview"
 local DocView = require "core.views.docview"
 
-config.plugins.autocomplete = table.merge({
+local config_autocomplete = {
   -- Amount of characters that need to be written for autocomplete
   min_len = 3,
   -- The max amount of visible items
   max_height = 6,
   -- The max amount of scrollable items
   max_suggestions = 100,
-  -- Maximum amount of symbols to cache per document
-  max_symbols = 4000,
   -- Font size of the description box
   desc_font_size = 12,
   -- The config specification used by gui generators
@@ -52,15 +49,15 @@ config.plugins.autocomplete = table.merge({
       min = 10,
       max = 10000
     },
-    {
-      label = "Maximum Symbols",
-      description = "Maximum amount of symbols to cache per document.",
-      path = "max_symbols",
-      type = "number",
-      default = 4000,
-      min = 1000,
-      max = 10000
-    },
+    -- {
+    --   label = "Maximum Symbols",
+    --   description = "Maximum amount of symbols to cache per document.",
+    --   path = "max_symbols",
+    --   type = "number",
+    --   default = 4000,
+    --   min = 1000,
+    --   max = 10000
+    -- },
     {
       label = "Description Font Size",
       description = "Font size of the description box.",
@@ -70,7 +67,7 @@ config.plugins.autocomplete = table.merge({
       min = 8
     }
   }
-}, config.plugins.autocomplete)
+}
 
 local autocomplete = {}
 
@@ -120,7 +117,6 @@ end
 --
 -- Thread that scans open document symbols and cache them
 --
-local max_symbols = config.plugins.autocomplete.max_symbols
 
 core.add_thread(function()
   local cache = setmetatable({}, { __mode = "k" })
@@ -143,21 +139,6 @@ core.add_thread(function()
       for sym in doc.lines[i]:gmatch(ConfigurationCache:get("symbol_pattern")) do
         if not s[sym] then
           symbols_count = symbols_count + 1
-          if symbols_count > max_symbols then
-            s = nil
-            doc.disable_symbols = true
-            local filename_message
-            if doc.filename then
-              filename_message = "document " .. doc.filename
-            else
-              filename_message = "unnamed document"
-            end
-            stderr.warn("Too many symbols in "..filename_message..
-              ": stopping auto-complete for this document according to "..
-              "config.plugins.autocomplete.max_symbols.")
-            collectgarbage('collect')
-            return {}
-          end
           s[sym] = true
         end
       end
@@ -257,7 +238,7 @@ local function update_suggestions()
   -- fuzzy match, remove duplicates and store
   items = table.fuzzy_match(items, partial)
   local j = 1
-  for i = 1, config.plugins.autocomplete.max_suggestions do
+  for i = 1, config_autocomplete.max_suggestions do
     suggestions[i] = items[j]
     while items[j] and items[i].text == items[j].text do
       items[i].info = items[i].info or items[j].info
@@ -300,7 +281,7 @@ local function get_suggestions_rect(av)
     max_width = math.max(max_width, w)
   end
 
-  local ah = config.plugins.autocomplete.max_height
+  local ah = config_autocomplete.max_height
 
   local max_items = #suggestions
   if max_items > ah then
@@ -367,12 +348,12 @@ end
 
 local previous_scale = SCALE
 local desc_font = style.code_font:copy(
-  config.plugins.autocomplete.desc_font_size * SCALE
+  config_autocomplete.desc_font_size * SCALE
 )
 local function draw_description_box(text, av, sx, sy, sw, sh)
   if previous_scale ~= SCALE then
     desc_font = style.code_font:copy(
-      config.plugins.autocomplete.desc_font_size * SCALE
+      config_autocomplete.desc_font_size * SCALE
     )
     previous_scale = SCALE
   end
@@ -440,7 +421,7 @@ local function draw_suggestions_box(av)
     return
   end
 
-  local ah = config.plugins.autocomplete.max_height
+  local ah = config_autocomplete.max_height
 
   -- draw background rect
   local rx, ry, rw, rh = get_suggestions_rect(av)
@@ -500,7 +481,7 @@ local function show_autocomplete()
     -- update partial symbol and suggestions
     partial = get_partial_symbol()
 
-    if #partial >= config.plugins.autocomplete.min_len or triggered_manually then
+    if #partial >= config_autocomplete.min_len or triggered_manually then
       update_suggestions()
 
       if not triggered_manually then
@@ -614,7 +595,7 @@ function autocomplete.complete(completions, on_close)
 end
 
 function autocomplete.can_complete()
-  if #partial >= config.plugins.autocomplete.min_len then
+  if #partial >= config_autocomplete.min_len then
     return true
   end
   return false
