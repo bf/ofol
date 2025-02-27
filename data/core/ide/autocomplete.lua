@@ -268,7 +268,7 @@ local function get_suggestions_rect(av)
 
   local line, col = av.doc:get_selection()
   local x, y = av:get_line_screen_position(line, col - #partial)
-  y = y + av:get_line_height() + style.padding.y
+  y = y + av:get_editor_line_height() + style.padding.y
   local font = av:get_font()
   local th = font:get_height()
 

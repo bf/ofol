@@ -23,7 +23,7 @@ function DocView:draw_line_body(line, x, y)
   if line1 == line2 and col1 ~= col2 then
     local selection = self.doc:get_text(line1, col1, line2, col2)
     if not selection:match("^%s+$") then
-      local lh = self:get_line_height()
+      local lh = self:get_editor_line_height()
       local selected_text = self.doc.lines[line1]:sub(col1, col2 - 1)
       local current_line_text = self.doc.lines[line]
       local last_col = 1

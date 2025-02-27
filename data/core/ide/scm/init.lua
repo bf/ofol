@@ -696,7 +696,7 @@ function DocView:draw_line_gutter(line, x, y, width)
     return docview_draw_line_gutter(self, line, x, y, width)
   end
 
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local gw, gpad = docview_get_gutter_width(self)
   local diff_type = self.doc.scm_diff[line]
 
@@ -738,7 +738,7 @@ function DocView:draw_line_gutter(line, x, y, width)
 
   local yoffset = self:get_line_text_y_offset()
   if diff_type ~= "deletion" then
-    renderer.draw_rect(x, y + yoffset, DIFF_WIDTH, self:get_line_height(), color)
+    renderer.draw_rect(x, y + yoffset, DIFF_WIDTH, self:get_editor_line_height(), color)
     return
   end
   renderer.draw_rect(x - DIFF_WIDTH * 2, y + yoffset, DIFF_WIDTH * 4, 2, color)

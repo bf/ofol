@@ -355,9 +355,9 @@ end
 
 function DocView:get_scrollable_size()
   if not ConfigurationOptionStore.get_scroll_past_end() then
-    return self:get_line_height() * get_total_wrapped_lines(self) + style.padding.y * 2
+    return self:get_editor_line_height() * get_total_wrapped_lines(self) + style.padding.y * 2
   end
-  return self:get_line_height() * (get_total_wrapped_lines(self) - 1) + self.size.y
+  return self:get_editor_line_height() * (get_total_wrapped_lines(self) - 1) + self.size.y
 end
 
 local old_get_h_scrollable_size = DocView.get_h_scrollable_size
@@ -410,7 +410,7 @@ local old_get_visible_line_range = DocView.get_visible_line_range
 function DocView:get_visible_line_range()
   if not self.wrapped_settings then return old_get_visible_line_range(self) end
   local x, y, x2, y2 = self:get_content_bounds()
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local minline = get_idx_line_col(self, math.max(1, math.floor(y / lh)))
   local maxline = get_idx_line_col(self, math.min(get_total_wrapped_lines(self), math.floor(y2 / lh) + 1))
   return minline, maxline
@@ -456,7 +456,7 @@ function DocView:get_line_screen_position(line, col)
   if not self.wrapped_settings then return old_get_line_screen_position(self, line, col) end
   local idx, ncol, count = get_line_idx_col_count(self, line, col)
   local x, y = self:get_content_offset()
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local gw = self:get_gutter_width()
   return x + gw + (col and self:get_col_x_offset(line, col) or 0), y + (idx-1) * lh + style.padding.y
 end
@@ -465,7 +465,7 @@ local old_resolve_screen_position = DocView.resolve_screen_position
 function DocView:resolve_screen_position(x, y)
   if not self.wrapped_settings then return old_resolve_screen_position(self, x, y) end
   local ox, oy = self:get_line_screen_position(1)
-  local idx = math.clamp(math.floor((y - oy) / self:get_line_height()) + 1, 1, get_total_wrapped_lines(self))
+  local idx = math.clamp(math.floor((y - oy) / self:get_editor_line_height()) + 1, 1, get_total_wrapped_lines(self))
   return get_line_col_from_index_and_x(self, idx, x - ox)
 end
 
@@ -474,7 +474,7 @@ function DocView:draw_line_text(line, x, y)
   if not self.wrapped_settings then return old_draw_line_text(self, line, x, y) end
   local default_font = self:get_font()
   local tx, ty, begin_width = x, y + self:get_line_text_y_offset(), self.wrapped_line_offsets[line]
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local idx, _, count = get_line_idx_col_count(self, line)
   local total_offset = 1
   for _, type, text in self.doc.highlighter:each_token(line) do
@@ -503,7 +503,7 @@ end
 local old_draw_line_body = DocView.draw_line_body
 function DocView:draw_line_body(line, x, y)
   if not self.wrapped_settings then return old_draw_line_body(self, line, x, y) end
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local idx0, _, count = get_line_idx_col_count(self, line)
   for lidx, line1, col1, line2, col2 in self.doc:get_selections(true) do
     if line >= line1 and line <= line2 then
@@ -554,7 +554,7 @@ end
 
 local old_draw_line_gutter = DocView.draw_line_gutter
 function DocView:draw_line_gutter(line, x, y, width)
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local _, _, count = get_line_idx_col_count(self, line)
   return (old_draw_line_gutter(self, line, x, y, width) or lh) * count
 end

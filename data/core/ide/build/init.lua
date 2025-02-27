@@ -393,7 +393,7 @@ function DocView:draw_line_gutter(idx, x, y, width)
     and build.message_view.active_message
     and idx == build.message_view.active_line
   then
-    renderer.draw_rect(x, y, self:get_gutter_width(), self:get_line_height(), build.error_color)
+    renderer.draw_rect(x, y, self:get_gutter_width(), self:get_editor_line_height(), build.error_color)
   end
   return doc_view_draw_line_gutter(self, idx, x, y, width)
 end

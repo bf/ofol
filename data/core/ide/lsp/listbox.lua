@@ -127,9 +127,9 @@ local function get_suggestions_rect(active_view)
   local padding_y = style.padding.y
 
   if settings.above_text and line > 1 then
-    y = y - active_view:get_line_height() - style.padding.y
+    y = y - active_view:get_editor_line_height() - style.padding.y
   else
-    y = y + active_view:get_line_height() + style.padding.y
+    y = y + active_view:get_editor_line_height() + style.padding.y
   end
 
   local font = settings.is_list and active_view:get_font() or style.font

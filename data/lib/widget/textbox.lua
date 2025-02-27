@@ -86,7 +86,7 @@ local SingleLineTextView = require "lib.widget.single_line_textview"
 --   return self.gutter_width or 0
 -- end
 
--- function TextView:get_line_height()
+-- function TextView:get_editor_line_height()
 --   return math.floor(self:get_font():get_height() * 1.2)
 -- end
 
@@ -108,7 +108,7 @@ local SingleLineTextView = require "lib.widget.single_line_textview"
 --   self:get_font():set_tab_size(indent_size)
 
 --   local minline, maxline = self:get_visible_line_range()
---   local lh = self:get_line_height()
+--   local lh = self:get_editor_line_height()
 
 --   local x, y = self:get_line_screen_position(minline)
 --   for i = minline, maxline do

@@ -105,9 +105,9 @@ end
 function DocView:get_scrollable_size()
   if not ConfigurationOptionStore.get_scroll_past_end() then
     local _, _, _, h_scroll = self.h_scrollbar:get_track_rect()
-    return self:get_line_height() * (#self.doc.lines) + style.padding.y * 2 + h_scroll
+    return self:get_editor_line_height() * (#self.doc.lines) + style.padding.y * 2 + h_scroll
   end
-  return self:get_line_height() * (#self.doc.lines - 1) + self.size.y
+  return self:get_editor_line_height() * (#self.doc.lines - 1) + self.size.y
 end
 
 function DocView:get_h_scrollable_size()
@@ -120,7 +120,7 @@ function DocView:get_font()
 end
 
 local CONSTANT_LINE_HEIGHT = 1.2
-function DocView:get_line_height()
+function DocView:get_editor_line_height()
   return math.floor(self:get_font():get_height() * CONSTANT_LINE_HEIGHT)
 end
 
@@ -133,7 +133,7 @@ end
 
 function DocView:get_line_screen_position(line, col)
   local x, y = self:get_content_offset()
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local gw = self:get_gutter_width()
   y = y + (line-1) * lh + style.padding.y
   if col then
@@ -144,7 +144,7 @@ function DocView:get_line_screen_position(line, col)
 end
 
 function DocView:get_line_text_y_offset()
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local th = self:get_font():get_height()
   return (lh - th) / 2
 end
@@ -152,7 +152,7 @@ end
 
 function DocView:get_visible_line_range()
   local x, y, x2, y2 = self:get_content_bounds()
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local minline = math.max(1, math.floor((y - style.padding.y) / lh) + 1)
   local maxline = math.min(#self.doc.lines, math.floor((y2 - style.padding.y) / lh) + 1)
   return minline, maxline
@@ -227,7 +227,7 @@ end
 
 function DocView:resolve_screen_position(x, y)
   local ox, oy = self:get_line_screen_position(1)
-  local line = math.floor((y - oy) / self:get_line_height()) + 1
+  local line = math.floor((y - oy) / self:get_editor_line_height()) + 1
   line = math.clamp(line, 1, #self.doc.lines)
   local col = self:get_x_offset_col(line, x - ox)
   return line, col
@@ -256,7 +256,7 @@ end
 function DocView:scroll_to_make_visible(line, col)
   local _, oy = self:get_content_offset()
   local _, ly = self:get_line_screen_position(line, col)
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local _, _, _, scroll_h = self.h_scrollbar:get_track_rect()
   local overscroll = math.min(lh * 2, self.size.y) -- always show the previous / next line when possible
   self.scroll.to.y = math.clamp(self.scroll.to.y, ly - oy - self.size.y + scroll_h + overscroll, ly - oy - lh)
@@ -381,7 +381,7 @@ function DocView:update_ime_location()
 
   local line1, col1, line2, col2 = self.doc:get_selection(true)
   local x, y = self:get_line_screen_position(line1)
-  local h = self:get_line_height()
+  local h = self:get_editor_line_height()
   local col = math.min(col1, col2)
 
   local x1, x2 = 0, 0
@@ -433,7 +433,7 @@ end
 
 
 function DocView:draw_line_highlight(x, y)
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   renderer.draw_rect(x, y, self.size.x, lh, style.line_highlight)
 end
 
@@ -456,18 +456,18 @@ function DocView:draw_line_text(line, x, y)
     tx = renderer.draw_text(font, text, tx, ty, color, {tab_offset = tx - start_tx})
     if tx > self.position.x + self.size.x then break end
   end
-  return self:get_line_height()
+  return self:get_editor_line_height()
 end
 
 
 function DocView:draw_overwrite_caret(x, y, width)
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   renderer.draw_rect(x, y + lh - style.caret_width, width, style.caret_width, style.caret)
 end
 
 
 function DocView:draw_caret(x, y)
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   renderer.draw_rect(x, y, style.caret_width, lh, style.caret)
 end
 
@@ -494,7 +494,7 @@ function DocView:draw_line_body(line, x, y)
   end
 
   -- draw selection if it overlaps this line
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   for lidx, line1, col1, line2, col2 in self.doc:get_selections(true) do
     if line >= line1 and line <= line2 then
       local text = self.doc.lines[line]
@@ -522,7 +522,7 @@ function DocView:draw_line_gutter(line, x, y, width)
     end
   end
   x = x + style.padding.x
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   renderer.draw_text_aligned_in_box(self:get_font(), color, line, "right", x, y, width, lh)
   return lh
 end
@@ -531,7 +531,7 @@ end
 function DocView:draw_ime_decoration(line1, col1, line2, col2)
   local x, y = self:get_line_screen_position(line1)
   local line_size = math.max(1, SCALE)
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
 
   -- Draw IME underline
   local x1 = self:get_col_x_offset(line1, col1)
@@ -583,7 +583,7 @@ function DocView:draw()
   self:get_font():set_tab_size(indent_size)
 
   local minline, maxline = self:get_visible_line_range()
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
 
   local x, y = self:get_line_screen_position(minline)
   local gw, gpad = self:get_gutter_width()

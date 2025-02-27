@@ -70,7 +70,7 @@ end
 function CommandView:get_line_screen_position(line, col)
   local x = CommandView.super.get_line_screen_position(self, 1, col)
   local _, y = self:get_content_offset()
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   return x, y + (self.size.y - lh) / 2
 end
 
@@ -246,7 +246,7 @@ function CommandView:exit(submitted, inexplicit)
 end
 
 
-function CommandView:get_line_height()
+function CommandView:get_editor_line_height()
   return math.floor(self:get_font():get_height() * 1.2)
 end
 
@@ -347,7 +347,7 @@ function CommandView:draw_line_gutter(idx, x, y)
   renderer.draw_text(self:get_font(), self.label, x, y + yoffset, color)
   core.pop_clip_rect()
   
-  return self:get_line_height()
+  return self:get_editor_line_height()
   -- return 0
 end
 

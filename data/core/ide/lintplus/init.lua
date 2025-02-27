@@ -451,7 +451,7 @@ end
 -- inject rendering routines
 
 local function rail_width(dv)
-  return dv:get_line_height() / 3 -- math.round(style.padding.x / 2)
+  return dv:get_editor_line_height() / 3 -- math.round(style.padding.x / 2)
 end
 
 local function rail_spacing(dv)
@@ -496,7 +496,7 @@ end
 
 local function get_underline_y(dv, line)
   local _, y = dv:get_line_screen_position(line)
-  local line_height = dv:get_line_height()
+  local line_height = dv:get_editor_line_height()
   local extra_space = line_height - dv:get_font():get_height()
   return y + line_height - extra_space / 2
 end

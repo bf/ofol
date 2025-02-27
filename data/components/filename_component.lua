@@ -81,7 +81,7 @@ function FilenameComponent:get_width()
 end
 
 -- return line height
-function FilenameComponent:_get_line_height() 
+function FilenameComponent:_get_editor_line_height() 
   style.font:get_height(" ")
 end
 

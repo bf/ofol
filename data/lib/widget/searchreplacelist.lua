@@ -288,14 +288,14 @@ end
 
 ---Get the line height used when drawing each item row.
 ---@return number height
-function SearchReplaceList:get_line_height()
+function SearchReplaceList:get_editor_line_height()
   return style.padding.y + style.font:get_height()
 end
 
 ---Used when calculating if vertical scrolling is needed.
 ---@return number size
 function SearchReplaceList:get_scrollable_size()
-  return #self.items * self:get_line_height() + style.padding.y
+  return #self.items * self:get_editor_line_height() + style.padding.y
 end
 
 ---Used when calculating if horizontal scrolling is needed.
@@ -321,7 +321,7 @@ end
 ---@return number y Vertically center align coord based on given y param
 function SearchReplaceList:get_checkbox_size(y)
   if not y then y = 0 end
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local w = lh * 0.6
   local h = w
   y = y + ((lh / 2) - (h / 2))
@@ -332,7 +332,7 @@ end
 ---@return integer first
 ---@return integer last
 function SearchReplaceList:get_visible_items_range()
-  local lh = self:get_line_height()
+  local lh = self:get_editor_line_height()
   local min = math.max(1, math.floor(self.scroll.y / lh))
   return min, min + math.floor(self.size.y / lh) + 1
 end
@@ -341,7 +341,7 @@ end
 ---@return fun():integer,widget.searchreplacelist.item,number,number,number,number
 function SearchReplaceList:each_visible_item()
   return coroutine.wrap(function()
-    local lh = self:get_line_height()
+    local lh = self:get_editor_line_height()
     local x, y = self:get_content_offset()
     local min, max = self:get_visible_items_range()
     y = y + lh * (min - 1)
@@ -385,7 +385,7 @@ end
 ---Scroll to currently selected item only if not already visible.
 function SearchReplaceList:scroll_to_selected()
   if self.selected == 0 then return end
-  local h = self:get_line_height()
+  local h = self:get_editor_line_height()
   local y = h * (self.selected - 1)
   self.scroll.to.y = math.min(self.scroll.to.y, y)
   self.scroll.to.y = math.max(self.scroll.to.y, y + h - self.size.y)

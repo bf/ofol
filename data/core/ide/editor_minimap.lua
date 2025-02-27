@@ -327,7 +327,7 @@ function MiniMap:update()
   if self:is_minimap_enabled() then
     reset_cache_if_needed()
     self.expanded_size = cached_settings.width
-    local lh = self.dv:get_line_height()
+    local lh = self.dv:get_editor_line_height()
     local nlines = self.dv.size.y / lh
     self.minimum_thumb_size = nlines * line_spacing
   end
@@ -351,7 +351,7 @@ function MiniMap:is_minimap_enabled()
     else
       local docview = self.dv
       local _, y = docview:get_line_screen_position(last_line, #docview.doc.lines[last_line])
-      y = y + docview.scroll.y - docview.position.y + docview:get_line_height()
+      y = y + docview.scroll.y - docview.position.y + docview:get_editor_line_height()
       return y > docview.size.y
     end
   end
@@ -379,7 +379,7 @@ end
 
 local function get_visible_minline(dv)
   local _, y, _, _ = dv:get_content_bounds()
-  local lh = dv:get_line_height()
+  local lh = dv:get_editor_line_height()
   local minline = math.max(0, y / lh + 1)
   return minline
 end
@@ -405,7 +405,7 @@ function MiniMap:set_size(x, y, w, h, scrollable)
   if not self:is_minimap_enabled() then return MiniMap.super.set_size(self, x, y, w, h, scrollable) end
   -- If possible, use the size needed to only manage the visible minimap lines.
   -- This allows us to let Scrollbar manage the thumb.
-  h = math.min(h, line_spacing * (scrollable // self.dv:get_line_height()))
+  h = math.min(h, line_spacing * (scrollable // self.dv:get_editor_line_height()))
   MiniMap.super.set_size(self, x, y, w, h, scrollable)
 end
 
