@@ -128,8 +128,8 @@ function ConfigurationOptionTheme:add_value_modification_widget_to_container(con
   -- add listbox/table with one row for each theme
   local widget = ListBox(container)
 
-  widget.border.width = 0
-  widget:enable_expand(true)
+  widget.border.width = 1
+  widget:enable_expand(false)
 
   -- table has two columns
   widget:add_column("Theme")
@@ -151,12 +151,15 @@ function ConfigurationOptionTheme:add_value_modification_widget_to_container(con
     }, {name = details.name, colors = details.colors})
   end
 
+
   -- handle click on row to select new theme
   function widget.on_row_click(this, idx, data)
     -- set new theme
     -- configurationOptionForTheme:set(data.name)
     self:set_value_from_ui(data.name)
   end
+
+  widget:set_size(widget:get_width(), widget:get_scrollable_size())
   
   return widget
 end

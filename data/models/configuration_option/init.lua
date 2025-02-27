@@ -131,7 +131,7 @@ end
 
 -- return value of this configuration option
 function ConfigurationOption:get_current_value()
-  stderr.debug_backtrace("ConfigurationOption %s get_current_value %s", self._key, self._current_value)
+  -- stderr.debug("ConfigurationOption %s get_current_value %s", self._key, self._current_value)
   return self._current_value
 end
 
@@ -291,6 +291,8 @@ function ConfigurationOption:_add_reset_button_widget_to_container(container)
     stderr.debug("my button on mouse pressed")
     outerSelf:reset_to_default_value()
   end
+
+  my_button:toggle_expand(false)
 
   return my_button
 end

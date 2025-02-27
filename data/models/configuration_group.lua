@@ -73,7 +73,20 @@ function ConfigurationOptionGroup:add_configuration_options_to_container(contain
       end
 
       -- set with to full available container width
-      child:set_size(container:get_width() - 2*style.padding.x, child.size.y)
+      local new_width = container:get_width() - 2*style.padding.x
+
+      -- figure out new height of child
+      local new_height
+      if child.get_scrollable_size ~= nil then
+        -- special case for dynamic widgets such as ListBox
+        new_height = child:get_scrollable_size()
+      else
+        -- default case, just use existing height
+        new_height = child.size.y
+      end
+
+      -- apply new height and width
+      child:set_size(new_width, new_height)
 
       -- set position
       child:set_position(x, y)
