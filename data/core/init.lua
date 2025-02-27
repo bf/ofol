@@ -722,7 +722,7 @@ end
 -- create thread
 local thread_counter = 0
 function core.add_thread(f, weak_ref, ...)
-  -- stderr.debug_backtrace("adding thread")
+  stderr.debug_backtrace("adding thread")
   local key = weak_ref
   if not key then
     thread_counter = thread_counter + 1
