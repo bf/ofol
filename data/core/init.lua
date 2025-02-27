@@ -12,6 +12,7 @@ local RootView
 local TreeView
 local ToolbarView
 local StatusView
+local SettingsView
 local CommandView
 local DocView
 local Doc
@@ -482,6 +483,7 @@ function core.init()
   DocView = require "core.views.docview"
   TreeView = require "core.views.treeview"
   ToolbarView = require "core.views.toolbarview"
+  SettingsView = require "core.views.settingsview"
   
   Doc = require "core.doc"
 
@@ -564,12 +566,10 @@ function core.init()
   core.quit_request = false
 
   -- We load core views before plugins that may need them.
-  ---@type core.rootview
   core.root_view = RootView()
-  ---@type core.commandview
   core.command_view = CommandView()
-  ---@type core.statusview
   core.status_view = StatusView()
+  core.settings_view = SettingsView()
 
   -- Load default commands first so plugins can override them
   command.add_defaults()
@@ -620,8 +620,8 @@ function core.init()
     end
   end
 
-  -- initialize settings
-  require("core.settings")
+  -- -- initialize settings
+  -- require("core.settings")
 
   -- load syntax highlighting
   local syntax = require "lib.syntax"
