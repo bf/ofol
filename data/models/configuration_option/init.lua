@@ -38,7 +38,7 @@ function ConfigurationOption:new(key, description_text_short, description_text_l
   end
 
   -- extract group key from configuration option key
-  local._group_key = _extract_group_key_from_configuration_option_key(key)
+  local _group_key = _extract_group_key_from_configuration_option_key(key)
 
   -- ensure description_text_short is provided and is a string
   if not description_text_short or not Validator.is_string(description_text_short) then

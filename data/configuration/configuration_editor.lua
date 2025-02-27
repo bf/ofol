@@ -94,4 +94,4 @@ ConfigurationOptionStringList("editor.ignore_files", "Ignore Files", "List of lu
     -- TODO: refactor
     -- core.rescan_project_directories()
   end
-}),
+})

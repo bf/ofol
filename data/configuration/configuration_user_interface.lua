@@ -23,4 +23,4 @@ ConfigurationOptionNumber("user_interface.max_consecutive_clicks_registered", "M
   min_value = 1, 
   max_value = 10, 
   step = 1
-}),
+})
