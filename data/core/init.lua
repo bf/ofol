@@ -18,6 +18,8 @@ local DocView
 local Doc
 
 local core = {}
+
+
 -- TODO: refactor
 local function update_recents_project(action, dir_path_abs)
   local dirname = fsutils.normalize_volume(dir_path_abs)
@@ -397,43 +399,6 @@ function core.project_files_number()
   return n
 end
 
-
--- create a directory using mkdir but may need to create the parent
--- directories as well.
-local function create_user_directory()
-  local success, err = fsutils.mkdirp(USERDIR)
-  if not success then
-    error("cannot create user directory \"" .. USERDIR .. "\": " .. err)
-  end
-  -- for _, modname in ipairs {
-  --   'plugins', 'colors', 'fonts'} do
-  --   local subdirname = USERDIR .. PATHSEP .. modname
-  --   if not system.mkdir(subdirname) then
-  --     error("cannot create directory: \"" .. subdirname .. "\"")
-  --   end
-  -- end
-end
-
-
-
--- user directory
-function core.load_user_directory()  
-  stderr.debug("loading user diretory")
-  return try_catch(function()
-    local stat_dir = system.get_file_info(USERDIR)
-    if not stat_dir then
-      create_user_directory()
-    end
-    -- local init_filename = USERDIR .. PATHSEP .. "init.lua"
-    -- local stat_file = system.get_file_info(init_filename)
-    -- if not stat_file then
-    --   write_user_init_file(init_filename)
-    -- end
-    -- dofile(init_filename)
-  end)
-end
-
-
 function core.remove_project_directory(path)
   -- skip the fist directory because it is the project's directory
   for i = 2, #core.project_directories do
@@ -445,6 +410,7 @@ function core.remove_project_directory(path)
   end
   return false
 end
+
 
 
 -- The function below works like system.absolute_path except it
@@ -487,12 +453,28 @@ function core.init()
   
   Doc = require "core.doc"
 
+  -- for WINDOWS: fix paths
   if PATHSEP == '\\' then
     USERDIR = fsutils.normalize_volume(USERDIR)
     DATADIR = fsutils.normalize_volume(DATADIR)
     EXEDIR  = fsutils.normalize_volume(EXEDIR)
   end
 
+  -- check if user config directory ~/.config/ofol exists
+  -- check if user directory exists
+  local stat_dir = system.get_file_info(USERDIR)
+  if not stat_dir then
+    stderr.debug("user directory at %s does not exist. will create it now")
+
+    -- create a directory using mkdir but may need to create the parent
+    -- directories as well.
+    local success, err = fsutils.mkdirp(USERDIR)
+    if not success then
+      stderr.error("cannot create user directory \"" .. USERDIR .. "\": " .. err)
+    end
+  end
+
+  -- initialize window
   core.window = renwindow._restore()
   if core.window == nil then
     core.window = renwindow.create("OFOL2")
@@ -594,8 +576,7 @@ function core.init()
   core.tree_view:set_minimum_target_size_x(min_toolbar_width)
   core.tree_view:set_target_size("x", min_toolbar_width)
 
-  -- Load user settings
-  local got_user_error, got_project_error = not core.load_user_directory()
+
 
   local project_dir_abs = system.absolute_path(project_dir)
   -- We prevent set_project_dir below to effectively add and scan the directory because the
