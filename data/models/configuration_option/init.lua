@@ -3,6 +3,8 @@
 -- and ui component rendering
 
 local style = require("themes.style")
+local Label = require("lib.widget.label")
+local Button = require("lib.widget.button")
 
 local ConfigurationOption = Object:extend()
 
@@ -200,16 +202,23 @@ end
 -- render short description text
 function ConfigurationOption:_add_label_widget_to_container(container)
   -- add label with short description text
-  local Label = require("lib.widget.label")
-  local my_label = Label(container, self._description_text_short .. ":")
+
+  local my_label_text = self._description_text_short .. ":"
+
+  -- if modified by user, add label
+  if not self:is_default_value() then
+    my_label_text = my_label_text .. " (modified by user)"
+  end
+
+  local my_label = Label(container, my_label_text)
 
   -- use bold font for this label
   my_label.font = style.bold_font
 
-  -- set lable color
+  -- change label color
   if self:is_default_value() then
     -- default color for default value
-    my_label.foreground_color = style.dim
+    my_label.foreground_color = style.text
   else
     -- use different color if value has been modified
     my_label.foreground_color = style.accent
@@ -240,14 +249,12 @@ function ConfigurationOption:_add_description_widget_to_container(container)
   local description_label_text = self._description_text_long .. " (default: " .. default_value_text .. ")"
 
   -- create widget and return it
-  local Label = require("lib.widget.label")
   return Label(container, description_label_text)
 end
 
 -- render reset button for user-modified values
 function ConfigurationOption:_add_reset_button_widget_to_container(container)
   -- create reset button
-  local Button = require("lib.widget.button")
   local my_button = Button(container, "reset to default value")
 
   local outerSelf = self
@@ -278,7 +285,6 @@ function ConfigurationOption:add_widgets_to_container(container)
   local widget_button_reset_value = self:_add_reset_button_widget_to_container(container)
 
   -- empty space between options
-  local Label = require("lib.widget.label")
   local widget_line = Label(container, " ")
 
   return container
