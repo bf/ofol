@@ -7,10 +7,8 @@
 -- https://github.com/vincens2005/lite-xl-gitdiff-highlight
 -- https://github.com/lite-xl/lite-xl-plugins/blob/master/plugins/gitstatus.lua
 -- Thanks to everyone involved!
---
 local core = require "core"
 local command = require "core.command"
-local config = require "core.config"
 local keymap = require "core.keymap"
 local style = require "themes.style"
 local Doc = require "core.doc"
@@ -29,35 +27,13 @@ local MessageBox = require "lib.widget.messagebox"
 local FileMetadataStore = require "stores.file_metadata_store"
 
 
-
----@class config.plugins.smc
+---@class settings_source_code_management
 ---@field highlighter boolean
 ---@field highlighter_alignment "right" | "left"
-config.plugins.smc = table.merge({
+local settings_source_code_management = {
   highlighter = true,
   highlighter_alignment = "right",
-  config_spec = {
-    name = "Source Control Management",
-    {
-      label = "Highlighter",
-      description = "Display or hide the changes highlighter from the gutter.",
-      path = "highlighter",
-      type = "toggle",
-      default = true
-    },
-    {
-      label = "Highlighter Alignment",
-      description = "The position on the gutter to draw the changes highlighter.",
-      path = "highlighter_alignment",
-      type = "selection",
-      default = "left",
-      values = {
-        {"Left", "left"},
-        {"Right", "right"}
-      }
-    }
-  }
-}, config.plugins.smc)
+}
 
 ---@class plugins.scm.filechange : plugins.scm.backend.filechange
 ---@field color renderer.color?
@@ -691,7 +667,7 @@ local DIFF_WIDTH = 3
 local docview_draw_line_gutter = DocView.draw_line_gutter
 local docview_get_gutter_width = DocView.get_gutter_width
 function DocView:draw_line_gutter(line, x, y, width)
-  if not self.doc or not self.doc.scm_diff or not config.plugins.smc.highlighter then
+  if not self.doc or not self.doc.scm_diff or not settings_source_code_management.highlighter then
     return docview_draw_line_gutter(self, line, x, y, width)
   end
 
@@ -699,7 +675,7 @@ function DocView:draw_line_gutter(line, x, y, width)
   local gw, gpad = docview_get_gutter_width(self)
   local diff_type = self.doc.scm_diff[line]
 
-  local align = config.plugins.smc.highlighter_alignment
+  local align = settings_source_code_management.highlighter_alignment
 
   if align == "right" then
     docview_draw_line_gutter(self, line, x, y, gpad and gw - gpad or gw)
@@ -745,7 +721,7 @@ function DocView:draw_line_gutter(line, x, y, width)
 end
 
 function DocView:get_gutter_width()
-  if not self.doc or not self.doc.scm_diff or not config.plugins.smc.highlighter then
+  if not self.doc or not self.doc.scm_diff or not settings_source_code_management.highlighter then
     return docview_get_gutter_width(self)
   end
   return docview_get_gutter_width(self)

@@ -4,50 +4,13 @@
   version: 20220614_1
 --]]
 local syntax = require "lib.syntax"
-local config = require "core.config"
 
 -- load syntax dependencies to add additional rules
 require "lib.syntax.languages.language_css"
 require "lib.syntax.languages.language_js"
 
-local psql_found = pcall(require, "lib.syntax.languages.language_psql")
 local sql_strings = {}
 
-config.plugins.language_php = table.merge({
-  sql_strings = true,
-  -- The config specification used by the settings gui
-  config_spec = {
-    name = "Language PHP",
-    {
-      label = "SQL Strings",
-      description = "Highlight as SQL, strings starting with sql statements, "
-        .. "depends on language_psql.",
-      path = "sql_strings",
-      type = "toggle",
-      default = true,
-      on_apply = function(enabled)
-        local syntax_php = syntax.get("file.phps")
-        if enabled and psql_found then
-          if
-            not syntax_php.patterns[6].syntax
-            or
-            syntax_php.patterns[6].syntax ~= '.sql'
-          then
-            table.insert(syntax_php.patterns, 5, sql_strings[1])
-            table.insert(syntax_php.patterns, 6, sql_strings[2])
-          end
-        elseif
-          syntax_php.patterns[6].syntax
-          and
-          syntax_php.patterns[6].syntax == '.sql'
-        then
-          table.remove(syntax_php.patterns, 5)
-          table.remove(syntax_php.patterns, 5)
-        end
-      end
-    }
-  }
-}, config.plugins.language_php)
 
 -- Patterns to match some of the string inline variables
 local inline_variables = {
@@ -109,36 +72,33 @@ local function clone(tbl)
   return t
 end
 
--- optionally allow sql syntax on strings
-if psql_found then
-  -- generate SQL string marker regex
-  local sql_markers = { 'create', 'select', 'insert', 'update', 'replace', 'delete', 'drop', 'alter' }
-  local sql_regex = table.concat(sql_markers, '|')
+-- generate SQL string marker regex
+local sql_markers = { 'create', 'select', 'insert', 'update', 'replace', 'delete', 'drop', 'alter' }
+local sql_regex = table.concat(sql_markers, '|')
 
-  -- inject inline variable rules to cloned psql syntax
-  local syntax_phpsql = clone(syntax.get("file.sql"))
-  syntax_phpsql.name = "PHP SQL"
-  syntax_phpsql.files = "%.phpsql$"
-  table.insert(syntax_phpsql.patterns, 2, { pattern = "\\%$", type = "symbol" })
-  table.insert(syntax_phpsql.patterns, 3, { pattern = "%{[%$%s]*%}", type = "symbol" })
-  for i=4, 9 do
-    table.insert(syntax_phpsql.patterns, i, inline_variables[i])
-  end
-
-  -- SQL strings
-  sql_strings = {
-    {
-        regex  = { '"(?=[\\s(]*(?i:'..sql_regex..')\\s+)', '"', '\\' },
-        syntax = syntax_phpsql,
-        type   = "string"
-    },
-    {
-        regex  = { "'(?=[\\s(]*(?i:"..sql_regex..")\\s+)", '\'', '\\' },
-        syntax = '.sql',
-        type   = "string"
-    },
-  }
+-- inject inline variable rules to cloned psql syntax
+local syntax_phpsql = clone(syntax.get("file.sql"))
+syntax_phpsql.name = "PHP SQL"
+syntax_phpsql.files = "%.phpsql$"
+table.insert(syntax_phpsql.patterns, 2, { pattern = "\\%$", type = "symbol" })
+table.insert(syntax_phpsql.patterns, 3, { pattern = "%{[%$%s]*%}", type = "symbol" })
+for i=4, 9 do
+  table.insert(syntax_phpsql.patterns, i, inline_variables[i])
 end
+
+-- SQL strings
+sql_strings = {
+  {
+      regex  = { '"(?=[\\s(]*(?i:'..sql_regex..')\\s+)', '"', '\\' },
+      syntax = syntax_phpsql,
+      type   = "string"
+  },
+  {
+      regex  = { "'(?=[\\s(]*(?i:"..sql_regex..")\\s+)", '\'', '\\' },
+      syntax = '.sql',
+      type   = "string"
+  },
+}
 
 -- define the core php syntax coloring
 syntax.add {
@@ -323,11 +283,9 @@ syntax.add {
 }
 
 -- insert sql string rules after the "/%*", "%*/" pattern
-if psql_found and config.plugins.language_php.sql_strings then
-  local syntax_php = syntax.get("file.phps")
-  table.insert(syntax_php.patterns, 5, sql_strings[1])
-  table.insert(syntax_php.patterns, 6, sql_strings[2])
-end
+local syntax_php = syntax.get("file.phps")
+table.insert(syntax_php.patterns, 5, sql_strings[1])
+table.insert(syntax_php.patterns, 6, sql_strings[2])
 
 -- allows html, css and js coloring on php files
 syntax.add {
