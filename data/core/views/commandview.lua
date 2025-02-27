@@ -120,7 +120,7 @@ function CommandView:move_suggestion_idx(dir)
   end
 
   local function get_suggestions_offset()
-    local max_visible = math.min(ConfigurationCache:get("max_visible_commands"), #self.suggestions)
+    local max_visible = math.min(ConfigurationOptionStore.get_max_visible_commands(), #self.suggestions)
     if dir > 0 then
       if self.suggestions_offset + max_visible < self.suggestion_idx + 1 then
         return self.suggestion_idx - max_visible + 1
@@ -315,7 +315,7 @@ function CommandView:update()
   local lh = self:get_suggestion_line_height()
 
   if self.state.show_suggestions and #self.suggestions > 0 then
-    self.suggestions_height = math.min(#self.suggestions, ConfigurationCache:get("max_visible_commands")) * lh 
+    self.suggestions_height = math.min(#self.suggestions, ConfigurationOptionStore.get_max_visible_commands()) * lh 
   else
     self.suggestions_height = 0
   end
@@ -374,7 +374,7 @@ local function draw_suggestions_box(self)
 
   -- draw suggestion text
   local first = math.max(self.suggestions_offset, 1)
-  local last = math.min(self.suggestions_offset + ConfigurationCache:get("max_visible_commands"), #self.suggestions)
+  local last = math.min(self.suggestions_offset + ConfigurationOptionStore.get_max_visible_commands(), #self.suggestions)
   for i=first, last do
     local item = self.suggestions[i]
     local color = (i == self.suggestion_idx) and style.accent or style.text

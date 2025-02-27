@@ -265,7 +265,7 @@ end
 
 function keymap.on_mouse_pressed(button, x, y, clicks)
   stderr.debug("on_mouse_pressed %s %d %d %d", button, x, y, clicks)
-  local click_number = (((clicks - 1) % ConfigurationCache:get("max_clicks")) + 1)
+  local click_number = (((clicks - 1) % ConfigurationOptionStore.get_max_clicks()) + 1)
   return not (keymap.on_key_pressed(click_number  .. button:sub(1,1) .. "click", x, y, clicks) or
     keymap.on_key_pressed(button:sub(1,1) .. "click", x, y, clicks) or
     keymap.on_key_pressed(click_number .. "click", x, y, clicks) or

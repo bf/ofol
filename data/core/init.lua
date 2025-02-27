@@ -337,7 +337,7 @@ local function find_files_recursively(root, path)
       info.filename = fsutils.strip_leading_path(file)
       if info.type == "file" then
         coroutine.yield(root, info)
-      elseif not string.match_pattern(fsutils.basename(info.filename), ConfigurationCache:get("ignore_files")) then
+      elseif not string.match_pattern(fsutils.basename(info.filename), ConfigurationOptionStore.get_ignore_files()) then
         find_files_recursively(root, PATHSEP .. info.filename)
       end
     end
@@ -1028,7 +1028,7 @@ function core.run()
   local next_step
   local last_frame_time
   local run_threads_full = 0
-  local HALF_BLINK_PERIOD = ConfigurationCache:get("blink_period") / 2
+  local HALF_BLINK_PERIOD = ConfigurationOptionStore.get_blink_period() / 2
   while true do
     core.frame_start = system.get_time()
     local time_to_wake, threads_done = run_threads()

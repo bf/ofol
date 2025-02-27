@@ -192,10 +192,10 @@ end
 -- get tab/spaces indentation info
 function Doc:get_indent_info()
   if not self.indent_info then 
-    return ConfigurationCache:get("tab_type"), ConfigurationCache:get("indent_size"), false 
+    return ConfigurationOptionStore.get_tab_type(), ConfigurationOptionStore.get_indent_size(), false 
   else
-    return self.indent_info.type or ConfigurationCache:get("tab_type"),
-      self.indent_info.size or ConfigurationCache:get("indent_size"),
+    return self.indent_info.type or ConfigurationOptionStore.get_tab_type(),
+      self.indent_info.size or ConfigurationOptionStore.get_indent_size(),
       self.indent_info.confirmed
   end
 end
@@ -433,7 +433,7 @@ end
 
 local function push_undo(undo_stack, time, type, ...)
   undo_stack[undo_stack.idx] = { type = type, time = time, ... }
-  undo_stack[undo_stack.idx - ConfigurationCache:get("max_undos")] = nil
+  undo_stack[undo_stack.idx - ConfigurationOptionStore.get_max_undos()] = nil
   undo_stack.idx = undo_stack.idx + 1
 end
 
@@ -461,7 +461,7 @@ local function pop_undo(self, undo_stack, redo_stack, modified)
   -- if next undo command is within the merge timeout then treat as a single
   -- command and continue to execute it
   local next = undo_stack[undo_stack.idx - 1]
-  if next and math.abs(cmd.time - next.time) < ConfigurationCache:get("undo_merge_timeout")then
+  if next and math.abs(cmd.time - next.time) < ConfigurationOptionStore.get_undo_merge_timeout()then
     return pop_undo(self, undo_stack, redo_stack, modified)
   end
 
