@@ -1,4 +1,3 @@
--- mod-version:3
 -- https://nixos.wiki/wiki/Overview_of_the_Nix_Language
 local syntax = require "lib.syntax"
 

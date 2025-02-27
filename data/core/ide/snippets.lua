@@ -1,9 +1,5 @@
--- mod-version:3
-
-
 local core      = require 'core'
 local command   = require 'core.command'
-local config    = require 'core.config'
 local Doc       = require 'core.doc'
 local translate = require 'core.doc.translate'
 local keymap    = require 'core.keymap'
@@ -29,23 +25,7 @@ local AUTOCOMPLETE_KEY = { }
 
 
 -- config
-
-config.plugins.snippets = table.merge({
-	autoexit = true,
-
-	config_spec = {
-		name = 'Snippets',
-		{
-			label       = 'Automatically exit',
-			description = 'Automatically exit snippets upon text input' ..
-			              'if the leading selection is not on a tabstop.',
-			path        = 'autoexit',
-			type        = 'toggle',
-			default     = true
-		}
-	}
-}, config.plugins.snippets)
-
+local autoexit = true
 
 -- utils
 
@@ -694,7 +674,7 @@ local raw_insert, raw_remove = Doc.raw_insert, Doc.raw_remove
 
 local function autoexit(doc)
 	if (watches[doc] and not watches[doc].expect) and
-	    config.plugins.snippets.autoexit and not M.in_snippet(doc, true) then
+	    autoexit and not M.in_snippet(doc, true) then
 		active[doc]  = nil
 		watches[doc] = nil
 		return true
@@ -1083,7 +1063,7 @@ end
 -- commands
 
 local function predicate()
-	return M.in_snippet(nil, config.plugins.snippets.autoexit)
+	return M.in_snippet(nil, autoexit)
 end
 
 command.add(M.in_snippet, {

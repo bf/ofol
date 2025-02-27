@@ -1,4 +1,3 @@
--- mod-version:3
 -- copied from language_js, but added regex highlighting back
 local syntax = require "lib.syntax"
 

@@ -1,4 +1,3 @@
--- mod-version:3
 
 -- to better understand these comments, see this section from rxi's article
 -- https://rxi.github.io/lite_an_implementation_overview.html#syntax_highlighting

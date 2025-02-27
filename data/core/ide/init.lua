@@ -1,13 +1,3 @@
--- -- load context menu for doc
--- require "core.ide.contextmenu_in_docview"
-
--- load lintplus explicitly
--- local lintplus = require "core.ide.lintplus"
--- lintplus.load("rust")
--- lintplus.setup.lint_on_doc_load()
--- lintplus.setup.lint_on_doc_save()
-
-
 -- load text scaling plugin
 local scale = require ".editor_text_scaling"
 
@@ -16,6 +6,7 @@ local minimap = require ".editor_minimap"
 
 -- load scm plugin
 local scm = require "core.ide.scm"
+
 -- load scm context menu for treeview
 local treeview_context_menu_from_scm = require "core.ide.scm.treeview"
 

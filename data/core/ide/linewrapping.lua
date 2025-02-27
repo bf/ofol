@@ -1,16 +1,13 @@
--- mod-version:3 --priority:10
 local core = require "core"
 local Doc = require "core.doc"
 local style = require "themes.style"
-local config = require "core.config"
 local command = require "core.command"
 local keymap = require "core.keymap"
 local translate = require "core.doc.translate"
 
 local DocView = require "core.views.docview"
 
-
-config.plugins.linewrapping = table.merge({
+local linewrapping_settings = {
 	-- The type of wrapping to perform. Can be "letter" or "word".
   mode = "letter",
 	-- If nil, uses the DocView's size, otherwise, uses this exact width. Can be a function.
@@ -23,50 +20,7 @@ config.plugins.linewrapping = table.merge({
   enable_by_default = true,
   -- Requires tokenization
   require_tokenization = true,
-  -- The config specification used by gui generators
-  config_spec = {
-    name = "Line Wrapping",
-    {
-      label = "Mode",
-      description = "The type of wrapping to perform.",
-      path = "mode",
-      type = "selection",
-      default = "letter",
-      values = {
-        {"Letters", "letter"},
-        {"Words", "word"}
-      }
-    },
-    {
-      label = "Guide",
-      description = "Whether or not to draw a guide.",
-      path = "guide",
-      type = "toggle",
-      default = true
-    },
-    {
-      label = "Indent",
-      description = "Whether or not to follow the indentation of wrapped line.",
-      path = "indent",
-      type = "toggle",
-      default = true
-    },
-    {
-      label = "Enable by Default",
-      description = "Whether or not to enable wrapping by default when opening files.",
-      path = "enable_by_default",
-      type = "toggle",
-      default = false
-    },
-    {
-      label = "Require Tokenization",
-      description = "Use tokenization when applying wrapping.",
-      path = "require_tokenization",
-      type = "toggle",
-      default = false
-    }
-  }
-}, config.plugins.linewrapping)
+}
 
 local LineWrapping = {}
 
@@ -74,7 +28,7 @@ local LineWrapping = {}
 -- so if we don't need to run it, should be run sparingly.
 local function spew_tokens(doc, line) if line < math.huge then return math.huge, "normal", doc.lines[line] end end
 local function get_tokens(doc, line)
-  if config.plugins.linewrapping.require_tokenization then
+  if linewrapping_settings.require_tokenization then
     return doc.highlighter:each_token(line)
   end
   return spew_tokens, doc, line
@@ -87,7 +41,7 @@ function LineWrapping.compute_line_breaks(doc, default_font, line, width, mode)
   local splits = { 1 }
   for idx, type, text in get_tokens(doc, line) do
     local font = style.syntax_fonts[type] or default_font
-    if idx == 1 or idx == math.huge and config.plugins.linewrapping.indent then
+    if idx == 1 or idx == math.huge and linewrapping_settings.indent then
       local _, indent_end = text:find("^%s+")
       if indent_end then begin_width = font:get_width(text:sub(1, indent_end)) end
     end
@@ -133,7 +87,7 @@ function LineWrapping.reconstruct_breaks(docview, default_font, width, line_offs
     docview.wrapped_line_offsets = { }
     docview.wrapped_settings = { ["width"] = width, ["font"] = default_font }
     for i = line_offset or 1, #doc.lines do
-      local breaks, offset = LineWrapping.compute_line_breaks(doc, default_font, i, width, config.plugins.linewrapping.mode)
+      local breaks, offset = LineWrapping.compute_line_breaks(doc, default_font, i, width, linewrapping_settings.mode)
       table.insert(docview.wrapped_line_offsets, offset)
       for k, col in ipairs(breaks) do
         table.insert(docview.wrapped_lines, i)
@@ -186,7 +140,7 @@ function LineWrapping.update_breaks(docview, old_line1, old_line2, net_lines)
   local new_line1 = old_line1
   local new_line2 = old_line2 + net_lines
   for line = new_line1, new_line2 do
-    local breaks, begin_width = LineWrapping.compute_line_breaks(docview.doc, docview.wrapped_settings.font, line, docview.wrapped_settings.width, config.plugins.linewrapping.mode)
+    local breaks, begin_width = LineWrapping.compute_line_breaks(docview.doc, docview.wrapped_settings.font, line, docview.wrapped_settings.width, linewrapping_settings.mode)
     table.insert(docview.wrapped_line_offsets, line, begin_width)
     for i,b in ipairs(breaks) do
       table.insert(docview.wrapped_lines, offset, b)
@@ -211,7 +165,7 @@ end
 
 -- Draws a guide if applicable to show where wrapping is occurring.
 function LineWrapping.draw_guide(docview)
-  if config.plugins.linewrapping.guide and docview.wrapped_settings.width ~= math.huge then
+  if linewrapping_settings.guide and docview.wrapped_settings.width ~= math.huge then
     local x, y = docview:get_content_offset()
     local gw = docview:get_gutter_width()
     renderer.draw_rect(x + gw + docview.wrapped_settings.width, y, 1, core.root_view.size.y, style.selection)
@@ -220,8 +174,8 @@ end
 
 function LineWrapping.update_docview_breaks(docview)
   local w = docview.v_scrollbar.expanded_size or style.expanded_scrollbar_size
-  local width = (type(config.plugins.linewrapping.width_override) == "function" and config.plugins.linewrapping.width_override(docview))
-    or config.plugins.linewrapping.width_override or (docview.size.x - docview:get_gutter_width() - w)
+  local width = (type(linewrapping_settings.width_override) == "function" and linewrapping_settings.width_override(docview))
+    or linewrapping_settings.width_override or (docview.size.x - docview:get_gutter_width() - w)
   if (not docview.wrapped_settings or docview.wrapped_settings.width == nil or width ~= docview.wrapped_settings.width) then
     docview.scroll.to.x = 0
     LineWrapping.reconstruct_breaks(docview, docview:get_font(), width)
@@ -377,7 +331,7 @@ function DocView:new(doc)
   if doc.is_binary_file_from_disk then
     stderr.warn("no linewrapping for binary files from disk")
   else
-    if config.plugins.linewrapping.enable_by_default then
+    if linewrapping_settings.enable_by_default then
       self.wrapping_enabled = true
       LineWrapping.update_docview_breaks(self)
     else

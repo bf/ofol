@@ -295,7 +295,7 @@ end
 
 ---Updates the scrollbar animations
 function Scrollbar:update()
-  -- TODO: move the animation code to its own class
+  -- TODO: ensure no animation is happening here (old: move the animation code to its own class)
   if not self.force_status then
     local dest = (self.hovering.track or self.dragging) and 1 or 0
     local diff = math.abs(self.expand_percent - dest)

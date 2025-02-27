@@ -1,4 +1,3 @@
--- mod-version:3
 local syntax = require "lib.syntax"
 
 -- Copied from https://github.com/shanoor/vscode-nginx/blob/master/syntaxes/nginx.tmLanguage

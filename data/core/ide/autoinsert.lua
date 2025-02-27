@@ -1,24 +1,21 @@
--- mod-version:3
 local core = require "core"
 local translate = require "core.doc.translate"
-local config = require "core.config"
 local command = require "core.command"
 local keymap = require "core.keymap"
 
 local DocView = require "core.views.docview"
 
-config.plugins.autoinsert = table.merge({ map = {
+local autoinsert_mappings = {
   ["["] = "]",
   ["{"] = "}",
   ["("] = ")",
   ['"'] = '"',
   ["'"] = "'",
   ["`"] = "`",
-} }, config.plugins.autoinsert)
-
+}
 
 local function is_closer(chr)
-  for _, v in pairs(config.plugins.autoinsert.map) do
+  for _, v in pairs(autoinsert_mappings) do
     if v == chr then
       return true
     end
@@ -41,7 +38,7 @@ function DocView:on_text_input(text)
   -- Don't insert on multiselections
   if #self.doc.selections > 4 then return on_text_input(self, text) end
 
-  local mapping = config.plugins.autoinsert.map[text]
+  local mapping = autoinsert_mappings[text]
 
   -- prevents plugin from operating on `CommandView`
   if getmetatable(self) ~= DocView then
@@ -93,7 +90,7 @@ command.add(predicate, {
     local l, c = doc:get_selection()
     if c > 1 then
       local chr = doc:get_char(l, c)
-      local mapped = config.plugins.autoinsert.map[doc:get_char(l, c - 1)]
+      local mapped = autoinsert_mappings[doc:get_char(l, c - 1)]
       if mapped and mapped == chr then
         doc:delete_to(1)
       end

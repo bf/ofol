@@ -30,6 +30,7 @@ Goals:
 - [x] move to sdl3? (done via sdl2-compat library on arch linux)
 - [x] dynamic width tabs
 - [x] treeview: fix context menu
+- [x] use luajit?
 
 
 

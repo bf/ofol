@@ -1,5 +1,3 @@
--- mod-version:3
-
 -- LSP style snippet parser
 -- shamelessly 'inspired by' (stolen from) LuaSnip
 -- https://github.com/L3MON4D3/LuaSnip/blob/master/lua/luasnip/util/parser/neovim_parser.lua

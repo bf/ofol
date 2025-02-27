@@ -1,6 +1,5 @@
 -- Author: Rohan Vashisht: https://github.com/RohanVashisht1234/
 
--- mod-version:3
 local syntax = require "lib.syntax"
 
 syntax.add {

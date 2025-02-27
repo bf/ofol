@@ -1,7 +1,5 @@
--- mod-version:3
 local core = require "core"
 local command = require "core.command"
-local config = require "core.config"
 local style = require "themes.style"
 local Highlighter = require "core.doc.highlighter"
 local Scrollbar = require "components.scrollbar_component"
@@ -13,19 +11,19 @@ local DocView = require "core.views.docview"
 
 -- Sample configurations:
 -- full width:
--- config.plugins.bf_minimap.highlight_width = 100
--- config.plugins.bf_minimap.gutter_width = 0
+-- minimap_settings.highlight_width = 100
+-- minimap_settings.gutter_width = 0
 -- left side:
--- config.plugins.bf_minimap.highlight_align = 'left'
--- config.plugins.bf_minimap.highlight_width = 3
--- config.plugins.bf_minimap.gutter_width = 4
+-- minimap_settings.highlight_align = 'left'
+-- minimap_settings.highlight_width = 3
+-- minimap_settings.gutter_width = 4
 -- right side:
--- config.plugins.bf_minimap.highlight_align = 'right'
--- config.plugins.bf_minimap.highlight_width = 5
--- config.plugins.bf_minimap.gutter_width = 0
+-- minimap_settings.highlight_align = 'right'
+-- minimap_settings.highlight_width = 5
+-- minimap_settings.gutter_width = 0
 
 -- General plugin settings
-config.plugins.bf_minimap = table.merge({
+local minimap_settings = {
   enabled = true,
   always_visible = true,
   width = 100,
@@ -46,142 +44,7 @@ config.plugins.bf_minimap = table.merge({
   highlight_align = 'left',
   highlight_width = 3,
   gutter_width = 5,
-  -- The config specification used by the settings gui
-  config_spec = {
-    name = "BF Mini Map",
-    {
-      label = "Enabled",
-      description = "Activate the minimap by default.",
-      path = "enabled",
-      type = "toggle",
-      default = true
-    },
-    {
-      label = "Always Visible",
-      description = "Minimap is always visible.",
-      path = "always_visible",
-      type = "toggle",
-      default = true
-    },
-    {
-      label = "Width",
-      description = "Width of the minimap in pixels.",
-      path = "width",
-      type = "number",
-      default = 100,
-      min = 50,
-      max = 1000
-    },
-    {
-      label = "Syntax Highlighting",
-      description = "Disable to improve performance.",
-      path = "syntax_highlight",
-      type = "toggle",
-      default = true
-    },
-    {
-      label = "Scale",
-      description = "Size of the minimap using a scaling factor.",
-      path = "scale",
-      type = "number",
-      default = 1,
-      min = 0.5,
-      max = 10,
-      step = 0.1
-    },
-    {
-      label = "Spaces to split",
-      description = "Number of spaces needed to split a token.",
-      path = "spaces_to_split",
-      type = "number",
-      default = 2,
-      min = 1
-    },
-    {
-      label = "Hide for small Docs",
-      description = "Hide the minimap when a Doc is small enough.",
-      path = "avoid_small_docs",
-      type = "toggle",
-      default = false
-    },
-    {
-      label = "Small Docs definition",
-      description = "Size of a Doc to be considered small. Use 0 to automatically decide.",
-      path = "avoid_small_docs_len",
-      type = "number",
-      default = 0,
-      min = 0,
-      on_apply = function(value)
-        if value == 0 then
-          config.plugins.bf_minimap.avoid_small_docs = true
-        else
-          config.plugins.bf_minimap.avoid_small_docs = value
-        end
-      end
-    },
-    -- {
-    --   label = "Tabs Width",
-    --   description = "The amount of spaces that represent a tab.",
-    --   path = "number_of_spaces_per_tab_character",
-    --   type = "number",
-    --   default = 4,
-    --   min = 1,
-    --   max = 8
-    -- },
-    {
-      label = "Draw Background",
-      description = "When disabled makes the minimap transparent.",
-      path = "draw_background",
-      type = "toggle",
-      default = true
-    },
-    {
-      label = "Selection Color",
-      description = "Background color of selected text.",
-      path = "selection_color",
-      type = "color",
-      default = string.format("#%02X%02X%02X%02X",
-        style.dim[1], style.dim[2], style.dim[3], style.dim[4]
-      )
-    },
-    {
-      label = "Caret Color",
-      description = "Background color of active line.",
-      path = "caret_color",
-      type = "color",
-      default = string.format("#%02X%02X%02X%02X",
-        style.caret[1], style.caret[2], style.caret[3], style.caret[4]
-      )
-    },
-    {
-      label = "Highlight Alignment",
-      path = "highlight_align",
-      type = "selection",
-      default = "left",
-      values = {
-        {"Left", "left"},
-        {"Right", "right"}
-      }
-    },
-    {
-      label = "Highlight Width",
-      path = "highlight_width",
-      type = "number",
-      default = 3,
-      min = 0,
-      max = 50
-    },
-    {
-      label = "Gutter Width",
-      description = "Left padding of the minimap.",
-      path = "gutter_width",
-      type = "number",
-      default = 5,
-      min = 0,
-      max = 50
-    },
-  }
-}, config.plugins.bf_minimap)
+}
 
 
 -- contains the settings values that require a cache reset if changed
@@ -204,15 +67,15 @@ local function reset_cache()
   highlighter_cache = setmetatable({}, { __mode = "k" })
   cached_settings = {
     color_scheme_canary = style.syntax["normal"],
-    syntax_highlight = config.plugins.bf_minimap.syntax_highlight,
-    spaces_to_split = config.plugins.bf_minimap.spaces_to_split,
-    scale = config.plugins.bf_minimap.scale,
-    width = config.plugins.bf_minimap.width,
+    syntax_highlight = minimap_settings.syntax_highlight,
+    spaces_to_split = minimap_settings.spaces_to_split,
+    scale = minimap_settings.scale,
+    width = minimap_settings.width,
   }
-  char_spacing = 0.8 * SCALE * config.plugins.bf_minimap.scale
+  char_spacing = 0.8 * SCALE * minimap_settings.scale
   -- keep y aligned to pixels
-  char_height = math.max(1, math.floor(1 * SCALE * config.plugins.bf_minimap.scale + 0.5))
-  line_spacing = math.max(1, math.floor(2 * SCALE * config.plugins.bf_minimap.scale + 0.5))
+  char_height = math.max(1, math.floor(1 * SCALE * minimap_settings.scale + 0.5))
+  line_spacing = math.max(1, math.floor(2 * SCALE * minimap_settings.scale + 0.5))
 end
 reset_cache()
 
@@ -220,10 +83,10 @@ reset_cache()
 local function reset_cache_if_needed()
   if
     cached_settings.color_scheme_canary ~= style.syntax["normal"]
-    or cached_settings.syntax_highlight ~= config.plugins.bf_minimap.syntax_highlight
-    or cached_settings.spaces_to_split  ~= config.plugins.bf_minimap.spaces_to_split
-    or cached_settings.scale            ~= config.plugins.bf_minimap.scale
-    or cached_settings.width            ~= config.plugins.bf_minimap.width
+    or cached_settings.syntax_highlight ~= minimap_settings.syntax_highlight
+    or cached_settings.spaces_to_split  ~= minimap_settings.spaces_to_split
+    or cached_settings.scale            ~= minimap_settings.scale
+    or cached_settings.width            ~= minimap_settings.width
   then
     reset_cache()
   end
@@ -313,7 +176,7 @@ function MiniMap:swap_to_status()
     self.expanded_size = self.original_expanded_size
     self.expanded_margin = self.original_expanded_margin
     self.was_enabled = false
-  elseif enabled and (not self.was_enabled or config.plugins.bf_minimap.always_visible) then
+  elseif enabled and (not self.was_enabled or minimap_settings.always_visible) then
     self.force_status = "expanded"
     self.expanded_size = cached_settings.width
     self.expanded_margin = 0
@@ -341,13 +204,13 @@ end
 
 
 function MiniMap:is_minimap_enabled()
-  if config.plugins.bf_minimap.always_visible then return true end
+  if minimap_settings.always_visible then return true end
   if self.enabled ~= nil then return self.enabled end
-  if not config.plugins.bf_minimap.enabled then return false end
-  if config.plugins.bf_minimap.avoid_small_docs then
+  if not minimap_settings.enabled then return false end
+  if minimap_settings.avoid_small_docs then
     local last_line = #self.dv.doc.lines
-    if type(config.plugins.bf_minimap.avoid_small_docs) == "number" then
-      return last_line > config.plugins.bf_minimap.avoid_small_docs
+    if type(minimap_settings.avoid_small_docs) == "number" then
+      return last_line > minimap_settings.avoid_small_docs
     else
       local docview = self.dv
       local _, y = docview:get_line_screen_position(last_line, #docview.doc.lines[last_line])
@@ -419,7 +282,7 @@ function MiniMap:draw()
   local visual_color = highlight and style.scrollbar2 or style.scrollbar
 
 
-  if config.plugins.bf_minimap.draw_background then
+  if minimap_settings.draw_background then
     renderer.draw_rect(x, y, w, self.dv.size.y, style.bf_minimap_background or style.background)
   end
   self:draw_thumb()
@@ -429,8 +292,8 @@ function MiniMap:draw()
   y = y - y_offset + line_selection_offset
 
   -- highlight the selected lines, and the line with the caret on it
-  local selection_color = config.plugins.bf_minimap.selection_color or style.dim
-  local caret_color = config.plugins.bf_minimap.caret_color or style.caret
+  local selection_color = minimap_settings.selection_color or style.dim
+  local caret_color = minimap_settings.caret_color or style.caret
 
   for _, line1, _, line2, _ in dv.doc:get_selections() do
     local selection1_y = y + (line1 - minimap_lines_start) * line_spacing - line_selection_offset
@@ -441,9 +304,9 @@ function MiniMap:draw()
     renderer.draw_rect(x, selection1_y, w, line_spacing + line_selection_offset, caret_color)
   end
 
-  local highlight_align = config.plugins.bf_minimap.highlight_align
-  local highlight_width = config.plugins.bf_minimap.highlight_width
-  local gutter_width = config.plugins.bf_minimap.gutter_width
+  local highlight_align = minimap_settings.highlight_align
+  local highlight_width = minimap_settings.highlight_width
+  local gutter_width = minimap_settings.gutter_width
 
   -- time to draw the actual code, setup some local vars that are used in both highlighted and plain rendering.
   local line_y = y
@@ -456,14 +319,14 @@ function MiniMap:draw()
   local batch_width = 0
   local batch_start = x
   local last_batch_end = -1
-  local minimap_cutoff_x = config.plugins.bf_minimap.width * SCALE
+  local minimap_cutoff_x = minimap_settings.width * SCALE
   local batch_syntax_type = nil
   local function flush_batch(type, cache)
     if batch_width > 0 then
       local lastidx = #cache
       local old_color = color
       color = style.syntax[type]
-      if config.plugins.bf_minimap.syntax_highlight and color ~= nil then
+      if minimap_settings.syntax_highlight and color ~= nil then
         -- fetch and dim colors
         color = {color[1], color[2], color[3], (color[4] or 255) * 0.5}
       else
@@ -532,7 +395,7 @@ function MiniMap:draw()
       cache = highlighter_cache[dv.doc.highlighter][idx]
       -- per token
       for _, type, text in dv.doc.highlighter:each_token(idx) do
-        if not config.plugins.bf_minimap.syntax_highlight then
+        if not minimap_settings.syntax_highlight then
           type = nil
         end
         local start = 1
@@ -548,13 +411,13 @@ function MiniMap:draw()
           for i=w,e do
             local whitespace = string.sub(text, i, i)
             if whitespace == "\t" then
-              nspaces = nspaces + config.plugins.bf_minimap.number_of_spaces_per_tab_character
+              nspaces = nspaces + minimap_settings.number_of_spaces_per_tab_character
             elseif whitespace == " " then
               nspaces = nspaces + 1
             end
           end
           -- not enough spaces; consider them part of the batch
-          if nspaces < config.plugins.bf_minimap.spaces_to_split then
+          if nspaces < minimap_settings.spaces_to_split then
             batch_width = batch_width + nspaces * char_spacing
           end
           -- line has ended or no more space in the minimap;
@@ -566,7 +429,7 @@ function MiniMap:draw()
             break
           end
           -- enough spaces to split the batch
-          if nspaces >= config.plugins.bf_minimap.spaces_to_split then
+          if nspaces >= minimap_settings.spaces_to_split then
             flush_batch(type, cache)
             batch_start = batch_start + nspaces * char_spacing
           end
@@ -612,13 +475,13 @@ end
 
 -- command.add(nil, {
 --   ["minimap:toggle-visibility"] = function()
---     config.plugins.bf_minimap.enabled = not config.plugins.bf_minimap.enabled
+--     minimap_settings.enabled = not minimap_settings.enabled
 --     for i,v in ipairs(get_all_docviews(core.root_view.root_node)) do
 --       v.v_scrollbar.enabled = nil
 --     end
 --   end,
 --   ["minimap:toggle-syntax-highlighting"] = function()
---     config.plugins.bf_minimap.syntax_highlight = not config.plugins.bf_minimap.syntax_highlight
+--     minimap_settings.syntax_highlight = not minimap_settings.syntax_highlight
 --   end
 -- })
 
@@ -628,7 +491,7 @@ end
 --     if sb.enabled ~= nil then
 --       sb.enabled = not sb.enabled
 --     else
---       sb.enabled = not config.plugins.bf_minimap.enabled
+--       sb.enabled = not minimap_settings.enabled
 --     end
 --   end
 -- })

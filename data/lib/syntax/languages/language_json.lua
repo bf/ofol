@@ -1,4 +1,3 @@
--- mod-version:3 priority:110
 
 local syntax = require "lib.syntax"
 

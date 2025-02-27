@@ -1,9 +1,7 @@
--- mod-version:3
 local core = require "core"
 local command = require "core.command"
 local keymap = require "core.keymap"
 local ContextMenu = require "components.contextmenu_component"
-local config = require "core.config"
 
 local RootView = require "core.views.rootview"
 
@@ -75,13 +73,6 @@ local cmds = {
   { text = "Find",    command = "find-replace:find"    },
   { text = "Replace", command = "find-replace:replace" }
 }
-
--- if config.plugins.scale ~= false and require("plugins.scale") then
---   table.move(cmds, 4, 6, 7)
---   cmds[4] = { text = "Font +",     command = "scale:increase" }
---   cmds[5] = { text = "Font -",     command = "scale:decrease" }
---   cmds[6] = { text = "Font Reset", command = "scale:reset"    }
--- end
 
 menu:register("core.views.docview", cmds)
 

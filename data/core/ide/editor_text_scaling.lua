@@ -1,20 +1,18 @@
--- mod-version:3
 local core = require "core"
 local command = require "core.command"
-local config = require "core.config"
 local keymap = require "core.keymap"
 local style = require "themes.style"
 
 local CommandView = require "core.views.commandview"
 
-config.plugins.scale = table.merge({
+local scaling_settings = {
   -- The method used to apply the scaling: "code", "ui"
   mode = "code",
   -- Default scale applied at startup.
   default_scale = "autodetect",
   -- Allow using CTRL + MouseWheel for changing the scale.
   use_mousewheel = true
-}, config.plugins.scale)
+}
 
 local scale_steps = 0.05
 
@@ -41,7 +39,7 @@ local function set_scale(scale)
   local s = scale / current_scale
   current_scale = scale
 
-  if config.plugins.scale.mode == "ui" then
+  if scaling_settings.mode == "ui" then
     SCALE = scale
 
     style.padding.x               = style.padding.x               * s
@@ -91,75 +89,11 @@ local function dec_scale()
   set_scale(current_scale - scale_steps)
 end
 
-if default_scale ~= config.plugins.scale.default_scale then
-  if type(config.plugins.scale.default_scale) == "number" then
-    set_scale(config.plugins.scale.default_scale)
+if default_scale ~= scaling_settings.default_scale then
+  if type(scaling_settings.default_scale) == "number" then
+    set_scale(scaling_settings.default_scale)
   end
 end
-
--- The config specification used by gui generators
-config.plugins.scale.config_spec = {
-  name = "Scale",
-  {
-    label = "Mode",
-    description = "The method used to apply the scaling.",
-    path = "mode",
-    type = "selection",
-    default = "code",
-    values = {
-      {"Everything", "ui"},
-      {"Code Only", "code"}
-    }
-  },
-  {
-    label = "Default Scale",
-    description = "The scaling factor applied to lite-xl.",
-    path = "default_scale",
-    type = "selection",
-    default = "autodetect",
-    values = {
-      {"Autodetect", "autodetect"},
-      {"80%", 0.80},
-      {"90%", 0.90},
-      {"100%", 1.00},
-      {"110%", 1.10},
-      {"120%", 1.20},
-      {"125%", 1.25},
-      {"130%", 1.30},
-      {"140%", 1.40},
-      {"150%", 1.50},
-      {"175%", 1.75},
-      {"200%", 2.00},
-      {"250%", 2.50},
-      {"300%", 3.00}
-    },
-    on_apply = function(value)
-      if type(value) == "string" then value = default_scale end
-      if value ~= current_scale then
-        set_scale(value)
-      end
-    end
-  },
-  {
-    label = "Use MouseWheel",
-    description = "Allow using CTRL + MouseWheel for changing the scale.",
-    path = "use_mousewheel",
-    type = "toggle",
-    default = true,
-    on_apply = function(enabled)
-      if enabled then
-        keymap.add {
-          ["ctrl+wheelup"] = "scale:increase",
-          ["ctrl+wheeldown"] = "scale:decrease"
-        }
-      else
-        keymap.unbind("ctrl+wheelup", "scale:increase")
-        keymap.unbind("ctrl+wheeldown", "scale:decrease")
-      end
-    end
-  }
-}
-
 
 command.add(nil, {
   ["scale:reset"   ] = function() res_scale() end,
@@ -173,7 +107,7 @@ keymap.add {
   ["ctrl+="] = "scale:increase"
 }
 
-if config.plugins.scale.use_mousewheel then
+if scaling_settings.use_mousewheel then
   keymap.add {
     ["ctrl+wheelup"] = "scale:increase",
     ["ctrl+wheeldown"] = "scale:decrease"

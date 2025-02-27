@@ -1,4 +1,3 @@
--- mod-version:3
 local syntax = require "lib.syntax"
 
 -- In sql symbols can be lower case and upper case

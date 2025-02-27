@@ -1,4 +1,3 @@
--- mod-version:3
 -- Support for the Julia programming language:
 -- Covers the most used keywords up to Julia version 1.6.4
 

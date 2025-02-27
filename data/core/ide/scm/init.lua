@@ -1,4 +1,3 @@
--- mod-version:3
 --
 -- Source Control Management plugin.
 -- @copyright Jefferson Gonzalez <jgmdev@gmail.com>

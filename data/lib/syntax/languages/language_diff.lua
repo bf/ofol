@@ -1,4 +1,3 @@
--- mod-version:3
 local syntax = require "lib.syntax"
 local style = require "themes.style"
 
