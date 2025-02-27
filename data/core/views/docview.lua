@@ -416,7 +416,7 @@ function DocView:update()
 
   -- update blink timer
   if self == core.active_view and not self.mouse_selecting and not core.window_is_being_resized then
-    local T = ConfigurationOptionStore.get_blink_period()
+    local T = ConfigurationOptionStore.get_editor_blink_period()
     local t0 = core.blink_start
     local ta = core.blink_timer
     local tb =  system.get_time()
@@ -556,14 +556,14 @@ function DocView:draw_overlay()
   if core.active_view == self then
     local minline, maxline = self:get_visible_line_range()
     -- draw caret if it overlaps this line
-    local T = ConfigurationOptionStore.get_blink_period()
+    local T = ConfigurationOptionStore.get_editor_blink_period()
     for _, line1, col1, line2, col2 in self.doc:get_selections() do
       if line1 >= minline and line1 <= maxline
       and system.window_has_focus(core.window) then
         if ime.editing then
           self:draw_ime_decoration(line1, col1, line2, col2)
         else
-          if ConfigurationOptionStore.get_disable_blink() or (core.blink_timer - core.blink_start) % T < T / 2 then
+          if ConfigurationOptionStore.get_editor_disable_blink() or (core.blink_timer - core.blink_start) % T < T / 2 then
             local x, y = self:get_line_screen_position(line1, col1)
             if self.doc.overwrite then
               self:draw_overwrite_caret(x, y, self:get_font():get_width(self.doc:get_char(line1, col1)))

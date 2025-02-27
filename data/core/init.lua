@@ -1028,7 +1028,7 @@ function core.run()
   local next_step
   local last_frame_time
   local run_threads_full = 0
-  local HALF_BLINK_PERIOD = ConfigurationOptionStore.get_blink_period() / 2
+  local HALF_BLINK_PERIOD = ConfigurationOptionStore.get_editor_blink_period() / 2
   while true do
     core.frame_start = system.get_time()
     local time_to_wake, threads_done = run_threads()
