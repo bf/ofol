@@ -8,11 +8,37 @@ local Button = require("lib.widget.button")
 
 local ConfigurationOption = Object:extend()
 
+-- ensure configuration option key contains exactly one period (".")
+local function _count_number_of_periods_in_string(configuration_option_key)
+  -- Count the number of periods in the string
+  local count = 0
+  for _ in string.gmatch(configuration_option_key, "%.") do
+      count = count + 1
+  end
+
+  return count
+end
+
+-- get group_key from a given configuration_option_key (first part until period ".")
+local function _extract_group_key_from_configuration_option_key(configuration_option_key) 
+  -- return first part of string until period
+  return string.match(configuration_option_key, "^[^.]+")
+end
+
+
 function ConfigurationOption:new(key, description_text_short, description_text_long, default_value, options)
   -- ensure key is provided
   if not key or not Validator.is_string(key) then
     stderr.error("key is required")
   end
+
+  -- ensure configuration option key has a group key
+  if _count_number_of_periods_in_string(key) ~= 1 then
+    stderr.error("key %s needs to contain exactly one period", key)
+  end
+
+  -- extract group key from configuration option key
+  local._group_key = _extract_group_key_from_configuration_option_key(key)
 
   -- ensure description_text_short is provided and is a string
   if not description_text_short or not Validator.is_string(description_text_short) then
@@ -59,6 +85,7 @@ function ConfigurationOption:new(key, description_text_short, description_text_l
 
   -- initialize member variables
   self._key = key
+  self._group_key = _group_key
   self._default_value = default_value
   self._description_text_short = description_text_short
   self._description_text_long = description_text_long
@@ -111,6 +138,11 @@ end
 -- return key of this configuration option
 function ConfigurationOption:get_key()
   return self._key
+end
+
+-- return group_key of this configuration option
+function ConfigurationOption:get_group_key()
+  return self._group_key
 end
 
 -- set new value (called from ui)

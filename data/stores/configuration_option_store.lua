@@ -29,31 +29,6 @@ local _configuration_options_by_key = {}
 -- remember which key is for which group
 local _groups_by_key = {}
 
-
-
--- ensure configuration option key contains exactly one period (".")
-local function _check_if_configuration_option_key_contains_exactly_one_period(configuration_option_key)
-  -- Count the number of periods in the string
-  local count = 0
-  for _ in string.gmatch(configuration_option_key, "%.") do
-      count = count + 1
-  end
-
-  if count ~= 1 then
-    stderr.error("configuration_option_key %s needs to contain exactly one period")
-  end
-end
-
--- get group_key from a given configuration_option_key (first part until period ".")
-local function _extract_group_key_from_configuration_option_key(configuration_option_key) 
-  -- ensure configuration option key has a group key
-  _check_if_configuration_option_key_contains_exactly_one_period(configuration_option_key)
-
-  -- return first part of string until period
-  return string.match(configuration_option_key, "^[^.]+")
-end
-
-
 -- initialize a configuration option
 function ConfigurationOptionStore.initialize_configuration_option(newConfigurationOption)
   if not newConfigurationOption:extends(ConfigurationOption) then
@@ -68,10 +43,10 @@ function ConfigurationOptionStore.initialize_configuration_option(newConfigurati
     stderr.error("configuration option with key %s has already been initialized, cannot initialize a second time", configuration_option_key)
   end
 
-  -- fetch group_key from configuration option key
-  local group_key = _extract_group_key_from_configuration_option_key(configuration_option_key)
+  -- get group_key from configuration option 
+  local group_key = newConfigurationOption:get_group_key()
 
-  -- ensure group_key has been initialized already
+  -- ensure group_key has been initialized 
   if _groups_by_key[group_key] == nil then
     stderr.error("group_key %s needs to be initialized before configuration option %s can be defined for this group", group_key, configuration_option_key)
   end
@@ -125,6 +100,30 @@ function ConfigurationOptionStore.get(configuration_option_key)
   end
 
   return _configuration_options_by_key[configuration_option_key]
+end
+
+-- retrieve all groups
+function ConfigurationOptionStore.retrieve_all_groups(group_key)
+  -- ensure at least one group exists
+  if #_groups_by_key == 0 then
+    stderr.error("no group exists, this is unexpected")
+  end
+
+  return _groups_by_key
+end
+
+-- retrieve all options for specific group
+function ConfigurationOptionStore.retrieve_all_configuration_options_for_group_key(group_key)
+  -- ensure group_key has been initialized 
+  if _groups_by_key[group_key] == nil then
+    stderr.error("group_key %s needs to be initialized first", group_key)
+  end
+
+  -- filter all options to find matching ones
+  return table.filter(_configuration_options_by_key, function (item) 
+    -- check if group key isthe same
+    return item:get_group_key() == group_key
+  end)
 end
 
 return ConfigurationOptionStore

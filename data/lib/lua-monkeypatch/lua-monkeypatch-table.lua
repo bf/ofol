@@ -40,6 +40,30 @@ table.contains = function (tbl, value)
   return false
 end
 
+-- filter table by 
+-- Function to filter the table, keeping only even numbers
+table.filter = function (t, condition)
+  if type(t) ~= "table" then
+    stderr.error("t needs to be table, received %s", type(t))
+  end
+
+  if type(condition) ~= "function" then
+    stderr.error("condition needs to be function, received", type(condition))
+  end
+
+  -- loop over table
+  local filtered = {}
+  for i, v in ipairs(t) do
+    -- check condition
+    if condition(v) then
+      -- add to result
+      table.insert(filtered, v)
+    end
+  end
+
+  return filtered
+end
+
 
 ---Splices a numerically indexed table.
 ---This function mutates the original table.

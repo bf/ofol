@@ -1,5 +1,5 @@
 -- base class for configuration groups
-local SettingsTabComponent = require("components.settings_tab_component")
+-- local SettingsTabComponent = require("components.settings_tab_component")
 
 local ConfigurationOptionGroup = Object:extend()
 
@@ -44,14 +44,49 @@ function ConfigurationOptionGroup:get_icon()
   return self._icon
 end
 
+-- fetch all options for this group
+function ConfigurationOptionGroup:retrieve_all_configuration_options()
+  return ConfigurationOptionStore.retrieve_all_configuration_options_for_group_key(self._group_key)
+end
+
+-- render configuration group for the settings page in a container
 function ConfigurationOptionGroup:add_configuration_options_to_container(container)
-  -- iterate over all options
-  for index, myConfigurationOption in pairs(userInterfaceOptions) do
-    -- add to widget
-    myConfigurationOption:add_widgets_to_container(container)
+  -- update_positions() function will be called by settings class
+  -- whenever the container is visible
+  function container:update_positions()
+    -- remember previous child
+    local prev_child = nil
+
+    -- iterate over all children
+    for pos=#container.childs, 1, -1 do
+      local child = container.childs[pos]
+
+      -- start with basic padding at top
+      local x = style.padding.x
+      local y = style.padding.y
+
+      -- when previous child exists, position current child
+      -- underneath previous child
+      if prev_child then
+        y = prev_child:get_bottom() + style.padding.y
+      end
+
+      -- set with to full available container width
+      child:set_size(container:get_width() - 2*style.padding.x, child.size.y)
+
+      -- set position
+      child:set_position(x, y)
+
+      -- remember previous child
+      prev_child = child
+    end
   end
 
-  return SettingsTabComponent(self:get_group_key(), self:get_label_text(), self:get_icon(), setup_user_interface);
+  -- iterate over all options
+  for index, myConfigurationOption in pairs(self:retrieve_all_configuration_options()) do
+    -- add each option to  widget
+    myConfigurationOption:add_widgets_to_container(container)
+  end
 end
 
 return ConfigurationOptionGroup

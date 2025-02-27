@@ -5,12 +5,12 @@ local keymap = require "core.keymap"
 local Widget = require("lib.widget")
 local NoteBook = require("lib.widget.notebook")
 
-local settings_general = require("core.settings.settings_general")
-local settings_user_interface = require("core.settings.settings_user_interface")
-local settings_editor = require("core.settings.settings_editor")
-local settings_about = require("core.settings.settings_about")
-local settings_colors = require("core.settings.settings_colors")
-local settings_keybindings = require("core.settings.settings_keybindings")
+-- local settings_general = require("core.settings.settings_general")
+-- local settings_user_interface = require("core.settings.settings_user_interface")
+-- local settings_editor = require("core.settings.settings_editor")
+-- local settings_about = require("core.settings.settings_about")
+-- local settings_colors = require("core.settings.settings_colors")
+-- local settings_keybindings = require("core.settings.settings_keybindings")
 
 local Settings = Widget:extend()
 
@@ -32,12 +32,26 @@ function Settings:new()
   self.notebook.size.y = 300
   self.notebook.border.width = 0
 
-  settings_general:add_to_notebook_widget(self.notebook)
-  settings_user_interface:add_to_notebook_widget(self.notebook)
-  settings_editor:add_to_notebook_widget(self.notebook)
-  settings_colors:add_to_notebook_widget(self.notebook)
-  settings_keybindings:add_to_notebook_widget(self.notebook)
-  settings_about:add_to_notebook_widget(self.notebook)
+  -- render each group
+  for group_name, group_object in pairs(ConfigurationOptionStore.retrieve_all_groups()) do
+    stderr.debug("rendering configuration group", group_name)
+    
+    -- add notebook pane for group
+    local container = notebook_widget:add_pane(group_object:get_group_key(), group_object:get_label_text())
+
+    -- set notebook tab icon for group
+    notebook_widget:set_pane_icon(group_object:get_group_key(), group_object:get_icon())
+
+    -- render all options for this group in the container
+    group_object:add_configuration_options_to_container(container)
+  end
+
+  -- settings_general:add_to_notebook_widget(self.notebook)
+  -- settings_user_interface:add_to_notebook_widget(self.notebook)
+  -- settings_editor:add_to_notebook_widget(self.notebook)
+  -- settings_colors:add_to_notebook_widget(self.notebook)
+  -- settings_keybindings:add_to_notebook_widget(self.notebook)
+  -- settings_about:add_to_notebook_widget(self.notebook)
 end
 
 
