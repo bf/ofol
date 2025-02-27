@@ -73,10 +73,10 @@ end
 -- get tab/spaces indentation info
 function SingleLineDoc:get_indent_info()
   if not self.indent_info then 
-    return ConfigurationOptionStore.get_tab_type(), ConfigurationOptionStore.get_indent_size(), false 
+    return ConfigurationOptionStore.get_editor_tab_type(), ConfigurationOptionStore.get_editor_indent_size(), false 
   else
-    return self.indent_info.type or ConfigurationOptionStore.get_tab_type(),
-        self.indent_info.size or ConfigurationOptionStore.get_indent_size(),
+    return self.indent_info.type or ConfigurationOptionStore.get_editor_tab_type(),
+        self.indent_info.size or ConfigurationOptionStore.get_editor_indent_size(),
         self.indent_info.confirmed
   end
 end
