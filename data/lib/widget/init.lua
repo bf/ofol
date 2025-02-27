@@ -1064,10 +1064,10 @@ function Widget:on_mouse_wheel(y, x)
 
 
     if y and y ~= 0 then
-      self.scroll.to.y = self.scroll.to.y + y * -1 * ConfigurationOptionStore.get_mouse_wheel_scroll()
+      self.scroll.to.y = self.scroll.to.y + y * -1 * ConfigurationOptionStore.get_user_interface_mouse_wheel_scroll()
     end
     if x and x ~= 0 then
-      self.scroll.to.x = self.scroll.to.x + x * -1 * ConfigurationOptionStore.get_mouse_wheel_scroll()
+      self.scroll.to.x = self.scroll.to.x + x * -1 * ConfigurationOptionStore.get_user_interface_mouse_wheel_scroll()
     end
     return true
   end

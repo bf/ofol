@@ -117,7 +117,7 @@ command.add(nil, {
   ["root:scroll"] = function(delta)
     local view = core.root_view.overlapping_view or core.active_view
     if view and view.scrollable then
-      view.scroll.to.y = view.scroll.to.y + delta * -1 * ConfigurationOptionStore.get_mouse_wheel_scroll()
+      view.scroll.to.y = view.scroll.to.y + delta * -1 * ConfigurationOptionStore.get_user_interface_mouse_wheel_scroll()
       return true
     end
     return false
@@ -125,7 +125,7 @@ command.add(nil, {
   ["root:horizontal-scroll"] = function(delta)
     local view = core.root_view.overlapping_view or core.active_view
     if view and view.scrollable then
-      view.scroll.to.x = view.scroll.to.x + delta * -1 * ConfigurationOptionStore.get_mouse_wheel_scroll()
+      view.scroll.to.x = view.scroll.to.x + delta * -1 * ConfigurationOptionStore.get_user_interface_mouse_wheel_scroll()
       return true
     end
     return false
