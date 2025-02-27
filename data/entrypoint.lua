@@ -114,7 +114,7 @@ Validator = require("lib.validator")
 
 -- global include for user configuration
 PersistentUserConfiguration = require("persistence.persistent_user_configuration")
-ConfigurationStore = require("stores.configuration_store")
+ConfigurationOptionStore = require("stores.configuration_option_store")
 
 
 

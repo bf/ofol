@@ -82,8 +82,8 @@ function ConfigurationOption:new(key, description_text_short, description_text_l
     self._current_value = self._default_value
   end
 
-  -- add this configuraiton option to the global configuration storage 
-  ConfigurationStore.initialize_configuration_option(self)
+  -- add this configuration option to the global storage 
+  ConfigurationOptionStore.initialize_configuration_option(self)
 
   -- run on change function if it has been defined
   self:run_on_change_function_if_exists()
