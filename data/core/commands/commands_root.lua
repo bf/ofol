@@ -3,11 +3,7 @@ local style = require "themes.style"
 local command = require "core.command"
 local config = require "core.config"
 local Node = require "core.node"
-
 local DocView = require "core.views.docview"
-
-
-local getConfigurationOptionMouseWheelScroll = ConfigurationStore.lazy_get_current_value("mouse_wheel_scroll")
 
 
 local t = {
@@ -121,7 +117,7 @@ command.add(nil, {
   ["root:scroll"] = function(delta)
     local view = core.root_view.overlapping_view or core.active_view
     if view and view.scrollable then
-      view.scroll.to.y = view.scroll.to.y + delta * -1 * getConfigurationOptionMouseWheelScroll()
+      view.scroll.to.y = view.scroll.to.y + delta * -1 * ConfigurationCache:get("mouse_wheel_scroll")
       return true
     end
     return false
@@ -129,8 +125,7 @@ command.add(nil, {
   ["root:horizontal-scroll"] = function(delta)
     local view = core.root_view.overlapping_view or core.active_view
     if view and view.scrollable then
-      local configurationOptionMouseWheelScroll = ConfigurationStore.get("mouse_wheel_scroll")
-      view.scroll.to.x = view.scroll.to.x + delta * -1 * getConfigurationOptionMouseWheelScroll()
+      view.scroll.to.x = view.scroll.to.x + delta * -1 * ConfigurationCache:get("mouse_wheel_scroll")
       return true
     end
     return false

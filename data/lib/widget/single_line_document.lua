@@ -17,12 +17,6 @@ local translate  = require "lib.widget.single_line_document_translate"
 
 -- functions for translating a Doc position to another position these functions
 -- can be passed to Doc:move_to|select_to|delete_to()
-
-
-
-local getConfigurationOptionIndentSize = ConfigurationStore.lazy_get_current_value("indent_size")
-local getConfigurationOptionTabType = ConfigurationStore.lazy_get_current_value("tab_type")
-
 local SingleLineDoc = Object:extend()
 
 
@@ -79,10 +73,10 @@ end
 -- get tab/spaces indentation info
 function SingleLineDoc:get_indent_info()
   if not self.indent_info then 
-    return getConfigurationOptionTabType(), getConfigurationOptionIndentSize(), false 
+    return ConfigurationCache:get("tab_type"), ConfigurationCache:get("indent_size"), false 
   else
-    return self.indent_info.type or getConfigurationOptionTabType(),
-        self.indent_info.size or getConfigurationOptionIndentSize(),
+    return self.indent_info.type or ConfigurationCache:get("tab_type"),
+        self.indent_info.size or ConfigurationCache:get("indent_size"),
         self.indent_info.confirmed
   end
 end
@@ -320,7 +314,7 @@ end
 
 local function push_undo(undo_stack, time, type, ...)
   undo_stack[undo_stack.idx] = { type = type, time = time, ... }
-  undo_stack[undo_stack.idx - ConfigurationStore.get("max_undos"):get_current_value()] = nil
+  undo_stack[undo_stack.idx - ConfigurationCache:get("max_undos")] = nil
   undo_stack.idx = undo_stack.idx + 1
 end
 
@@ -348,7 +342,7 @@ local function pop_undo(self, undo_stack, redo_stack, modified)
   -- if next undo command is within the merge timeout then treat as a single
   -- command and continue to execute it
   local next = undo_stack[undo_stack.idx - 1]
-  if next and math.abs(cmd.time - next.time) < ConfigurationStore.get("undo_merge_timeout"):get_current_value() then
+  if next and math.abs(cmd.time - next.time) < ConfigurationCache:get("undo_merge_timeout") then
     return pop_undo(self, undo_stack, redo_stack, modified)
   end
 

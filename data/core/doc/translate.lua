@@ -3,12 +3,9 @@
 
 local translate = {}
 
-local getConfigurationOptionNonWordChars = ConfigurationStore.lazy_get_current_value("non_word_chars")
-
 local function is_non_word(char)
-  return getConfigurationOptionNonWordChars():find(char, nil, true)
+  return ConfigurationCache:get("non_word_chars"):find(char, nil, true)
 end
-
 
 function translate.previous_char(doc, line, col)
   repeat

@@ -146,6 +146,9 @@ function ConfigurationOption:set(new_value)
     PersistentUserConfiguration.set(self._key, self._current_value)
   end
 
+  -- update cache
+  ConfigurationCache:set(self._key, self._current_value)
+
   -- run on change function if it has been defined
   self:run_on_change_function_if_exists()
 end

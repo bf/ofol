@@ -239,7 +239,7 @@ command.add("core.views.docview!", {
 
   ["find-replace:replace-symbol"] = function()
     local first = ""
-    local symbol_pattern = ConfigurationStore.get("symbol_pattern"):get_current_value()
+    local symbol_pattern = ConfigurationCache:get("symbol_pattern")
     if doc():has_selection() then
       local text = doc():get_text(doc():get_selection())
       first = text:match(symbol_pattern) or ""

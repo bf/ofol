@@ -49,6 +49,9 @@ function ConfigurationStore.initialize_configuration_option(newConfigurationOpti
 
   -- add to store
   configuration_options_by_key[configuration_key] = newConfigurationOption
+
+  -- initialize in cache
+  ConfigurationCache:set(configuration_key, newConfigurationOption:get_current_value())
 end
 
 
@@ -71,6 +74,10 @@ function ConfigurationStore.lazy_get_current_value(configuration_key)
   return lazy_get_current_value_inner 
 end
 
+-- return true if key exists
+function ConfigurationStore.has(configuration_key) 
+  return configuration_options_by_key[configuration_key] ~= nil
+end
 
 
 return ConfigurationStore

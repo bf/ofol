@@ -1873,8 +1873,8 @@ function lsp.request_document_format(doc)
       end
       local indent_type, indent_size, indent_confirmed = doc:get_indent_info()
       if not indent_confirmed then
-        indent_type = ConfigurationStore.get("tab_type"):get_current_value() 
-        indent_size = ConfigurationStore.get("indent_size"):get_current_value()
+        indent_type = ConfigurationCache:get("tab_type")
+        indent_size = ConfigurationCache:get("indent_size")
       end
       server:push_request('textDocument/formatting', {
         params = {

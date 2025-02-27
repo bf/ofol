@@ -1,7 +1,3 @@
--- require "core.strict"
--- require "core.regex"
--- local config = require "core.config"
-
 -- even though $style variable is not used in this file, 
 -- if we remove this then the loading of style in views does not work
 local style = require "themes.colors.default"
@@ -340,7 +336,7 @@ local function find_files_recursively(root, path)
       info.filename = fsutils.strip_leading_path(file)
       if info.type == "file" then
         coroutine.yield(root, info)
-      elseif not string.match_pattern(fsutils.basename(info.filename), ConfigurationStore.get("ignore_files"):get_current_value()) then
+      elseif not string.match_pattern(fsutils.basename(info.filename), ConfigurationCache:get("ignore_files")) then
         find_files_recursively(root, PATHSEP .. info.filename)
       end
     end
@@ -637,11 +633,6 @@ function core.init()
   -- redraw
   core.redraw = true
 
-
-  -- -- -- Load core and user plugins giving preference to user ones with same name.
-  -- local plugins_success, plugins_refuse_list = core.load_plugins()
-  
-
   do
     local pdir, pname = project_dir_abs:match("(.*)[/\\\\](.*)")
     stderr.info("Opening project %q from directory %s", pname, pdir)
@@ -656,49 +647,9 @@ function core.init()
     core.root_view:open_doc(core.open_doc(filename))
   end
 
-  -- if not plugins_success or got_user_error or got_project_error then
-  --   -- defer LogView to after everything is initialized,
-  --   -- so that EmptyView won't be added after LogView.
-  --   core.add_thread(function()
-  --     command.perform("core:open-log")
-  --   end)
-  -- end
-
   -- enable native borderes
   system.set_window_hit_test()
   system.set_window_bordered(true)
-
-  -- if #plugins_refuse_list.userdir.plugins > 0 or #plugins_refuse_list.datadir.plugins > 0 then
-  --   if #plugins_refuse_list.userdir.plugins > 0 then
-  --     stderr.debug("plugins_refuse_list.userdir.plugins", json.encode(plugins_refuse_list.userdir.plugins))
-  --   end
-  --   if #plugins_refuse_list.datadir.plugins > 0 then
-  --     stderr.debug("plugins_refuse_list.datadir.plugins", json.encode(plugins_refuse_list.datadir.plugins))
-  --   end
-
-  --   local opt = {
-  --     { text = "Exit", default_no = true },
-  --     { text = "Continue", default_yes = true }
-  --   }
-  --   local msg = {}
-  --   for _, entry in pairs(plugins_refuse_list) do
-  --     if #entry.plugins > 0 then
-  --       local msg_list = {}
-  --       for _, p in pairs(entry.plugins) do
-  --         table.insert(msg_list, string.format("%s", p.file))
-  --       end
-  --       msg[#msg + 1] = string.format("Plugins from directory \"%s\":\n%s", fsutils.home_encode(entry.dir), table.concat(msg_list, "\n"))
-  --     end
-  --   end
-  --   local errorMessage = string.format(
-  --       "Some plugins are not loaded due to version mismatch.\n\n%s.\n\n" ..
-  --       "Please download a recent version from https://github.com/lite-xl/lite-xl-plugins."
-  --       , table.concat(msg, ".\n\n"))
-
-  --   stderr.error("Error:", errorMessage)
-  --   system.show_fatal_error("Refused Plugins: " .. errorMessage)
-  --   os.exit(1)
-  -- end
 end
 
 -- close all docs, prompt user about unsaved changes
@@ -1077,7 +1028,7 @@ function core.run()
   local next_step
   local last_frame_time
   local run_threads_full = 0
-  local HALF_BLINK_PERIOD = ConfigurationStore.get("blink_period"):get_current_value() / 2
+  local HALF_BLINK_PERIOD = ConfigurationCache:get("blink_period") / 2
   while true do
     core.frame_start = system.get_time()
     local time_to_wake, threads_done = run_threads()

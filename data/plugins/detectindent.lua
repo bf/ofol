@@ -6,9 +6,6 @@ local Doc = require "core.doc"
 
 local DocView = require "core.views.docview"
 
-local getConfigurationOptionIndentSize = ConfigurationStore.lazy_get_current_value("indent_size")
-local getConfigurationOptionTabType = ConfigurationStore.lazy_get_current_value("tab_type")
-
 local cache = setmetatable({}, { __mode = "k" })
 local comments_cache = {}
 local auto_detect_max_lines = 150
@@ -279,9 +276,9 @@ local function detect_indent_stat(doc)
   end
   local indent, score = optimal_indent_from_stat(stat)
   if tab_count > score then
-    return "hard", getConfigurationOptionIndentSize(), tab_count
+    return "hard", ConfigurationCache:get("indent_size"), tab_count
   else
-    return "soft", indent or getConfigurationOptionIndentSize(), score or 0
+    return "soft", indent or ConfigurationCache:get("indent_size"), score or 0
   end
 end
 
@@ -291,8 +288,8 @@ local function update_cache(doc)
   local score_threshold = 2
   if score < score_threshold then
     -- use default values
-    type = getConfigurationOptionTabType()
-    size = getConfigurationOptionIndentSize()
+    type = ConfigurationCache:get("tab_type")
+    size = ConfigurationCache:get("indent_size")
   end
   cache[doc] = { type = type, size = size, confirmed = (score >= score_threshold) }
   doc.indent_info = cache[doc]

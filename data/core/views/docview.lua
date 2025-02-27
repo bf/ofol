@@ -103,7 +103,7 @@ end
 
 
 function DocView:get_scrollable_size()
-  if not ConfigurationStore.get("scroll_past_end"):get_current_value() then
+  if not ConfigurationCache:get("scroll_past_end") then
     local _, _, _, h_scroll = self.h_scrollbar:get_track_rect()
     return self:get_line_height() * (#self.doc.lines) + style.padding.y * 2 + h_scroll
   end
@@ -416,7 +416,7 @@ function DocView:update()
 
   -- update blink timer
   if self == core.active_view and not self.mouse_selecting and not core.window_is_being_resized then
-    local T = ConfigurationStore.get("blink_period"):get_current_value()
+    local T = ConfigurationCache:get("blink_period")
     local t0 = core.blink_start
     local ta = core.blink_timer
     local tb =  system.get_time()
@@ -474,7 +474,7 @@ end
 function DocView:draw_line_body(line, x, y)
   -- draw highlight if any selection ends on this line
   local draw_highlight = false
-  local hcl = ConfigurationStore.get("highlight_current_line"):get_current_value()
+  local hcl = ConfigurationCache:get("highlight_current_line")
   if hcl ~= false then
     for lidx, line1, col1, line2, col2 in self.doc:get_selections(false) do
       if line1 == line then
@@ -556,14 +556,14 @@ function DocView:draw_overlay()
   if core.active_view == self then
     local minline, maxline = self:get_visible_line_range()
     -- draw caret if it overlaps this line
-    local T = ConfigurationStore.get("blink_period"):get_current_value()
+    local T = ConfigurationCache:get("blink_period")
     for _, line1, col1, line2, col2 in self.doc:get_selections() do
       if line1 >= minline and line1 <= maxline
       and system.window_has_focus(core.window) then
         if ime.editing then
           self:draw_ime_decoration(line1, col1, line2, col2)
         else
-          if ConfigurationStore.get("disable_blink"):get_current_value() or (core.blink_timer - core.blink_start) % T < T / 2 then
+          if ConfigurationCache:get("disable_blink") or (core.blink_timer - core.blink_start) % T < T / 2 then
             local x, y = self:get_line_screen_position(line1, col1)
             if self.doc.overwrite then
               self:draw_overwrite_caret(x, y, self:get_font():get_width(self.doc:get_char(line1, col1)))

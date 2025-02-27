@@ -140,7 +140,7 @@ core.add_thread(function()
     local i = 1
     local symbols_count = 0
     while i <= #doc.lines do
-      for sym in doc.lines[i]:gmatch(ConfigurationStore.get("symbol_pattern"):get_current_value()) do
+      for sym in doc.lines[i]:gmatch(ConfigurationCache:get("symbol_pattern")) do
         if not s[sym] then
           symbols_count = symbols_count + 1
           if symbols_count > max_symbols then

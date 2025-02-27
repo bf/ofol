@@ -354,7 +354,7 @@ function DocView:update()
 end
 
 function DocView:get_scrollable_size()
-  if not ConfigurationStore.get("scroll_past_end"):get_current_value() then
+  if not ConfigurationCache:get("scroll_past_end") then
     return self:get_line_height() * get_total_wrapped_lines(self) + style.padding.y * 2
   end
   return self:get_line_height() * (get_total_wrapped_lines(self) - 1) + self.size.y
@@ -529,7 +529,7 @@ function DocView:draw_line_body(line, x, y)
   local draw_highlight = nil
   for lidx, line1, col1, line2, col2 in self.doc:get_selections(true) do
     -- draw line highlight if caret is on this line
-    if draw_highlight ~= false and ConfigurationStore.get("highlight_current_line"):get_current_value()
+    if draw_highlight ~= false and ConfigurationCache:get("highlight_current_line")
     and line1 == line and core.active_view == self then
       draw_highlight = (line1 == line2 and col1 == col2)
     end
