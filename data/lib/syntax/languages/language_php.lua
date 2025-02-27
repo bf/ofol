@@ -8,6 +8,7 @@ local syntax = require "lib.syntax"
 -- load syntax dependencies to add additional rules
 require "lib.syntax.languages.language_css"
 require "lib.syntax.languages.language_js"
+require "lib.syntax.languages.language_psql"
 
 local sql_strings = {}
 
