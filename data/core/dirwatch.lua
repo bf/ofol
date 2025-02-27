@@ -128,7 +128,7 @@ end
 
 -- inspect config.ignore_files patterns and prepare ready to use entries.
 local function compile_ignore_files()
-  local ipatterns = ConfigurationOptionStore.get_ignore_files()
+  local ipatterns = ConfigurationOptionStore.get_editor_ignore_files()
   local compiled = {}
   -- config.ignore_files could be a simple string...
   if type(ipatterns) ~= "table" then ipatterns = {ipatterns} end
