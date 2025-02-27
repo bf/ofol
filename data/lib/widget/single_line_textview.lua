@@ -484,7 +484,7 @@ end
 function SingleLineDocView:draw_line_body(line, x, y)
   -- draw highlight if any selection ends on this line
   local draw_highlight = false
-  local hcl = ConfigurationOptionStore.get_highlight_current_line()
+  local hcl = ConfigurationOptionStore.get_editor_highlight_current_line()
   if hcl ~= false then
     for lidx, line1, col1, line2, col2 in self.doc:get_selections(false) do
       if line1 == line then
