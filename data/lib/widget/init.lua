@@ -5,7 +5,6 @@
 --
 
 local core = require "core"
-local config = require "core.config"
 local style = require "themes.style"
 local keymap = require "core.keymap"
 local View = require "core.view"

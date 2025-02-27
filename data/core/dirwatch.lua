@@ -1,4 +1,3 @@
-local config = require "core.config"
 local dirwatch = {}
 
 function dirwatch:__index(idx)
@@ -126,11 +125,11 @@ function dirwatch:check(change_callback, scan_time, wait_time)
 end
 
 
--- inspect config.ignore_files patterns and prepare ready to use entries.
+-- inspect ignore_files patterns and prepare ready to use entries.
 local function compile_ignore_files()
   local ipatterns = ConfigurationOptionStore.get_editor_ignore_files()
   local compiled = {}
-  -- config.ignore_files could be a simple string...
+  -- ignore_files could be a simple string...
   if type(ipatterns) ~= "table" then ipatterns = {ipatterns} end
   for i, pattern in ipairs(ipatterns) do
     -- we ignore malformed patterns that raise an error

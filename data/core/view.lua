@@ -1,5 +1,4 @@
 local core = require "core"
-local config = require "core.config"
 local Scrollbar = require "components.scrollbar_component"
 
 

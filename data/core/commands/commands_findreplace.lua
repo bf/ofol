@@ -1,6 +1,5 @@
 local core = require "core"
 local command = require "core.command"
-local config = require "core.config"
 local search = require "core.doc.search"
 local keymap = require "core.keymap"
 
@@ -10,8 +9,9 @@ local StatusView = require "core.views.statusview"
 
 local last_view, last_fn, last_text, last_sel
 
-local case_sensitive = config.find_case_sensitive or false
-local find_regex = config.find_regex or false
+-- todo: refactor as configuration option
+local case_sensitive = false
+local find_regex = false
 local found_expression
 
 local function doc()

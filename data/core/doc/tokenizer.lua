@@ -1,6 +1,5 @@
 local core = require "core"
 local syntax = require "lib.syntax"
-local config = require "core.config"
 
 local tokenizer = {}
 local bad_patterns = {}

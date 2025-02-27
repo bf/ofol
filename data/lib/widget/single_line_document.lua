@@ -1,17 +1,5 @@
-
--- local SingleLineDoc = require "core.doc"
-
--- ---@class core.commandview.input : core.doc
--- ---@field super core.doc
--- local SingleLineSingleLineDoc = SingleLineDoc:extend()
-
--- function SingleLineSingleLineDoc:insert(line, col, text)
---   SingleLineSingleLineDoc.super.insert(self, line, col, text:gsub("\n", ""))
--- end
-
 local core = require "core"
 local syntax = require "lib.syntax"
-local config = require "core.config"
 
 local translate  = require "lib.widget.single_line_document_translate"
 

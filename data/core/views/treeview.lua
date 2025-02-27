@@ -1,7 +1,6 @@
 -- mod-version:3
 local core = require "core"
 local command = require "core.command"
-local config = require "core.config"
 local keymap = require "core.keymap"
 local style = require "themes.style"
 local View = require "core.view"
@@ -25,19 +24,11 @@ local ICON_DIR_CLOSED = "d"
 local ICON_TREE_OPEN = "-"
 local ICON_TREE_CLOSED = "+"
 
-config.plugins.treeview = table.merge({
-  -- Default treeview width
-  size = 400 * SCALE,
-  highlight_focused_file = true,
-  expand_dirs_to_focused_file = false,
-  scroll_to_focused_file = false,
-}, config.plugins.treeview)
 
--- local tooltip_offset = style.font:get_height()
--- local tooltip_border = 1
--- local tooltip_delay = 0.5
--- local tooltip_alpha = 255
--- local tooltip_alpha_rate = 1
+-- some settings
+local configuration_option_highlight_focused_file = true
+local configuration_option_expand_dirs_to_focused_file = false
+local configuration_option_scroll_to_focused_file = false
 
 
 local function get_depth(filename)
@@ -90,7 +81,7 @@ function TreeView:new()
   -- local toolbar_view = ToolbarView()
   -- view.get_active_node():split("up", toolbar_view, {y = true})
   -- local min_toolbar_width = toolbar_view:get_min_width()
-  -- view:set_target_size("x", math.max(config.plugins.treeview.size, min_toolbar_width))
+  -- view:set_target_size("x", math.max(configuration_option_plugins.treeview.size, min_toolbar_width))
   -- command.add(nil, {
   --   ["toolbar:toggle"] = function()
   --     toolbar_view:toggle_visible()
@@ -872,8 +863,7 @@ function TreeView:update()
     self.last_scroll_y = self.scroll.y
   end
 
-  local config = config.plugins.treeview
-  if config.highlight_focused_file then
+  if configuration_option_highlight_focused_file then
     -- Try to only highlight when we actually change tabs
     local current_node = core.root_view:get_active_node()
     local current_active_view = core.active_view
@@ -885,8 +875,8 @@ function TreeView:update()
         local abs_filename = current_active_view.doc
                              and current_active_view.doc.abs_filename or ""
         self:set_selection_to_path(abs_filename,
-                                   config.expand_dirs_to_focused_file,
-                                   config.scroll_to_focused_file,
+                                   configuration_option_expand_dirs_to_focused_file,
+                                   configuration_option_scroll_to_focused_file,
                                    true)
       end
     end

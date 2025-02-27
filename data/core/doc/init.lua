@@ -2,7 +2,6 @@ local Highlighter = require ".highlighter"
 local translate = require ".translate"
 local core = require "core"
 local syntax = require "lib.syntax"
-local config = require "core.config"
 
 local OpenFilesStore = require "stores.open_files_store"
 

@@ -1,6 +1,5 @@
 local core = require "core"
 local command = require "core.command"
-local config = require "core.config"
 local translate = require "core.doc.translate"
 local style = require "themes.style"
 -- local tokenizer = require "core.doc.tokenizer"

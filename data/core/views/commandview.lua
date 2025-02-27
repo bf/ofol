@@ -1,5 +1,4 @@
 local core = require "core"
-local config = require "core.config"
 local style = require "themes.style"
 local View = require "core.view"
 local SingleLineTextview = require "lib.widget.single_line_textview"
