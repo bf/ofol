@@ -18,7 +18,6 @@ ConfigurationOptionNumber("user_interface.mouse_wheel_scroll", "Mouse wheel scro
   step = 0.1
 })
 
-
 ConfigurationOptionNumber("user_interface.max_consecutive_clicks_registered", "Maximum Clicks", "The maximum amount of consecutive clicks that are registered by the editor.", 3, {
   min_value = 1, 
   max_value = 10, 

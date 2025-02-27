@@ -263,7 +263,7 @@ function ConfigurationOption:_add_description_widget_to_container(container)
   if type(self._default_value) == "table" then
     -- for table values, use json
     default_value_text = json.encode(self._default_value)
-  elseif type(self._default_value == "boolean") then
+  elseif type(self._default_value) == "boolean" then
     if self._default_value == true then
       default_value_text = "true"
     else
