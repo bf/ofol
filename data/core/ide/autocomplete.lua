@@ -136,7 +136,7 @@ core.add_thread(function()
     local i = 1
     local symbols_count = 0
     while i <= #doc.lines do
-      for sym in doc.lines[i]:gmatch(ConfigurationOptionStore.get_symbol_pattern()) do
+      for sym in doc.lines[i]:gmatch(ConfigurationOptionStore.get_editor_symbol_pattern()) do
         if not s[sym] then
           symbols_count = symbols_count + 1
           s[sym] = true

@@ -354,7 +354,7 @@ function DocView:update()
 end
 
 function DocView:get_scrollable_size()
-  if not ConfigurationOptionStore.get_scroll_past_end() then
+  if not ConfigurationOptionStore.get_editor_scroll_past_end() then
     return self:get_editor_line_height() * get_total_wrapped_lines(self) + style.padding.y * 2
   end
   return self:get_editor_line_height() * (get_total_wrapped_lines(self) - 1) + self.size.y
