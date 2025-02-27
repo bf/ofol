@@ -289,6 +289,7 @@ install_subdir('docs' / 'api' , install_dir : lite_datadir, strip_directory: tru
 # copy directories with lua scripts
 install_subdir('data' / 'core' , install_dir : lite_datadir)
 install_subdir('data' / 'components' , install_dir : lite_datadir)
+install_subdir('data' / 'configuration' , install_dir : lite_datadir)
 install_subdir('data' / 'lib' , install_dir : lite_datadir)
 install_subdir('data' / 'plugins' , install_dir : lite_datadir)
 install_subdir('data' / 'static' , install_dir : lite_datadir)

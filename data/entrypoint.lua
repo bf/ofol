@@ -112,6 +112,9 @@ Validator = require("lib.validator")
 PersistentUserConfiguration = require("persistence.persistent_user_configuration")
 ConfigurationOptionStore = require("stores.configuration_option_store")
 
+-- load available configuration options
+require("configuration")
+
 
 
 -- Because AppImages change the working directory before running the executable,

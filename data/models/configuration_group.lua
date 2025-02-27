@@ -1,8 +1,5 @@
 -- base class for configuration groups
-
-local style = require("themes.style")
-local Label = require("lib.widget.label")
-local Button = require("lib.widget.button")
+local SettingsTabComponent = require("components.settings_tab_component")
 
 local ConfigurationOptionGroup = Object:extend()
 
@@ -45,6 +42,16 @@ end
 
 function ConfigurationOptionGroup:get_icon()
   return self._icon
+end
+
+function ConfigurationOptionGroup:add_configuration_options_to_container(container)
+  -- iterate over all options
+  for index, myConfigurationOption in pairs(userInterfaceOptions) do
+    -- add to widget
+    myConfigurationOption:add_widgets_to_container(container)
+  end
+
+  return SettingsTabComponent(self:get_group_key(), self:get_label_text(), self:get_icon(), setup_user_interface);
 end
 
 return ConfigurationOptionGroup

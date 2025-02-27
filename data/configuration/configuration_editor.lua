@@ -4,11 +4,25 @@ local ConfigurationOptionNumber = require("models.configuration_option.configura
 local ConfigurationOptionString = require("models.configuration_option.configuration_option_string")
 local ConfigurationOptionMultipleChoice = require("models.configuration_option.configuration_option_multiple_choice")
 local ConfigurationOptionBoolean = require("models.configuration_option.configuration_option_boolean")
+local ConfigurationOptionStringList = require("models.configuration_option.configuration_option_string_list")
 
 -- define configuration group
 ConfigurationGroup("editor", "Editor", "P")
 
 -- define configuration options
+ConfigurationOptionBoolean("editor.disable_blink", "Disable Cursor Blinking", "Disables cursor blinking on text input elements.", false)
+
+ConfigurationOptionNumber("editor.blink_period", "Cursor Blinking Period", "Interval in seconds in which the cursor blinks.", 0.8, {
+  min_value = 0.3, 
+  max_value = 2.0, 
+  step = 0.1
+})
+
+ConfigurationOptionNumber("editor.max_visible_commands", "Commands Box number of suggestions", "Number of suggestions in command box.", 10, {
+  min_value = 1, 
+  max_value = 50
+})
+
 ConfigurationOptionMultipleChoice("editor.tab_type", "Indentation Type", "The character inserted when pressing the tab key.", "soft", {
   available_values = { 
       {"Space", "soft"},
@@ -64,3 +78,20 @@ ConfigurationOptionString("editor.symbol_pattern", "Symbol Pattern", "A lua patt
 ConfigurationOptionString("editor.non_word_chars", "Non Word Characters", "A string of characters that do not belong to a word.", " \\t\\n/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-")
 
 ConfigurationOptionBoolean("editor.scroll_past_end", "Scroll Past the End", "Allow scrolling beyond the document ending.", true)
+
+
+ConfigurationOptionStringList("editor.ignore_files", "Ignore Files", "List of lua patterns matching files to be ignored by the editor.", {
+  -- folders
+  "^%.svn/",        "^%.git/",   "^%.hg/",        "^CVS/", "^%.Trash/", "^%.Trash%-.*/",
+  "^node_modules/", "^%.cache/", "^__pycache__/",
+  -- files
+  "%.pyc$",         "%.pyo$",       "%.exe$",        "%.dll$",   "%.obj$", "%.o$",
+  "%.a$",           "%.lib$",       "%.so$",         "%.dylib$", "%.ncb$", "%.sdf$",
+  "%.suo$",         "%.pdb$",       "%.idb$",        "%.class$", "%.psd$", "%.db$",
+  "^desktop%.ini$", "^%.DS_Store$", "^%.directory$",
+}, {
+  on_change = function(new_value)
+    -- TODO: refactor
+    -- core.rescan_project_directories()
+  end
+}),
