@@ -1,5 +1,6 @@
 local ListBox = require("lib.widget.listbox")
 local ConfigurationOption = require("models.configuration_option")
+local style = require("themes.style")
 
 local CONSTANT_THEMES_PATH = "/themes/colors"
 
@@ -106,7 +107,7 @@ end
 ---@return number width
 ---@return number height
 local function _listbox_on_color_draw(self, row, x, y, font, color, only_calc)
-  local w = self:get_width() - (x - self.position.x) - style.padding.x
+  local w = self:get_width() - (x - self.position.x) - 2*style.padding.x
   local h = font:get_height()
 
   if not only_calc then
@@ -142,7 +143,7 @@ function ConfigurationOptionTheme:add_value_modification_widget_to_container(con
     end
 
     -- render row for theme
-    listbox:add_row({
+    widget:add_row({
       -- 1st colum: name of theme
       style.text, details.name, ListBox.COLEND, 
       -- 2nd column: render theme colors 
@@ -151,7 +152,7 @@ function ConfigurationOptionTheme:add_value_modification_widget_to_container(con
   end
 
   -- handle click on row to select new theme
-  function listbox.on_row_click(this, idx, data)
+  function widget.on_row_click(this, idx, data)
     -- set new theme
     -- configurationOptionForTheme:set(data.name)
     self:set_value_from_ui(data.name)

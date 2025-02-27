@@ -1,5 +1,5 @@
 -- base class for configuration groups
--- local SettingsTabComponent = require("components.settings_tab_component")
+local style = require("themes.style")
 
 local ConfigurationOptionGroup = Object:extend()
 
@@ -46,6 +46,7 @@ end
 
 -- fetch all options for this group
 function ConfigurationOptionGroup:retrieve_all_configuration_options()
+  stderr.debug("retrieve_all_configuration_options for %s", self._group_key)
   return ConfigurationOptionStore.retrieve_all_configuration_options_for_group_key(self._group_key)
 end
 
@@ -87,6 +88,8 @@ function ConfigurationOptionGroup:add_configuration_options_to_container(contain
     -- add each option to  widget
     myConfigurationOption:add_widgets_to_container(container)
   end
+
+  return container
 end
 
 return ConfigurationOptionGroup

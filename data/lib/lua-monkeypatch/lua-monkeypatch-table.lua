@@ -1,3 +1,11 @@
+-- return number of items in table
+table.count = function(myTable)
+  local count = 0
+  for _ in pairs(myTable) do
+      count = count + 1
+  end
+  return count
+end
 
 ---Returns a new table containing the contents of b merged into a.
 ---@param a table|nil
@@ -51,15 +59,27 @@ table.filter = function (t, condition)
     stderr.error("condition needs to be function, received", type(condition))
   end
 
+  if table.count(t) == 0 then
+    stderr.error("cannot filter empty table")
+  end
+
+  -- stderr.debug("filtering table", t)
+
   -- loop over table
   local filtered = {}
-  for i, v in ipairs(t) do
+  for key, item in pairs(t) do
+    -- stderr.debug("loop", key, item)
+    
     -- check condition
-    if condition(v) then
+    if condition(item) then
       -- add to result
-      table.insert(filtered, v)
+      table.insert(filtered, item)
     end
   end
+
+  -- if table.count(filtered) == 0 then
+  --   stderr.error("filtered result is empty")
+  -- end
 
   return filtered
 end
@@ -155,13 +175,4 @@ function table:__tostring(self)
   end
 
   return json_string
-end
-
--- return number of items in table
-function table.count(myTable)
-  local count = 0
-  for _ in pairs(myTable) do
-      count = count + 1
-  end
-  return count
 end

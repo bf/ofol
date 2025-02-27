@@ -114,16 +114,27 @@ end
 
 -- retrieve all options for specific group
 function ConfigurationOptionStore.retrieve_all_configuration_options_for_group_key(group_key)
+  stderr.debug("retrieve_all_configuration_options_for_group_key", group_key)
+
   -- ensure group_key has been initialized 
   if _groups_by_key[group_key] == nil then
     stderr.error("group_key %s needs to be initialized first", group_key)
   end
 
   -- filter all options to find matching ones
-  return table.filter(_configuration_options_by_key, function (item) 
-    -- check if group key isthe same
+  local function filter_function (item) 
+    -- check if group key is same
     return item:get_group_key() == group_key
-  end)
+  end
+
+  -- only get options for this group
+  local options_for_group = table.filter(_configuration_options_by_key, filter_function)
+
+  if table.count(options_for_group) == 0 then
+    stderr.error("found zero options for group_key %s, this is unexpected", group_key)
+  end
+
+  return options_for_group
 end
 
 return ConfigurationOptionStore
