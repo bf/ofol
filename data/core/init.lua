@@ -857,8 +857,6 @@ function core.on_event(type, ...)
     end
   elseif type == "resized" then
     -- core.window_mode = system.get_window_mode(core.window)
-  elseif type == "resize_in_progress" then
-    -- core.window_mode = system.get_window_mode(core.window)
   elseif type == "minimized" or type == "maximized" or type == "restored" then
     core.window_mode = type == "restored" and "normal" or type
   elseif type == "filedropped" then
@@ -889,7 +887,7 @@ function core.step()
   local did_keymap = false
 
   for type, a,b,c,d in system.poll_event do
-    if  type == "resize_in_progress" or type == "resized" then
+    if type == "resized" then
       -- dont redraw while resizing
       core.window_is_being_resized = true
       core.redraw = true
