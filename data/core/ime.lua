@@ -1,3 +1,6 @@
+-- ime means input method in SDL world
+-- see https://wiki.libsdl.org/SDL2/Tutorials-TextInput
+
 local core = require "core"
 
 local ime = { }

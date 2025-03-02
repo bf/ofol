@@ -32,7 +32,6 @@ function RootView:new()
   self.drag_overlay_tab.to = { x = 0, y = 0, w = 0, h = 0 }
   self.grab = nil -- = {view = nil, button = nil}
   self.overlapping_view = nil
-  self.touched_view = nil
   self.first_dnd_processed = false
 end
 
@@ -467,48 +466,6 @@ function RootView:on_text_input(...)
   core.active_view:on_text_input(...)
 end
 
-function RootView:on_touch_pressed(x, y, ...)
-  core.debug("on_touch_pressed")
-  local touched_node = self.root_node:get_child_overlapping_point(x, y)
-  core.debug("on_touch_pressed touched_node", touched_node)
-  self.touched_view = touched_node and touched_node.active_view
-end
-
-function RootView:on_touch_released(x, y, ...)
-  self.touched_view = nil
-end
-
-
-function RootView:on_touch_moved(x, y, dx, dy, ...)
-  if not self.touched_view then return end
-
-  if self.dragged_divider then
-    local node = self.dragged_divider
-    if node.type == "hsplit" then
-      x = math.clamp(x - node.position.x, 0, self.root_node.size.x * 0.95)
-      resize_child_node(node, "x", x, dx)
-    elseif node.type == "vsplit" then
-      y = math.clamp(y - node.position.y, 0, self.root_node.size.y * 0.95)
-      resize_child_node(node, "y", y, dy)
-    end
-    node.divider = math.clamp(node.divider, 0.01, 0.99)
-    return
-  end
-
-  local dn = self.dragged_node
-  if dn and not dn.dragging then
-    -- start dragging only after enough movement
-    dn.dragging = math.distance(x, y, dn.drag_start_x, dn.drag_start_y) > DRAGGING_MINIMUM_DISTANCE
-    if dn.dragging then
-      core.request_cursor("hand")
-    end
-  end
-
-  -- avoid sending on_touch_moved events when dragging tabs
-  if dn then return end
-
-  self.touched_view:on_touch_moved(x, y, dx, dy, ...)
-end
 
 function RootView:on_ime_text_editing(...)
   core.active_view:on_ime_text_editing(...)

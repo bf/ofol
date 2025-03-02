@@ -26,6 +26,7 @@ Goals:
 - [ ] treeview: sort files by scm status
 - [ ] different handling open project vs. open individual files
 - [ ] refactor toolbar combine build + normal toolbar
+- [ ] make it look like chromium
 - [x] focus on linux/wayland/gnome, should out of the box w/o needing wayland parameters
 - [x] move to sdl3? (done via sdl2-compat library on arch linux)
 - [x] dynamic width tabs

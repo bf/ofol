@@ -74,16 +74,6 @@ function Node:on_mouse_left()
 end
 
 
----@deprecated
-function Node:on_touch_moved(...)
-  stderr.deprecated("Node:on_touch_moved")
-  if self.type == "leaf" then
-    self.active_view:on_touch_moved(...)
-  else
-    self:propagate("on_touch_moved", ...)
-  end
-end
-
 
 function Node:consume(node)
   for k, _ in pairs(self) do self[k] = nil end

@@ -806,6 +806,20 @@ function core.get_views_referencing_doc(doc)
   return res
 end
 
+
+-- local MouseState
+--   position x, y
+--   movement dx, dy
+--   grabbed -> no grab
+--   hover -> divider, view, tabs, etc.
+--   cursorstate -> grab, pointer, edit?
+
+-- MouseHoverState -> view
+
+-- TextInputState 
+--    active text input
+
+
 function core.on_event(type, ...)
   if type ~= "mousemoved" then
     stderr.debug("on_event", type)
@@ -819,7 +833,10 @@ function core.on_event(type, ...)
   elseif type == "keypressed" then
     -- In some cases during IME composition input is still sent to us
     -- so we just ignore it.
-    if ime.editing then return false end
+    if ime.editing then 
+      stderr.error("keypressed event should never be received when ime.editing == true, received", ...)
+      return false 
+    end
     did_keymap = keymap.on_key_pressed(...)
   elseif type == "keyreleased" then
     keymap.on_key_released(...)
@@ -838,12 +855,6 @@ function core.on_event(type, ...)
     if not core.root_view:on_mouse_wheel(...) then
       did_keymap = keymap.on_mouse_wheel(...)
     end
-  elseif type == "touchpressed" then
-    core.root_view:on_touch_pressed(...)
-  elseif type == "touchreleased" then
-    core.root_view:on_touch_released(...)
-  elseif type == "touchmoved" then
-    core.root_view:on_touch_moved(...)
   elseif type == "resized" then
     -- core.window_mode = system.get_window_mode(core.window)
   elseif type == "resize_in_progress" then
@@ -859,6 +870,18 @@ function core.on_event(type, ...)
   end
   return did_keymap
 end
+
+
+local WindowState = {
+  "RESIZE_IN_PROGRESS",
+  "MINIMIZED",
+  "MAXIMIZED",
+  "NORMAL"
+}
+
+local MouseState = {
+
+}
 
 -- main stepping loop for event handling
 function core.step()
@@ -878,7 +901,8 @@ function core.step()
       core.redraw = true
       core.window_is_being_resized = false
     elseif type == "mousemoved" then
-      try_catch(core.on_event, type, a, b, c, d)
+      -- try_catch(core.on_event, type, a, b, c, d)
+      core.on_event(type, a,b,c,d)
       core.redraw = true
       core.window_is_being_resized = false
     elseif type == "enteringforeground" then
@@ -889,7 +913,8 @@ function core.step()
       break
     else
       -- handle all other cases
-      local _, res = try_catch(core.on_event, type, a, b, c, d)
+      -- local _, res = try_catch(core.on_event, type, a, b, c, d)
+      local res = core.on_event(type, a,b,c,d)
       did_keymap = res or did_keymap
       
       core.redraw = true

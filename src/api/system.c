@@ -351,50 +351,52 @@ top:
 #endif
       return 3;
 
-      case SDL_EVENT_FINGER_DOWN:
-      {
-        RenWindow* window_renderer = ren_find_window_from_id(e.tfinger.windowID);
-        SDL_GetWindowSize(window_renderer->window, &w, &h);
+    //   case SDL_EVENT_FINGER_DOWN:
+    //   {
+    //     RenWindow* window_renderer = ren_find_window_from_id(e.tfinger.windowID);
+    //     SDL_GetWindowSize(window_renderer->window, &w, &h);
 
-        lua_pushstring(L, "touchpressed");
-        lua_pushinteger(L, (lua_Integer)(e.tfinger.x * w));
-        lua_pushinteger(L, (lua_Integer)(e.tfinger.y * h));
-        lua_pushinteger(L, e.tfinger.fingerID);
-        return 4;
-      }
+    //     lua_pushstring(L, "touchpressed");
+    //     lua_pushinteger(L, (lua_Integer)(e.tfinger.x * w));
+    //     lua_pushinteger(L, (lua_Integer)(e.tfinger.y * h));
+    //     lua_pushinteger(L, e.tfinger.fingerID);
+    //     return 4;
+    //   }
 
-    case SDL_EVENT_FINGER_UP:
-      {
-        RenWindow* window_renderer = ren_find_window_from_id(e.tfinger.windowID);
-        SDL_GetWindowSize(window_renderer->window, &w, &h);
+    // case SDL_EVENT_FINGER_UP:
+    //   {
+    //     RenWindow* window_renderer = ren_find_window_from_id(e.tfinger.windowID);
+    //     SDL_GetWindowSize(window_renderer->window, &w, &h);
 
-        lua_pushstring(L, "touchreleased");
-        lua_pushinteger(L, (lua_Integer)(e.tfinger.x * w));
-        lua_pushinteger(L, (lua_Integer)(e.tfinger.y * h));
-        lua_pushinteger(L, e.tfinger.fingerID);
-        return 4;
-      }
+    //     lua_pushstring(L, "touchreleased");
+    //     lua_pushinteger(L, (lua_Integer)(e.tfinger.x * w));
+    //     lua_pushinteger(L, (lua_Integer)(e.tfinger.y * h));
+    //     lua_pushinteger(L, e.tfinger.fingerID);
+    //     return 4;
+    //   }
 
-    case SDL_EVENT_FINGER_MOTION:
-      {
-        SDL_PumpEvents();
-        while (SDL_PeepEvents(&event_plus, 1, SDL_GETEVENT, SDL_EVENT_FINGER_MOTION, SDL_EVENT_FINGER_MOTION) > 0) {
-          e.tfinger.x = event_plus.tfinger.x;
-          e.tfinger.y = event_plus.tfinger.y;
-          e.tfinger.dx += event_plus.tfinger.dx;
-          e.tfinger.dy += event_plus.tfinger.dy;
-        }
-        RenWindow* window_renderer = ren_find_window_from_id(e.tfinger.windowID);
-        SDL_GetWindowSize(window_renderer->window, &w, &h);
+    // case SDL_EVENT_FINGER_MOTION:
+    //   {
+    //     SDL_PumpEvents();
+    //     while (SDL_PeepEvents(&event_plus, 1, SDL_GETEVENT, SDL_EVENT_FINGER_MOTION, SDL_EVENT_FINGER_MOTION) > 0) {
+    //       e.tfinger.x = event_plus.tfinger.x;
+    //       e.tfinger.y = event_plus.tfinger.y;
+    //       e.tfinger.dx += event_plus.tfinger.dx;
+    //       e.tfinger.dy += event_plus.tfinger.dy;
+    //     }
+    //     RenWindow* window_renderer = ren_find_window_from_id(e.tfinger.windowID);
+    //     SDL_GetWindowSize(window_renderer->window, &w, &h);
 
-        lua_pushstring(L, "touchmoved");
-        lua_pushinteger(L, (lua_Integer)(e.tfinger.x * w));
-        lua_pushinteger(L, (lua_Integer)(e.tfinger.y * h));
-        lua_pushinteger(L, (lua_Integer)(e.tfinger.dx * w));
-        lua_pushinteger(L, (lua_Integer)(e.tfinger.dy * h));
-        lua_pushinteger(L, e.tfinger.fingerID);
-        return 6;
-      }
+    //     lua_pushstring(L, "touchmoved");
+    //     lua_pushinteger(L, (lua_Integer)(e.tfinger.x * w));
+    //     lua_pushinteger(L, (lua_Integer)(e.tfinger.y * h));
+    //     lua_pushinteger(L, (lua_Integer)(e.tfinger.dx * w));
+    //     lua_pushinteger(L, (lua_Integer)(e.tfinger.dy * h));
+    //     lua_pushinteger(L, e.tfinger.fingerID);
+    //     return 6;
+    //   }
+
+      
     case SDL_EVENT_WILL_ENTER_FOREGROUND:
     case SDL_EVENT_DID_ENTER_FOREGROUND:
       {
