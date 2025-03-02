@@ -182,7 +182,7 @@ top:
       // window has been resized to data1 x data2; this event is always preceded by SDL_EVENT_WINDOW_DISPLAY_CHANGED
       RenWindow* window_renderer = ren_find_window_from_id(e.window.windowID);
       ren_resize_window(window_renderer);
-      lua_pushstring(L, "resized");
+      lua_pushstring(L, "window_resized");
       /* The size below will be in points. */
       lua_pushinteger(L, e.window.data1);
       lua_pushinteger(L, e.window.data2);
@@ -198,16 +198,16 @@ top:
     //   return 3;
     } else if (e.window.type == SDL_EVENT_WINDOW_EXPOSED) {
       rencache_invalidate();
-      lua_pushstring(L, "exposed");
+      lua_pushstring(L, "window_exposed");
       return 1;
     } else if (e.window.type == SDL_EVENT_WINDOW_MINIMIZED) {
-      lua_pushstring(L, "minimized");
+      lua_pushstring(L, "window_minimized");
       return 1;
     } else if (e.window.type == SDL_EVENT_WINDOW_MAXIMIZED) {
-      lua_pushstring(L, "maximized");
+      lua_pushstring(L, "window_maximized");
       return 1;
     } else if (e.window.type == SDL_EVENT_WINDOW_RESTORED) {
-      lua_pushstring(L, "restored");
+      lua_pushstring(L, "window_restored");
       return 1;
     } else if (e.window.type == SDL_EVENT_WINDOW_MOUSE_LEAVE) {
       // lua_pushstring(L, "mouse_has_left_the_window");
@@ -217,8 +217,8 @@ top:
       // return 1;
     }
     if (e.window.type == SDL_EVENT_WINDOW_FOCUS_LOST) {
-      // lua_pushstring(L, "focuslost");
-      // return 1;
+      lua_pushstring(L, "window_focuslost");
+      return 1;
     }
     /* on some systems, when alt-tabbing to the window SDL will queue up
     ** several KEYDOWN events for the `tab` key; we flush all keydown
@@ -279,7 +279,6 @@ top:
       lua_pushstring(L, "textinput");
       lua_pushstring(L, e.text.text);
       return 2;
-
 
 // #if SDL_VERSION_ATLEAST(2, 0, 22)
     // case SDL_EVENT_TEXT_EDITING_EXT:
@@ -396,20 +395,21 @@ top:
     //     return 6;
     //   }
 
-      
-    case SDL_EVENT_WILL_ENTER_FOREGROUND:
-    case SDL_EVENT_DID_ENTER_FOREGROUND:
-      {
-        rencache_invalidate();
-        lua_pushstring(L, e.type == SDL_EVENT_WILL_ENTER_FOREGROUND ? "enteringforeground" : "enteredforeground");
-        return 1;
-      }
-    case SDL_EVENT_WILL_ENTER_BACKGROUND:
-      lua_pushstring(L, "enteringbackground");
-      return 1;
-    case SDL_EVENT_DID_ENTER_BACKGROUND:
-      lua_pushstring(L, "enteredbackground");
-      return 1;
+    // case SDL_EVENT_WILL_ENTER_FOREGROUND:
+    // case SDL_EVENT_DID_ENTER_FOREGROUND:
+    //   {
+    //     rencache_invalidate();
+    //     lua_pushstring(L, e.type == SDL_EVENT_WILL_ENTER_FOREGROUND ? "application_enteringforeground" : "application_enteredforeground");
+    //     return 1;
+    //   }
+
+    // case SDL_EVENT_WILL_ENTER_BACKGROUND:
+    //   lua_pushstring(L, "application_enteringbackground");
+    //   return 1;
+
+    // case SDL_EVENT_DID_ENTER_BACKGROUND:
+    //   lua_pushstring(L, "application_enteredbackground");
+    //   return 1;
 
     default:
       goto top;

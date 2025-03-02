@@ -536,8 +536,8 @@ function core.init()
   core.window_mode = "normal"
   core.threads = setmetatable({}, { __mode = "k" })
 
-  -- flag when user is actively resizing window
-  core.window_is_being_resized = false
+  -- -- flag when user is actively resizing window
+  -- core.window_is_being_resized = false
 
   -- blinking cursor timer active
   core.blink_start = system.get_time()
@@ -855,14 +855,14 @@ function core.on_event(type, ...)
     if not core.root_view:on_mouse_wheel(...) then
       did_keymap = keymap.on_mouse_wheel(...)
     end
-  elseif type == "resized" then
+  elseif type == "window_resized" then
     -- core.window_mode = system.get_window_mode(core.window)
-  elseif type == "minimized" or type == "maximized" or type == "restored" then
-    core.window_mode = type == "restored" and "normal" or type
+  elseif type == "window_minimized" or type == "window_maximized" or type == "window_restored" then
+    core.window_mode = type == "window_restored" and "normal" or type
   elseif type == "filedropped" then
     core.root_view:on_file_dropped(...)
-  elseif type == "focuslost" then
-    core.root_view:on_focus_lost(...)
+  -- elseif type == "window_focuslost" then
+  --   core.root_view:on_focus_lost(...)
   elseif type == "quit" then
     core.quit()
   end
@@ -870,53 +870,74 @@ function core.on_event(type, ...)
 end
 
 
-local WindowState = {
-  "RESIZE_IN_PROGRESS",
-  "MINIMIZED",
-  "MAXIMIZED",
-  "NORMAL"
-}
+local StateMachine = require("models.state_machine")
 
-local MouseState = {
 
-}
+local WindowStateMachine = StateMachine("WindowStateMachine", { 
+  normal = {},
+  minimized = {},
+  maximized = {},
+  resizing = {},
+  ["*"] = {
+    window_exposed = function () 
+      -- Window has been exposed and should be redrawn, and can be redrawn directly from event watchers for this event
+      core.redraw = true 
+    end,
+    window_focuslost = function () 
+      -- Window has lost focus, redraw
+      core.redraw = true
+    end,
+    window_restored = function () 
+      -- Window has been restored to normal size and position
+      return "normal"
+    end,
+    window_resized = function () 
+      core.redraw = true 
+      return "resizing" 
+    end,
+    window_minimized = function () 
+      return "minimized"
+    end,
+    window_maximized = function () 
+      return "maximized"
+    end
+  }
+}, "normal")
+
+-- window resizing inprogress -> next event needs to be window otherwise it should return
 
 -- main stepping loop for event handling
 function core.step()
   -- handle events
   local did_keymap = false
 
-  for type, a,b,c,d in system.poll_event do
-    if type == "resized" then
-      -- dont redraw while resizing
-      core.window_is_being_resized = true
-      core.redraw = true
-    elseif type == "exposed" then
-      -- redraw only when exposed
-      core.redraw = true
-    elseif type == "textinput" and did_keymap then
+  for event_name, a,b,c,d in system.poll_event do
+    if string.starts_with(event_name, "window_") then
+      WindowStateMachine:handle_event(event_name)
+    -- if event_name == "window_resized" then
+    --   -- dont redraw while resizing
+    --   core.window_is_being_resized = true
+    --   core.redraw = true
+    -- elseif event_name == "window_exposed" then
+    --   -- redraw only when exposed
+    --   core.redraw = true
+    elseif event_name == "textinput" and did_keymap then
       did_keymap = false
       core.redraw = true
-      core.window_is_being_resized = false
-    elseif type == "mousemoved" then
-      -- try_catch(core.on_event, type, a, b, c, d)
-      core.on_event(type, a,b,c,d)
+      -- core.window_is_being_resized = false
+    elseif event_name == "mousemoved" then
+      -- try_catch(core.on_event, event_name, a, b, c, d)
+      core.on_event(event_name, a,b,c,d)
       core.redraw = true
-      core.window_is_being_resized = false
-    elseif type == "enteringforeground" then
-      -- to break our frame refresh in two if we get entering/entered at the same time.
-      -- required to avoid flashing and refresh issues on mobile
-      core.redraw = true
-      core.window_is_being_resized = false
-      break
+      -- core.window_is_being_resized = false
     else
       -- handle all other cases
-      -- local _, res = try_catch(core.on_event, type, a, b, c, d)
-      local res = core.on_event(type, a,b,c,d)
+      -- local _, res = try_catch(core.on_event, event_name, a, b, c, d)
+      local res = core.on_event(event_name, a,b,c,d)
       did_keymap = res or did_keymap
       
       core.redraw = true
-      core.window_is_being_resized = false
+      -- core.window_is_being_resized = false
     end
   end
 
@@ -1057,7 +1078,7 @@ function core.run()
       break 
     end
 
-    if not did_redraw and not core.window_is_being_resized then
+    if not did_redraw and not WindowStateMachine.is_resizing() then
       if system.window_has_focus(core.window) or not did_step or run_threads_full < 2 then
         local now = system.get_time()
         if not next_step then -- compute the time until the next blink

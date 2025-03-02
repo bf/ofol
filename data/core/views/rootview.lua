@@ -471,11 +471,6 @@ function RootView:on_ime_text_editing(...)
   core.active_view:on_ime_text_editing(...)
 end
 
-function RootView:on_focus_lost(...)
-  -- We force a redraw so documents can redraw without the cursor.
-  core.redraw = true
-end
-
 
 function RootView:interpolate_drag_overlay(overlay)
   overlay.x = overlay.to.x

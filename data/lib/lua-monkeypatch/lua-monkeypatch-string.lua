@@ -74,3 +74,15 @@ string.match_pattern = function(text, pattern, ...)
   end
   return false
 end
+
+-- return true if string starts with another string
+string.starts_with = function(str_haystack, str_needle)
+  if #str_haystack < #str_needle then 
+    -- if search string is longer than the string we search in,
+    -- it is impossible to match
+    return false
+  end
+
+  -- get substring of haystack and check if it matches needle
+  return string.sub(str_haystack, 1, #str_needle) == str_needle
+end
