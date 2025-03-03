@@ -320,7 +320,7 @@ function listbox.hide()
   settings.col = nil
   settings.selected_item_idx = 1
   settings.shown_items = {}
-  core.redraw = true
+  TRIGGER_REDRAW_NEXT_FRAME = true
 end
 
 ---@param is_list? boolean
@@ -338,7 +338,7 @@ function listbox.show(is_list, position)
       settings.shown_items = settings.items
     end
   end
-  core.redraw = true
+  TRIGGER_REDRAW_NEXT_FRAME = true
 end
 
 ---@param text string

@@ -225,6 +225,9 @@ top:
     ** events on focus so these are discarded */
     if (e.window.type == SDL_EVENT_WINDOW_FOCUS_GAINED) {
       SDL_FlushEvent(SDL_EVENT_KEY_DOWN);
+      
+      lua_pushstring(L, "window_focusgained");
+      return 1;
     }
     goto top;
   }

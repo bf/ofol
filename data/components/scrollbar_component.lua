@@ -303,7 +303,7 @@ function Scrollbar:update()
     self.expand_percent = dest
     
     if diff > 1e-8 then
-      core.redraw = true
+      TRIGGER_REDRAW_NEXT_FRAME = true
     end
   elseif self.force_status == "expanded" then
     self.expand_percent = 1

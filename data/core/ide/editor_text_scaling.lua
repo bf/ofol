@@ -70,7 +70,7 @@ local function set_scale(scale)
     view.scroll.to.x = view.scroll.x
   end
 
-  core.redraw = true
+  TRIGGER_REDRAW_NEXT_FRAME = true
 end
 
 local function get_scale()

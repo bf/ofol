@@ -276,7 +276,12 @@ end
 
 
 function CommandView:update()
-  if core.window_is_being_resized then return end
+  -- if core.window_is_being_resized then return end
+  if WindowStateMachine:is_resizing() then 
+    -- skip during window resizing in oder to improve performance 
+    return 
+  end
+
   CommandView.super.update(self)
 
   if core.active_view ~= self and self.state ~= default_state then

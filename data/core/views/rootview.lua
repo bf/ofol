@@ -324,7 +324,7 @@ function RootView:on_mouse_released(button, x, y, ...)
             self.root_node:get_node_for_view(view):set_active_view(view)
           end
           self.root_node:update_layout()
-          core.redraw = true
+          TRIGGER_REDRAW_NEXT_FRAME = true
         end
       end
       self:set_show_overlay(self.drag_overlay, false)

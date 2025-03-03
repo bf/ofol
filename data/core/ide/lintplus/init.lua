@@ -202,7 +202,7 @@ local function process_line(doc, linter, line, context)
       assert(rail == nil or type(rail) == "number")
 
       lint.add_message(absfile, lineno, columnno, kind, message, rail)
-      core.redraw = true
+      TRIGGER_REDRAW_NEXT_FRAME = true
     end
   end
 
@@ -291,7 +291,7 @@ function lint.check(doc)
         table.sort(rail, compare_rail_messages)
       end
       file_messages.rails_sorted = true
-      core.redraw = true
+      TRIGGER_REDRAW_NEXT_FRAME = true
       coroutine.yield(0)
     end
   end)

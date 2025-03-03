@@ -174,7 +174,7 @@ local function refresh_directory(topdir, target)
     end
   end
   if change then
-    core.redraw = true
+    TRIGGER_REDRAW_NEXT_FRAME = true
     topdir.is_dirty = true
   end
   return change
@@ -259,7 +259,7 @@ function core.add_project_directory(path)
   if path == core.project_dir then
     core.project_files = topdir.files
   end
-  core.redraw = true
+  TRIGGER_REDRAW_NEXT_FRAME = true
   return topdir
 end
 
@@ -479,26 +479,27 @@ function core.init()
   if core.window == nil then
     core.window = renwindow.create("OFOL2")
   end
+
   do
     -- load last session
     local stored_session_data = PersistentUserSession.load_user_session()
     stderr.debug("loaded stored_session_data %s", stored_session_data)
 
-    -- apply stored settings to window
-    if stored_session_data.window_mode == "normal" then
-      -- attempt to set window size, but ignore if an error appears
-      local ok, result = pcall(system.set_window_size, core.window, table.unpack(stored_session_data.window))
+    -- -- apply stored settings to window
+    -- if stored_session_data.window_mode == "normal" then
+    --   -- attempt to set window size, but ignore if an error appears
+    --   local ok, result = pcall(system.set_window_size, core.window, table.unpack(stored_session_data.window))
       
-      -- handle error
-      if not ok then
-        for k,v in pairs(stored_session_data) do
-          stderr.debug("stored_session_data k %s v %s", k, v)
-        end
-        stderr.error("set_window_size failed for stored_session_data.window %s with %s", stored_session_data, result)
-      end
-    elseif stored_session_data.window_mode == "maximized" then
-      system.set_window_mode(core.window, "maximized")
-    end
+    --   -- handle error
+    --   if not ok then
+    --     for k,v in pairs(stored_session_data) do
+    --       stderr.debug("stored_session_data k %s v %s", k, v)
+    --     end
+    --     stderr.error("set_window_size failed for stored_session_data.window %s with %s", stored_session_data, result)
+    --   end
+    -- elseif stored_session_data.window_mode == "maximized" then
+    --   system.set_window_mode(core.window, "maximized")
+    -- end
 
     -- apply other values from last session
     core.recent_projects = stored_session_data.recent_projects or {}
@@ -533,7 +534,7 @@ function core.init()
   core.cursor_clipboard_whole_line = {}
   core.previous_find = {}
   core.previous_replace = {}
-  core.window_mode = "normal"
+  -- core.window_mode = "normal"
   core.threads = setmetatable({}, { __mode = "k" })
 
   -- -- flag when user is actively resizing window
@@ -542,7 +543,7 @@ function core.init()
   -- blinking cursor timer active
   core.blink_start = system.get_time()
   core.blink_timer = core.blink_start
-  core.redraw = true
+  TRIGGER_REDRAW_NEXT_FRAME = true
   core.visited_files = {}
   core.restart_request = false
   core.quit_request = false
@@ -612,7 +613,7 @@ function core.init()
   local ide = require "core.ide"
 
   -- redraw
-  core.redraw = true
+  TRIGGER_REDRAW_NEXT_FRAME = true
 
   do
     local pdir, pname = project_dir_abs:match("(.*)[/\\\\](.*)")
@@ -855,10 +856,10 @@ function core.on_event(type, ...)
     if not core.root_view:on_mouse_wheel(...) then
       did_keymap = keymap.on_mouse_wheel(...)
     end
-  elseif type == "window_resized" then
-    -- core.window_mode = system.get_window_mode(core.window)
-  elseif type == "window_minimized" or type == "window_maximized" or type == "window_restored" then
-    core.window_mode = type == "window_restored" and "normal" or type
+  -- elseif type == "window_resized" then
+  --   -- core.window_mode = system.get_window_mode(core.window)
+  -- elseif type == "window_minimized" or type == "window_maximized" or type == "window_restored" then
+  --   core.window_mode = type == "window_restored" and "normal" or type
   elseif type == "filedropped" then
     core.root_view:on_file_dropped(...)
   -- elseif type == "window_focuslost" then
@@ -872,8 +873,20 @@ end
 
 local StateMachine = require("models.state_machine")
 
+AnimationState = StateMachine("AnimationStateMachine", {
+  active = {},
+  inactive = {},
+  ["*"] = {
+    window_focuslost = function() 
+      return "inactive"
+    end,
+    window_focusgained = function()
+      return "active"
+    end
+  }
+}, "active")
 
-local WindowStateMachine = StateMachine("WindowStateMachine", { 
+WindowStateMachine = StateMachine("WindowStateMachine", { 
   normal = {},
   minimized = {},
   maximized = {},
@@ -881,19 +894,26 @@ local WindowStateMachine = StateMachine("WindowStateMachine", {
   ["*"] = {
     window_exposed = function () 
       -- Window has been exposed and should be redrawn, and can be redrawn directly from event watchers for this event
-      core.redraw = true 
+      TRIGGER_REDRAW_NEXT_FRAME = true 
+      -- return "normal"
     end,
-    window_focuslost = function () 
+    window_focuslost = function (event_name) 
       -- Window has lost focus, redraw
-      core.redraw = true
+      TRIGGER_REDRAW_NEXT_FRAME = true
+      AnimationState:handle_event(event_name)
+    end,
+    window_focusgained = function (event_name) 
+      -- Window has lost focus, redraw
+      TRIGGER_REDRAW_NEXT_FRAME = true
+      AnimationState:handle_event(event_name)
     end,
     window_restored = function () 
       -- Window has been restored to normal size and position
       return "normal"
     end,
     window_resized = function () 
-      core.redraw = true 
-      return "resizing" 
+      -- TRIGGER_REDRAW_NEXT_FRAME = true 
+      -- return "resizing" 
     end,
     window_minimized = function () 
       return "minimized"
@@ -917,18 +937,18 @@ function core.step()
     -- if event_name == "window_resized" then
     --   -- dont redraw while resizing
     --   core.window_is_being_resized = true
-    --   core.redraw = true
+    --   TRIGGER_REDRAW_NEXT_FRAME = true
     -- elseif event_name == "window_exposed" then
     --   -- redraw only when exposed
-    --   core.redraw = true
+    --   TRIGGER_REDRAW_NEXT_FRAME = true
     elseif event_name == "textinput" and did_keymap then
       did_keymap = false
-      core.redraw = true
+      TRIGGER_REDRAW_NEXT_FRAME = true
       -- core.window_is_being_resized = false
     elseif event_name == "mousemoved" then
-      -- try_catch(core.on_event, event_name, a, b, c, d)
-      core.on_event(event_name, a,b,c,d)
-      core.redraw = true
+      try_catch(core.on_event, event_name, a, b, c, d)
+      -- core.on_event(event_name, a,b,c,d)
+      TRIGGER_REDRAW_NEXT_FRAME = true
       -- core.window_is_being_resized = false
     else
       -- handle all other cases
@@ -936,7 +956,7 @@ function core.step()
       local res = core.on_event(event_name, a,b,c,d)
       did_keymap = res or did_keymap
       
-      core.redraw = true
+      TRIGGER_REDRAW_NEXT_FRAME = true
       -- core.window_is_being_resized = false
     end
   end
@@ -946,8 +966,8 @@ function core.step()
   -- update
   core.root_view.size.x, core.root_view.size.y = width, height
   core.root_view:update()
-  if not core.redraw then return false end
-  core.redraw = false
+  if not TRIGGER_REDRAW_NEXT_FRAME then return false end
+  TRIGGER_REDRAW_NEXT_FRAME = false
 
   -- close unreferenced docs
   for i = #core.docs, 1, -1 do
@@ -1054,6 +1074,7 @@ function core.run()
   local last_frame_time
   local run_threads_full = 0
   local HALF_BLINK_PERIOD = ConfigurationOptionStore.get_editor_blink_period() / 2
+
   while true do
     core.frame_start = system.get_time()
     local time_to_wake, threads_done = run_threads()
@@ -1062,7 +1083,7 @@ function core.run()
     end
     local did_redraw = false
     local did_step = false
-    local force_draw = core.redraw and last_frame_time and core.frame_start - last_frame_time > (1 / CONSTANT_FRAMES_PER_SECOND)
+    local force_draw = TRIGGER_REDRAW_NEXT_FRAME and last_frame_time and core.frame_start - last_frame_time > (1 / CONSTANT_FRAMES_PER_SECOND)
     if force_draw or not next_step or system.get_time() >= next_step then
       if core.step() then
         did_redraw = true
@@ -1078,8 +1099,9 @@ function core.run()
       break 
     end
 
-    if not did_redraw and not WindowStateMachine.is_resizing() then
-      if system.window_has_focus(core.window) or not did_step or run_threads_full < 2 then
+    if not did_redraw and not WindowStateMachine:is_resizing() then
+      -- if system.window_has_focus(core.window) or not did_step or run_threads_full < 2 then
+      if AnimationState:is_active() or not did_step or run_threads_full < 2 then
         local now = system.get_time()
         if not next_step then -- compute the time until the next blink
           local t = now - core.blink_start

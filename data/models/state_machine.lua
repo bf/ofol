@@ -107,8 +107,11 @@ function StateMachine:new(name, tbl_states, initial_state)
     stderr.debug("%s adding getter function %s for state %s", self._name, getter_function_name, state_name)
 
     -- add getter function
-    self[getter_function_name] = function () 
-      return self._current_state == state_name
+    self[getter_function_name] = function (self) 
+      -- check if current state is the state for this getter functio
+      local result = (self._current_state == state_name)
+      -- stderr.debug("%s getter_function_name %s returns %s", self._name, getter_function_name, result)
+      return result
     end
   end
     
@@ -143,12 +146,12 @@ function StateMachine:handle_event(event_name, a, b, c, d)
   self:check_event_is_valid_for_current_state(event_name)
 
   -- handle event
-  local next_state = self._valid_states_with_events[self._current_state][event_name](a,b,c,d)
+  local next_state = self._valid_states_with_events[self._current_state][event_name](event_name, a,b,c,d)
 
   stderr.debug("%s at processed event %s will change from state %s to new state %s", self._name, event_name, self._current_state, next_state)
 
   if next_state == nil then
-    stderr.warn("%s next state is nil, will do nothing", self._name)
+    stderr.warn("%s next state after handling event %s is nil, will do nothing", self._name, event_name)
     return
   end
 
@@ -163,7 +166,7 @@ function StateMachine:handle_event(event_name, a, b, c, d)
   self:check_state_is_valid(next_state)
 
   -- if state changed, update it
-  stderr.debug("%s will change current_state from %s to %s", self._name, self._current_state, next_state)
+  stderr.warn("%s event %s has changed current_state from %s to %s", self._name, event_name, self._current_state, next_state)
   self._current_state = next_state
 
   -- call transition hooks

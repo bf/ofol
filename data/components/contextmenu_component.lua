@@ -237,7 +237,8 @@ end
 
 ---Event handler for content update.
 function ContextMenu:update()
-  if core.window_is_being_resized then return end
+  if WindowStateMachine:is_resizing() then return end
+  -- if core.window_is_being_resized then return end
 
   if self.show_context_menu then
     self.height = self.items.height

@@ -72,7 +72,7 @@ function View:move_towards(t, k, dest, rate, name)
   local diff = math.abs(val - dest)
   t[k] = dest
   if diff > 1e-8 then
-    core.redraw = true
+    TRIGGER_REDRAW_NEXT_FRAME = true
   end
 end
 

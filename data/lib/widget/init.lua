@@ -207,7 +207,7 @@ function Widget:show()
   -- to not require this action, but for now lets do this.
   core.add_thread(function()
     self:update()
-    core.redraw = true
+    TRIGGER_REDRAW_NEXT_FRAME = true
   end)
 end
 

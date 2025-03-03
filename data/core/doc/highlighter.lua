@@ -44,7 +44,7 @@ function Highlighter:start()
       if retokenized_from then
         self:update_notify(retokenized_from, max - retokenized_from)
       end
-      core.redraw = true
+      TRIGGER_REDRAW_NEXT_FRAME = true
       coroutine.yield(0)
     end
     self.max_wanted_line = 0

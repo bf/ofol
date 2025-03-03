@@ -496,7 +496,7 @@ function BuildMessageView:draw()
   if build.is_running() then
     local t = { "|", "/", "-", "\\", "|", "/", "-", "\\" }
     title = title .. " " .. t[(math.floor(system.get_time()*8) % #t) + 1]
-    core.redraw = true
+    TRIGGER_REDRAW_NEXT_FRAME = true
   elseif type(self.messages[#self.messages]) == "table" and #self.messages[#self.messages] == 2 then
     subtitle = self.messages[#self.messages]
   end

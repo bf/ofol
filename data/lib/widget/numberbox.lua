@@ -201,7 +201,7 @@ function NumberBox:mouse_pressed(increase)
         else
           this:decrease()
         end
-        core.redraw = true
+        TRIGGER_REDRAW_NEXT_FRAME = true
         elapsed = system.get_time() + 0.1
       end
       coroutine.yield()
