@@ -127,3 +127,9 @@ local appimage_owd = os.getenv("OWD")
 if os.getenv("APPIMAGE") and appimage_owd then
   system.chdir(appimage_owd)
 end
+
+-- global var core already defined as "nil" in src/main.c
+core = require("core")
+core.init()
+core.run()
+

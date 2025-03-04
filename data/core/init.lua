@@ -1150,21 +1150,4 @@ function core.request_cursor(value)
   end
 end
 
-
--- write fatal errors to file
-function core.on_error(err)
-  -- write error to file
-  local fp = io.open(USERDIR .. PATHSEP .. "error.txt", "wb")
-  fp:write("Error: " .. tostring(err) .. "\n")
-  fp:write(debug.traceback("", 4) .. "\n")
-  fp:close()
-  -- save copy of all unsaved documents
-  for _, doc in ipairs(core.docs) do
-    if doc:is_dirty() and doc.filename then
-      doc:save(doc.filename .. "~")
-    end
-  end
-end
-
-
 return core
