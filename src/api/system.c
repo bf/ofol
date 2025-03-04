@@ -210,11 +210,11 @@ top:
       lua_pushstring(L, "window_restored");
       return 1;
     } else if (e.window.type == SDL_EVENT_WINDOW_MOUSE_LEAVE) {
-      // lua_pushstring(L, "mouse_has_left_the_window");
-      // return 1;
+      lua_pushstring(L, "mouse_has_left_the_window");
+      return 1;
     } else if (e.window.type == SDL_EVENT_WINDOW_MOUSE_ENTER) {
-      // lua_pushstring(L, "mouse_is_back_inside_window");
-      // return 1;
+      lua_pushstring(L, "mouse_is_back_inside_window");
+      return 1;
     }
     if (e.window.type == SDL_EVENT_WINDOW_FOCUS_LOST) {
       lua_pushstring(L, "window_focuslost");
@@ -259,8 +259,8 @@ top:
       }
 #endif
       char* key_name = get_key_name(&e, buf);
-      SDL_Log("keypressed %s\n", key_name);
-      lua_pushstring(L, "keypressed");
+      SDL_Log("key_pressed %s\n", key_name);
+      lua_pushstring(L, "key_pressed");
       lua_pushstring(L, key_name);
       return 2;
 
@@ -274,18 +274,18 @@ top:
         SDL_FlushEvent(SDL_EVENT_QUIT);
       }
 #endif
-      lua_pushstring(L, "keyreleased");
+      lua_pushstring(L, "key_released");
       lua_pushstring(L, get_key_name(&e, buf));
       return 2;
 
     case SDL_EVENT_TEXT_INPUT:
-      lua_pushstring(L, "textinput");
+      lua_pushstring(L, "text_input");
       lua_pushstring(L, e.text.text);
       return 2;
 
 // #if SDL_VERSION_ATLEAST(2, 0, 22)
     // case SDL_EVENT_TEXT_EDITING_EXT:
-    //   lua_pushstring(L, "textediting");
+    //   lua_pushstring(L, "text_editing");
     //   lua_pushstring(L, e.editExt.text);
     //   lua_pushinteger(L, e.editExt.start);
     //   lua_pushinteger(L, e.editExt.length);
@@ -293,7 +293,7 @@ top:
     //   return 4;
 // #else
     case SDL_EVENT_TEXT_EDITING:
-      lua_pushstring(L, "textediting");
+      lua_pushstring(L, "text_editing");
       lua_pushstring(L, e.edit.text);
       lua_pushinteger(L, e.edit.start);
       lua_pushinteger(L, e.edit.length);
@@ -304,7 +304,7 @@ top:
       {
         if (e.button.button == 1) { SDL_CaptureMouse(1); }
         RenWindow* window_renderer = ren_find_window_from_id(e.button.windowID);
-        lua_pushstring(L, "mousepressed");
+        lua_pushstring(L, "mouse_pressed");
         lua_pushstring(L, button_name(e.button.button));
         lua_pushinteger(L, e.button.x * window_renderer->scale_x);
         lua_pushinteger(L, e.button.y * window_renderer->scale_y);
@@ -316,7 +316,7 @@ top:
       {
         if (e.button.button == 1) { SDL_CaptureMouse(0); }
         RenWindow* window_renderer = ren_find_window_from_id(e.button.windowID);
-        lua_pushstring(L, "mousereleased");
+        lua_pushstring(L, "mouse_released");
         lua_pushstring(L, button_name(e.button.button));
         lua_pushinteger(L, e.button.x * window_renderer->scale_x);
         lua_pushinteger(L, e.button.y * window_renderer->scale_y);
@@ -333,7 +333,7 @@ top:
           e.motion.yrel += event_plus.motion.yrel;
         }
         RenWindow* window_renderer = ren_find_window_from_id(e.motion.windowID);
-        lua_pushstring(L, "mousemoved");
+        lua_pushstring(L, "mouse_moved");
         lua_pushinteger(L, e.motion.x * window_renderer->scale_x);
         lua_pushinteger(L, e.motion.y * window_renderer->scale_y);
         lua_pushinteger(L, e.motion.xrel * window_renderer->scale_x);
@@ -342,7 +342,7 @@ top:
       }
 
     case SDL_EVENT_MOUSE_WHEEL:
-      lua_pushstring(L, "mousewheel");
+      lua_pushstring(L, "mouse_wheel");
 #if SDL_VERSION_ATLEAST(2, 0, 18)
       lua_pushnumber(L, e.wheel.y);
       // Use -x to keep consistency with vertical scrolling values (e.g. shift+scroll)

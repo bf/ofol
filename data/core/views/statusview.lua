@@ -1003,7 +1003,8 @@ end
 ---@param y number
 ---@return string
 function StatusView:get_hovered_panel(x, y)
-  if y >= self.position.y and x <= self.left_width + style.padding.x then
+  if y >= self.position.y 
+      and x <= self.left_width + style.padding.x then
     return "left"
   end
   return "right"

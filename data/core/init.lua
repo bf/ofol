@@ -808,54 +808,42 @@ function core.get_views_referencing_doc(doc)
 end
 
 
--- local MouseState
---   position x, y
---   movement dx, dy
---   grabbed -> no grab
---   hover -> divider, view, tabs, etc.
---   cursorstate -> grab, pointer, edit?
-
--- MouseHoverState -> view
-
--- TextInputState 
---    active text input
-
 
 function core.on_event(type, ...)
-  if type ~= "mousemoved" then
+  if type ~= "mouse_moved" then
     stderr.debug("on_event", type)
   end
 
   local did_keymap = false
-  if type == "textinput" then
+  if type == "text_input" then
     core.root_view:on_text_input(...)
-  elseif type == "textediting" then
+  elseif type == "text_editing" then
     ime.on_text_editing(...)
-  elseif type == "keypressed" then
+  elseif type == "key_pressed" then
     -- In some cases during IME composition input is still sent to us
     -- so we just ignore it.
     if ime.editing then 
-      stderr.error("keypressed event should never be received when ime.editing == true, received", ...)
+      stderr.error("key_pressed event should never be received when ime.editing == true, received", ...)
       return false 
     end
     did_keymap = keymap.on_key_pressed(...)
-  elseif type == "keyreleased" then
+  elseif type == "key_released" then
     keymap.on_key_released(...)
-  elseif type == "mousemoved" then
-    core.root_view:on_mouse_moved(...)
-  elseif type == "mousepressed" then
-    stderr.debug("core on_mouse_pressed")
-    if not core.root_view:on_mouse_pressed(...) then
-      did_keymap = keymap.on_mouse_pressed(...)
-    end
-  elseif type == "mousereleased" then
-    core.root_view:on_mouse_released(...)
-  elseif type == "mouseleft" then
-    -- core.root_view:on_mouse_left()
-  elseif type == "mousewheel" then
-    if not core.root_view:on_mouse_wheel(...) then
-      did_keymap = keymap.on_mouse_wheel(...)
-    end
+  -- elseif type == "mouse_moved" then
+  --   core.root_view:on_mouse_moved(...)
+  -- elseif type == "mouse_pressed" then
+  --   stderr.debug("core on_mouse_pressed")
+  --   if not core.root_view:on_mouse_pressed(...) then
+  --     did_keymap = keymap.on_mouse_pressed(...)
+  --   end
+  -- elseif type == "mouse_released" then
+  --   core.root_view:on_mouse_released(...)
+  -- elseif type == "mouse_left" then
+  --   -- core.root_view:on_mouse_left()
+  -- elseif type == "mouse_wheel" then
+  --   if not core.root_view:on_mouse_wheel(...) then
+  --     did_keymap = keymap.on_mouse_wheel(...)
+  --   end
   -- elseif type == "window_resized" then
   --   -- core.window_mode = system.get_window_mode(core.window)
   -- elseif type == "window_minimized" or type == "window_maximized" or type == "window_restored" then
@@ -873,6 +861,7 @@ end
 
 local StateMachine = require("models.state_machine")
 
+-- cursor should be animated or not
 AnimationState = StateMachine("AnimationState", {
   active = {},
   inactive = {},
@@ -886,6 +875,7 @@ AnimationState = StateMachine("AnimationState", {
   }
 }, "active")
 
+-- window maxmized or not
 WindowState = StateMachine("WindowState", { 
   normal = {},
   minimized = {},
@@ -924,12 +914,81 @@ WindowState = StateMachine("WindowState", {
   }
 }, "normal")
 
--- window resizing inprogress -> next event needs to be window otherwise it should return
+
+-- globally store currently hovered item
+State = {
+  HoveredItem = nil,
+  MousePosition = {
+    x = nil,
+    y = nil
+  }
+}
+-- MouseHoveredState = StateMachine("MouseHoveredState", {
+--   mouse_moved = {},
+--   mouse_has_left_the_window = {
+--     mouse_is_back_inside_window = function (event_name, x, y) 
+--       return 
+--     end
+--   },
+--   mouse_is_back_inside_window = {},
+-- })
+
+  -- position = {
+  --   x = nil, 
+  --   y = nil
+  -- },
+  -- mouse_wheel = {},
+-- 
+  -- mouse_pressed = {},
+  -- mouse_released = {},
+
+-- MouseCursorState = StateMachine("MouseCursorState")
+
+-- remember if keymap is completed
+local did_keymap = false
+
+-- handling mouse event
+function _handle_mouse_event(event_name, a, b, c, d) 
+  stderr.debug("_handle_mouse_event", event_name, a, b, c, d)
+
+  if event_name == "mouse_has_left_window" then
+    -- when mouse outside window, reset hovered item
+    State.HoveredItem = nil
+
+  elseif event_name == "mouse_moved" then
+    -- update mouse position
+    State.MousePosition.x = a
+    State.MousePosition.y = b
+
+    -- redraw frame
+    TRIGGER_REDRAW_NEXT_FRAME = true
+
+    -- run on_mouse_moved function
+    core.root_view:on_mouse_moved(a, b, c, d)
+
+  elseif event_name == "mouse_pressed" then
+    -- run on_mouse_pressed functions
+    if not core.root_view:on_mouse_pressed(a, b, c, d) then
+      did_keymap = keymap.on_mouse_pressed(a, b, c, d)
+    end
+
+  elseif type == "mouse_released" then
+    core.root_view:on_mouse_released(a, b, c, d)
+  
+  elseif type == "mouse_wheel" then
+    if not core.root_view:on_mouse_wheel(a, b, c, d) then
+      did_keymap = keymap.on_mouse_wheel(a, b, c, d)
+    end
+
+  else
+    stderr.warn("no handler found for", event_name)
+  end
+end
 
 -- main stepping loop for event handling
 function core.step()
   -- handle events
-  local did_keymap = false
+  -- local did_keymap = false
 
   for event_name, a,b,c,d in system.poll_event do
     if string.starts_with(event_name, "window_") then
@@ -941,14 +1000,16 @@ function core.step()
     -- elseif event_name == "window_exposed" then
     --   -- redraw only when exposed
     --   TRIGGER_REDRAW_NEXT_FRAME = true
-    elseif event_name == "textinput" and did_keymap then
+    elseif string.starts_with(event_name, "mouse_") then
+      _handle_mouse_event(event_name, a, b, c, d)
+    elseif event_name == "text_input" and did_keymap then
       did_keymap = false
       TRIGGER_REDRAW_NEXT_FRAME = true
       -- core.window_is_being_resized = false
-    elseif event_name == "mousemoved" then
-      try_catch(core.on_event, event_name, a, b, c, d)
+    -- elseif event_name == "mouse_moved" then
+    --   try_catch(core.on_event, event_name, a, b, c, d)
       -- core.on_event(event_name, a,b,c,d)
-      TRIGGER_REDRAW_NEXT_FRAME = true
+      -- TRIGGER_REDRAW_NEXT_FRAME = true
       -- core.window_is_being_resized = false
     else
       -- handle all other cases
@@ -1129,6 +1190,7 @@ function core.run()
 end
 
 -- reset countdown timer for text edit caret blinking
+-- todo: remove
 function core.blink_reset()
   core.blink_start = system.get_time()
 end
