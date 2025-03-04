@@ -873,7 +873,7 @@ end
 
 local StateMachine = require("models.state_machine")
 
-AnimationState = StateMachine("AnimationStateMachine", {
+AnimationState = StateMachine("AnimationState", {
   active = {},
   inactive = {},
   ["*"] = {
@@ -886,7 +886,7 @@ AnimationState = StateMachine("AnimationStateMachine", {
   }
 }, "active")
 
-WindowStateMachine = StateMachine("WindowStateMachine", { 
+WindowState = StateMachine("WindowState", { 
   normal = {},
   minimized = {},
   maximized = {},
@@ -933,7 +933,7 @@ function core.step()
 
   for event_name, a,b,c,d in system.poll_event do
     if string.starts_with(event_name, "window_") then
-      WindowStateMachine:handle_event(event_name)
+      WindowState:handle_event(event_name)
     -- if event_name == "window_resized" then
     --   -- dont redraw while resizing
     --   core.window_is_being_resized = true
@@ -1099,7 +1099,7 @@ function core.run()
       break 
     end
 
-    if not did_redraw and not WindowStateMachine:is_resizing() then
+    if not did_redraw and not WindowState:is_resizing() then
       -- if system.window_has_focus(core.window) or not did_step or run_threads_full < 2 then
       if AnimationState:is_active() or not did_step or run_threads_full < 2 then
         local now = system.get_time()

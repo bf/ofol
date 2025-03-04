@@ -415,7 +415,7 @@ function DocView:update()
 
   -- update blink timer
   -- if self == core.active_view and not self.mouse_selecting and not core.window_is_being_resized then
-  if self == core.active_view and not self.mouse_selecting and not WindowStateMachine:is_resizing() then
+  if self == core.active_view and not self.mouse_selecting and not WindowState:is_resizing() then
 
     local T = ConfigurationOptionStore.get_editor_blink_period()
     local t0 = core.blink_start

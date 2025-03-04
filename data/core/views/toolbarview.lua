@@ -26,7 +26,7 @@ end
 
 function ToolbarView:update()
   -- if core.window_is_being_resized then return end
-  if WindowStateMachine:is_resizing() then 
+  if WindowState:is_resizing() then 
     -- skip during window resizing in oder to improve performance 
     return 
   end
