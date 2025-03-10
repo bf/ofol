@@ -635,7 +635,7 @@ function core.init()
 
   -- enable native borderes
   system.set_window_hit_test()
-  system.set_window_bordered(true)
+  system.set_window_bordered(false)
 end
 
 -- close all docs, prompt user about unsaved changes

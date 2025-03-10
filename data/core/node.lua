@@ -311,7 +311,7 @@ end
 
 function Node:get_parent_node(potential_parent_node)
   if potential_parent_node.child_node_a == self or potential_parent_node.child_node_b == self then
-    return root
+    return potential_parent_node
   elseif not potential_parent_node:is_leaf() then
     return self:get_parent_node(potential_parent_node.child_node_a) or self:get_parent_node(potential_parent_node.child_node_b)
   end
