@@ -425,6 +425,7 @@ end
 ---@param y number
 ---@return boolean
 function RootView:on_file_dropped(filename, x, y)
+  -- todo: refactor
   local node = self.root_node:get_child_overlapping_point(x, y)
   local result = node and node.active_view:on_file_dropped(filename, x, y)
   if result then return result end

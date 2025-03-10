@@ -723,7 +723,7 @@ end
 -- create thread
 local thread_counter = 0
 function core.add_thread(f, weak_ref, ...)
-  stderr.debug_backtrace("adding thread")
+  -- stderr.debug_backtrace("adding thread")
   local key = weak_ref
   if not key then
     thread_counter = thread_counter + 1
@@ -809,54 +809,30 @@ end
 
 
 
-function core.on_event(type, ...)
-  if type ~= "mouse_moved" then
-    stderr.debug("on_event", type)
-  end
+-- function core.on_event(type, ...)
 
-  local did_keymap = false
-  if type == "text_input" then
-    core.root_view:on_text_input(...)
-  elseif type == "text_editing" then
-    ime.on_text_editing(...)
-  elseif type == "key_pressed" then
-    -- In some cases during IME composition input is still sent to us
-    -- so we just ignore it.
-    if ime.editing then 
-      stderr.error("key_pressed event should never be received when ime.editing == true, received", ...)
-      return false 
-    end
-    did_keymap = keymap.on_key_pressed(...)
-  elseif type == "key_released" then
-    keymap.on_key_released(...)
-  -- elseif type == "mouse_moved" then
-  --   core.root_view:on_mouse_moved(...)
-  -- elseif type == "mouse_pressed" then
-  --   stderr.debug("core on_mouse_pressed")
-  --   if not core.root_view:on_mouse_pressed(...) then
-  --     did_keymap = keymap.on_mouse_pressed(...)
-  --   end
-  -- elseif type == "mouse_released" then
-  --   core.root_view:on_mouse_released(...)
-  -- elseif type == "mouse_left" then
-  --   -- core.root_view:on_mouse_left()
-  -- elseif type == "mouse_wheel" then
-  --   if not core.root_view:on_mouse_wheel(...) then
-  --     did_keymap = keymap.on_mouse_wheel(...)
-  --   end
-  -- elseif type == "window_resized" then
-  --   -- core.window_mode = system.get_window_mode(core.window)
-  -- elseif type == "window_minimized" or type == "window_maximized" or type == "window_restored" then
-  --   core.window_mode = type == "window_restored" and "normal" or type
-  elseif type == "filedropped" then
-    core.root_view:on_file_dropped(...)
-  -- elseif type == "window_focuslost" then
-  --   core.root_view:on_focus_lost(...)
-  elseif type == "quit" then
-    core.quit()
-  end
-  return did_keymap
-end
+--   local did_keymap = false
+--   if type == "text_input" then
+--     core.root_view:on_text_input(...)
+--   elseif type == "text_editing" then
+--     ime.on_text_editing(...)
+--   -- elseif type == "key_pressed" then
+--   --   -- In some cases during IME composition input is still sent to us
+--   --   -- so we just ignore it.
+--   --   if ime.editing then 
+--   --     stderr.error("key_pressed event should never be received when ime.editing == true, received", ...)
+--   --     return false 
+--   --   end
+--   --   did_keymap = keymap.on_key_pressed(...)
+--   -- elseif type == "key_released" then
+--   --   keymap.on_key_released(...)
+--   -- elseif type == "filedropped" then
+--   --   core.root_view:on_file_dropped(...)
+--   -- elseif type == "quit" then
+--   --   core.quit()
+--   end
+--   return did_keymap
+-- end
 
 
 local StateMachine = require("models.state_machine")
@@ -916,7 +892,7 @@ WindowState = StateMachine("WindowState", {
 
 
 -- globally store currently hovered item
-State = {
+InputState = {
   HoveredItem = nil,
   MousePosition = {
     x = nil,
@@ -953,12 +929,12 @@ function _handle_mouse_event(event_name, a, b, c, d)
 
   if event_name == "mouse_has_left_window" then
     -- when mouse outside window, reset hovered item
-    State.HoveredItem = nil
+    InputState.HoveredItem = nil
 
   elseif event_name == "mouse_moved" then
     -- update mouse position
-    State.MousePosition.x = a
-    State.MousePosition.y = b
+    InputState.MousePosition.x = a
+    InputState.MousePosition.y = b
 
     -- redraw frame
     TRIGGER_REDRAW_NEXT_FRAME = true
@@ -979,7 +955,7 @@ function _handle_mouse_event(event_name, a, b, c, d)
     if not core.root_view:on_mouse_wheel(a, b, c, d) then
       did_keymap = keymap.on_mouse_wheel(a, b, c, d)
     end
-    
+
   else
     stderr.warn("no handler found for", event_name)
   end
@@ -991,33 +967,64 @@ function core.step()
   -- local did_keymap = false
 
   for event_name, a,b,c,d in system.poll_event do
+    -- window events
     if string.starts_with(event_name, "window_") then
       WindowState:handle_event(event_name)
-    -- if event_name == "window_resized" then
-    --   -- dont redraw while resizing
-    --   core.window_is_being_resized = true
-    --   TRIGGER_REDRAW_NEXT_FRAME = true
-    -- elseif event_name == "window_exposed" then
-    --   -- redraw only when exposed
-    --   TRIGGER_REDRAW_NEXT_FRAME = true
+
+    -- mouse events
     elseif string.starts_with(event_name, "mouse_") then
       _handle_mouse_event(event_name, a, b, c, d)
-    elseif event_name == "text_input" and did_keymap then
-      did_keymap = false
-      TRIGGER_REDRAW_NEXT_FRAME = true
-      -- core.window_is_being_resized = false
-    -- elseif event_name == "mouse_moved" then
-    --   try_catch(core.on_event, event_name, a, b, c, d)
-      -- core.on_event(event_name, a,b,c,d)
-      -- TRIGGER_REDRAW_NEXT_FRAME = true
-      -- core.window_is_being_resized = false
+    
+    -- text input events
+    elseif string.starts_with(event_name, "text_") then
+      stderr.warn("text_ event", event_name, a, b, c, d)
+
+      if event_name == "text_input" then
+        if did_keymap then
+          did_keymap = false
+          TRIGGER_REDRAW_NEXT_FRAME = true
+        else
+          core.root_view:on_text_input(a,b,c,d)
+        end
+      elseif event_name == "text_editing" then
+        ime.on_text_editing(a,b,c,d)
+      end
+
+    -- keyboard events
+    elseif string.starts_with(event_name, "key_") then
+      stderr.warn("key_ event", event_name, a, b, c, d)
+      if event_name == "key_pressed" then
+        -- In some cases during IME composition input is still sent to us
+        -- so we just ignore it.
+        if ime.editing then 
+          stderr.error("key_pressed event should never be received when ime.editing == true, received", a, b, c, d)
+          did_keymap = false
+        else
+          did_keymap = keymap.on_key_pressed(a, b, c, d)
+        end
+      elseif event_name == "key_released" then
+        keymap.on_key_released(a, b, c, d)
+      end
+
+    -- quit request sent from main executable
+    elseif event_name == "quit" then  
+      stderr.warn("event: quit", a, b, c, d)
+      core.quit()
+
+    -- file dropped into app
+    elseif event_name == "filedropped" then
+      stderr.warn("event: file dropped", a, b, c, d)
+      core.root_view:on_file_dropped(a, b, c, d)
+
+    -- handle unknown events
     else
-      -- handle all other cases
-      -- local _, res = try_catch(core.on_event, event_name, a, b, c, d)
-      local res = core.on_event(event_name, a,b,c,d)
-      did_keymap = res or did_keymap
+      stderr.error("unknown/unexpected event received:", event_name, a, b, c, d)
+      -- -- handle all other cases
+      -- -- local _, res = try_catch(core.on_event, event_name, a, b, c, d)
+      -- local res = core.on_event(event_name, a,b,c,d)
+      -- did_keymap = res or did_keymap
       
-      TRIGGER_REDRAW_NEXT_FRAME = true
+      -- TRIGGER_REDRAW_NEXT_FRAME = true
       -- core.window_is_being_resized = false
     end
   end

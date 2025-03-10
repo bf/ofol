@@ -343,14 +343,14 @@ top:
 
     case SDL_EVENT_MOUSE_WHEEL:
       lua_pushstring(L, "mouse_wheel");
-#if SDL_VERSION_ATLEAST(2, 0, 18)
+// #if SDL_VERSION_ATLEAST(2, 0, 18)
       lua_pushnumber(L, e.wheel.y);
       // Use -x to keep consistency with vertical scrolling values (e.g. shift+scroll)
       lua_pushnumber(L, -e.wheel.x);
-#else
-      lua_pushinteger(L, e.wheel.y);
-      lua_pushinteger(L, -e.wheel.x);
-#endif
+// #else
+//       lua_pushinteger(L, e.wheel.y);
+//       lua_pushinteger(L, -e.wheel.x);
+// #endif
       return 3;
 
     //   case SDL_EVENT_FINGER_DOWN:
