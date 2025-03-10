@@ -1,12 +1,12 @@
 -- even though $style variable is not used in this file, 
 -- if we remove this then the loading of style in views does not work
 local style = require "themes.colors.default"
+local dirwatch = require "lib.dirwatch"
 
 
-local PersistentUserSession
+local PersistentUserSession = require "persistence.persistent_user_session"
 local command
 local keymap
-local dirwatch
 local ime
 local RootView
 local TreeView
@@ -438,9 +438,8 @@ function core.init()
 
   command = require "core.command"
   keymap = require "core.keymap"
-  dirwatch = require "core.dirwatch"
+
   ime = require "core.ime" 
-  PersistentUserSession = require "persistence.persistent_user_session"
 
   RootView = require "core.views.rootview"
   StatusView = require "core.views.statusview"
@@ -635,7 +634,7 @@ function core.init()
 
   -- enable native borderes
   system.set_window_hit_test()
-  system.set_window_bordered(false)
+  system.set_window_bordered(true)
 end
 
 -- close all docs, prompt user about unsaved changes
@@ -855,7 +854,7 @@ WindowState = StateMachine("WindowState", {
       return "normal"
     end,
     window_resized = function () 
-      -- TRIGGER_REDRAW_NEXT_FRAME = true 
+      TRIGGER_REDRAW_NEXT_FRAME = true 
       -- return "resizing" 
     end,
     window_minimized = function () 
@@ -976,13 +975,6 @@ function core.step()
     -- handle unknown events
     else
       stderr.error("unknown/unexpected event received:", event_name, a, b, c, d)
-      -- -- handle all other cases
-      -- -- local _, res = try_catch(core.on_event, event_name, a, b, c, d)
-      -- local res = core.on_event(event_name, a,b,c,d)
-      -- did_keymap = res or did_keymap
-      
-      -- TRIGGER_REDRAW_NEXT_FRAME = true
-      -- core.window_is_being_resized = false
     end
   end
 
