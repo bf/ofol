@@ -26,6 +26,30 @@ function threading.add_thread(f, weak_ref, ...)
   return key
 end
 
+-- returns true if thread with this identifier exists
+function threading.is_thread_identifier_known(thread_identifier_key) 
+  if threads[thread_identifier_key] == nil then
+    return false
+  else
+    return true
+  end
+end
+
+-- returns status of specific thread
+function threading.get_thread_status(thread_identifier_key)
+  if not threading.is_thread_identifier_known(thread_identifier_key) then
+    stderr.warn("cannot return status for nonexisting thread %s", thread_identifier_key)
+    return nil
+  end
+
+  return coroutine.status(threads[thread_identifier_key].cr)
+end
+
+
+-- returns true if thread is dead
+function threading.is_thread_dead(thread_identifier_key)
+  return threading.get_thread_status(thread_identifier_key) == "dead"
+end
 
 -- main threading loop which will interrupt threads to keep fps
 threading.run_threads = coroutine.wrap(function()
@@ -34,7 +58,7 @@ threading.run_threads = coroutine.wrap(function()
     local minimal_time_to_wake = math.huge
 
     local threads = {}
-    -- We modify core.threads while iterating, both by removing dead threads,
+    -- We modify $threads while iterating, both by removing dead threads,
     -- and by potentially adding more threads while we yielded early,
     -- so we need to extract the threads list and iterate over that instead.
     for k, thread in pairs(threads) do

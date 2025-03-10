@@ -141,8 +141,19 @@ function build.run_tasks(tasks, on_done, on_line)
   end
   table.insert(build.running_bundles, bundle)
 
-  if build.thread and core.threads[build.thread] and coroutine.status(core.threads[build.thread].cr) == "dead" then build.thread = nil end
+  -- check if build thread should be running
+  if build.thread then
+    -- check if build thread is dead
+    if threading.is_thread_dead(build.thread) then
+      stderr.debug("build thread is dead, cleaning up reference")
+      -- clean up reference
+      build.thread = nil 
+    end
+  end
+
+  -- if no build thread is running then create new one
   if not build.thread then
+    -- create build thread
     build.thread = threading.add_thread(function()
       local function handle_output(bundle, output)
         if output ~= nil then

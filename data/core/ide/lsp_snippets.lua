@@ -549,7 +549,7 @@ local function pop()
 end
 
 local function enqueue(filename)
-	if not core.threads[THREAD_KEY] then
+	if not threading.is_thread_identifier_known(THREAD_KEY) then
 		threading.add_thread(pop, THREAD_KEY)
 	end
 	files[filename] = fstate.QUEUED

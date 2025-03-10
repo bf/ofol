@@ -535,7 +535,7 @@ function core.init()
   -- blinking cursor timer active
   core.blink_start = system.get_time()
   core.blink_timer = core.blink_start
-  GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
+  -- GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
   core.visited_files = {}
   core.restart_request = false
   core.quit_request = false
