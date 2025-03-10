@@ -60,16 +60,24 @@ local function get_primary_node(node)
 end
 
 
----@return core.node
+-- returns the node object which contains the active view
 function RootView:get_active_node_default()
+  -- try to find node for active_view
   local node = self.root_node:get_node_for_view(core.active_view)
-  if not node then node = self:get_primary_node() end
+
+  if not node then 
+    -- if nothing found, get primary node
+    node = self:get_primary_node() 
+  end
+
   if node.locked then
+    -- if node is locked then use the first view (EmptyView?)
     local default_view = self:get_primary_node().views[1]
     assert(default_view, "internal error: cannot find original document node.")
     core.set_active_view(default_view)
     node = self:get_active_node()
   end
+
   return node
 end
 
@@ -279,6 +287,8 @@ end
 ---@param y number
 function RootView:on_mouse_released(button, x, y, ...)
   stderr.debug("root on_mouse_released %d %d", x, y)
+
+  -- something is grabbed with the mouse
   if self.grab then
     if self.grab.button == button then
       local grabbed_view = self.grab.view
@@ -294,9 +304,12 @@ function RootView:on_mouse_released(button, x, y, ...)
     return
   end
 
+  -- divider between nodes is moved via drag'n'drop
   if self.dragged_divider then
     self.dragged_divider = nil
   end
+
+  -- node is moved via drag'n'drop
   if self.dragged_node then
     if button == "left" then
       if self.dragged_node.dragging then
@@ -323,15 +336,19 @@ function RootView:on_mouse_released(button, x, y, ...)
             node:add_view(view, tab_index)
             self.root_node:get_node_for_view(view):set_active_view(view)
           end
+
           self.root_node:update_layout()
           TRIGGER_REDRAW_NEXT_FRAME = true
         end
       end
+
       self:set_show_overlay(self.drag_overlay, false)
       self:set_show_overlay(self.drag_overlay_tab, false)
+
       if self.dragged_node and self.dragged_node.dragging then
         core.request_cursor("arrow")
       end
+
       self.dragged_node = nil
     end
   end
