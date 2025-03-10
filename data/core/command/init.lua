@@ -174,13 +174,22 @@ end
 
 ---Inserts the default commands for Lite XL into the map.
 function command.add_defaults()
-  local reg = {
-    "core", "root", "commandview", "doc_singleline","doc_multiline", "findreplace",
-    "files", "dialog",  "statusbar"
-  }
-  for _, name in ipairs(reg) do
-    require("core.commands.commands_" .. name)
-  end
+  require("core.command.commands_core")
+  require("core.command.commands_root")
+  require("core.command.commands_commandview")
+  require("core.command.commands_doc_singleline")
+  require("core.command.commands_doc_multiline")
+  require("core.command.commands_findreplace")
+  require("core.command.commands_files")
+  require("core.command.commands_dialog")
+  require("core.command.commands_statusbar")
+  -- local reg = {
+  --   "core", "root", "commandview", "doc_singleline","doc_multiline", "findreplace",
+  --   "files", "dialog",  "statusbar"
+  -- }
+  -- for _, name in ipairs(reg) do
+  --   require("core.commands.commands_" .. name)
+  -- end
 end
 
 
