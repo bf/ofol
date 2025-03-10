@@ -101,7 +101,7 @@ local SingleLineTextView = require "lib.widget.single_line_textview"
 --   -- no-op function to disable this functionality
 -- end
 
--- -- Overwrite this function just to disable the core.push_clip_rect
+-- -- Overwrite this function just to disable the clipping.push_clip_rect
 -- function TextView:draw()
 --   self:draw_background(style.background)
 --   local _, indent_size = self.doc:get_indent_info()
@@ -318,14 +318,14 @@ function TextBox:draw()
   self.textview.size.x = self.size.x
   self.textview.size.y = self.size.y - (style.padding.y * 2)
 
-  core.push_clip_rect(
+  clipping.push_clip_rect(
     self.position.x,
     self.position.y,
     self.size.x,
     self.size.y
   )
   self.textview:draw()
-  core.pop_clip_rect()
+  clipping.pop_clip_rect()
 
   return true
 end

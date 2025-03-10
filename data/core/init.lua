@@ -526,7 +526,6 @@ function core.init()
   end
 
   core.frame_start = 0
-  core.clip_rect_stack = {{ 0,0,0,0 }}
   core.docs = {}
   core.cursor_clipboard = {}
   core.cursor_clipboard_whole_line = {}
@@ -736,24 +735,6 @@ function core.add_thread(f, weak_ref, ...)
   local fn = function() return try_catch(f, table.unpack(args)) end
   core.threads[key] = { cr = coroutine.create(fn), wake = 0 }
   return key
-end
-
-
-function core.push_clip_rect(x, y, w, h)
-  local x2, y2, w2, h2 = table.unpack(core.clip_rect_stack[#core.clip_rect_stack])
-  local r, b, r2, b2 = x+w, y+h, x2+w2, y2+h2
-  x, y = math.max(x, x2), math.max(y, y2)
-  b, r = math.min(b, b2), math.min(r, r2)
-  w, h = r-x, b-y
-  table.insert(core.clip_rect_stack, { x, y, w, h })
-  renderer.set_clip_rect(x, y, w, h)
-end
-
-
-function core.pop_clip_rect()
-  table.remove(core.clip_rect_stack)
-  local x, y, w, h = table.unpack(core.clip_rect_stack[#core.clip_rect_stack])
-  renderer.set_clip_rect(x, y, w, h)
 end
 
 
@@ -1036,8 +1017,9 @@ function core.step()
 
   -- draw
   renderer.begin_frame(core.window)
-  core.clip_rect_stack[1] = { 0, 0, width, height }
-  renderer.set_clip_rect(table.unpack(core.clip_rect_stack[1]))
+  clipping.limit_clip_rect_to_window_size(width, height)
+  -- core.clip_rect_stack[1] = { 0, 0, width, height }
+  -- renderer.set_clip_rect(table.unpack(core.clip_rect_stack[1]))
   core.root_view:draw()
   renderer.end_frame()
   return true

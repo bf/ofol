@@ -890,7 +890,7 @@ function ListBox:draw()
   local x = ox + self.position.x + self.border.width
   local y = oy + self.position.y + self.border.width + new_height
 
-  core.push_clip_rect(
+  clipping.push_clip_rect(
     self.position.x, self.position.y, self.size.x, self.size.y
   )
   for _, ridx in ipairs(self.visible_rows) do
@@ -914,7 +914,7 @@ function ListBox:draw()
       ox
     )
   end
-  core.pop_clip_rect()
+  clipping.pop_clip_rect()
 
   self:draw_border()
   self:draw_scrollbar()

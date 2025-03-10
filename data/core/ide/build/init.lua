@@ -509,7 +509,7 @@ function BuildMessageView:draw()
   if subtitle and #subtitle == 2 then
     renderer.draw_text_aligned_in_box(style.code_font, colors[subtitle[1]] or style.accent, subtitle[2], "left", x + style.padding.x, self.position.y + style.padding.y, 0, h)
   end
-  core.push_clip_rect(self.position.x, self.position.y + h + style.padding.y * 2, self.size.x, self.size.y - h - style.padding.y * 2)
+  clipping.push_clip_rect(self.position.x, self.position.y + h + style.padding.y * 2, self.size.x, self.size.y - h - style.padding.y * 2)
   local default_color = style.text
   for i,v in ipairs(self.messages) do
     local yoffset = style.padding.y * 2 + (i - 1)*item_height + style.padding.y + h
@@ -538,7 +538,7 @@ function BuildMessageView:draw()
       end
     end
   end
-  core.pop_clip_rect()
+  clipping.pop_clip_rect()
   self:draw_scrollbar()
 end
 

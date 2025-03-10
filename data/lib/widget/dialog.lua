@@ -133,7 +133,7 @@ function Dialog:draw()
   end
 
   if #self.childs > 0 then
-    core.push_clip_rect(
+    clipping.push_clip_rect(
       self.position.x,
       self.position.y,
       self.size.x,
@@ -154,7 +154,7 @@ function Dialog:draw()
   end
 
   if #self.childs > 0 then
-    core.pop_clip_rect()
+    clipping.pop_clip_rect()
   end
 
   return true

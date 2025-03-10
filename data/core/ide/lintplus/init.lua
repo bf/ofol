@@ -551,11 +551,11 @@ function DocView:draw()
   local rails = messages.rails
 
   local pos, size = self.position, self.size
-  core.push_clip_rect(pos.x, pos.y, size.x, size.y)
+  clipping.push_clip_rect(pos.x, pos.y, size.x, size.y)
   for i = 1, #rails do
     draw_gutter_rail(self, i, messages)
   end
-  core.pop_clip_rect()
+  clipping.pop_clip_rect()
 end
 
 

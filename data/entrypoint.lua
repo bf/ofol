@@ -104,6 +104,9 @@ require("lib.lua-monkeypatch.lua-monkeypatch-table")
 -- global monkeypatch for SDL3 C API
 require("lib.lua-monkeypatch.lua-monkeypatch-renderer")
 
+-- clipping code
+clipping = require("lib.clipping")
+
 -- global include for base object 
 Object = require("lib.object")
 

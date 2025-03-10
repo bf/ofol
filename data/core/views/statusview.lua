@@ -1214,7 +1214,7 @@ function StatusView:draw()
     end
     if #self.active_items > 0 then
       --- draw left pane
-      core.push_clip_rect(
+      clipping.push_clip_rect(
         0, self.position.y,
         self.left_width + style.padding.x, self.size.y
       )
@@ -1229,18 +1229,18 @@ function StatusView:draw()
             )
           end
           if item.on_draw then
-            core.push_clip_rect(item_x, self.position.y, item.w, self.size.y)
+            clipping.push_clip_rect(item_x, self.position.y, item.w, self.size.y)
             item.on_draw(item_x, self.position.y, self.size.y, hovered)
-            core.pop_clip_rect()
+            clipping.pop_clip_rect()
           else
             self:draw_items(item.cached_item, false, item_x - style.padding.x)
           end
         end
       end
-      core.pop_clip_rect()
+      clipping.pop_clip_rect()
 
       --- draw right pane
-      core.push_clip_rect(
+      clipping.push_clip_rect(
         self.size.x - (self.right_width + style.padding.x), self.position.y,
         self.right_width + style.padding.x, self.size.y
       )
@@ -1255,15 +1255,15 @@ function StatusView:draw()
             )
           end
           if item.on_draw then
-            core.push_clip_rect(item_x, self.position.y, item.w, self.size.y)
+            clipping.push_clip_rect(item_x, self.position.y, item.w, self.size.y)
             item.on_draw(item_x, self.position.y, self.size.y, hovered)
-            core.pop_clip_rect()
+            clipping.pop_clip_rect()
           else
             self:draw_items(item.cached_item, false, item_x - style.padding.x)
           end
         end
       end
-      core.pop_clip_rect()
+      clipping.pop_clip_rect()
 
       -- draw tooltip
       if self.hovered_item.tooltip ~= "" and self.hovered_item.active then

@@ -54,6 +54,7 @@ DocView.translate = {
 
 function DocView:new(doc)
   DocView.super.new(self)
+
   self.cursor = "ibeam"
   self.scrollable = true
   self.doc = assert(doc)
@@ -553,6 +554,7 @@ function DocView:draw_ime_decoration(line1, col1, line2, col2)
 end
 
 
+-- draw blinking caret cursor in document
 function DocView:draw_overlay()
   -- dont draw overlay if animations are not active
   if not AnimationState:is_active() then
@@ -584,30 +586,42 @@ function DocView:draw_overlay()
   end
 end
 
+-- main draw function
 function DocView:draw()
+  -- background
   self:draw_background(style.background)
+
+  -- calculate indentation
   local _, indent_size = self.doc:get_indent_info()
   self:get_font():set_tab_size(indent_size)
 
+  -- what lines are visible
   local minline, maxline = self:get_visible_line_range()
+
+  -- line height
   local lh = self:get_editor_line_height()
 
   local x, y = self:get_line_screen_position(minline)
+
+  -- gutter width and gutter padding
   local gw, gpad = self:get_gutter_width()
+
+  -- draw gutter for lines
   for i = minline, maxline do
     y = y + (self:draw_line_gutter(i, self.position.x, y, gpad and gw - gpad or gw) or lh)
   end
 
   local pos = self.position
   x, y = self:get_line_screen_position(minline)
+  
   -- the clip below ensure we don't write on the gutter region. On the
   -- right side it is redundant with the Node's clip.
-  core.push_clip_rect(pos.x + gw, pos.y, self.size.x - gw, self.size.y)
+  clipping.push_clip_rect(pos.x + gw, pos.y, self.size.x - gw, self.size.y)
   for i = minline, maxline do
     y = y + (self:draw_line_body(i, x, y) or lh)
   end
   self:draw_overlay()
-  core.pop_clip_rect()
+  clipping.pop_clip_rect()
 
   self:draw_scrollbar()
 end

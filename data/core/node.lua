@@ -813,10 +813,10 @@ function Node:draw_tab(view, is_active, is_hovered, x, y, w, h, standalone)
   local text_width = w
   local text_height = h
 
-  core.push_clip_rect(text_start_x, text_start_y, text_width, text_height)
+  clipping.push_clip_rect(text_start_x, text_start_y, text_width, text_height)
   self:draw_tab_title(view, style.font, is_active, is_hovered, text_start_x, text_start_y, text_width, text_height)
 
-  core.pop_clip_rect()
+  clipping.pop_clip_rect()
 end
 
 
@@ -839,7 +839,7 @@ function Node:draw_tabs()
   local x = self.position.x
   local ds = style.divider_size
 
-  core.push_clip_rect(x, y, self.size.x, h)
+  clipping.push_clip_rect(x, y, self.size.x, h)
 
   -- draw tab background
   renderer.draw_rect(x, y, self.size.x, h, style.background2)
@@ -942,7 +942,7 @@ function Node:draw_tabs()
   -- draw right scroll button text
   renderer.draw_text_aligned_in_box(style.icon_font, right_button_style, ICON_SCROLL_BUTTON_RIGHT, scroll_button_text_align, xrb, yrb, wrb, h)
 
-  core.pop_clip_rect()
+  clipping.pop_clip_rect()
 end
 
 
@@ -954,9 +954,9 @@ function Node:draw()
       self:draw_tabs()
     end
     local pos, size = self.active_view.position, self.active_view.size
-    core.push_clip_rect(pos.x, pos.y, size.x, size.y)
+    clipping.push_clip_rect(pos.x, pos.y, size.x, size.y)
     self.active_view:draw()
-    core.pop_clip_rect()
+    clipping.pop_clip_rect()
   else
     -- if child nodes a and b exist, draw divider
     local x, y, w, h = self:get_divider_rect()

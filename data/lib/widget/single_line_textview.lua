@@ -612,12 +612,12 @@ function SingleLineDocView:draw()
   x, y = self:get_line_screen_position(minline)
   -- the clip below ensure we don't write on the gutter region. On the
   -- right side it is redundant with the Node's clip.
-  core.push_clip_rect(pos.x + gw, pos.y, self.size.x - gw, self.size.y)
+  clipping.push_clip_rect(pos.x + gw, pos.y, self.size.x - gw, self.size.y)
   for i = minline, maxline do
     y = y + (self:draw_line_body(i, x, y) or lh)
   end
   self:draw_overlay()
-  core.pop_clip_rect()
+  clipping.pop_clip_rect()
 
   self:draw_scrollbar()
 end
@@ -701,7 +701,7 @@ function SingleLineTextView:draw_line_highlight()
   -- no-op function to disable this functionality
 end
 
--- Overwrite this function just to disable the core.push_clip_rect
+-- Overwrite this function just to disable the clipping.push_clip_rect
 function SingleLineTextView:draw()
   self:draw_background(style.background)
   local _, indent_size = self.doc:get_indent_info()

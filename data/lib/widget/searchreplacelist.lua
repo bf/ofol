@@ -464,7 +464,7 @@ end
 function SearchReplaceList:draw()
   if not SearchReplaceList.super.draw(self) then return false end
 
-  core.push_clip_rect(
+  clipping.push_clip_rect(
     self.position.x,
     self.position.y,
     self.size.x,
@@ -598,7 +598,7 @@ function SearchReplaceList:draw()
     self.max_width = math.max(self.max_width, style.font:get_width(all_text))
   end
 
-  core.pop_clip_rect()
+  clipping.pop_clip_rect()
 
   self:draw_scrollbar()
 
