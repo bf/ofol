@@ -608,7 +608,7 @@ end
 --------------------------------------------------------------------------------
 -- Keep the project branch, changes and stats updated
 --------------------------------------------------------------------------------
-core.add_thread(function()
+threading.add_thread(function()
   while true do
     scm.update()
     coroutine.yield(1)

@@ -76,7 +76,7 @@ function FontCache:build()
   local start_time = system.get_time()
 
   local this = self
-  core.add_thread(function()
+  threading.add_thread(function()
     for _, dir in ipairs(this.fontdirs) do
       this:scan_dir(dir)
     end
@@ -176,7 +176,7 @@ function FontCache:verify_monospaced()
   local start_time = system.get_time()
 
   local this = self
-  core.add_thread(function()
+  threading.add_thread(function()
     for _, font in ipairs(this.fonts) do
       if not font.monospace then
         FontInfo.check_is_monospace(font)

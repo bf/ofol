@@ -30,7 +30,7 @@ end
 
 ---Reads data from the stream.
 ---
----When called inside a coroutine such as `core.add_thread()`,
+---When called inside a coroutine such as `threading.add_thread()`,
 ---the function yields to the main thread occassionally to avoid blocking the editor. <br>
 ---If the function is not called inside the coroutine, the function returns immediately
 ---without waiting for more data.
@@ -99,7 +99,7 @@ end
 
 ---Writes data into the stream.
 ---
----When called inside a coroutine such as `core.add_thread()`,
+---When called inside a coroutine such as `threading.add_thread()`,
 ---the function yields to the main thread occassionally to avoid blocking the editor. <br>
 ---If the function is not called inside the coroutine,
 ---the function writes as much data as possible before returning.
@@ -127,7 +127,7 @@ end
 
 
 ---Waits for the process to exit.
----When called inside a coroutine such as `core.add_thread()`,
+---When called inside a coroutine such as `threading.add_thread()`,
 ---the function yields to the main thread occassionally to avoid blocking the editor. <br>
 ---Otherwise, the function blocks the editor until the process exited or the timeout has expired.
 ---@param timeout? number The amount of seconds to wait. If omitted, the function will wait indefinitely.

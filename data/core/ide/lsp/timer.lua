@@ -31,7 +31,7 @@ function Timer:start()
 
   -- Save marker so that we keep this one and not an "updated" one
   local marker = self.cancel_thread_marker
-  core.add_thread(function()
+  threading.add_thread(function()
     while true do
       if marker.cancel == true then return end
       this:reset()

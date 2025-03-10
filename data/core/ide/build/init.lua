@@ -85,7 +85,7 @@ if system.get_file_info(DATADIR .. PATHSEP .. "core" .. PATHSEP .. "ide" .. PATH
     local state_func, err = loadfile(filename)
     if state_func then
       build.state = state_func()
-      core.add_thread(function()
+      threading.add_thread(function()
         config.target_binary_arguments = build.split_argument_string(build.state.previous_arguments[#build.state.previous_arguments])
       end)
     else
@@ -143,7 +143,7 @@ function build.run_tasks(tasks, on_done, on_line)
 
   if build.thread and core.threads[build.thread] and coroutine.status(core.threads[build.thread].cr) == "dead" then build.thread = nil end
   if not build.thread then
-    build.thread = core.add_thread(function()
+    build.thread = threading.add_thread(function()
       local function handle_output(bundle, output)
         if output ~= nil then
           local offset = 1
@@ -496,7 +496,7 @@ function BuildMessageView:draw()
   if build.is_running() then
     local t = { "|", "/", "-", "\\", "|", "/", "-", "\\" }
     title = title .. " " .. t[(math.floor(system.get_time()*8) % #t) + 1]
-    TRIGGER_REDRAW_NEXT_FRAME = true
+    GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
   elseif type(self.messages[#self.messages]) == "table" and #self.messages[#self.messages] == 2 then
     subtitle = self.messages[#self.messages]
   end
@@ -749,7 +749,7 @@ keymap.add {
   ["escape"]             = "build:contextual-close-drawer"
 }
 
-core.add_thread(function()
+threading.add_thread(function()
   if config.plugins.build.targets then
     build.set_targets(config.plugins.build.targets, config.plugins.build.type or "internal")
   else

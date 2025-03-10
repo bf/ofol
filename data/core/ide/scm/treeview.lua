@@ -4,7 +4,7 @@ local command = require "core.command"
 local scm = require "core.ide.scm"
 
 -- -- Delay loading of TreeView changes to properly check if the plugin is enabled.
--- core.add_thread(function()
+-- threading.add_thread(function()
 
 -- Load treeview if enabled to add menu entries
 local TreeView = core.tree_view

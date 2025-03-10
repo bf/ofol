@@ -117,7 +117,7 @@ end
 -- Thread that scans open document symbols and cache them
 --
 
-core.add_thread(function()
+threading.add_thread(function()
   local cache = setmetatable({}, { __mode = "k" })
 
   local function get_syntax_symbols(symbols, doc)

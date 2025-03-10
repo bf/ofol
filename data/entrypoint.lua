@@ -5,12 +5,6 @@
 --
 --
 
--- global fps variable
-CONSTANT_FRAMES_PER_SECOND = 60
-
--- global variable to store if we need redraw next frame
-TRIGGER_REDRAW_NEXT_FRAME = false
-
 -- this file is used by lite-xl to setup the Lua environment when starting
 VERSION = "@PROJECT_VERSION@"
 PROJECT_NAME="ofol"
@@ -31,25 +25,9 @@ USERDIR = (system.get_file_info(EXEDIR .. PATHSEP .. 'user') and (EXEDIR .. PATH
        or (HOME and (HOME .. PATHSEP .. '.config' .. PATHSEP .. PROJECT_NAME))
 
 
-
-
 package.path = DATADIR .. '/?.lua;'
 package.path = DATADIR .. '/?/init.lua;' .. package.path
--- TODO: check if this is needed
--- package.path = USERDIR .. '/?.lua;' .. package.path
--- package.path = USERDIR .. '/?/init.lua;' .. package.path
 
--- do not load random .so files from many places
--- local suffix = PLATFORM == "Windows" and 'dll' or 'so'
--- package.cpath =
--- USERDIR .. '/?.' .. ARCH .. "." .. suffix .. ";" ..
--- USERDIR .. '/?/init.' .. ARCH .. "." .. suffix .. ";" ..
--- USERDIR .. '/?.' .. suffix .. ";" ..
--- USERDIR .. '/?/init.' .. suffix .. ";" ..
---   DATADIR .. '/?.' .. ARCH .. "." .. suffix .. ";" ..
---   DATADIR .. '/?/init.' .. ARCH .. "." .. suffix .. ";" ..
---   DATADIR .. '/?.' .. suffix .. ";" ..
---   DATADIR .. '/?/init.' .. suffix .. ";"
 
 package.native_plugins = {}
 
@@ -69,11 +47,22 @@ package.searchers = {
   -- search_for_module_in_these_directories
 }
 
-table.pack = table.pack or pack or function(...) return {...} end
-table.unpack = table.unpack or unpack
+
+-- global constants
+require("lib.global_constants")
+
+-- global variables
+require("lib.global_variables")
+
 
 -- global include of stderr logging
 stderr = require("lib.stderr")
+
+-- threading code
+threading = require("lib.threading")
+
+-- graphics/rendering rect clipping code
+clipping = require("lib.clipping")
 
 -- global include of fsutils
 fsutils = require("lib.fsutils")
@@ -104,8 +93,6 @@ require("lib.lua-monkeypatch.lua-monkeypatch-table")
 -- global monkeypatch for SDL3 C API
 require("lib.lua-monkeypatch.lua-monkeypatch-renderer")
 
--- clipping code
-clipping = require("lib.clipping")
 
 -- global include for base object 
 Object = require("lib.object")

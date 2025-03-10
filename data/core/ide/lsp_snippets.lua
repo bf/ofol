@@ -550,7 +550,7 @@ end
 
 local function enqueue(filename)
 	if not core.threads[THREAD_KEY] then
-		core.add_thread(pop, THREAD_KEY)
+		threading.add_thread(pop, THREAD_KEY)
 	end
 	files[filename] = fstate.QUEUED
 	table.insert(queue, filename)

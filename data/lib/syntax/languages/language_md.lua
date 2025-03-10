@@ -204,7 +204,7 @@ syntax.add {
 }
 
 -- Adjust the color on theme changes
-core.add_thread(function()
+threading.add_thread(function()
   local custom_fonts = { bold = {font = nil, color = nil}, italic = {}, bold_italic = {} }
   local initial_color
   local last_code_font

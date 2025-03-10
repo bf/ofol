@@ -173,7 +173,7 @@ local function refresh_directory(topdir, target)
     end
   end
   if change then
-    TRIGGER_REDRAW_NEXT_FRAME = true
+    GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
     topdir.is_dirty = true
   end
   return change
@@ -226,7 +226,7 @@ function core.add_project_directory(path)
   -- either through error, or amount of files, then this should be incredibly
   -- quick; essentially one syscall per check. Otherwise, this may take a bit of
   -- time; the watch will yield in this coroutine after 0.01 second, for 0.1 seconds.
-  topdir.watch_thread = core.add_thread(function()
+  topdir.watch_thread = threading.add_thread(function()
     while true do
       local changed = topdir.watch:check(function(target)
         if target == topdir.name then return refresh_directory(topdir) end
@@ -258,7 +258,7 @@ function core.add_project_directory(path)
   if path == core.project_dir then
     core.project_files = topdir.files
   end
-  TRIGGER_REDRAW_NEXT_FRAME = true
+  GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
   return topdir
 end
 
@@ -525,22 +525,17 @@ function core.init()
     end
   end
 
-  core.frame_start = 0
+  
   core.docs = {}
   core.cursor_clipboard = {}
   core.cursor_clipboard_whole_line = {}
   core.previous_find = {}
   core.previous_replace = {}
-  -- core.window_mode = "normal"
-  core.threads = setmetatable({}, { __mode = "k" })
-
-  -- -- flag when user is actively resizing window
-  -- core.window_is_being_resized = false
 
   -- blinking cursor timer active
   core.blink_start = system.get_time()
   core.blink_timer = core.blink_start
-  TRIGGER_REDRAW_NEXT_FRAME = true
+  GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
   core.visited_files = {}
   core.restart_request = false
   core.quit_request = false
@@ -614,7 +609,7 @@ function core.init()
   local ide = require "core.ide"
 
   -- redraw
-  TRIGGER_REDRAW_NEXT_FRAME = true
+  GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
 
   do
     local pdir, pname = project_dir_abs:match("(.*)[/\\\\](.*)")
@@ -721,22 +716,6 @@ function core.set_active_view(view)
 end
 
 
--- create thread
-local thread_counter = 0
-function core.add_thread(f, weak_ref, ...)
-  -- stderr.debug_backtrace("adding thread")
-  local key = weak_ref
-  if not key then
-    thread_counter = thread_counter + 1
-    key = thread_counter
-  end
-  assert(core.threads[key] == nil, "Duplicate thread reference")
-  local args = {...}
-  local fn = function() return try_catch(f, table.unpack(args)) end
-  core.threads[key] = { cr = coroutine.create(fn), wake = 0 }
-  return key
-end
-
 
 function core.normalize_to_project_dir(filename)
   filename = fsutils.normalize_path(filename)
@@ -816,17 +795,17 @@ WindowState = StateMachine("WindowState", {
   ["*"] = {
     window_exposed = function () 
       -- Window has been exposed and should be redrawn, and can be redrawn directly from event watchers for this event
-      TRIGGER_REDRAW_NEXT_FRAME = true 
+      GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true 
       -- return "normal"
     end,
     window_focuslost = function (event_name) 
       -- Window has lost focus, redraw
-      TRIGGER_REDRAW_NEXT_FRAME = true
+      GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
       AnimationState:handle_event(event_name)
     end,
     window_focusgained = function (event_name) 
       -- Window has lost focus, redraw
-      TRIGGER_REDRAW_NEXT_FRAME = true
+      GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
       AnimationState:handle_event(event_name)
     end,
     window_restored = function () 
@@ -834,7 +813,7 @@ WindowState = StateMachine("WindowState", {
       return "normal"
     end,
     window_resized = function () 
-      TRIGGER_REDRAW_NEXT_FRAME = true 
+      GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true 
       -- return "resizing" 
     end,
     window_minimized = function () 
@@ -873,7 +852,7 @@ function _handle_mouse_event(event_name, a, b, c, d)
     InputState.MousePosition.y = b
 
     -- redraw frame
-    TRIGGER_REDRAW_NEXT_FRAME = true
+    GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
 
     -- run on_mouse_moved function
     core.root_view:on_mouse_moved(a, b, c, d)
@@ -918,7 +897,7 @@ function core.step()
       if event_name == "text_input" then
         if did_keymap then
           did_keymap = false
-          TRIGGER_REDRAW_NEXT_FRAME = true
+          GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
         else
           core.root_view:on_text_input(a,b,c,d)
         end
@@ -963,8 +942,8 @@ function core.step()
   -- update
   core.root_view.size.x, core.root_view.size.y = width, height
   core.root_view:update()
-  if not TRIGGER_REDRAW_NEXT_FRAME then return false end
-  TRIGGER_REDRAW_NEXT_FRAME = false
+  if not GLOBAL_TRIGGER_REDRAW_NEXT_FRAME then return false end
+  GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = false
 
   -- close unreferenced docs
   for i = #core.docs, 1, -1 do
@@ -1033,66 +1012,27 @@ function core.step()
 end
 
 
--- main threading loop which will interrupt threads to keep fps
-local run_threads = coroutine.wrap(function()
-  while true do
-    local max_time = 1 / CONSTANT_FRAMES_PER_SECOND - 0.004
-    local minimal_time_to_wake = math.huge
-
-    local threads = {}
-    -- We modify core.threads while iterating, both by removing dead threads,
-    -- and by potentially adding more threads while we yielded early,
-    -- so we need to extract the threads list and iterate over that instead.
-    for k, thread in pairs(core.threads) do
-      threads[k] = thread
-    end
-
-    for k, thread in pairs(threads) do
-      -- Run thread if it wasn't deleted externally and it's time to resume it
-      if core.threads[k] and thread.wake < system.get_time() then
-        local _, wait = assert(coroutine.resume(thread.cr))
-        if coroutine.status(thread.cr) == "dead" then
-          core.threads[k] = nil
-        else
-          wait = wait or (1/30)
-          thread.wake = system.get_time() + wait
-          minimal_time_to_wake = math.min(minimal_time_to_wake, wait)
-        end
-      else
-        minimal_time_to_wake =  math.min(minimal_time_to_wake, thread.wake - system.get_time())
-      end
-
-      -- stop running threads if we're about to hit the end of frame
-      if system.get_time() - core.frame_start > max_time then
-        coroutine.yield(0, false)
-      end
-    end
-
-    coroutine.yield(minimal_time_to_wake, true)
-  end
-end)
-
 
 -- main run loop for rendering
 function core.run()
   local next_step
-  local last_frame_time
+  local last_frame_start_timestamp
   local run_threads_full = 0
   local HALF_BLINK_PERIOD = ConfigurationOptionStore.get_editor_blink_period() / 2
 
   while true do
-    core.frame_start = system.get_time()
-    local time_to_wake, threads_done = run_threads()
+    GLOBAL_CURRENT_FRAME_START_TIMESTAMP = system.get_time()
+    local time_to_wake, threads_done = threading.run_threads()
     if threads_done then
       run_threads_full = run_threads_full + 1
     end
     local did_redraw = false
     local did_step = false
-    local force_draw = TRIGGER_REDRAW_NEXT_FRAME and last_frame_time and core.frame_start - last_frame_time > (1 / CONSTANT_FRAMES_PER_SECOND)
+    local force_draw = GLOBAL_TRIGGER_REDRAW_NEXT_FRAME and last_frame_start_timestamp and GLOBAL_CURRENT_FRAME_START_TIMESTAMP - last_frame_start_timestamp > (1 / CONSTANT_FRAMES_PER_SECOND)
     if force_draw or not next_step or system.get_time() >= next_step then
       if core.step() then
         did_redraw = true
-        last_frame_time = core.frame_start
+        last_frame_start_timestamp = GLOBAL_CURRENT_FRAME_START_TIMESTAMP
       end
       next_step = nil
       did_step = true
@@ -1122,12 +1062,17 @@ function core.run()
         system.wait_event()
         next_step = nil -- perform a step when we're not in focus if get we an event
       end
-    else -- if we redrew, then make sure we only draw at most FPS/sec
+    else 
+      -- if we redrew, then make sure we only draw at most FPS/sec
       run_threads_full = 0
       local now = system.get_time()
-      local elapsed = now - core.frame_start
-      local next_frame = math.max(0, 1 / CONSTANT_FRAMES_PER_SECOND - elapsed)
+      local time_elapsed = now - GLOBAL_CURRENT_FRAME_START_TIMESTAMP
+
+      -- calculate time until next frame
+      local next_frame = math.max(0, 1 / CONSTANT_FRAMES_PER_SECOND - time_elapsed)
       next_step = next_step or (now + next_frame)
+
+      -- sleep until next frame
       system.sleep(math.min(next_frame, time_to_wake))
     end
   end

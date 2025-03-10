@@ -60,7 +60,7 @@ local function clean_fonts_cache()
     collectgarbage "collect"
   else
     already_cleaning = true
-    core.add_thread(function()
+    threading.add_thread(function()
       while fontcache.building or fontcache.searching_monospaced do
         coroutine.yield(1)
       end
@@ -93,7 +93,7 @@ function Fonts.show_picker(callback, monospaced)
   if not fontcache.building and (not monospaced or fontcache.monospaced) then
     generate_fonts(monospaced)
   else
-    core.add_thread(function()
+    threading.add_thread(function()
       while
         (fontcache.building or (monospaced and not fontcache.monospaced))
         and

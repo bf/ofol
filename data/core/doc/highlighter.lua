@@ -15,7 +15,7 @@ end
 function Highlighter:start()
   if self.running then return end
   self.running = true
-  core.add_thread(function()
+  threading.add_thread(function()
     while self.first_invalid_line <= self.max_wanted_line do
       local max = math.min(self.first_invalid_line + 40, self.max_wanted_line)
       local retokenized_from
@@ -44,7 +44,7 @@ function Highlighter:start()
       if retokenized_from then
         self:update_notify(retokenized_from, max - retokenized_from)
       end
-      TRIGGER_REDRAW_NEXT_FRAME = true
+      GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
       coroutine.yield(0)
     end
     self.max_wanted_line = 0

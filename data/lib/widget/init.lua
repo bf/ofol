@@ -205,9 +205,9 @@ function Widget:show()
   -- re-triggers update to make sure everything was properly calculated
   -- and redraw the interface once, maybe something else can be changed
   -- to not require this action, but for now lets do this.
-  core.add_thread(function()
+  threading.add_thread(function()
     self:update()
-    TRIGGER_REDRAW_NEXT_FRAME = true
+    GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
   end)
 end
 

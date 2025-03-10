@@ -423,7 +423,7 @@ function DocView:update()
     local ta = core.blink_timer
     local tb =  system.get_time()
     if ((tb - t0) % T < T / 2) ~= ((ta - t0) % T < T / 2) then
-      TRIGGER_REDRAW_NEXT_FRAME = true
+      GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
     end
     core.blink_timer = tb
   end

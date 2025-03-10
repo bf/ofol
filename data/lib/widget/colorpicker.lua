@@ -397,7 +397,7 @@ end
 function ColorPicker:set_color(color, skip_html, skip_rgba)
   -- we set the color on a coroutine in case it is been set before
   -- the control is properly initialized like the constructor.
-  core.add_thread(function()
+  threading.add_thread(function()
     if type(color) == "string" then
       color = ColorPicker.color_from_string(color)
     end

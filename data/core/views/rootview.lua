@@ -338,7 +338,7 @@ function RootView:on_mouse_released(button, x, y, ...)
           end
 
           self.root_node:update_layout()
-          TRIGGER_REDRAW_NEXT_FRAME = true
+          GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
         end
       end
 

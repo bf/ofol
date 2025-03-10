@@ -58,7 +58,7 @@ function NumberBox:new(parent, value, min, max, step)
     if not tonumber(this.textbox:get_text()) then
       if not this.coroutine_run then
         this.coroutine_run = true
-        core.add_thread(function()
+        threading.add_thread(function()
           this.textbox:set_text(this.current_text)
           this.coroutine_run = false
         end)
@@ -193,7 +193,7 @@ function NumberBox:mouse_pressed(increase)
   local elapsed = system.get_time() + 0.3
   local this = self
 
-  core.add_thread(function()
+  threading.add_thread(function()
     while this.mouse_is_pressed do
       if elapsed < system.get_time() then
         if increase then
@@ -201,7 +201,7 @@ function NumberBox:mouse_pressed(increase)
         else
           this:decrease()
         end
-        TRIGGER_REDRAW_NEXT_FRAME = true
+        GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
         elapsed = system.get_time() + 0.1
       end
       coroutine.yield()

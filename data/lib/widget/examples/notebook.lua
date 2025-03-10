@@ -82,7 +82,7 @@ listbox:add_row({
   "Another message to display to the user\nwith new line characters\nfor the win."
 })
 
-core.add_thread(function()
+threading.add_thread(function()
   for num=1, 1000 do
     listbox:add_row({
       style.icon_font, style.syntax.string, "!", style.font, style.text, " Error",

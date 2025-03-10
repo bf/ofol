@@ -73,14 +73,14 @@ function meson.build(target, callback)
 
   if not system.get_file_info(bd) then
     build.run_tasks({ { "meson", "setup", bd, "--buildtype", target.buildtype or "debug" } }, function(status)
-      core.add_thread(function()
+      threading.add_thread(function()
         check_executables()
         ninja_build()
       end)
     end)
   else
     if not target.checked then
-      core.add_thread(function()
+      threading.add_thread(function()
         check_executables()
         ninja_build()
       end)

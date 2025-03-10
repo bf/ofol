@@ -202,7 +202,7 @@ local function process_line(doc, linter, line, context)
       assert(rail == nil or type(rail) == "number")
 
       lint.add_message(absfile, lineno, columnno, kind, message, rail)
-      TRIGGER_REDRAW_NEXT_FRAME = true
+      GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
     end
   end
 
@@ -263,7 +263,7 @@ function lint.check(doc)
     cwd = fsutils.parent_directory(filename)
   end
   local process = liteipc.start_process(cmd, cwd)
-  core.add_thread(function ()
+  threading.add_thread(function ()
     -- poll the process for lines of output
     while true do
       local exit, code, errmsg = process:poll(function (line)
@@ -291,7 +291,7 @@ function lint.check(doc)
         table.sort(rail, compare_rail_messages)
       end
       file_messages.rails_sorted = true
-      TRIGGER_REDRAW_NEXT_FRAME = true
+      GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
       coroutine.yield(0)
     end
   end)
