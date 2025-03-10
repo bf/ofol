@@ -305,19 +305,19 @@ local commands = {
     dv.doc:text_input(system.get_primary_selection() or "")
   end,
 
-  ["doc:newline"] = function(dv)
-    for idx, line, col in dv.doc:get_selections(false, true) do
-      local indent = dv.doc.lines[line]:match("^[\t ]*")
-      if col <= #indent then
-        indent = indent:sub(#indent + 2 - col)
-      end
-      -- Remove current line if it contains only whitespace
-      if not ConfigurationOptionStore.get_editor_keep_newline_whitespace() and dv.doc.lines[line]:match("^%s+$") then
-        dv.doc:remove(line, 1, line, math.huge)
-      end
-      dv.doc:text_input("\n" .. indent, idx)
-    end
-  end,
+  -- ["doc:newline"] = function(dv)
+  --   for idx, line, col in dv.doc:get_selections(false, true) do
+  --     local indent = dv.doc.lines[line]:match("^[\t ]*")
+  --     if col <= #indent then
+  --       indent = indent:sub(#indent + 2 - col)
+  --     end
+  --     -- Remove current line if it contains only whitespace
+  --     if not ConfigurationOptionStore.get_editor_keep_newline_whitespace() and dv.doc.lines[line]:match("^%s+$") then
+  --       dv.doc:remove(line, 1, line, math.huge)
+  --     end
+  --     dv.doc:text_input("\n" .. indent, idx)
+  --   end
+  -- end,
 
   -- ["doc:newline-below"] = function(dv)
   --   for idx, line in dv.doc:get_selections(false, true) do
@@ -373,13 +373,13 @@ local commands = {
     dv.last_col2 = #dv.doc.lines[#dv.doc.lines]
   end,
 
-  ["doc:select-lines"] = function(dv)
-    for idx, line1, _, line2 in dv.doc:get_selections(true) do
-      append_line_if_last_line(line2)
-      dv.doc:set_selections(idx, line2 + 1, 1, line1, 1)
-    end
-    set_primary_selection(dv.doc)
-  end,
+  -- ["doc:select-lines"] = function(dv)
+  --   for idx, line1, _, line2 in dv.doc:get_selections(true) do
+  --     append_line_if_last_line(line2)
+  --     dv.doc:set_selections(idx, line2 + 1, 1, line1, 1)
+  --   end
+  --   set_primary_selection(dv.doc)
+  -- end,
 
   ["doc:select-word"] = function(dv)
     if dv then

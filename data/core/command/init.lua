@@ -62,9 +62,13 @@ function command.generate_predicate(predicate)
   if type(predicate) == "table" then
     local class = predicate
     if not strict then
-      predicate = function(...) return core.active_view:extends(class), core.active_view, ... end
+      predicate = function(...) 
+        return core.active_view:extends(class), core.active_view, ... 
+      end
     else
-      predicate = function(...) return core.active_view:is(class), core.active_view, ... end
+      predicate = function(...) 
+        return core.active_view:is(class), core.active_view, ... 
+      end
     end
   end
   ---@cast predicate core.command.predicate_function
@@ -84,8 +88,8 @@ end
 function command.add(predicate, map)
   predicate = command.generate_predicate(predicate)
   for name, fn in pairs(map) do
-    if command.map[name] then
-      stderr.debug("Replacing existing command \"%s\"", name)
+    if command.map[name] ~= nil then
+      stderr.error("command \"%s\" exists already", name)
     end
     command.map[name] = { predicate = predicate, perform = fn }
   end
