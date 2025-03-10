@@ -6,29 +6,31 @@
 local threading = {}
 
 -- list of threads
-local threads = setmetatable({}, { __mode = "k" })
+local threads_by_key = setmetatable({}, { __mode = "k" })
 
 -- number of threads created so far
 local thread_counter = 0
 
 -- create thread
 function threading.add_thread(f, weak_ref, ...)
-  -- stderr.debug_backtrace("adding thread")
+  stderr.debug_backtrace("adding thread")
   local key = weak_ref
   if not key then
     thread_counter = thread_counter + 1
     key = thread_counter
   end
-  assert(threads[key] == nil, "Duplicate thread reference")
+  assert(threads_by_key[key] == nil, "Duplicate thread reference")
   local args = {...}
-  local fn = function() return try_catch(f, table.unpack(args)) end
-  threads[key] = { cr = coroutine.create(fn), wake = 0 }
+  local fn = function() 
+    return try_catch(f, table.unpack(args)) 
+  end
+  threads_by_key[key] = { cr = coroutine.create(fn), wake = 0 }
   return key
 end
 
 -- returns true if thread with this identifier exists
 function threading.is_thread_identifier_known(thread_identifier_key) 
-  if threads[thread_identifier_key] == nil then
+  if threads_by_key[thread_identifier_key] == nil then
     return false
   else
     return true
@@ -42,7 +44,7 @@ function threading.get_thread_status(thread_identifier_key)
     return nil
   end
 
-  return coroutine.status(threads[thread_identifier_key].cr)
+  return coroutine.status(threads_by_key[thread_identifier_key].cr)
 end
 
 
@@ -53,25 +55,32 @@ end
 
 -- main threading loop which will interrupt threads to keep fps
 threading.run_threads = coroutine.wrap(function()
+  stderr.warn("%d threads to run", #threads_by_key)
+
   while true do
     local max_time = 1 / GLOBAL_CONSTANT_FRAMES_PER_SECOND - 0.004
     local minimal_time_to_wake = math.huge
 
-    local threads = {}
+    local tmp = {}
+
     -- We modify $threads while iterating, both by removing dead threads,
     -- and by potentially adding more threads while we yielded early,
     -- so we need to extract the threads list and iterate over that instead.
-    for k, thread in pairs(threads) do
-      threads[k] = thread
+    for k, thread in pairs(threads_by_key) do
+      tmp[k] = thread
     end
 
-    for k, thread in pairs(threads) do
+    for k, thread in pairs(tmp) do
       -- Run thread if it wasn't deleted externally and it's time to resume it
-      if threads[k] and thread.wake < system.get_time() then
+      if threads_by_key[k] and thread.wake < system.get_time() then
         local _, wait = assert(coroutine.resume(thread.cr))
+
+        -- check if thread is dead
         if coroutine.status(thread.cr) == "dead" then
-          threads[k] = nil
+          -- remove dead thread from global threads list
+          threads_by_key[k] = nil
         else
+          -- handle alive threads
           wait = wait or (1/30)
           thread.wake = system.get_time() + wait
           minimal_time_to_wake = math.min(minimal_time_to_wake, wait)

@@ -58,9 +58,6 @@ require("lib.global_variables")
 -- global include of stderr logging
 stderr = require("lib.stderr")
 
--- threading code
-threading = require("lib.threading")
-
 -- graphics/rendering rect clipping code
 clipping = require("lib.clipping")
 
@@ -93,6 +90,8 @@ require("lib.lua-monkeypatch.lua-monkeypatch-table")
 -- global monkeypatch for SDL3 C API
 require("lib.lua-monkeypatch.lua-monkeypatch-renderer")
 
+-- threading code
+threading = require("lib.threading")
 
 -- global include for base object 
 Object = require("lib.object")
