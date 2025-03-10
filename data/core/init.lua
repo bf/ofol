@@ -1015,13 +1015,20 @@ function core.step()
     end
   end
 
-  -- draw
+  -- drawing logic
+
+  -- begin frame generation
   renderer.begin_frame(core.window)
+
+  -- ensure clipping rect is same as window size
   clipping.limit_clip_rect_to_window_size(width, height)
-  -- core.clip_rect_stack[1] = { 0, 0, width, height }
-  -- renderer.set_clip_rect(table.unpack(core.clip_rect_stack[1]))
+
+  -- call draw() functions recursively on all nodes
   core.root_view:draw()
+
+  -- end frame generation
   renderer.end_frame()
+
   return true
 end
 
