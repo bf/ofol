@@ -183,7 +183,7 @@ end
 -- Predicate function to inhibit directory recursion in get_directory_files
 -- based on a time limit and the number of files.
 local function timed_max_files_pred(dir, filename, entries_count, t_elapsed)
-  local t_limit = t_elapsed < 20 / CONSTANT_FRAMES_PER_SECOND
+  local t_limit = t_elapsed < 20 / GLOBAL_CONSTANT_FRAMES_PER_SECOND
   return t_limit and core.project_subdir_is_shown(dir, filename)
 end
 
@@ -1028,7 +1028,7 @@ function core.run()
     end
     local did_redraw = false
     local did_step = false
-    local force_draw = GLOBAL_TRIGGER_REDRAW_NEXT_FRAME and last_frame_start_timestamp and GLOBAL_CURRENT_FRAME_START_TIMESTAMP - last_frame_start_timestamp > (1 / CONSTANT_FRAMES_PER_SECOND)
+    local force_draw = GLOBAL_TRIGGER_REDRAW_NEXT_FRAME and last_frame_start_timestamp and GLOBAL_CURRENT_FRAME_START_TIMESTAMP - last_frame_start_timestamp > (1 / GLOBAL_CONSTANT_FRAMES_PER_SECOND)
     if force_draw or not next_step or system.get_time() >= next_step then
       if core.step() then
         did_redraw = true
@@ -1052,7 +1052,7 @@ function core.run()
           local t = now - core.blink_start
           
           local dt = math.ceil(t / HALF_BLINK_PERIOD) * HALF_BLINK_PERIOD - t
-          local cursor_time_to_wake = dt + 1 / CONSTANT_FRAMES_PER_SECOND
+          local cursor_time_to_wake = dt + 1 / GLOBAL_CONSTANT_FRAMES_PER_SECOND
           next_step = now + cursor_time_to_wake
         end
         if system.wait_event(math.min(next_step - now, time_to_wake)) then
@@ -1069,7 +1069,7 @@ function core.run()
       local time_elapsed = now - GLOBAL_CURRENT_FRAME_START_TIMESTAMP
 
       -- calculate time until next frame
-      local next_frame = math.max(0, 1 / CONSTANT_FRAMES_PER_SECOND - time_elapsed)
+      local next_frame = math.max(0, 1 / GLOBAL_CONSTANT_FRAMES_PER_SECOND - time_elapsed)
       next_step = next_step or (now + next_frame)
 
       -- sleep until next frame

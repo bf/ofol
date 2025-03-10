@@ -30,7 +30,7 @@ end
 -- main threading loop which will interrupt threads to keep fps
 threading.run_threads = coroutine.wrap(function()
   while true do
-    local max_time = 1 / CONSTANT_FRAMES_PER_SECOND - 0.004
+    local max_time = 1 / GLOBAL_CONSTANT_FRAMES_PER_SECOND - 0.004
     local minimal_time_to_wake = math.huge
 
     local threads = {}
@@ -57,7 +57,7 @@ threading.run_threads = coroutine.wrap(function()
       end
 
       -- stop running threads if we're about to hit the end of frame
-      if system.get_time() - core.frame_start > max_time then
+      if system.get_time() - GLOBAL_CURRENT_FRAME_START_TIMESTAMP > max_time then
         coroutine.yield(0, false)
       end
     end

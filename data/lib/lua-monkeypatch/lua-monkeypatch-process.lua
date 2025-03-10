@@ -26,7 +26,7 @@ end
 ---Options that can be passed to stream.read().
 ---@class process.stream.readoption
 ---@field public timeout number The number of seconds to wait before the function throws an error. Reads do not time out by default.
----@field public scan number The number of seconds to yield in a coroutine. Defaults to `1/CONSTANT_FRAMES_PER_SECOND`.
+---@field public scan number The number of seconds to yield in a coroutine. Defaults to `1/GLOBAL_CONSTANT_FRAMES_PER_SECOND`.
 
 ---Reads data from the stream.
 ---
@@ -80,7 +80,7 @@ function process.stream:read(bytes, options)
       if options.timeout and system.get_time() - start > options.timeout then
         error("timeout expired")
       end
-      coroutine.yield(options.scan or (1 / CONSTANT_FRAMES_PER_SECOND))
+      coroutine.yield(options.scan or (1 / GLOBAL_CONSTANT_FRAMES_PER_SECOND))
     else
       break
     end
@@ -95,7 +95,7 @@ end
 
 ---Options that can be passed into stream.write().
 ---@class process.stream.writeoption
----@field public scan number The number of seconds to yield in a coroutine. Defaults to `1/CONSTANT_FRAMES_PER_SECOND`.
+---@field public scan number The number of seconds to yield in a coroutine. Defaults to `1/GLOBAL_CONSTANT_FRAMES_PER_SECOND`.
 
 ---Writes data into the stream.
 ---
@@ -114,7 +114,7 @@ function process.stream:write(bytes, options)
     if not len then break end
     if not coroutine.running() then return len end
     buf = buf:sub(len + 1)
-    coroutine.yield(options.scan or (1 / CONSTANT_FRAMES_PER_SECOND))
+    coroutine.yield(options.scan or (1 / GLOBAL_CONSTANT_FRAMES_PER_SECOND))
   end
   return #bytes - #buf
 end
@@ -137,7 +137,7 @@ function process:wait(timeout, scan)
   if not coroutine.running() then return self.process:wait(timeout) end
   local start = system.get_time()
   while self.process:running() and (system.get_time() - start > (timeout or math.huge)) do
-    coroutine.yield(scan or (1 / CONSTANT_FRAMES_PER_SECOND))
+    coroutine.yield(scan or (1 / GLOBAL_CONSTANT_FRAMES_PER_SECOND))
   end
   return self.process:returncode()
 end
