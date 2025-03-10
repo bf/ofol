@@ -972,14 +972,14 @@ function _handle_mouse_event(event_name, a, b, c, d)
       did_keymap = keymap.on_mouse_pressed(a, b, c, d)
     end
 
-  elseif type == "mouse_released" then
+  elseif event_name == "mouse_released" then
     core.root_view:on_mouse_released(a, b, c, d)
-  
-  elseif type == "mouse_wheel" then
+
+  elseif event_name == "mouse_wheel" then
     if not core.root_view:on_mouse_wheel(a, b, c, d) then
       did_keymap = keymap.on_mouse_wheel(a, b, c, d)
     end
-
+    
   else
     stderr.warn("no handler found for", event_name)
   end
