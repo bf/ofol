@@ -77,18 +77,19 @@ local function get_archiver(target) return get_field(target, nil, "ar") end
 
 local function get_source_files(target)
   local files = {}
-  for dir_name, file in core.get_project_files() do
-    local src = file.filename
-    if dir_name == core.project_dir and file.type == "file" then
-      local compiler = get_compiler(target, src)
-      if compiler then table.insert(files, src) end
-    end
-  end
-  if target.srcs then
-    for i, src in ipairs(target.srcs) do
-      if src:find("^/") == 1 and get_compiler(target, src) then table.insert(files, src) end
-    end
-  end
+  stderr.warn("needs to be refactored")
+  -- for dir_name, file in core.get_project_files() do
+  --   local src = file.filename
+  --   if dir_name == core.project_dir and file.type == "file" then
+  --     local compiler = get_compiler(target, src)
+  --     if compiler then table.insert(files, src) end
+  --   end
+  -- end
+  -- if target.srcs then
+  --   for i, src in ipairs(target.srcs) do
+  --     if src:find("^/") == 1 and get_compiler(target, src) then table.insert(files, src) end
+  --   end
+  -- end
   return files
 end
 

@@ -219,13 +219,13 @@ end
 --
 
 ---Generate an lsp location object
----@param doc core.doc
+
 ---@param line integer
 ---@param col integer
 local function get_buffer_position_params(doc, line, col)
   return {
     textDocument = {
-      uri = util.touri(core.project_absolute_path(doc.filename)),
+      uri = util.touri((doc.filename)),
     },
     position = {
       line = line - 1,
@@ -304,10 +304,8 @@ local function get_location_preview(location)
   local line1, col1 = util.toselection(
     location.range or location.targetRange
   )
-  local filename = core.normalize_to_project_dir(
-    util.tofilename(location.uri or location.targetUri)
-  )
-  local abs_filename = core.project_absolute_path(filename)
+  local filename = location.uri or location.targetUri
+  local abs_filename = filename
 
   local file = io.open(abs_filename)
 
@@ -365,7 +363,7 @@ end
 
 ---Apply an lsp textEdit to a document if possible.
 ---@param server lsp.server
----@param doc core.doc
+
 ---@param text_edit table
 ---@param is_snippet boolean
 ---@param update_cursor_position boolean
@@ -896,7 +894,7 @@ function lsp.start_server(filename, project_directory)
           "textDocument/publishDiagnostics",
           function(server, params)
             local abs_filename = util.tofilename(params.uri)
-            local filename = core.normalize_to_project_dir(abs_filename)
+            local filename = abs_filename
 
             if server.verbose then
               stderr.debug(
@@ -1022,12 +1020,12 @@ function lsp.get_hovered_location(x, y)
 end
 
 ---Send notification to applicable LSP servers that a document was opened
----@param doc core.doc
+
 function lsp.open_document(doc)
   -- in some rare ocassions this function may return nil when the
   -- user closed lite-xl with files opened, removed the files from system
   -- and opens lite-xl again which loads the non existent files.
-  local doc_path = core.project_absolute_path(doc.filename)
+  local doc_path = doc.filename
   local file_info = system.get_file_info(doc_path)
   if not file_info then
     stderr.error("[LSP] could not open: %s", tostring(doc.filename))
@@ -1096,7 +1094,7 @@ function lsp.open_document(doc)
 end
 
 --- Send notification to applicable LSP servers that a document was saved
----@param doc core.doc
+
 function lsp.save_document(doc)
   if not doc.lsp_open then return end
 
@@ -1121,7 +1119,7 @@ function lsp.save_document(doc)
             .. '"method": "textDocument/didSave",\n'
             .. '"params": {\n'
             .. '"textDocument": {\n'
-            .. '"uri": "'..util.touri(core.project_absolute_path(doc.filename))..'"\n'
+            .. '"uri": "'..util.touri(doc.filename)..'"\n'
             .. '},\n'
             .. '"text": "'..text..'"\n'
             .. '}\n'
@@ -1131,7 +1129,7 @@ function lsp.save_document(doc)
           server:push_notification('textDocument/didSave', {
             params = {
               textDocument = {
-                uri = util.touri(core.project_absolute_path(doc.filename))
+                uri = util.touri(doc.filename)
               }
             }
           })
@@ -1142,7 +1140,7 @@ function lsp.save_document(doc)
 end
 
 --- Send notification to applicable LSP servers that a document was closed
----@param doc core.doc
+
 function lsp.close_document(doc)
   if not doc.lsp_open then return end
 
@@ -1154,7 +1152,7 @@ function lsp.close_document(doc)
         server:push_notification('textDocument/didClose', {
           params = {
             textDocument = {
-              uri = util.touri(core.project_absolute_path(doc.filename)),
+              uri = util.touri(doc.filename),
               languageId = server:get_language_id(doc),
               version = doc.clean_change_id
             }
@@ -1166,7 +1164,7 @@ function lsp.close_document(doc)
 end
 
 --- Helper for lsp.update_document
----@param doc core.doc
+
 local function request_signature_completion(doc)
   local line1, col1, line2, col2 = doc:get_selection()
 
@@ -1184,7 +1182,7 @@ local function request_signature_completion(doc)
 end
 
 ---Send document updates to applicable running LSP servers.
----@param doc core.doc
+
 ---@param request_completion? boolean
 function lsp.update_document(doc, request_completion)
   if not doc.lsp_open or not doc.lsp_changes or util.table_empty(doc.lsp_changes) then
@@ -1226,7 +1224,7 @@ function lsp.update_document(doc, request_completion)
           .. '"method": "textDocument/didChange",\n'
           .. '"params": {\n'
           .. '"textDocument": {\n'
-          .. '"uri": "'..util.touri(core.project_absolute_path(doc.filename))..'",\n'
+          .. '"uri": "'..util.touri(doc.filename)..'",\n'
           .. '"version": '..doc.lsp_version .. "\n"
           .. '},\n'
           .. '"contentChanges": [\n'
@@ -1246,7 +1244,7 @@ function lsp.update_document(doc, request_completion)
           overwrite = true,
           params = {
             textDocument = {
-              uri = util.touri(core.project_absolute_path(doc.filename)),
+              uri = util.touri(doc.filename),
               version = doc.lsp_version,
             },
             contentChanges = doc.lsp_changes[server]
@@ -1525,7 +1523,7 @@ function lsp.request_signature(doc, line, col, forced, fallback)
 end
 
 ---Returns the "selection" for the token that includes the provided position.
----@param doc core.doc
+
 ---@param line integer
 ---@param col integer
 ---@return integer line1
@@ -1708,7 +1706,7 @@ function lsp.request_call_hierarchy(doc, line, col)
 end
 
 ---Sends a request to applicable LSP servers to rename a symbol.
----@param doc core.doc
+
 ---@param line integer
 ---@param col integer
 ---@param new_name string
@@ -1747,7 +1745,7 @@ function lsp.request_symbol_rename(doc, line, col, new_name)
 end
 
 ---Sends a request to applicable LSP servers to search for symbol on workspace.
----@param doc core.doc
+
 ---@param symbol string
 function lsp.request_workspace_symbol(doc, symbol)
   if not doc.lsp_open then return end
@@ -1800,7 +1798,7 @@ function lsp.request_document_symbols(doc)
       server:push_request('textDocument/documentSymbol', {
         params = {
           textDocument = {
-            uri = util.touri(core.project_absolute_path(doc.filename)),
+            uri = util.touri((doc.filename)),
           }
         },
         callback = function(server, response)
@@ -1878,7 +1876,7 @@ function lsp.request_document_format(doc)
       server:push_request('textDocument/formatting', {
         params = {
           textDocument = {
-            uri = util.touri(core.project_absolute_path(doc.filename)),
+            uri = util.touri((doc.filename)),
           },
           options = {
             tabSize = indent_size,
@@ -1919,7 +1917,7 @@ function lsp.request_document_format(doc)
 end
 
 function lsp.view_document_diagnostics(doc)
-  local diagnostic_messages = diagnostics.get(core.project_absolute_path(doc.filename))
+  local diagnostic_messages = diagnostics.get((doc.filename))
   if not diagnostic_messages or #diagnostic_messages <= 0 then
     stderr.info("[LSP] %s", "No diagnostic messages found.")
     return
@@ -1972,7 +1970,7 @@ function lsp.view_all_diagnostics()
   for _, diagnostic in ipairs(diagnostics.list) do
     table.insert(
       captions,
-      core.normalize_to_project_dir(diagnostic.filename)
+      diagnostic.filename
     )
   end
 
@@ -1992,7 +1990,7 @@ function lsp.view_all_diagnostics()
       local res = table.fuzzy_match(captions, text, true)
       for i, name in ipairs(res) do
         local diagnostics_count = diagnostics.get_messages_count(
-          core.project_absolute_path(name)
+          (name)
         )
         res[i] = {
           text = name,
@@ -2311,7 +2309,7 @@ core.status_view:add_item({
   predicate = function()
     local dv = get_active_docview()
     if dv then
-      -- local filename = core.project_absolute_path(dv.doc.filename)
+      -- local filename = (dv.doc.filename)
       -- local diagnostic_messages = diagnostics.get(filename)
       -- if diagnostic_messages and #diagnostic_messages > 0 then
       --   return true
@@ -2328,7 +2326,7 @@ core.status_view:add_item({
   get_item = function()
     -- local dv = get_active_docview()
     -- if dv then
-    --   local filename = core.project_absolute_path(dv.doc.filename)
+    --   local filename = (dv.doc.filename)
     --   local diagnostic_messages = diagnostics.get(filename)
 
     --   if diagnostic_messages and #diagnostic_messages > 0 then
@@ -2355,7 +2353,7 @@ core.status_view:add_item({
     --   end
     -- end
 
-    -- local filename = core.project_absolute_path(dv.doc.filename)
+    -- local filename = (dv.doc.filename)
     -- local diagnostic_messages = diagnostics.get(filename)
     if #diagnostics.list > 0 then
       -- figure out icon color based on severity

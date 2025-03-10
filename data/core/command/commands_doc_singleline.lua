@@ -32,8 +32,8 @@ end
 local function save(filename)
   local abs_filename
   if filename then
-    filename = core.normalize_to_project_dir(filename)
-    abs_filename = core.project_absolute_path(filename)
+    filename = (filename)
+    abs_filename = (filename)
   end
   local ok, err = pcall(doc().save, doc(), filename, abs_filename)
   if ok then
@@ -577,7 +577,7 @@ local commands = {
   --     text = dv.doc.filename
   --   elseif last_doc and last_doc.filename then
   --     local dirname, filename = core.last_active_view.doc.abs_filename:match("(.*)[/\\](.+)$")
-  --     text = core.normalize_to_project_dir(dirname) .. PATHSEP
+  --     text = (dirname) .. PATHSEP
   --   end
   --   core.command_view:enter("Save As", {
   --     text = text,

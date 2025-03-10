@@ -77,25 +77,26 @@ command.add(nil, {
   end,
 
   ["core:find-file"] = function()
-    if not core.project_files_number() then
-      return command.perform "core:open-file"
-    end
-    local files = {}
-    for dir, item in core.get_project_files() do
-      if item.type == "file" then
-        local path = (dir == core.project_dir and "" or dir .. PATHSEP)
-        table.insert(files, fsutils.home_encode(path .. item.filename))
-      end
-    end
-    core.command_view:enter("Open File From Project", {
-      submit = function(text, item)
-        text = item and item.text or text
-        core.root_view:open_doc(core.open_doc(fsutils.home_expand(text)))
-      end,
-      suggest = function(text)
-        return table.fuzzy_match_with_recents(files, core.visited_files, text)
-      end
-    })
+    stderr.error("needs to be refactored")
+    -- if not core.project_files_number() then
+    --   return command.perform "core:open-file"
+    -- end
+    -- local files = {}
+    -- for dir, item in core.get_project_files() do
+    --   if item.type == "file" then
+    --     local path = (dir == core.project_dir and "" or dir .. PATHSEP)
+    --     table.insert(files, fsutils.home_encode(path .. item.filename))
+    --   end
+    -- end
+    -- core.command_view:enter("Open File From Project", {
+    --   submit = function(text, item)
+    --     text = item and item.text or text
+    --     core.root_view:open_doc(core.open_doc(fsutils.home_expand(text)))
+    --   end,
+    --   suggest = function(text)
+    --     return table.fuzzy_match_with_recents(files, core.visited_files, text)
+    --   end
+    -- })
   end,
 
   ["core:new-doc"] = function()
@@ -118,7 +119,7 @@ command.add(nil, {
       current_file = view.doc.abs_filename
       local dirname, filename = view.doc.abs_filename:match("(.*)[/\\](.+)$")
       if dirname then
-        dirname = core.normalize_to_project_dir(dirname)
+        dirname = (dirname)
         text = dirname == core.project_dir and "" or fsutils.home_encode(dirname) .. PATHSEP
       end
     end
@@ -150,7 +151,7 @@ command.add(nil, {
         stderr.debug("[open file] [suggest]", #text, text)
         -- check if user wants to go specific line
         if current_file ~= nil and text:match("^:([1-9][0-9]*)") then
-          local path_relative = core.normalize_to_project_dir(current_file)
+          local path_relative = (current_file)
           local go_to_line_number = tonumber(string.sub(text, 2))
           stderr.debug("[open file] [suggest] go_to_line_number:",  go_to_line_number)
 
@@ -186,100 +187,100 @@ command.add(nil, {
     })
   end,
 
-  -- ["core:open-log"] = function()
-  --   local node = core.root_view:get_active_node_default()
-  --   node:add_view(LogView())
-  -- end,
-
   ["core:change-project-folder"] = function()
-    local dirname = fsutils.dirname(core.project_dir)
-    local text
-    if dirname then
-      text = fsutils.home_encode(dirname) .. PATHSEP
-    end
-    core.command_view:enter("Change Project Folder", {
-      text = text,
-      submit = function(text)
-        local path = fsutils.home_expand(text)
-        local abs_path = check_directory_path(path)
-        if not abs_path then
-          stderr.error("Cannot open directory %q", path)
-          return
-        end
+    stderr.error("needs to be refactored")
+    -- local dirname = fsutils.dirname(core.project_dir)
+    -- local text
+    -- if dirname then
+    --   text = fsutils.home_encode(dirname) .. PATHSEP
+    -- end
+    -- core.command_view:enter("Change Project Folder", {
+    --   text = text,
+    --   submit = function(text)
+    --     local path = fsutils.home_expand(text)
+    --     local abs_path = check_directory_path(path)
+    --     if not abs_path then
+    --       stderr.error("Cannot open directory %q", path)
+    --       return
+    --     end
 
-        -- do nothing if old project equals new project
-        if abs_path == core.project_dir then return end
+    --     -- do nothing if old project equals new project
+    --     if abs_path == core.project_dir then return end
 
-        -- close all open files
-        if core.confirm_close_docs() then
-          -- open new project
-          core.open_folder_project(abs_path)
-        end
-      end,
-      suggest = suggest_directory
-    })
+    --     -- close all open files
+    --     if core.confirm_close_docs() then
+    --       -- open new project
+    --       core.open_folder_project(abs_path)
+    --     end
+    --   end,
+    --   suggest = suggest_directory
+    -- })
   end,
 
   ["core:open-project-folder"] = function()
-    local dirname = fsutils.dirname(core.project_dir)
-    local text
-    if dirname then
-      text = fsutils.home_encode(dirname) .. PATHSEP
-    end
-    core.command_view:enter("Open Project", {
-      text = text,
-      submit = function(text)
-        local path = fsutils.home_expand(text)
-        local abs_path = check_directory_path(path)
-        if not abs_path then
-          stderr.error("Cannot open directory %q", path)
-          return
-        end
-        if abs_path == core.project_dir then
-          stderr.error("Directory %q is currently opened", abs_path)
-          return
-        end
-        system.exec(string.format("%q %q", EXEFILE, abs_path))
-      end,
-      suggest = suggest_directory
-    })
+  
+    stderr.error("needs to be refactored")
+    -- local dirname = fsutils.dirname(core.project_dir)
+    -- local text
+    -- if dirname then
+    --   text = fsutils.home_encode(dirname) .. PATHSEP
+    -- end
+    -- core.command_view:enter("Open Project", {
+    --   text = text,
+    --   submit = function(text)
+    --     local path = fsutils.home_expand(text)
+    --     local abs_path = check_directory_path(path)
+    --     if not abs_path then
+    --       stderr.error("Cannot open directory %q", path)
+    --       return
+    --     end
+    --     if abs_path == core.project_dir then
+    --       stderr.error("Directory %q is currently opened", abs_path)
+    --       return
+    --     end
+    --     system.exec(string.format("%q %q", EXEFILE, abs_path))
+    --   end,
+    --   suggest = suggest_directory
+    -- })
   end,
 
   ["core:add-directory"] = function()
-    core.command_view:enter("Add Directory", {
-      submit = function(text)
-        text = fsutils.home_expand(text)
-        local path_stat, err = system.get_file_info(text)
-        if not path_stat then
-          stderr.error("cannot open %q: %s", text, err)
-          return
-        elseif path_stat.type ~= 'dir' then
-          stderr.error("%q is not a directory", text)
-          return
-        end
-        core.add_project_directory(system.absolute_path(text))
-      end,
-      suggest = suggest_directory
-    })
+    stderr.error("needs to be refactored")
+    -- core.command_view:enter("Add Directory", {
+    --   submit = function(text)
+    --     text = fsutils.home_expand(text)
+    --     local path_stat, err = system.get_file_info(text)
+    --     if not path_stat then
+    --       stderr.error("cannot open %q: %s", text, err)
+    --       return
+    --     elseif path_stat.type ~= 'dir' then
+    --       stderr.error("%q is not a directory", text)
+    --       return
+    --     end
+    --     -- core.add_project_directory(system.absolute_path(text))
+    --   end,
+    --   suggest = suggest_directory
+    -- })
   end,
 
   ["core:remove-directory"] = function()
-    local dir_list = {}
-    local n = #core.project_directories
-    for i = n, 2, -1 do
-      dir_list[n - i + 1] = core.project_directories[i].name
-    end
-    core.command_view:enter("Remove Directory", {
-      submit = function(text, item)
-        text = fsutils.home_expand(item and item.text or text)
-        if not core.remove_project_directory(text) then
-          stderr.error("No directory %q to be removed", text)
-        end
-      end,
-      suggest = function(text)
-        text = fsutils.home_expand(text)
-        return fsutils.home_encode_list(fsutils.dir_list_suggest(text, dir_list))
-      end
-    })
+    stderr.error("needs to be refactored")
+    -- local dir_list = {}
+    -- local n = #core.project_directories
+    -- for i = n, 2, -1 do
+    --   dir_list[n - i + 1] = core.project_directories[i].name
+    -- end
+    -- core.command_view:enter("Remove Directory", {
+    --   submit = function(text, item)
+    --     text = fsutils.home_expand(item and item.text or text)
+    --     if not (text) then
+    --       stderr.error("No directory %q to be removed", text)
+    --     end
+    --   end,
+    --   suggest = function(text)
+    --     text = fsutils.home_expand(text)
+    --     return fsutils.home_encode_list(fsutils.dir_list_suggest(text, dir_list))
+    --   end
+    -- })
   end,
 })

@@ -35,7 +35,7 @@ local variables = {
 	TM_DIRECTORY             = function(ctx) return ctx.doc.filename:match('([^/%\\]*)[/%\\].*$') or '' end,
 	TM_FILEPATH              = function(ctx) return fsutils.dirname(ctx.doc.abs_filename) or '' end,
 	-- VSCode
-	RELATIVE_FILEPATH        = function(ctx) return core.normalize_to_project_dir(ctx.doc.filename) end,
+	RELATIVE_FILEPATH        = function(ctx) return fsutils.normalize_path(ctx.doc.filename) end,
 	CLIPBOARD                = function()    return system.get_clipboard() end,
 	-- https://github.com/lite-xl/lite-xl/pull/1455
 	WORKSPACE_NAME           = function(ctx) return end,

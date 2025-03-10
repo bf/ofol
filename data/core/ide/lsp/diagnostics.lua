@@ -117,7 +117,7 @@ local function get_absolute_path(filename)
     )
     return nil
   end
-  return core.project_absolute_path(filename)
+  return (filename)
 end
 
 ---Get the position of diagnostics associated to a file.
@@ -264,7 +264,7 @@ function diagnostics.lintplus_populate(filename)
 
     if not filename then
       for _, diagnostic in ipairs(diagnostics.list) do
-        local fname = core.normalize_to_project_dir(diagnostic.filename)
+        local fname = diagnostic.filename
         for _, message in pairs(diagnostic.messages) do
           local line, col = util.toselection(message.range)
           local text = message.message
@@ -282,7 +282,7 @@ function diagnostics.lintplus_populate(filename)
           local kind = lintplus_kinds[message.severity]
 
           lintplus.add_message(
-            core.normalize_to_project_dir(filename),
+            filename,
             line, col, kind, text
           )
         end

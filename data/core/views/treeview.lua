@@ -132,7 +132,7 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
   end
 
   local function is_project_folder(path)
-    for _,dir in pairs(core.project_directories) do
+    for _,dir in pairs({}) do
       if dir.name == path then
         return true
       end
@@ -250,7 +250,7 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
           if core.last_active_view and core.active_view == view then
             core.set_active_view(core.last_active_view)
           end
-          view:open_doc(core.normalize_to_project_dir(item.abs_filename))
+          view:open_doc(item.abs_filename)
         end)
       end
     end,
@@ -469,7 +469,8 @@ function RootView.on_view_mouse_pressed(button, x, y, clicks)
              and is_project_folder(item.abs_filename), item
     end, {
     ["treeview:remove-project-directory"] = function(item)
-      core.remove_project_directory(item.dir_name)
+      stderr.error("needs to be refactored")
+      -- (item.dir_name)
     end,
   })
 
@@ -660,14 +661,14 @@ end
 
 
 function TreeView:check_cache()
-  for i = 1, #core.project_directories do
-    local dir = core.project_directories[i]
-    -- invalidate cache's skip values if directory is declared dirty
-    if dir.is_dirty and self.cache[dir.name] then
-      self:invalidate_cache(dir.name)
-    end
-    dir.is_dirty = false
-  end
+  -- for i = 1, #core.project_directories do
+  --   local dir = core.project_directories[i]
+  --   -- invalidate cache's skip values if directory is declared dirty
+  --   if dir.is_dirty and self.cache[dir.name] then
+  --     self:invalidate_cache(dir.name)
+  --   end
+  --   dir.is_dirty = false
+  -- end
 end
 
 
@@ -683,8 +684,10 @@ function TreeView:each_item()
     local w = self.size.x
     local h = self:get_item_height()
 
-    for k = 1, #core.project_directories do
-      local dir = core.project_directories[k]
+    local directories = {}
+
+    for k = 1, #directories do
+      local dir = directories[k]
       local dir_cached = self:get_cached(dir, dir.item, dir.name)
       coroutine.yield(dir_cached, ox, y, w, h)
       count_lines = count_lines + 1
@@ -1176,10 +1179,10 @@ function TreeView:toggle_expand(toggle, item)
     else
       item.expanded = not item.expanded
     end
-    local hovered_dir = core.project_dir_by_name(item.dir_name)
-    if hovered_dir and hovered_dir.files_limit then
-      core.update_project_subdir(hovered_dir, item.depth == 0 and "" or item.filename, item.expanded)
-    end
+    -- local hovered_dir = core.project_dir_by_name(item.dir_name)
+    -- if hovered_dir and hovered_dir.files_limit then
+    --   core.update_project_subdir(hovered_dir, item.depth == 0 and "" or item.filename, item.expanded)
+    -- end
   end
 end
 

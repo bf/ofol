@@ -447,34 +447,38 @@ end
 ---@param y number
 ---@return boolean
 function RootView:on_file_dropped(filename, x, y)
-  -- todo: refactor
-  local node = self.root_node:get_child_overlapping_point(x, y)
-  local result = node and node.active_view:on_file_dropped(filename, x, y)
-  if result then return result end
-  local info = system.get_file_info(filename)
-  if info and info.type == "dir" then
-    if self.first_dnd_processed then
-      -- first update done, open in new window
-      system.exec(string.format("%q %q", EXEFILE, filename))
-    else
-      -- DND event before first update, this is sent by macOS when folder is dropped into the dock
-      -- first close all open documents
-      if core.confirm_close_docs() then
-        -- then open new folder as project
-        local dirpath = system.absolute_path(filename)
-        core.open_folder_project(dirpath)
-      end
-      self.first_dnd_processed = true
-    end
-  else
-    local ok, doc = try_catch(core.open_doc, filename)
-    if ok then
-      local node = core.root_view.root_node:get_child_overlapping_point(x, y)
-      node:set_active_view(node.active_view)
-      core.root_view:open_doc(doc)
-    end
-  end
-  return true
+  stderr.error("needs to be refactored")
+  
+  -- -- todo: refactor
+  -- local node = self.root_node:get_child_overlapping_point(x, y)
+  -- local result = node and node.active_view:on_file_dropped(filename, x, y)
+  -- if result then return result end
+  -- local info = system.get_file_info(filename)
+  -- if info and info.type == "dir" then
+  --   if self.first_dnd_processed then
+  --     -- first update done, open in new window
+  --     system.exec(string.format("%q %q", EXEFILE, filename))
+  --   else
+  --     -- DND event before first update, this is sent by macOS when folder is dropped into the dock
+  --     -- first close all open documents
+  --     if core.confirm_close_docs() then
+  --       -- then open new folder as project
+  --       local dirpath = system.absolute_path(filename)
+
+
+  --       -- core.open_folder_project(dirpath)
+  --     end
+  --     self.first_dnd_processed = true
+  --   end
+  -- else
+  --   local ok, doc = try_catch(core.open_doc, filename)
+  --   if ok then
+  --     local node = core.root_view.root_node:get_child_overlapping_point(x, y)
+  --     node:set_active_view(node.active_view)
+  --     core.root_view:open_doc(doc)
+  --   end
+  -- end
+  -- return true
 end
 
 
