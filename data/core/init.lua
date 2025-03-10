@@ -39,6 +39,8 @@ end
 
 -- TODO: refactor
 function core.set_project_dir(new_dir, change_project_fn)
+  stderr.error("set project dir to %s", new_dir)
+
   local chdir_ok = pcall(system.chdir, new_dir)
   if chdir_ok then
     if change_project_fn then change_project_fn() end
@@ -51,6 +53,8 @@ end
 
 -- TODO: refactor
 function core.open_folder_project(dir_path_abs)
+  stderr.error("open folder project %s", dir_path_abs)
+
   if core.set_project_dir(dir_path_abs, core.on_quit_project) then
     core.root_view:close_all_docviews()
     -- reload_customizations()
@@ -266,6 +270,8 @@ end
 -- The function below is needed to reload the project directories
 -- when the project's module changes.
 function core.rescan_project_directories()
+  stderr.error("rescan project directories")
+
   local save_project_dirs = {}
   local n = #core.project_directories
   for i = 1, n do
@@ -535,7 +541,7 @@ function core.init()
   -- blinking cursor timer active
   core.blink_start = system.get_time()
   core.blink_timer = core.blink_start
-  -- GLOBAL_TRIGGER_REDRAW_NEXT_FRAME = true
+
   core.visited_files = {}
   core.restart_request = false
   core.quit_request = false
@@ -574,8 +580,8 @@ function core.init()
   core.tree_view:set_target_size("x", min_toolbar_width)
 
 
-
   local project_dir_abs = system.absolute_path(project_dir)
+  
   -- We prevent set_project_dir below to effectively add and scan the directory because the
   -- project module and its ignore files is not yet loaded.
   local set_project_ok = project_dir_abs and core.set_project_dir(project_dir_abs)
@@ -1045,7 +1051,6 @@ function core.run()
     end
 
     if not did_redraw and not WindowState:is_resizing() then
-      -- if system.window_has_focus(core.window) or not did_step or run_threads_full < 2 then
       if AnimationState:is_active() or not did_step or run_threads_full < 2 then
         local now = system.get_time()
         if not next_step then -- compute the time until the next blink

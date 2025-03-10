@@ -13,7 +13,8 @@ local thread_counter = 0
 
 -- create thread
 function threading.add_thread(f, weak_ref, ...)
-  stderr.debug_backtrace("adding thread")
+  stderr.debug("adding thread")
+  
   local key = weak_ref
   if not key then
     thread_counter = thread_counter + 1
