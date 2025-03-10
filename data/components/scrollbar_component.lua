@@ -1,4 +1,3 @@
-local core = require "core"
 local style = require "themes.style"
 
 ---Scrollbar

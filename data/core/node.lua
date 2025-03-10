@@ -783,6 +783,7 @@ function Node:draw_tab_borders(view, is_active, is_hovered, x, y, w, h, standalo
   if standalone then
     renderer.draw_rect(x-1, y-1, w+2, h+2, style.background2)
   end
+
   -- Full border
   if is_active then
     color = style.text
@@ -942,8 +943,10 @@ function Node:draw_tabs()
 end
 
 
+-- main drawing function for node objects
 function Node:draw()
   if self:is_leaf() then
+    -- if node has no sub-nodes then check if tabs should be drawn
     if self:should_show_tabs() then
       self:draw_tabs()
     end
@@ -952,6 +955,7 @@ function Node:draw()
     self.active_view:draw()
     core.pop_clip_rect()
   else
+    -- if child nodes a and b exist, draw divider
     local x, y, w, h = self:get_divider_rect()
     renderer.draw_rect(x, y, w, h, style.divider)
     self:propagate("draw")

@@ -1,4 +1,3 @@
-local core = require "core"
 local Scrollbar = require "components.scrollbar_component"
 
 
@@ -58,22 +57,6 @@ function View:new()
   self.v_scrollbar = Scrollbar({direction = "v", alignment = "e"})
   self.h_scrollbar = Scrollbar({direction = "h", alignment = "e"})
   self.current_scale = SCALE
-end
-
-
--- this is used for animation
-function View:move_towards(t, k, dest, rate, name)
-  stderr.error("move_towards is deprecated %s", k)
-
-  if type(t) ~= "table" then
-    return self:move_towards(self, t, k, dest, rate, name)
-  end
-  local val = t[k]
-  local diff = math.abs(val - dest)
-  t[k] = dest
-  if diff > 1e-8 then
-    TRIGGER_REDRAW_NEXT_FRAME = true
-  end
 end
 
 

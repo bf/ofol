@@ -2,9 +2,8 @@
 -- if we remove this then the loading of style in views does not work
 local style = require "themes.colors.default"
 local dirwatch = require "lib.dirwatch"
-
-
 local PersistentUserSession = require "persistence.persistent_user_session"
+
 local command
 local keymap
 local ime
