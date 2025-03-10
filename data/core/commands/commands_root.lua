@@ -53,18 +53,6 @@ local t = {
       table.remove(node.views, idx)
       table.insert(node.views, idx + 1, core.active_view)
     end
-  end,
-
-  ["root:shrink"] = function(node)
-    local parent = node:get_parent_node(core.root_view.root_node)
-    local n = (parent.a == node) and -0.1 or 0.1
-    parent.divider = math.clamp(parent.divider + n, 0.1, 0.9)
-  end,
-
-  ["root:grow"] = function(node)
-    local parent = node:get_parent_node(core.root_view.root_node)
-    local n = (parent.a == node) and 0.1 or -0.1
-    parent.divider = math.clamp(parent.divider + n, 0.1, 0.9)
   end
 }
 

@@ -457,43 +457,5 @@ function DocView:new(doc)
 end
 
 
-local function get_all_docviews(node, t)
-  t = t or {}
-  if not node then return end
-  if node.type == "leaf" then
-    for i,v in ipairs(node.views) do
-      if v:is(DocView) then
-        table.insert(t, v)
-      end
-    end
-  end
-  get_all_docviews(node.a, t)
-  get_all_docviews(node.b, t)
-  return t
-end
-
-
--- command.add(nil, {
---   ["minimap:toggle-visibility"] = function()
---     minimap_settings.enabled = not minimap_settings.enabled
---     for i,v in ipairs(get_all_docviews(core.root_view.root_node)) do
---       v.v_scrollbar.enabled = nil
---     end
---   end,
---   ["minimap:toggle-syntax-highlighting"] = function()
---     minimap_settings.syntax_highlight = not minimap_settings.syntax_highlight
---   end
--- })
-
--- command.add("core.views.docview!", {
---   ["minimap:toggle-visibility-for-current-view"] = function(dv)
---     local sb = dv.v_scrollbar
---     if sb.enabled ~= nil then
---       sb.enabled = not sb.enabled
---     else
---       sb.enabled = not minimap_settings.enabled
---     end
---   end
--- })
 
 return MiniMap

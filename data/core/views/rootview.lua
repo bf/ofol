@@ -54,8 +54,8 @@ local function get_primary_node(node)
   if node.is_primary_node then
     return node
   end
-  if node.type ~= "leaf" then
-    return get_primary_node(node.a) or get_primary_node(node.b)
+  if not node:is_leaf() then
+    return get_primary_node(node.child_node_a) or get_primary_node(node.child_node_b)
   end
 end
 
@@ -84,8 +84,8 @@ end
 ---@return core.node
 local function select_next_primary_node(node)
   if node.is_primary_node then return end
-  if node.type ~= "leaf" then
-    return select_next_primary_node(node.a) or select_next_primary_node(node.b)
+  if not node:is_leaf() then
+    return select_next_primary_node(node.child_node_a) or select_next_primary_node(node.child_node_b)
   else
     local lx, ly = node:get_locked_size()
     if not lx and not ly then
@@ -210,10 +210,10 @@ function RootView:on_mouse_pressed(button, x, y, clicks)
   if self.grab then
     self:on_mouse_released(self.grab.button, x, y)
   end
-  local div = self.root_node:get_divider_overlapping_point(x, y)
+  local dragged_divider = self.root_node:get_divider_overlapping_point(x, y)
   local node = self.root_node:get_child_overlapping_point(x, y)
-  if div and (node and not node.active_view:scrollbar_overlaps_point(x, y)) then
-    self.dragged_divider = div
+  if dragged_divider and (node and not node.active_view:scrollbar_overlaps_point(x, y)) then
+    self.dragged_divider = dragged_divider
     return true
   end
   if node.hovered_scroll_button > 0 then
@@ -339,9 +339,9 @@ end
 
 
 local function resize_child_node(node, axis, value, delta)
-  local accept_resize = node.a:resize(axis, value)
+  local accept_resize = node.child_node_a:resize(axis, value)
   if not accept_resize then
-    accept_resize = node.b:resize(axis, node.size[axis] - value)
+    accept_resize = node.child_node_b:resize(axis, node.size[axis] - value)
   end
   if not accept_resize then
     node.divider = node.divider + delta / node.size[axis]
@@ -356,6 +356,7 @@ end
 function RootView:on_mouse_moved(x, y, dx, dy)
   self.mouse.x, self.mouse.y = x, y
 
+  -- todo: refactor "grabbing"
   if self.grab then
     self.grab.view:on_mouse_moved(x, y, dx, dy)
     core.request_cursor(self.grab.view.cursor)
@@ -364,10 +365,10 @@ function RootView:on_mouse_moved(x, y, dx, dy)
 
   if self.dragged_divider then
     local node = self.dragged_divider
-    if node.type == "hsplit" then
+    if node:is_split_horizontally() then
       x = math.clamp(x - node.position.x, 0, self.root_node.size.x * 0.95)
       resize_child_node(node, "x", x, dx)
-    elseif node.type == "vsplit" then
+    elseif node:is_split_vertically() then
       y = math.clamp(y - node.position.y, 0, self.root_node.size.y * 0.95)
       resize_child_node(node, "y", y, dy)
     end
@@ -406,7 +407,11 @@ function RootView:on_mouse_moved(x, y, dx, dy)
   if overlapping_node:get_scroll_button_index(x, y) or overlapping_node:is_in_tab_area(x, y) then
     core.request_cursor("arrow")
   elseif div and not self.overlapping_view:scrollbar_overlaps_point(x, y) then
-    core.request_cursor(div.type == "hsplit" and "sizeh" or "sizev")
+    if div:is_split_horizontally() then
+      core.request_cursor("sizeh")
+    else
+      core.request_cursor("sizev")
+    end
   end
 end
 

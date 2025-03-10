@@ -15,7 +15,7 @@ local ICON_SCROLL_BUTTON_RIGHT = ">"
 local Node = Object:extend()
 
 function Node:new(type)
-  self.type = type or "leaf"
+  self.node_type = type or "leaf"
   self.position = { x = 0, y = 0 }
   self.size = { x = 0, y = 0 }
   self.views = {}
@@ -29,22 +29,65 @@ function Node:new(type)
   self.tab_shift_by_x_so_that_active_tab_stays_visible = 0
 
   -- add emptyview on startup
-  if self.type == "leaf" then
+  if self.node_type == "leaf" then
     self:add_view(EmptyView())
+  end
+end
+
+-- return true if this node is a leaf
+function Node:is_leaf()
+  return (self.node_type == "leaf")
+end
+
+-- return true if this node is split horizontally
+function Node:is_split_horizontally()
+  return (self.node_type == "hsplit")
+end
+
+-- return true if this node is split vertically
+function Node:is_split_vertically()
+  return (self.node_type == "vsplit")
+end
+
+-- return dimension ("x" or "y") where node is split by
+function Node:get_split_dimension_x_or_y() 
+  if self:is_split_horizontally() then
+    -- x for horizontal split
+    return "x"
+  elseif self:is_split_vertically() then
+    -- y for vertical split
+    return "y"
+  else
+    -- error for leaf nodes
+    stderr.error("cannot get node split dimension for a leaf")
+  end
+end
+
+-- return true if dimension is the split axis
+function Node:is_dimension_x_or_y_same_as_split_dimension(x_or_y)
+  if x_or_y == "x" then
+    -- for x axis it should be split horizontally
+    return self:is_split_horizontally() 
+  elseif x_or_y == "y" then
+    -- for y axis it should be split vertically
+    return self:is_split_vertically()
+  else
+    -- handle unexpected values
+    stderr.error("expected value being 'x' or 'y', received", x_or_y)
   end
 end
 
 
 function Node:propagate(fn, ...)
-  self.a[fn](self.a, ...)
-  self.b[fn](self.b, ...)
+  self.child_node_a[fn](self.child_node_a, ...)
+  self.child_node_b[fn](self.child_node_b, ...)
 end
 
 
 ---@deprecated
 function Node:on_mouse_moved(x, y, ...)
   stderr.deprecated("Node:on_mouse_moved")
-  if self.type == "leaf" then
+  if self:is_leaf() then
     self.active_view:on_mouse_moved(x, y, ...)
   else
     self:propagate("on_mouse_moved", x, y, ...)
@@ -55,7 +98,7 @@ end
 ---@deprecated
 function Node:on_mouse_released(...)
   stderr.deprecated("Node:on_mouse_released")
-  if self.type == "leaf" then
+  if self:is_leaf() then
     self.active_view:on_mouse_released(...)
   else
     self:propagate("on_mouse_released", ...)
@@ -66,7 +109,7 @@ end
 ---@deprecated
 function Node:on_mouse_left()
   stderr.error("Node:on_mouse_left")
-  if self.type == "leaf" then
+  if self:is_leaf() then
     self.active_view:on_mouse_left()
   else
     self:propagate("on_mouse_left")
@@ -81,6 +124,7 @@ function Node:consume(node)
 end
 
 
+-- map split directions to the internal keywords "hsplit" and "vsplit"
 local type_map = { up="vsplit", down="vsplit", left="hsplit", right="hsplit" }
 
 -- The "locked" argument below should be in the form {x = <boolean>, y = <boolean>}
@@ -90,26 +134,26 @@ local type_map = { up="vsplit", down="vsplit", left="hsplit", right="hsplit" }
 -- by the user. If the node is marked as resizable their view should provide a
 -- set_target_size method.
 function Node:split(dir, view, locked, resizable)
-  assert(self.type == "leaf", "Tried to split non-leaf node")
+  assert(self:is_leaf(), "Tried to split non-leaf node")
   local node_type = assert(type_map[dir], "Invalid direction")
   local last_active = core.active_view
   local child = Node()
   child:consume(self)
   self:consume(Node(node_type))
-  self.a = child
-  self.b = Node()
-  if view then self.b:add_view(view) end
+  self.child_node_a = child
+  self.child_node_b = Node()
+  if view then self.child_node_b:add_view(view) end
   if locked then
     assert(type(locked) == 'table')
-    self.b.locked = locked
-    self.b.resizable = resizable or false
+    self.child_node_b.locked = locked
+    self.child_node_b.resizable = resizable or false
     core.set_active_view(last_active)
   end
   if dir == "up" or dir == "left" then
-    self.a, self.b = self.b, self.a
-    return self.a
+    self.child_node_a, self.child_node_b = self.child_node_b, self.child_node_a
+    return self.child_node_a
   end
-  return self.b
+  return self.child_node_b
 end
 
 -- remove a view / document
@@ -123,11 +167,11 @@ function Node:remove_view(root, view)
     end
   else
     local parent = self:get_parent_node(root)
-    local is_a = (parent.a == self)
-    local other = parent[is_a and "b" or "a"]
+    local is_child_node_a = (parent.child_node_a == self)
+    local other = parent[is_child_node_a and "child_node_b" or "child_node_a"]
     local locked_size_x, locked_size_y = other:get_locked_size()
     local locked_size
-    if parent.type == "hsplit" then
+    if parent:is_split_horizontally() then
       locked_size = locked_size_x
     else
       locked_size = locked_size_y
@@ -145,8 +189,8 @@ function Node:remove_view(root, view)
       end
       parent:consume(other)
       local p = parent
-      while p.type ~= "leaf" do
-        p = p[is_a and "a" or "b"]
+      while not p:is_leaf() do
+        p = p[is_child_node_a and "child_node_a" or "child_node_b"]
       end
       p:set_active_view(p.active_view)
       if self.is_primary_node then
@@ -175,7 +219,7 @@ end
 
 -- add a view to a certain index
 function Node:add_view(view, requested_idx)
-  assert(self.type == "leaf", "Tried to add view to non-leaf node")
+  assert(self:is_leaf(), "Tried to add view to non-leaf node")
   assert(not self.locked, "Tried to add view to locked node")
   
   stderr.debug("add_view at requested_idx %d (total: %d)", requested_idx, #self.views)
@@ -229,7 +273,7 @@ end
 
 -- select a specific view
 function Node:set_active_view(view)
-  assert(self.type == "leaf", "Tried to set active view on non-leaf node")
+  assert(self:is_leaf(), "Tried to set active view on non-leaf node")
   stderr.debug("select active view")
 
   local last_active_view = self.active_view
@@ -259,17 +303,17 @@ function Node:get_node_for_view(view)
   for _, v in ipairs(self.views) do
     if v == view then return self end
   end
-  if self.type ~= "leaf" then
-    return self.a:get_node_for_view(view) or self.b:get_node_for_view(view)
+  if not self:is_leaf() then
+    return self.child_node_a:get_node_for_view(view) or self.child_node_b:get_node_for_view(view)
   end
 end
 
 
-function Node:get_parent_node(root)
-  if root.a == self or root.b == self then
+function Node:get_parent_node(potential_parent_node)
+  if potential_parent_node.child_node_a == self or potential_parent_node.child_node_b == self then
     return root
-  elseif root.type ~= "leaf" then
-    return self:get_parent_node(root.a) or self:get_parent_node(root.b)
+  elseif not potential_parent_node:is_leaf() then
+    return self:get_parent_node(potential_parent_node.child_node_a) or self:get_parent_node(potential_parent_node.child_node_b)
   end
 end
 
@@ -279,8 +323,8 @@ function Node:get_children(t)
   for _, view in ipairs(self.views) do
     table.insert(t, view)
   end
-  if self.a then self.a:get_children(t) end
-  if self.b then self.b:get_children(t) end
+  if self.child_node_a then self.child_node_a:get_children(t) end
+  if self.child_node_b then self.child_node_b:get_children(t) end
   return t
 end
 
@@ -296,9 +340,10 @@ end
 
 
 function Node:get_divider_overlapping_point(px, py)
-  if self.type ~= "leaf" then
-    local axis = self.type == "hsplit" and "x" or "y"
-    if self.a:is_resizable(axis) and self.b:is_resizable(axis) then
+  if not self:is_leaf() then
+    local axis = self:get_split_dimension_x_or_y()
+
+    if self.child_node_a:is_resizable(axis) and self.child_node_b:is_resizable(axis) then
       local p = 6
       local x, y, w, h = self:get_divider_rect()
       x, y = x - p, y - p
@@ -307,8 +352,8 @@ function Node:get_divider_overlapping_point(px, py)
         return self
       end
     end
-    return self.a:get_divider_overlapping_point(px, py)
-        or self.b:get_divider_overlapping_point(px, py)
+    return self.child_node_a:get_divider_overlapping_point(px, py)
+        or self.child_node_b:get_divider_overlapping_point(px, py)
   end
 end
 
@@ -376,15 +421,23 @@ end
 
 
 function Node:get_child_overlapping_point(x, y)
-  local child
-  if self.type == "leaf" then
+  if self:is_leaf() then
     return self
-  elseif self.type == "hsplit" then
-    child = (x < self.b.position.x) and self.a or self.b
-  elseif self.type == "vsplit" then
-    child = (y < self.b.position.y) and self.a or self.b
+  elseif self:is_split_horizontally() then
+    if x < self.child_node_b.position.x then
+      return self.child_node_a:get_child_overlapping_point(x, y)
+    else
+      return self.child_node_b:get_child_overlapping_point(x, y)
+    end
+  elseif self:is_split_vertically() then
+    if y < self.child_node_b.position.y then
+      return self.child_node_a:get_child_overlapping_point(x, y)
+    else
+      return self.child_node_b:get_child_overlapping_point(x, y)
+    end
+  else
+    stderr.error("unexpected situation: cannot match child", x, y)
   end
-  return child:get_child_overlapping_point(x, y)
 end
 
 -- returns: total height, text padding, top margin
@@ -474,10 +527,10 @@ end
 
 function Node:get_divider_rect()
   local x, y = self.position.x, self.position.y
-  if self.type == "hsplit" then
-    return x + self.a.size.x, y, style.divider_size, self.size.y
-  elseif self.type == "vsplit" then
-    return x, y + self.a.size.y, self.size.x, style.divider_size
+  if self:is_split_horizontally() then
+    return x + self.child_node_a.size.x, y, style.divider_size, self.size.y
+  elseif self:is_split_vertically() then
+    return x, y + self.child_node_a.size.y, self.size.x, style.divider_size
   end
 end
 
@@ -485,7 +538,7 @@ end
 -- Return two values for x and y axis and each of them is either falsy or a number.
 -- A falsy value indicate no fixed size along the corresponding direction.
 function Node:get_locked_size()
-  if self.type == "leaf" then
+  if self:is_leaf() then
     if self.locked then
       local size = self.active_view.size
       -- The values below should be either a falsy value or a number
@@ -494,11 +547,11 @@ function Node:get_locked_size()
       return sx, sy
     end
   else
-    local x1, y1 = self.a:get_locked_size()
-    local x2, y2 = self.b:get_locked_size()
+    local x1, y1 = self.child_node_a:get_locked_size()
+    local x2, y2 = self.child_node_b:get_locked_size()
     -- The values below should be either a falsy value or a number
     local sx, sy
-    if self.type == 'hsplit' then
+    if self:is_split_horizontally() then
       if x1 and x2 then
         local dsx = (x1 < 1 or x2 < 1) and 0 or style.divider_size
         sx = x1 + x2 + dsx
@@ -527,20 +580,20 @@ end
 local function calc_split_sizes(self, x, y, x1, x2, y1, y2)
   local ds = ((x1 and x1 < 1) or (x2 and x2 < 1)) and 0 or style.divider_size
   local n = x1 and x1 + ds or (x2 and self.size[x] - x2 or math.floor(self.size[x] * self.divider))
-  self.a.position[x] = self.position[x]
-  self.a.position[y] = self.position[y]
-  self.a.size[x] = n - ds
-  self.a.size[y] = self.size[y]
-  self.b.position[x] = self.position[x] + n
-  self.b.position[y] = self.position[y]
-  self.b.size[x] = self.size[x] - n
-  self.b.size[y] = self.size[y]
+  self.child_node_a.position[x] = self.position[x]
+  self.child_node_a.position[y] = self.position[y]
+  self.child_node_a.size[x] = n - ds
+  self.child_node_a.size[y] = self.size[y]
+  self.child_node_b.position[x] = self.position[x] + n
+  self.child_node_b.position[y] = self.position[y]
+  self.child_node_b.size[x] = self.size[x] - n
+  self.child_node_b.size[y] = self.size[y]
 end
 
 
 
 function Node:update_layout()
-  if self.type == "leaf" then
+  if self:is_leaf() then
     local av = self.active_view
     if self:should_show_tabs() then
       local _, _, _, th = self:get_tab_rect(1)
@@ -551,15 +604,17 @@ function Node:update_layout()
       Node.copy_position_and_size(av, self)
     end
   else
-    local x1, y1 = self.a:get_locked_size()
-    local x2, y2 = self.b:get_locked_size()
-    if self.type == "hsplit" then
+    local x1, y1 = self.child_node_a:get_locked_size()
+    local x2, y2 = self.child_node_b:get_locked_size()
+    if self:is_split_horizontally() then
       calc_split_sizes(self, "x", "y", x1, x2)
-    elseif self.type == "vsplit" then
+    elseif self:is_split_vertically() then
       calc_split_sizes(self, "y", "x", y1, y2)
+    else
+      stderr.error("unexpected case")
     end
-    self.a:update_layout()
-    self.b:update_layout()
+    self.child_node_a:update_layout()
+    self.child_node_b:update_layout()
   end
 end
 
@@ -604,7 +659,7 @@ end
 -- update node
 function Node:update()
   -- fixme: when tabs are overflowing x axis, the scrolling between last tab and first tab gives graphics bug
-  if self.type == "leaf" then
+  if self:is_leaf() then
     -- if leaf mode then update all views
     for view_index, view in ipairs(self.views) do
       view:update()
@@ -614,27 +669,10 @@ function Node:update()
       self:tab_hovered_update(core.root_view.mouse.x, core.root_view.mouse.y)
     end
   else
-    self.a:update()
-    self.b:update()
+    self.child_node_a:update()
+    self.child_node_b:update()
   end
 end
-
--- function Node:get_tab_title_text(view, font, w) 
---   local text = view and view:get_name() or ""
---   -- stderr.debug("get_tab_title_text", text)
-
---   -- local dots_width = font:get_width("…")
---   -- if font:get_width(text) > w then
---   --   for i = 1, #text do
---   --     local reduced_text = text:sub(1, #text - i)
---   --     if font:get_width(reduced_text) + dots_width <= w then
---   --       text = reduced_text .. "…"
---   --       break
---   --     end
---   --   end
---   -- end
---   return text
--- end
 
 
 -- get tab title text for "special" (non-file) views
@@ -905,7 +943,7 @@ end
 
 
 function Node:draw()
-  if self.type == "leaf" then
+  if self:is_leaf() then
     if self:should_show_tabs() then
       self:draw_tabs()
     end
@@ -922,10 +960,10 @@ end
 
 
 function Node:is_empty()
-  if self.type == "leaf" then
+  if self:is_leaf() then
     return #self.views == 0 or (#self.views == 1 and self.views[1]:is(EmptyView))
   else
-    return self.a:is_empty() and self.b:is_empty()
+    return self.child_node_a:is_empty() and self.child_node_b:is_empty()
   end
 end
 
@@ -940,7 +978,7 @@ end
 function Node:close_all_docviews(keep_active)
   local node_active_view = self.active_view
   local lost_active_view = false
-  if self.type == "leaf" then
+  if self:is_leaf() then
     local i = 1
     while i <= #self.views do
       local view = self.views[i]
@@ -966,12 +1004,12 @@ function Node:close_all_docviews(keep_active)
       self:set_active_view(self.views[1])
     end
   else
-    self.a:close_all_docviews(keep_active)
-    self.b:close_all_docviews(keep_active)
-    if self.a:is_empty() and not self.a.is_primary_node then
-      self:consume(self.b)
-    elseif self.b:is_empty() and not self.b.is_primary_node then
-      self:consume(self.a)
+    self.child_node_a:close_all_docviews(keep_active)
+    self.child_node_b:close_all_docviews(keep_active)
+    if self.child_node_a:is_empty() and not self.child_node_a.is_primary_node then
+      self:consume(self.child_node_b)
+    elseif self.child_node_b:is_empty() and not self.child_node_b.is_primary_node then
+      self:consume(self.child_node_a)
     end
   end
 end
@@ -979,11 +1017,11 @@ end
 -- Returns true for nodes that accept either "proportional" resizes (based on the
 -- node.divider) or "locked" resizable nodes (along the resize axis).
 function Node:is_resizable(axis)
-  if self.type == 'leaf' then
+  if self.node_type == 'leaf' then
     return not self.locked or not self.locked[axis] or self.resizable
   else
-    local a_resizable = self.a:is_resizable(axis)
-    local b_resizable = self.b:is_resizable(axis)
+    local a_resizable = self.child_node_a:is_resizable(axis)
+    local b_resizable = self.child_node_b:is_resizable(axis)
     return a_resizable and b_resizable
   end
 end
@@ -1001,7 +1039,7 @@ function Node:resize(axis, value)
   -- placements of view elements, like the scrollbar, we round the value to be
   -- an integer.
   value = math.floor(value)
-  if self.type == 'leaf' then
+  if self:is_leaf() then
     -- If it is not locked we don't accept the
     -- resize operation here because for proportional panes the resize is
     -- done using the "divider" value of the parent node.
@@ -1009,25 +1047,26 @@ function Node:resize(axis, value)
       return self.active_view:set_target_size(axis, value)
     end
   else
-    if self.type == (axis == "x" and "hsplit" or "vsplit") then
+    -- check if axis is same as split dimension
+    if self:is_dimension_x_or_y_same_as_split_dimension(axis) then
       -- we are resizing a node that is splitted along the resize axis
-      if self.a:is_locked_resizable(axis) and self.b:is_locked_resizable(axis) then
-        local rem_value = value - self.a.size[axis]
+      if self.child_node_a:is_locked_resizable(axis) and self.child_node_b:is_locked_resizable(axis) then
+        local rem_value = value - self.child_node_a.size[axis]
         if rem_value >= 0 then
-          return self.b.active_view:set_target_size(axis, rem_value)
+          return self.child_node_b.active_view:set_target_size(axis, rem_value)
         else
-          self.b.active_view:set_target_size(axis, 0)
-          return self.a.active_view:set_target_size(axis, value)
+          self.child_node_b.active_view:set_target_size(axis, 0)
+          return self.child_node_a.active_view:set_target_size(axis, value)
         end
       end
     else
       -- we are resizing a node that is splitted along the axis perpendicular
       -- to the resize axis
-      local a_resizable = self.a:is_resizable(axis)
-      local b_resizable = self.b:is_resizable(axis)
+      local a_resizable = self.child_node_a:is_resizable(axis)
+      local b_resizable = self.child_node_b:is_resizable(axis)
       if a_resizable and b_resizable then
-        self.a:resize(axis, value)
-        self.b:resize(axis, value)
+        self.child_node_a:resize(axis, value)
+        self.child_node_b:resize(axis, value)
       end
     end
   end

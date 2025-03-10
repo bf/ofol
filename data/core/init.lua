@@ -560,8 +560,12 @@ function core.init()
   -- Some plugins (eg: console) require the nodes to be initialized to defaults
   local cur_node = core.root_view.root_node
   cur_node.is_primary_node = true
+
+  -- add command bar
   cur_node:split("up", core.command_view, {y = true})
-  cur_node = cur_node.b
+
+  -- add status bar
+  cur_node = cur_node.child_node_b
   cur_node = cur_node:split("down", core.status_view, {y = true})
 
   -- init treeview
@@ -808,33 +812,6 @@ function core.get_views_referencing_doc(doc)
 end
 
 
-
--- function core.on_event(type, ...)
-
---   local did_keymap = false
---   if type == "text_input" then
---     core.root_view:on_text_input(...)
---   elseif type == "text_editing" then
---     ime.on_text_editing(...)
---   -- elseif type == "key_pressed" then
---   --   -- In some cases during IME composition input is still sent to us
---   --   -- so we just ignore it.
---   --   if ime.editing then 
---   --     stderr.error("key_pressed event should never be received when ime.editing == true, received", ...)
---   --     return false 
---   --   end
---   --   did_keymap = keymap.on_key_pressed(...)
---   -- elseif type == "key_released" then
---   --   keymap.on_key_released(...)
---   -- elseif type == "filedropped" then
---   --   core.root_view:on_file_dropped(...)
---   -- elseif type == "quit" then
---   --   core.quit()
---   end
---   return did_keymap
--- end
-
-
 local StateMachine = require("models.state_machine")
 
 -- cursor should be animated or not
@@ -899,26 +876,6 @@ InputState = {
     y = nil
   }
 }
--- MouseHoveredState = StateMachine("MouseHoveredState", {
---   mouse_moved = {},
---   mouse_has_left_the_window = {
---     mouse_is_back_inside_window = function (event_name, x, y) 
---       return 
---     end
---   },
---   mouse_is_back_inside_window = {},
--- })
-
-  -- position = {
-  --   x = nil, 
-  --   y = nil
-  -- },
-  -- mouse_wheel = {},
--- 
-  -- mouse_pressed = {},
-  -- mouse_released = {},
-
--- MouseCursorState = StateMachine("MouseCursorState")
 
 -- remember if keymap is completed
 local did_keymap = false
