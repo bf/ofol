@@ -303,13 +303,13 @@ install_subdir('data' / 'themes' , install_dir : lite_datadir)
 #     install_subdir(join_paths('data', data_module), install_dir : lite_datadir)
 # endforeach
 
-configure_file(
-    input : 'data' / 'entrypoint.lua',
-    output : 'entrypoint.lua',
-    configuration : conf_data,
-    # install_dir : join_paths(lite_datadir, 'core'),
-    install_dir : lite_datadir,
-)
+# configure_file(
+#     input : 'data' / 'entrypoint.lua',
+#     output : 'entrypoint.lua',
+#     configuration : conf_data,
+#     # install_dir : join_paths(lite_datadir, 'core'),
+#     install_dir : lite_datadir,
+# )
 
 if not get_option('source-only')
     subdir('src')
