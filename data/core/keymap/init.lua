@@ -203,6 +203,8 @@ end
 --------------------------------------------------------------------------------
 -- Events listening
 --------------------------------------------------------------------------------
+
+-- handle key pressing
 function keymap.on_key_pressed(k, ...)
   stderr.debug("keymap.on_key_pressed", k )
   local mk = modkey_map[k]
@@ -235,6 +237,15 @@ function keymap.on_key_pressed(k, ...)
   return false
 end
 
+-- handle key release
+function keymap.on_key_released(k)
+  local mk = modkey_map[k]
+  if mk then
+    keymap.modkeys[mk] = false
+  end
+end
+
+-- handle mouse wheel scroll
 function keymap.on_mouse_wheel(delta_y, delta_x, ...)
   local y_direction = delta_y > 0 and "up" or "down"
   local x_direction = delta_x > 0 and "left" or "right"
@@ -263,6 +274,7 @@ function keymap.on_mouse_wheel(delta_y, delta_x, ...)
   return y_result or x_result
 end
 
+-- handle mouse button click
 function keymap.on_mouse_pressed(button, x, y, clicks)
   stderr.debug("on_mouse_pressed %s %d %d %d", button, x, y, clicks)
   local click_number = (((clicks - 1) % ConfigurationOptionStore.get_user_interface_max_consecutive_clicks_registered()) + 1)
@@ -270,13 +282,6 @@ function keymap.on_mouse_pressed(button, x, y, clicks)
     keymap.on_key_pressed(button:sub(1,1) .. "click", x, y, clicks) or
     keymap.on_key_pressed(click_number .. "click", x, y, clicks) or
     keymap.on_key_pressed("click", x, y, clicks))
-end
-
-function keymap.on_key_released(k)
-  local mk = modkey_map[k]
-  if mk then
-    keymap.modkeys[mk] = false
-  end
 end
 
 
