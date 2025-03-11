@@ -205,6 +205,7 @@ init_lua:
   enable_momentum_scroll();
   #ifdef MACOS_USE_BUNDLE
     set_macos_bundle_resources(L);
+
   #endif
 #endif
   SDL_SetEventEnabled(SDL_EVENT_TEXT_INPUT, true);

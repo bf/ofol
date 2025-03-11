@@ -287,6 +287,7 @@ install_data('licenses' / 'licenses.md', install_dir : lite_docdir)
 install_subdir('docs' / 'api' , install_dir : lite_datadir, strip_directory: true)
 
 # copy directories with lua scripts
+install_subdir('data' / 'entrypoint' , install_dir : lite_datadir)
 install_subdir('data' / 'core' , install_dir : lite_datadir)
 install_subdir('data' / 'components' , install_dir : lite_datadir)
 install_subdir('data' / 'configuration' , install_dir : lite_datadir)
