@@ -1,5 +1,4 @@
-local core = require "core"
-local tokenizer = require "core.doc.tokenizer"
+local tokenizer = require "lib.tokenizer"
 
 
 local Highlighter = Object:extend()

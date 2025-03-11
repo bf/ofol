@@ -1,9 +1,11 @@
 local core = require "core"
 local style = require "themes.style"
 local keymap = require "core.keymap"
-local translate = require "core.doc.translate"
+
+local translate = require "lib.translate"
 local ime = require "core.ime"
 local View = require "core.view"
+
 local FilenameComponentFactory = require "components.factories.filename_component_factory"
 
 
@@ -585,6 +587,7 @@ function DocView:draw_overlay()
     end
   end
 end
+
 
 -- main draw function
 function DocView:draw()

@@ -569,11 +569,16 @@ function BuildBarView:new()
   }
 end
 
+-- create build toolbar
 build.build_bar_view = BuildBarView()
 build.message_view = BuildMessageView()
 local node = core.root_view:get_active_node()
 build.message_view_node = node:split("down", build.message_view, { y = true }, true)
-build.build_bar_node = core.tree_view.node.child_node_b:split("up", build.build_bar_view, {y = true})
+
+-- add to tree view if exists
+if core.tree_view ~= nil then
+  build.build_bar_node = core.tree_view.node.child_node_b:split("up", build.build_bar_view, {y = true})
+end
 
 
 local function argument_string_to_table(str)

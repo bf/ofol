@@ -1,5 +1,6 @@
----@type core.doc
-local Doc = require "core.doc"
+-- TODO: refactor like helpdoc
+
+local Doc = require "models.doc"
 
 ---A readonly core.doc.
 ---@class plugins.scm.readdoc : core.doc

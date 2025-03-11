@@ -10,7 +10,7 @@
 --
 
 local config = require "core.config"
-local snippets = require "core.ide.snippets"
+-- local snippets = require "core.ide.snippets"
 
 local lsp = require "core.ide.lsp"
 local util = require "core.ide.lsp.util"

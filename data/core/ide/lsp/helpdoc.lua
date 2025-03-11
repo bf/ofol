@@ -1,5 +1,7 @@
+-- TODO: Refactor
+
 ---@type core.doc
-local Doc = require "core.doc"
+local Doc = require "models.doc"
 
 ---A readonly core.doc.
 ---@class lsp.helpdoc : core.doc

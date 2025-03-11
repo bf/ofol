@@ -1,6 +1,6 @@
 local core = require "core"
 local command = require "core.command"
-local search = require "core.doc.search"
+local search = require "lib.search"
 local keymap = require "core.keymap"
 
 local DocView = require "core.views.docview"

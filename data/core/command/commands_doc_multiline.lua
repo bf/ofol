@@ -1,8 +1,8 @@
 local core = require "core"
 local command = require "core.command"
-local translate = require "core.doc.translate"
+local translate = require "lib.translate"
 local style = require "themes.style"
-local tokenizer = require "core.doc.tokenizer"
+local tokenizer = require "lib.tokenizer"
 
 local DocView = require "core.views.docview"
 

@@ -1,4 +1,3 @@
-local core = require "core"
 local syntax = require "lib.syntax"
 
 local tokenizer = {}

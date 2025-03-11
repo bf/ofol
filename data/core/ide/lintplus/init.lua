@@ -31,7 +31,7 @@ local style = require "themes.style"
 local keymap = require "core.keymap"
 local syntax = require "lib.syntax"
 
-local Doc = require "core.doc"
+local Doc = require "models.doc"
 
 local DocView = require "core.views.docview"
 local StatusView = require "core.views.statusview"

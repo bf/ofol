@@ -14,7 +14,6 @@ local minimap = require ".editor_minimap"
 -- local build = require "core.ide.build"
 
 -- -- load language server
--- local lsp_snippets = require "core.ide.lsp_snippets"
 -- local lsp = require "core.ide.lsp"
 -- local lsp_rust = require "core.ide.lsp_rust"
 

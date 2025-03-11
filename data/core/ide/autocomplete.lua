@@ -2,8 +2,8 @@ local core = require "core"
 local command = require "core.command"
 local style = require "themes.style"
 local keymap = require "core.keymap"
-local translate = require "core.doc.translate"
-local Doc = require "core.doc"
+local translate = require "models.doc.translate"
+local Doc = require "models.doc"
 
 
 local RootView = require "core.views.rootview"

@@ -1,7 +1,7 @@
 local core = require "core"
 local command = require "core.command"
 local style = require "themes.style"
-local Highlighter = require "core.doc.highlighter"
+local Highlighter = require "models.highlighter"
 local Scrollbar = require "components.scrollbar_component"
 
 local DocView = require "core.views.docview"

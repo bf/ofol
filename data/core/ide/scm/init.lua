@@ -11,7 +11,7 @@ local core = require "core"
 local command = require "core.command"
 local keymap = require "core.keymap"
 local style = require "themes.style"
-local Doc = require "core.doc"
+local Doc = require "models.doc"
 
 local StatusView = require "core.views.statusview"
 local DocView = require "core.views.docview"
@@ -509,7 +509,6 @@ function scm.unstage_file(path)
 end
 
 ---Go to next change in a file.
----@param doc? core.doc
 function scm.next_change(doc)
   doc = doc or util.get_current_doc()
 	if not doc or not doc.scm_diff then return end
@@ -529,7 +528,6 @@ function scm.next_change(doc)
 end
 
 ---Go to previous change in a file.
----@param doc? core.doc
 function scm.previous_change(doc)
 	doc = doc or util.get_current_doc()
 	if not doc or not doc.scm_diff then return end
@@ -830,7 +828,6 @@ command.add(
   end, {
 
   ["scm:file-add"] = function(doc)
-    ---@cast doc core.doc
     scm.add_path(doc.abs_filename)
 	end
 })

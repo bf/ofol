@@ -1,6 +1,5 @@
-local Highlighter = require ".highlighter"
-local translate = require ".translate"
-local core = require "core"
+local Highlighter = require "models.highlighter"
+local translate = require "lib.translate"
 local syntax = require "lib.syntax"
 
 local OpenFilesStore = require "stores.open_files_store"
@@ -53,10 +52,17 @@ end
 function Doc:reset_syntax()
   local header = self:get_text(1, 1, self:position_offset(1, 1, 128))
   local path = self.abs_filename
-  if not path and self.filename then
-    path = core.project_dir .. PATHSEP .. self.filename
+  
+  -- if not path and self.filename then
+  --   path = core.project_dir .. PATHSEP .. self.filename
+  -- end
+  
+  if path then 
+    path = fsutils.normalize_path(path) 
+  else
+    stderr.warn("no path for doc with filename=%s abs_filename=%s", self.filename, self.abs_filename)
   end
-  if path then path = fsutils.normalize_path(path) end
+
   local syn = syntax.get(path, header)
   if self.syntax ~= syn then
     self.syntax = syn
@@ -402,7 +408,6 @@ end
 ---Returns the content of the doc between two positions. </br>
 ---The positions will be sanitized and sorted. </br>
 ---The character at the "end" position is not included by default.
----@see core.doc.sanitize_position
 ---@param line1 integer
 ---@param col1 integer
 ---@param line2 integer

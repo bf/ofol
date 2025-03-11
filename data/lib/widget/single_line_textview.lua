@@ -1,13 +1,10 @@
 local core = require "core"
 local style = require "themes.style"
 local keymap = require "core.keymap"
--- local translate = require "core.doc.translate"
 local translate  = require "lib.widget.single_line_document_translate"
 
 local ime = require "core.ime"
 local View = require "core.view"
--- local FilenameInUI = require "core.ui.filename_in_ui"
-
 
 local SingleLineDoc = require "lib.widget.single_line_document"
 

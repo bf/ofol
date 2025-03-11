@@ -32,7 +32,7 @@ function RootView:new()
   self.drag_overlay_tab.to = { x = 0, y = 0, w = 0, h = 0 }
   self.grab = nil -- = {view = nil, button = nil}
   self.overlapping_view = nil
-  self.first_dnd_processed = false
+  self.first_drag_and_drop_processed = false
 end
 
 
@@ -88,8 +88,6 @@ function RootView:get_primary_node()
 end
 
 
----@param node core.node
----@return core.node
 local function select_next_primary_node(node)
   if node.is_primary_node then return end
   if not node:is_leaf() then
@@ -103,17 +101,14 @@ local function select_next_primary_node(node)
 end
 
 
----@return core.node
 function RootView:select_next_primary_node()
   return select_next_primary_node(self.root_node)
 end
 
 
----@param doc core.doc
----@return core.docview
+-- open file in editor
 function RootView:open_doc(doc, go_to_line_number)
   stderr.debug("open_doc %s go_to_line_number %s", doc.filename, go_to_line_number)
-
 
   -- handle metadata for file
   OpenFilesStore.handle_open_file(doc)
@@ -122,6 +117,8 @@ function RootView:open_doc(doc, go_to_line_number)
 
   -- check if doc is already opened in a view
   for i, view in ipairs(node.views) do
+    -- DocView has .doc member variable
+    -- this .doc is checked for to figure out if it is a DocView instance
     if view.doc == doc then
       node:set_active_view(node.views[i])
 
@@ -148,6 +145,7 @@ function RootView:open_doc(doc, go_to_line_number)
 
   self.root_node:update_layout()
 
+  -- scroll to line if needed
   if go_to_line_number then
     stderr.debug("open_doc added new view for go_to_line_number", go_to_line_number)
 
@@ -270,7 +268,8 @@ end
 function RootView:set_show_overlay(overlay, status)
   stderr.debug("overlay: %s", status)
   overlay.visible = status
-  if status then -- reset colors
+  if status then 
+    -- reset colors
     -- reload base_color
     overlay.base_color = self:get_overlay_base_color(overlay)
     overlay.color[1] = overlay.base_color[1]
@@ -322,15 +321,18 @@ function RootView:on_mouse_released(button, x, y, ...)
           local split_type = node:get_split_type(self.mouse.x, self.mouse.y)
           local view = dragged_node.views[self.dragged_node.idx]
 
-          if split_type ~= "middle" and split_type ~= "tab" then -- needs splitting
+          if split_type ~= "middle" and split_type ~= "tab" then 
+            -- needs splitting
             local new_node = node:split(split_type)
             self.root_node:get_node_for_view(view):remove_view(self.root_node, view)
             new_node:add_view(view)
-          elseif split_type == "middle" and node ~= dragged_node then -- move to other node
+          elseif split_type == "middle" and node ~= dragged_node then 
+            -- move to other node
             dragged_node:remove_view(self.root_node, view)
             node:add_view(view)
             self.root_node:get_node_for_view(view):set_active_view(view)
-          elseif split_type == "tab" then -- move besides other tabs
+          elseif split_type == "tab" then 
+            -- move besides other tabs
             local tab_index = node:get_drag_overlay_tab_position(self.mouse.x, self.mouse.y, dragged_node, self.dragged_node.idx)
             dragged_node:remove_view(self.root_node, view)
             node:add_view(view, tab_index)
@@ -455,7 +457,7 @@ function RootView:on_file_dropped(filename, x, y)
   -- if result then return result end
   -- local info = system.get_file_info(filename)
   -- if info and info.type == "dir" then
-  --   if self.first_dnd_processed then
+  --   if self.first_drag_and_drop_processed then
   --     -- first update done, open in new window
   --     system.exec(string.format("%q %q", EXEFILE, filename))
   --   else
@@ -468,7 +470,7 @@ function RootView:on_file_dropped(filename, x, y)
 
   --       -- core.open_folder_project(dirpath)
   --     end
-  --     self.first_dnd_processed = true
+  --     self.first_drag_and_drop_processed = true
   --   end
   -- else
   --   local ok, doc = try_catch(core.open_doc, filename)
@@ -517,9 +519,10 @@ function RootView:update()
   self:update_drag_overlay()
   self:interpolate_drag_overlay(self.drag_overlay)
   self:interpolate_drag_overlay(self.drag_overlay_tab)
-  -- set this to true because at this point there are no dnd requests
-  -- that are caused by the initial dnd into dock user action
-  self.first_dnd_processed = true
+  
+  -- set this to true because at this point there are no drag_and_drop requests
+  -- that are caused by the initial drag_and_drop into dock user action
+  self.first_drag_and_drop_processed = true
 end
 
 

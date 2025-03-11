@@ -1,5 +1,5 @@
 local core = require "core"
-local translate = require "core.doc.translate"
+local translate = require "lib.translate"
 local command = require "core.command"
 local keymap = require "core.keymap"
 

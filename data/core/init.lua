@@ -38,7 +38,7 @@ function core.init()
   ToolbarView = require "core.views.toolbarview"
   SettingsView = require "core.views.settingsview"
   
-  Doc = require "core.doc"
+  Doc = require "models.doc"
 
   -- for WINDOWS: fix paths
   if PATHSEP == '\\' then
@@ -115,12 +115,22 @@ function core.init()
   -- Load default commands first so plugins can override them
   command.add_defaults()
 
-  -- Some plugins (eg: console) require the nodes to be initialized to defaults
+  -- get pointer to root node
   local cur_node = core.root_view.root_node
+
+  -- mark root node as "primary node"
   cur_node.is_primary_node = true
 
   -- add command bar
   cur_node:split("up", core.command_view, {y = true})
+
+  -- add address bar
+  local NavigationBarView = require("core.views.navigationbarview")
+  local navigation_bar = NavigationBarView()
+
+  cur_node = cur_node.child_node_b
+  local navigation_bar_node = cur_node:split("up", navigation_bar, {y = true})
+  -- navigation_bar_node:set_target_size("y", 200)
 
   -- add status bar
   cur_node = cur_node.child_node_b
@@ -152,6 +162,10 @@ function core.init()
   -- enable native borderes
   system.set_window_hit_test()
   system.set_window_bordered(true)
+
+  -- load file
+  core.root_view:open_doc(core.open_doc("/home/beni/src/2025-ofol/LICENSE"))
+  core.root_view:open_doc(core.open_doc("/home/beni/src/2025-ofol/README.md"))
 end
 
 -- close all docs, prompt user about unsaved changes

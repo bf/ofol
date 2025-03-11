@@ -17,8 +17,9 @@ local config = require "core.config"
 local command = require "core.command"
 local style = require "themes.style"
 local keymap = require "core.keymap"
-local translate = require "core.doc.translate"
-local Doc = require "core.doc"
+
+local translate = require "lib.translate"
+local Doc = require "models.doc"
 
 
 local DocView = require "core.views.docview"
@@ -37,7 +38,7 @@ local SymbolResults = require ".symbolresults"
 local HelpDoc = require ".helpdoc"
 
 local autocomplete = require "core.ide.autocomplete"
-local snippets = require "core.ide.snippets"
+-- local snippets = require "core.ide.snippets"
 local LineWrapping = require "core.ide.linewrapping"
 
 --
@@ -74,7 +75,7 @@ config.plugins.lsp = table.merge({
   mouse_hover_delay = 300,
   show_diagnostics = true,
   diagnostics_delay = 500,
-  snippets = true,
+  snippets = false,
   stop_unneeded_servers = true,
   log_file = "",
   prettify_json = false,
@@ -121,7 +122,7 @@ config.plugins.lsp = table.merge({
       description = "Snippets processing using lsp_snippets, may need a restart.",
       path = "snippets",
       type = "TOGGLE",
-      default = true
+      default = false
     },
     {
       label = "Autostart Server",
@@ -409,7 +410,7 @@ local function apply_edit(server, doc, text_edit, is_snippet, update_cursor_posi
 
   if is_snippet then
     doc:set_selection(line1, col1, line1, col1)
-    snippets.execute {format = 'lsp', template = text}
+    -- snippets.execute {format = 'lsp', template = text}
     return true
   end
 
@@ -533,7 +534,7 @@ local function autocomplete_onselect(index, item)
       local line2, col2 = doc:get_selection()
       local line1, col1 = doc:position_offset(line2, col2, translate.start_of_word)
       doc:set_selection(line1, col1, line2, col2)
-      snippets.execute {format = 'lsp', template = completion.insertText}
+      -- snippets.execute {format = 'lsp', template = completion.insertText}
       edit_applied = true
     end
   end
@@ -591,7 +592,7 @@ function lsp.add_server(options)
   end
 
   
-  options.snippets = true
+  options.snippets = false
 
   if #options.command <= 0 then
     stderr.error("[LSP] Provide a command table list with the lsp command.")
@@ -860,7 +861,6 @@ function lsp.start_server(filename, project_directory)
               )
             else
               local document = util.tofilename(request.params.uri)
-              ---@type core.docview
               local doc_view = core.root_view:open_doc(
                 core.open_doc(fsutils.home_expand(document))
               )
@@ -1009,7 +1009,6 @@ function lsp.get_hovered_location(x, y)
   local av = n.active_view
   if not av:extends(DocView) then return end
   if av and av.doc.lsp_open then
-    ---@type core.doc
     local doc = av.doc
     local line, col = av:resolve_screen_position(x, y)
     local last_x = av:get_col_x_offset(line, #av.doc.lines[line])

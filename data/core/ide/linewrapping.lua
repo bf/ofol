@@ -1,9 +1,9 @@
 local core = require "core"
-local Doc = require "core.doc"
+local Doc = require "models.doc"
 local style = require "themes.style"
 local command = require "core.command"
 local keymap = require "core.keymap"
-local translate = require "core.doc.translate"
+local translate = require "lib.translate"
 
 local DocView = require "core.views.docview"
 

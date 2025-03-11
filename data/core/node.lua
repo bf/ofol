@@ -5,6 +5,8 @@ local style = require "themes.style"
 local EmptyView = require "core.views.emptyview"
 local View = require "core.view"
 
+-- local TreeView = require "core.views.treeview"
+  -- local ToolbarView = require "core.views.toolbarview"
 local FilenameComponent = require "components.filename_component"
 local FilenameComponentFactory = require "components.factories.filename_component_factory"
 
@@ -31,6 +33,17 @@ function Node:new(type)
   -- add emptyview on startup
   if self.node_type == "leaf" then
     self:add_view(EmptyView())
+    -- init treeview
+
+    -- local tree_view = TreeView()
+    -- tree_view.node = self:split("left", tree_view, {x = true}, true)
+
+    -- init toolbar view
+    -- core.toolbar_view = ToolbarView()
+    -- core.toolbar_view.node = core.tree_view.node:split("up", core.toolbar_view, {y = true})
+    -- local toolbar_view = ToolbarView()
+    -- toolbar_view.node = self:split("left", toolbar_view, {x = true}, true)
+
   end
 end
 
