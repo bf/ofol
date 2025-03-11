@@ -24,7 +24,7 @@ keymap.map = {}
 ---@type keymap.rmap
 keymap.reverse_map = {}
 
-local macos = PLATFORM == "Mac OS X"
+local macos = (PLATFORM == "Mac OS X")
 
 -- Thanks to mathewmariani, taken from his lite-macos github repository.
 local modkeys_os = require("core.keymap.modkeys-" .. (macos and "macos" or "generic"))

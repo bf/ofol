@@ -185,7 +185,7 @@ function command.add_defaults()
   require("core.command.commands_doc_multiline")
   require("core.command.commands_findreplace")
   require("core.command.commands_files")
-  require("core.command.commands_dialog")
+  -- require("core.command.commands_dialog")
   require("core.command.commands_statusbar")
   -- local reg = {
   --   "core", "root", "commandview", "doc_singleline","doc_multiline", "findreplace",
