@@ -1,3 +1,5 @@
+stderr.deprecated("unused file")
+
 local command = require "core.command"
 local keymap = require "core.keymap"
 local style = require "themes.style"
