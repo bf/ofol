@@ -1,3 +1,4 @@
+-- pretty printing?
 
 -- From gvx/Ser
 local oddvals = {[tostring(1/0)] = "1/0", [tostring(-1/0)] = "-1/0", [tostring(-(0/0))] = "-(0/0)", [tostring(0/0)] = "0/0"}

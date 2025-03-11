@@ -93,8 +93,8 @@ require("lib.lua-monkeypatch.lua-monkeypatch-renderer")
 -- threading code
 threading = require("lib.threading")
 
--- global include for base object 
-Object = require("lib.object")
+-- global include for base object model 
+Object = require("models.object")
 
 -- global include of validator
 Validator = require("lib.validator")

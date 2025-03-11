@@ -1,6 +1,6 @@
-local core = require "core"
+-- local core = require "core"
 local command = require "core.command"
-local ime = require "core.ime"
+-- local ime = require "core.ime"
 
 
 local keymap = {}
