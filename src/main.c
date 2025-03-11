@@ -208,9 +208,11 @@ init_lua:
 
   #endif
 #endif
+
   SDL_SetEventEnabled(SDL_EVENT_TEXT_INPUT, true);
   SDL_SetEventEnabled(SDL_EVENT_TEXT_EDITING, true);
 
+  // LUA startup code which runs `entrypoint/init.lua` file
   const char *init_lite_code = \
     "core = nil\n"
     "local os_exit = os.exit\n"
@@ -223,37 +225,21 @@ init_lua:
     "  local exedir = match(EXEFILE, '^(.*)" LITE_PATHSEP_PATTERN LITE_NONPATHSEP_PATTERN "$')\n"
     "  local prefix = os.getenv('LITE_PREFIX') or match(exedir, '^(.*)" LITE_PATHSEP_PATTERN "bin$')\n"
     "  dofile((MACOS_RESOURCES or (prefix and prefix .. '/share/" MY_PROJECT_NAME "' or exedir .. '/data')) .. '/entrypoint/init.lua')\n"
-    // "  core = require(os.getenv('LITE_XL_RUNTIME') or 'core')\n"
-    // "  core.init()\n"
-    // "  core.run()\n"
     "end, function(err)\n"
-    // "  local error_path = 'error.txt'\n"
     "  io.stderr:write('Error: '..tostring(err)..'\\n')\n"
     "  io.stderr:write(debug.traceback(nil, 2)..'\\n')\n"
     "  io.stderr:write(err)\n"
     "  io.stderr:write('\\n')\n"
-    // "  if core and core.on_error then\n"
-    // "    error_path = USERDIR .. PATHSEP .. error_path\n"
-    // "    pcall(core.on_error, err)\n"
-    // "  else\n"
-    // "    local fp = io.open(error_path, 'wb')\n"
-    // "    fp:write('Error: ' .. tostring(err) .. '\\n')\n"
-    // "    fp:write(debug.traceback(nil, 2)..'\\n')\n"
-    // "    fp:close()\n"
-    // "    error_path = system.absolute_path(error_path)\n"
-    // "  end\n"
-    // "  system.show_fatal_error('" MY_PROJECT_NAME " internal error',\n"
-    // "    'An internal error occurred in a critical part of the application.\\n\\n'..\n"
-    // "    'Error: '..tostring(err)..'\\n\\n'..\n"
-    // "    'Details can be found in \\\"'..error_path..'\\\"')\n"
     "  os.exit(1)\n"
     "end)\n"
     "return core and core.restart_request\n";
 
+  // execute lua startup code
   if (luaL_loadstring(L, init_lite_code)) {
     fprintf(stderr, "internal error when starting the application\n");
     exit(1);
   }
+  
   lua_pcall(L, 0, 1, 0);
   if (lua_toboolean(L, -1)) {
     lua_close(L);

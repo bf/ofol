@@ -314,5 +314,5 @@ install_subdir('data' / 'themes' , install_dir : lite_datadir)
 if not get_option('source-only')
     subdir('src')
     subdir('scripts')
-    subdir('data')
+    # subdir('data')
 endif
