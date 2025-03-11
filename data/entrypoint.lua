@@ -54,21 +54,8 @@ require("lib.global_constants")
 -- global variables
 require("lib.global_variables")
 
-
 -- global include of stderr logging
 stderr = require("lib.stderr")
-
--- graphics/rendering rect clipping code
-clipping = require("lib.clipping")
-
--- global include of fsutils
-fsutils = require("lib.fsutils")
-
--- global include for json
-json = require("lib.json")
-
--- global include for json config file
-json_config_file = require("lib.json_config_file")
 
 -- global modification of module loading behavior when require() is called
 require("lib.lua-monkeypatch.lua-monkeypatch-require-modules")
@@ -89,6 +76,18 @@ require("lib.lua-monkeypatch.lua-monkeypatch-table")
 
 -- global monkeypatch for SDL3 C API
 require("lib.lua-monkeypatch.lua-monkeypatch-renderer")
+
+-- graphics/rendering rect clipping code
+clipping = require("lib.clipping")
+
+-- global include of fsutils
+fsutils = require("lib.fsutils")
+
+-- global include for json
+json = require("lib.json")
+
+-- global include for json config file
+json_config_file = require("lib.json_config_file")
 
 -- threading code
 threading = require("lib.threading")

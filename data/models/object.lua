@@ -1,3 +1,8 @@
+-- base object class with some useful functionality
+-- this class is provided as GLOBAL VARIABLE via entrypoint.lua
+-- models will be derived from this
+-- example methods are :extend() and checking for class :is_class_of() etc.
+
 local Object = {}
 Object.__index = Object
 

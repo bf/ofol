@@ -1,8 +1,10 @@
 -- base class for configuration groups
+-- the configuration groups will be displayed in the settings UI
 local style = require("themes.style")
 
 local ConfigurationOptionGroup = Object:extend()
 
+-- constructor: create new configuration option group
 function ConfigurationOptionGroup:new(group_key, label_text, icon)
   -- ensure group_key is provided
   if not group_key or not Validator.is_string(group_key) then
@@ -32,14 +34,17 @@ function ConfigurationOptionGroup:new(group_key, label_text, icon)
   ConfigurationOptionStore.initialize_configuration_group(self)
 end
 
+-- key is unique identifier for the group
 function ConfigurationOptionGroup:get_group_key()
   return self._group_key
 end
 
+-- label text will be displayed as description text in UI for the group 
 function ConfigurationOptionGroup:get_label_text()
   return self._label_text
 end
 
+-- icon will be displayed in UI for the group
 function ConfigurationOptionGroup:get_icon()
   return self._icon
 end
